@@ -146,6 +146,7 @@ export default function Navbar() {
                 <MobileLink to={dashboardRoute} onClick={closeMenu}>{t("nav.dashboard")}</MobileLink>
                 {profile?.role === "promoter" && <MobileLink to="/pipeline" onClick={closeMenu}>{t("nav.pipeline")}</MobileLink>}
                 {profile?.role === "artist" && <MobileLink to="/tax" onClick={closeMenu}>{t("nav.tax")}</MobileLink>}
+                <MobileLink to="/insights" onClick={closeMenu}>insights</MobileLink>
                 <MobileLink to="/tours" onClick={closeMenu}>{t("nav.tours")}</MobileLink>
                 <div className="border-t border-border my-3" />
                 <div className="px-3 py-2">
