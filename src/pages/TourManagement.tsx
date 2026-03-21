@@ -38,6 +38,7 @@ export default function TourManagement() {
   const [crew, setCrew] = useState<CrewMember[]>([]);
   const [budget, setBudget] = useState<BudgetItem[]>([]);
   const [docs, setDocs] = useState<TourDoc[]>([]);
+  const [editingStop, setEditingStop] = useState<TourStop | null>(null);
 
   useEffect(() => {
     if (!user) return;
