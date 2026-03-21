@@ -56,6 +56,7 @@ const App = () => (
               <Route path="/offer" element={<ProtectedRoute><OfferFlow /></ProtectedRoute>} />
               <Route path="/tours" element={<ProtectedRoute><TourManagement /></ProtectedRoute>} />
               <Route path="/venue-manage" element={<ProtectedRoute><VenueManage /></ProtectedRoute>} />
+              <Route path="/pipeline" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
               <Route path="/p/:slug" element={<ProfilePage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

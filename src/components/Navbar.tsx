@@ -125,6 +125,7 @@ export default function Navbar() {
             {user ? (
               <>
                 <MobileLink to={dashboardRoute} onClick={closeMenu}>Dashboard</MobileLink>
+                {profile?.role === "promoter" && <MobileLink to="/pipeline" onClick={closeMenu}>Pipeline</MobileLink>}
                 <MobileLink to="/tours" onClick={closeMenu}>Tours</MobileLink>
                 <div className="border-t border-border my-3" />
                 <button
