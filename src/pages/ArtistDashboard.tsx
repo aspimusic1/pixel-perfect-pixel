@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2 } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download } from "lucide-react";
 import { toast } from "sonner";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
 
