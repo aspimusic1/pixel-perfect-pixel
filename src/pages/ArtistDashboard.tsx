@@ -228,10 +228,10 @@ export default function ArtistDashboard() {
                       <Button
                         size="sm"
                         disabled={actionLoading === offer.id}
-                        onClick={() => handleRespond(offer.id, "accepted")}
+                        onClick={() => setReviewOffer(offer)}
                         className="bg-green-600 hover:bg-green-700 text-foreground active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                       >
-                        {actionLoading === offer.id ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5 mr-1" />} Accept
+                        {actionLoading === offer.id ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Shield className="w-3.5 h-3.5 mr-1" />} Review & Accept
                       </Button>
                       <Button
                         size="sm"
