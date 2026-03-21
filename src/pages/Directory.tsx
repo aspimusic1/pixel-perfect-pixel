@@ -372,7 +372,23 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
 
         {loading ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => <div key={i} className="h-40 rounded-xl bg-card animate-pulse" />)}
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="rounded-xl bg-card border border-border p-5 space-y-3">
+                <div className="flex items-start gap-3">
+                  <Skeleton className="w-10 h-10 rounded-full" />
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/3" />
+                  </div>
+                </div>
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-2/3" />
+                <div className="flex justify-between items-center pt-1">
+                  <Skeleton className="h-3 w-1/4" />
+                  <Skeleton className="h-7 w-16 rounded-md" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : !hasResults ? (
           <div className="rounded-xl bg-card border border-border p-8 text-center">
