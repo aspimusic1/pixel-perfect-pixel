@@ -12,6 +12,7 @@ import ArtistDashboard from "@/pages/ArtistDashboard";
 import PromoterDashboard from "@/pages/PromoterDashboard";
 import Directory from "@/pages/Directory";
 import Pricing from "@/pages/Pricing";
+import Venues from "@/pages/Venues";
 import OfferFlow from "@/pages/OfferFlow";
 import TourManagement from "@/pages/TourManagement";
 import NotFound from "@/pages/NotFound";
