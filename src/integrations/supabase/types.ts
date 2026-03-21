@@ -840,6 +840,7 @@ export type Database = {
           slug: string | null
           spotify: string | null
           state: string | null
+          subscription_plan: string | null
           updated_at: string | null
           user_id: string | null
           website: string | null
@@ -857,6 +858,7 @@ export type Database = {
           slug?: string | null
           spotify?: string | null
           state?: string | null
+          subscription_plan?: string | null
           updated_at?: string | null
           user_id?: string | null
           website?: string | null
@@ -874,6 +876,7 @@ export type Database = {
           slug?: string | null
           spotify?: string | null
           state?: string | null
+          subscription_plan?: string | null
           updated_at?: string | null
           user_id?: string | null
           website?: string | null
