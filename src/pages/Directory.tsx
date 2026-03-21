@@ -63,27 +63,30 @@ const roleColorMap: Record<string, string> = {
 };
 
 // Query functions
-async function fetchProfiles(roleFilter: string) {
+async function fetchProfiles(roleFilter: string, search: string) {
   if (roleFilter === "venue") return [];
   let query = supabase.from("public_profiles" as any).select("*");
   if (roleFilter) query = query.eq("role", roleFilter as any);
+  if (search) query = query.ilike("display_name" as any, `%${search}%`);
   const { data } = await query.order("created_at" as any, { ascending: false });
   return (data as unknown as Profile[]) ?? [];
 }
 
-async function fetchArtistListings() {
-  const { data } = await supabase
+async function fetchArtistListings(search: string) {
+  let query = supabase
     .from("artist_listings")
-    .select("*")
-    .order("upcoming_concerts", { ascending: false });
+    .select("*");
+  if (search) query = query.ilike("name", `%${search}%`);
+  const { data } = await query.order("upcoming_concerts", { ascending: false });
   return (data as ArtistListing[]) ?? [];
 }
 
-async function fetchVenueListings() {
-  const { data } = await supabase
+async function fetchVenueListings(search: string) {
+  let query = supabase
     .from("venue_listings")
-    .select("*")
-    .order("name", { ascending: true });
+    .select("*");
+  if (search) query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,region.ilike.%${search}%`);
+  const { data } = await query.order("name", { ascending: true });
   return (data as VenueListing[]) ?? [];
 }
 
