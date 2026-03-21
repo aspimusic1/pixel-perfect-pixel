@@ -15,6 +15,7 @@ import Pricing from "@/pages/Pricing";
 import OfferFlow from "@/pages/OfferFlow";
 import TourManagement from "@/pages/TourManagement";
 import VenueManage from "@/pages/VenueManage";
+import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
