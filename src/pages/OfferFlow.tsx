@@ -24,7 +24,7 @@ const STEPS = [
   { label: "Review", icon: Check },
 ];
 
-const COMMISSION_RATE = 0.10;
+const RATE_MAP: Record<string, number> = { free: 0.20, pro: 0.10, agency: 0.06 };
 
 export default function OfferFlow() {
   const { user } = useAuth();
@@ -49,7 +49,7 @@ export default function OfferFlow() {
   const [hospitality, setHospitality] = useState("");
   const [backline, setBackline] = useState("");
   const [notes, setNotes] = useState("");
-
+  const [commissionRate, setCommissionRate] = useState(0.20);
   // Restore draft from localStorage
   const draftKey = `offer-draft-${recipientId || "new"}`;
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function OfferFlow() {
   }, [venueName, eventDate, eventTime, guarantee, doorSplit, merchSplit, hospitality, backline, notes, draftKey]);
 
   const guaranteeNum = parseFloat(guarantee) || 0;
-  const commission = guaranteeNum * COMMISSION_RATE;
+  const commission = guaranteeNum * commissionRate;
   const artistPayout = guaranteeNum - commission;
 
   useEffect(() => {
@@ -94,6 +94,21 @@ export default function OfferFlow() {
     };
     fetchArtists();
   }, [preselectedArtist]);
+
+  // Fetch recipient's subscription plan for dynamic commission
+  useEffect(() => {
+    if (!recipientId) return;
+    const fetchPlan = async () => {
+      const { data } = await supabase
+        .from("public_profiles" as any)
+        .select("subscription_plan")
+        .eq("user_id", recipientId)
+        .single();
+      const plan = (data as any)?.subscription_plan ?? "free";
+      setCommissionRate(RATE_MAP[plan] ?? 0.20);
+    };
+    fetchPlan();
+  }, [recipientId]);
 
   const filteredArtists = artists.filter((a) => {
     if (!artistSearch) return true;
@@ -142,7 +157,7 @@ export default function OfferFlow() {
         hospitality: hospitality.trim() || null,
         backline: backline.trim() || null,
         notes: notes.trim() || null,
-        commission_rate: COMMISSION_RATE,
+        commission_rate: commissionRate,
       });
       if (error) throw error;
       localStorage.removeItem(draftKey);
@@ -310,7 +325,7 @@ export default function OfferFlow() {
                       <span className="font-medium">${guaranteeNum.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Platform fee ({(COMMISSION_RATE * 100).toFixed(0)}%)</span>
+                      <span className="text-muted-foreground">Platform fee ({(commissionRate * 100).toFixed(0)}%)</span>
                       <span className="font-medium text-destructive">-${commission.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                     <div className="border-t border-border my-1" />

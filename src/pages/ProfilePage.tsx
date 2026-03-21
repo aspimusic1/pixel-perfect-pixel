@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Music, Globe, ExternalLink, Share2 } from "lucide-react";
+import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send } from "lucide-react";
 import { toast } from "sonner";
+import { format, startOfToday } from "date-fns";
+import { cn } from "@/lib/utils";
 
 type ProfileData = {
   id: string;
@@ -22,18 +25,28 @@ type ProfileData = {
   spotify: string | null;
   is_verified: boolean | null;
   slug: string | null;
-  rate_min: number | null;
-  rate_max: number | null;
 };
+
+type AvailDate = { date: string; is_available: boolean };
 
 const SITE_URL = "https://getbookedlive.lovable.app";
 const SITE_NAME = "GetBooked.Live";
 
+const roleColorMap: Record<string, string> = {
+  artist: "bg-role-artist/10 text-role-artist border-role-artist/20",
+  promoter: "bg-role-promoter/10 text-role-promoter border-role-promoter/20",
+  venue: "bg-role-venue/10 text-role-venue border-role-venue/20",
+  production: "bg-role-production/10 text-role-production border-role-production/20",
+  photo_video: "bg-role-photo/10 text-role-photo border-role-photo/20",
+};
+
 export default function ProfilePage() {
   const { slug } = useParams<{ slug: string }>();
+  const { user } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [availability, setAvailability] = useState<AvailDate[]>([]);
 
   useEffect(() => {
     if (!slug) return;
@@ -45,9 +58,25 @@ export default function ProfilePage() {
         .single();
       if (error || !data) {
         setNotFound(true);
-      } else {
-        setProfile(data as unknown as ProfileData);
+        setLoading(false);
+        return;
       }
+      const p = data as unknown as ProfileData;
+      setProfile(p);
+
+      // Fetch availability for artists
+      if (p.role === "artist" && p.user_id) {
+        const today = format(startOfToday(), "yyyy-MM-dd");
+        const { data: avail } = await supabase
+          .from("artist_availability")
+          .select("date, is_available")
+          .eq("artist_id", p.user_id)
+          .gte("date", today)
+          .order("date")
+          .limit(14);
+        setAvailability((avail as AvailDate[]) ?? []);
+      }
+
       setLoading(false);
     };
     load();
@@ -75,6 +104,9 @@ export default function ProfilePage() {
   const canonicalUrl = `${SITE_URL}/p/${profile?.slug ?? slug}`;
   const ogImage = profile?.avatar_url ?? `${SITE_URL}/og-default.png`;
 
+  const genres = profile?.genre?.split(",").map((g) => g.trim()).filter(Boolean) ?? [];
+  const isOwnProfile = user?.id === profile?.user_id;
+
   if (loading) {
     return (
       <div className="min-h-screen pt-24 px-4">
@@ -94,7 +126,7 @@ export default function ProfilePage() {
           <title>Profile Not Found | {SITE_NAME}</title>
         </Helmet>
         <h1 className="font-syne text-2xl font-bold mb-2">Profile not found</h1>
-        <p className="text-muted-foreground">This artist doesn't exist or the link is broken.</p>
+        <p className="text-muted-foreground">This profile doesn't exist or the link is broken.</p>
       </div>
     );
   }
@@ -105,14 +137,12 @@ export default function ProfilePage() {
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <link rel="canonical" href={canonicalUrl} />
-
         <meta property="og:type" content="profile" />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:site_name" content={SITE_NAME} />
-
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
@@ -120,7 +150,7 @@ export default function ProfilePage() {
       </Helmet>
 
       <div className="container mx-auto max-w-2xl">
-        {/* Avatar */}
+        {/* Hero section */}
         <div className="flex flex-col items-center mb-8">
           {profile?.avatar_url ? (
             <img
@@ -143,13 +173,14 @@ export default function ProfilePage() {
             )}
           </div>
 
-          <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4">
-            {profile?.genre && (
-              <span className="flex items-center gap-1">
-                <Music className="w-3.5 h-3.5" />
-                {profile.genre}
-              </span>
-            )}
+          {/* Role badge */}
+          {profile?.role && (
+            <Badge variant="outline" className={cn("text-xs mb-2 capitalize", roleColorMap[profile.role] ?? "")}>
+              {profile.role.replace("_", "/")}
+            </Badge>
+          )}
+
+          <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
             {location && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" />
@@ -158,8 +189,19 @@ export default function ProfilePage() {
             )}
           </div>
 
+          {/* Genre pills */}
+          {genres.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-1.5 mb-4">
+              {genres.map((g) => (
+                <span key={g} className="px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                  {g}
+                </span>
+              ))}
+            </div>
+          )}
+
           {/* Social links */}
-          <div className="flex items-center gap-2 mb-6">
+          <div className="flex items-center gap-2 mb-2">
             {profile?.website && (
               <a href={profile.website} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
@@ -187,34 +229,69 @@ export default function ProfilePage() {
 
         {/* Bio */}
         {profile?.bio && (
-          <div className="rounded-xl bg-card border border-white/[0.06] p-5 mb-6">
+          <div className="rounded-xl bg-card border border-white/[0.06] p-5 mb-4">
             <h2 className="font-syne text-sm font-semibold mb-2 text-muted-foreground uppercase tracking-wider">About</h2>
             <p className="text-sm text-foreground leading-relaxed" style={{ textWrap: "pretty" }}>{profile.bio}</p>
           </div>
         )}
 
-        {/* Booking info */}
-        {(profile?.rate_min != null || profile?.rate_max != null) && (
-          <div className="rounded-xl bg-card border border-white/[0.06] p-5 mb-6">
-            <h2 className="font-syne text-sm font-semibold mb-2 text-muted-foreground uppercase tracking-wider">Fee Range</h2>
-            <p className="font-syne text-xl font-bold">
-              {profile.rate_min != null && profile.rate_max != null
-                ? `$${profile.rate_min.toLocaleString()} – $${profile.rate_max.toLocaleString()}`
-                : profile.rate_min != null
-                  ? `From $${profile.rate_min.toLocaleString()}`
-                  : `Up to $${profile.rate_max!.toLocaleString()}`}
-            </p>
+        {/* Availability strip */}
+        {profile?.role === "artist" && availability.length > 0 && (
+          <div className="rounded-xl bg-card border border-white/[0.06] p-5 mb-4">
+            <div className="flex items-center gap-2 mb-3">
+              <CalendarDays className="w-4 h-4 text-primary" />
+              <h2 className="font-syne text-sm font-semibold text-muted-foreground uppercase tracking-wider">Upcoming Availability</h2>
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {availability.map((a) => {
+                const d = new Date(a.date + "T00:00:00");
+                return (
+                  <div
+                    key={a.date}
+                    className={cn(
+                      "flex-shrink-0 w-14 rounded-lg border text-center py-2 transition-colors",
+                      a.is_available
+                        ? "bg-green-500/10 border-green-500/20 text-green-400"
+                        : "bg-red-500/10 border-red-500/20 text-red-400"
+                    )}
+                  >
+                    <div className="text-[10px] font-medium uppercase opacity-70">
+                      {format(d, "EEE")}
+                    </div>
+                    <div className="text-sm font-bold">{format(d, "d")}</div>
+                    <div className="text-[10px] uppercase opacity-70">{format(d, "MMM")}</div>
+                    <div className="mt-0.5">
+                      {a.is_available ? (
+                        <Check className="w-3 h-3 mx-auto" />
+                      ) : (
+                        <X className="w-3 h-3 mx-auto" />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex items-center gap-4 mt-2 text-[10px] text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-green-500/40" /> Available
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-red-500/40" /> Unavailable
+              </span>
+            </div>
           </div>
         )}
 
         {/* CTA */}
-        <div className="text-center">
-          <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium h-11 px-8 active:scale-[0.97] transition-transform">
-            <a href={`/offer?recipient=${profile?.user_id}`}>
-              <ExternalLink className="w-4 h-4 mr-2" /> Book {name}
-            </a>
-          </Button>
-        </div>
+        {!isOwnProfile && profile?.role === "artist" && (
+          <div className="text-center mt-6">
+            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium h-12 px-10 text-base active:scale-[0.97] transition-transform">
+              <Link to={`/offer?artist=${profile?.user_id}`}>
+                <Send className="w-4 h-4 mr-2" /> Send Booking Offer
+              </Link>
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
