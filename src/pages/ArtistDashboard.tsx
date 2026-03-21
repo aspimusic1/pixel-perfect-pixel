@@ -82,7 +82,7 @@ export default function ArtistDashboard() {
       setLoading(false);
     };
     fetchData();
-  }, [user]);
+  }, [user, page]);
 
   const handleRespond = async (offerId: string, status: "accepted" | "declined") => {
     if (!user) return;
