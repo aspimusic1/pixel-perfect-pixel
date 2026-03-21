@@ -70,6 +70,8 @@ export default function ArtistDashboard() {
   const [reviewOffer, setReviewOffer] = useState<Offer | null>(null);
   const [attendanceBooking, setAttendanceBooking] = useState<Booking | null>(null);
   const [attendanceReported, setAttendanceReported] = useState<Set<string>>(new Set());
+  const [advanceBooking, setAdvanceBooking] = useState<Booking | null>(null);
+  const [advanceRequested, setAdvanceRequested] = useState<Set<string>>(new Set());
 
   const fetchSignatures = async (bookingIds: string[]) => {
     if (bookingIds.length === 0) return;
