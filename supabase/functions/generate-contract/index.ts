@@ -285,15 +285,15 @@ Deno.serve(async (req) => {
       "Under 15 days: Full deposit non-refundable",
       "Artist cancellation: Deposit returned + 10% penalty",
     ];
-    const cancelCardH = cancelTerms.length * 16 + 16;
+    const cancelCardH = cancelTerms.length * 14 + 14;
     drawCard(y, cancelCardH);
-    let cy = y - 14;
+    let cy = y - 12;
     for (const line of cancelTerms) {
-      page.drawText("•", { x: margin + 16, y: cy, size: 8, font: helveticaBold, color: limeDim });
-      page.drawText(line, { x: margin + 28, y: cy, size: 8.5, font: helvetica, color: white });
-      cy -= 16;
+      page.drawText("•", { x: margin + 14, y: cy, size: 7, font: helveticaBold, color: limeDim });
+      page.drawText(line, { x: margin + 24, y: cy, size: 8, font: helvetica, color: white });
+      cy -= 14;
     }
-    y -= cancelCardH + 16;
+    y -= cancelCardH + 10;
 
     // ═══════════════════════════════════════════
     // ADDITIONAL TERMS (if any)
