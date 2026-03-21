@@ -142,6 +142,8 @@ export default function ArtistDashboard() {
     } else {
       toast.success("Offer declined");
     }
+    setActionLoading(null);
+    }
   };
 
   const getBookingForOffer = (offerId: string) => bookings.find((b) => b.offer_id === offerId);

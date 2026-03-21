@@ -133,6 +133,7 @@ export default function OfferFlow() {
         commission_rate: COMMISSION_RATE,
       });
       if (error) throw error;
+      localStorage.removeItem(draftKey);
       toast.success("Offer sent successfully!");
       navigate("/promoter-dashboard");
     } catch (err: any) {
