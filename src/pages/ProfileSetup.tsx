@@ -91,6 +91,11 @@ export default function ProfileSetup() {
       // Add role-specific fields
       if (role === "artist") {
         baseUpdate.genre = genre;
+        baseUpdate.website = website || null;
+        baseUpdate.instagram = instagram || null;
+        baseUpdate.spotify = spotify || null;
+        baseUpdate.rate_min = rateMin ? parseFloat(rateMin) : null;
+        baseUpdate.rate_max = rateMax ? parseFloat(rateMax) : null;
       }
       // For other roles, we store extra info in the bio or as part of the profile
       // since the profiles table has limited columns. We'll append context to bio.
