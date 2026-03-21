@@ -238,6 +238,13 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
     staleTime: 60_000,
   });
 
+  const { data: flashBids = new Map<string, FlashBidInfo>() } = useQuery({
+    queryKey: ["directory-flash-bids"],
+    queryFn: fetchFlashBids,
+    enabled: showArtists || showProfiles,
+    staleTime: 30_000,
+  });
+
   const loading = (showProfiles && profilesLoading) || (showArtists && artistsLoading) || (showVenues && venuesLoading);
 
   // Scroll reveal
