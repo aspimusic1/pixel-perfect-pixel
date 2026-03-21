@@ -64,6 +64,18 @@ export default function Directory() {
   return (
     <div className="min-h-screen pt-20 px-4 pb-12">
       <div className="container mx-auto max-w-5xl">
+        {/* CTA Banner */}
+        <div className="mb-8 rounded-xl bg-primary/5 border border-primary/10 px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <p className="text-xs text-muted-foreground font-body">
+            <span className="text-foreground font-medium">make your profile today</span> — get discovered by promoters, venues, and production teams
+          </p>
+          <Link to="/auth?tab=signup">
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase h-8 active:scale-[0.97] transition-transform whitespace-nowrap">
+              get started free <ArrowRight className="ml-1.5 w-3 h-3" />
+            </Button>
+          </Link>
+        </div>
+
         <h1 className="font-display text-3xl font-bold mb-2">Directory</h1>
         <p className="text-muted-foreground text-sm mb-8">Discover artists, venues, crew, and more.</p>
 

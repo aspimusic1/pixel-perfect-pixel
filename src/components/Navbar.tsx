@@ -38,55 +38,68 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass">
-      <div className="container mx-auto flex items-center justify-between h-16 px-4">
+      <div className="container mx-auto flex items-center justify-between h-14 px-4">
         <Link to="/" className="flex items-center">
-          <img src={logoWhite} alt="GetBooked.Live" className="h-7" />
+          <img src={logoWhite} alt="GetBooked.Live" className="h-[18px]" />
         </Link>
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-6">
-          <Link to="/directory" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Directory</Link>
-          <Link to="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
+          <Link to="/directory" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">browse</Link>
+          <Link to="/pricing" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">pricing</Link>
           {user ? (
             <>
-              <Link to={dashboardRoute} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Dashboard</Link>
-              <Link to="/tours" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Tours</Link>
+              <Link to={dashboardRoute} className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">dashboard</Link>
+              <Link to="/tours" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">tours</Link>
               <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors">
                 <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
                 )}
               </button>
-              <Button size="sm" variant="ghost" onClick={signOut} className="text-sm">Sign out</Button>
+              <Button size="sm" variant="ghost" onClick={signOut} className="text-xs lowercase">sign out</Button>
             </>
           ) : (
             <>
-              <Link to="/auth"><Button size="sm" variant="ghost" className="text-sm">Sign in</Button></Link>
-              <Link to="/auth?tab=signup"><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium">Get Started</Button></Link>
+              <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs lowercase">sign in</Button></Link>
+              <Link to="/auth?tab=signup"><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase">start free</Button></Link>
             </>
           )}
         </div>
 
         {/* Mobile toggle */}
-        <button className="md:hidden text-foreground" onClick={() => setMenuOpen(!menuOpen)}>
-          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="flex md:hidden items-center gap-2">
+          {user ? (
+            <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors mr-1">
+              <Bell className="w-4 h-4" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
+              )}
+            </button>
+          ) : (
+            <>
+              <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs lowercase h-8">sign in</Button></Link>
+              <Link to="/auth?tab=signup"><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase h-8">start free</Button></Link>
+            </>
+          )}
+          <button className="text-foreground" onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden glass border-t border-border px-4 pb-4 pt-2 space-y-2">
-          <Link to="/directory" className="block py-2 text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Directory</Link>
-          <Link to="/pricing" className="block py-2 text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Pricing</Link>
+          <Link to="/directory" className="block py-2 text-xs text-muted-foreground lowercase" onClick={() => setMenuOpen(false)}>browse</Link>
+          <Link to="/pricing" className="block py-2 text-xs text-muted-foreground lowercase" onClick={() => setMenuOpen(false)}>pricing</Link>
           {user ? (
             <>
-              <Link to={dashboardRoute} className="block py-2 text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-              <Link to="/tours" className="block py-2 text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Tours</Link>
-              <button className="block py-2 text-sm text-muted-foreground" onClick={() => { signOut(); setMenuOpen(false); }}>Sign out</button>
+              <Link to={dashboardRoute} className="block py-2 text-xs text-muted-foreground lowercase" onClick={() => setMenuOpen(false)}>dashboard</Link>
+              <Link to="/tours" className="block py-2 text-xs text-muted-foreground lowercase" onClick={() => setMenuOpen(false)}>tours</Link>
+              <button className="block py-2 text-xs text-muted-foreground lowercase" onClick={() => { signOut(); setMenuOpen(false); }}>sign out</button>
             </>
-          ) : (
-            <Link to="/auth" className="block py-2 text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Sign in</Link>
-          )}
+          ) : null}
         </div>
       )}
     </nav>
