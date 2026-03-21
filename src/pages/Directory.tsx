@@ -551,42 +551,14 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
                               </div>
                             )}
 
-                            {/* Contact info — gated */}
-                            <div className="flex flex-wrap gap-1.5 mt-3">
-                              {v.phone && (
-                                hasPaidPlan ? (
-                                  <a href={`tel:${v.phone}`} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-foreground hover:bg-secondary/80 transition-colors font-body">
-                                    <Phone className="w-3 h-3 text-role-venue" /> {v.phone}
-                                  </a>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary/50 text-xs text-muted-foreground font-body">
-                                    <Lock className="w-3 h-3" /> phone
-                                  </span>
-                                )
-                              )}
-                              {v.email && (
-                                hasPaidPlan ? (
-                                  <a href={`mailto:${v.email}`} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-foreground hover:bg-secondary/80 transition-colors font-body">
-                                    <Mail className="w-3 h-3 text-role-venue" /> {v.email}
-                                  </a>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary/50 text-xs text-muted-foreground font-body">
-                                    <Lock className="w-3 h-3" /> email
-                                  </span>
-                                )
-                              )}
-                              {v.website && (
-                                hasPaidPlan ? (
-                                  <a href={`https://${v.website}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-foreground hover:bg-secondary/80 transition-colors font-body">
-                                    <Globe className="w-3 h-3 text-role-venue" /> {v.website}
-                                  </a>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary/50 text-xs text-muted-foreground font-body">
-                                    <Lock className="w-3 h-3" /> website
-                                  </span>
-                                )
-                              )}
-                            </div>
+                            {/* Website link */}
+                            {v.website && (
+                              <div className="mt-3">
+                                <a href={v.website.startsWith("http") ? v.website : `https://${v.website}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-foreground hover:bg-secondary/80 transition-colors font-body">
+                                  <Globe className="w-3 h-3 text-role-venue" /> Website
+                                </a>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
