@@ -482,46 +482,6 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
               </div>
             )}
 
-            {/* Artist listings from imported data */}
-            {artistListings.length > 0 && (
-              <div>
-                <h2 data-reveal className="fade-in-section font-display text-lg font-bold mb-3 text-foreground/80 lowercase">
-                  artists on tour — {artistListings.length} artists
-                </h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {artistListings.map((a) => (
-                    <div
-                      key={a.id}
-                      data-reveal
-                      className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-role-artist/20 transition-all duration-300"
-                    >
-                      <div className="flex items-start gap-3 mb-2">
-                        <div className="w-9 h-9 rounded-lg bg-role-artist/10 flex items-center justify-center shrink-0">
-                          <Mic2 className="w-4 h-4 text-role-artist" />
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="font-display font-semibold text-sm truncate">{a.name}</h3>
-                          <span className="inline-block px-2 py-0.5 text-[10px] font-semibold rounded mt-1 bg-role-artist/10 text-role-artist">
-                            Artist
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between mt-3">
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground font-body">
-                          {a.genre && <span>{a.genre}</span>}
-                          {a.upcoming_concerts > 0 && (
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {a.upcoming_concerts} shows
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Venue listings */}
             {Object.keys(groupedVenues).length > 0 && (
