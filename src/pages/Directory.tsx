@@ -575,8 +575,8 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
             )}
           </div>
         )}
-          </div>{/* end max-h overflow wrapper */}
-        </div>{/* end relative gate wrapper */}
+          </div>
+        )}
       </div>
 
       {/* Claim dialog */}
