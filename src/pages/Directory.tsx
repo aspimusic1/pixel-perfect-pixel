@@ -94,13 +94,26 @@ async function fetchArtistGenres() {
   return Array.from(genres).sort();
 }
 
-async function fetchVenueListings(search: string) {
+async function fetchVenueListings(search: string, city: string | null) {
   let query = supabase
     .from("venue_listings_public" as any)
     .select("*");
   if (search) query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,region.ilike.%${search}%`);
+  if (city) query = query.eq("city", city);
   const { data } = await query.order("name", { ascending: true });
   return (data as unknown as VenueListing[]) ?? [];
+}
+
+async function fetchAllCities() {
+  const [profileRes, venueRes] = await Promise.all([
+    supabase.from("public_profiles" as any).select("city"),
+    supabase.from("venue_listings_public" as any).select("city"),
+  ]);
+  const cities = new Set<string>();
+  [...(profileRes.data ?? []), ...(venueRes.data ?? [])].forEach((r: any) => {
+    if (r.city && r.city.trim()) cities.add(r.city.trim());
+  });
+  return Array.from(cities).sort();
 }
 
 async function fetchVenueAvailability() {
