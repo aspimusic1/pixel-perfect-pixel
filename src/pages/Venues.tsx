@@ -34,6 +34,7 @@ const REGIONS = [
 
 export default function Venues() {
   const [venues, setVenues] = useState<VenueListing[]>([]);
+  const [venueAvailability, setVenueAvailability] = useState<Record<string, { available_date: string; notes: string | null }[]>>({});
   const [search, setSearch] = useState("");
   const [regionFilter, setRegionFilter] = useState("");
   const [loading, setLoading] = useState(true);
