@@ -12,6 +12,7 @@ import AttendanceReportDialog from "@/components/AttendanceReportDialog";
 import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import FinancingOption from "@/components/FinancingOption";
 import { openSignedContract } from "@/lib/db-call";
+import FreeOfferBanner from "@/components/FreeOfferBanner";
 
 type Offer = {
   id: string;
