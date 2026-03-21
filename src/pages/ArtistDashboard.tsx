@@ -56,24 +56,24 @@ export default function ArtistDashboard() {
   return (
     <div className="min-h-screen pt-20 px-4 pb-12">
       <div className="container mx-auto max-w-4xl">
-        <h1 className="font-display text-2xl font-bold mb-1">Welcome back, {profile?.display_name ?? "Artist"}</h1>
-        <p className="text-muted-foreground text-sm mb-8">Here's your booking overview.</p>
+        <h1 className="font-display text-xl sm:text-2xl font-bold mb-1">Welcome back, {profile?.display_name ?? "Artist"}</h1>
+        <p className="text-muted-foreground text-sm mb-6 sm:mb-8">Here's your booking overview.</p>
 
         <OnboardingChecklist />
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          <div className="rounded-xl bg-card border border-border p-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="rounded-xl bg-card border border-border p-4 sm:p-5">
             <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-2"><Inbox className="w-3.5 h-3.5" /> Pending Offers</div>
-            <p className="font-display text-2xl font-bold">{pendingCount}</p>
+            <p className="font-display text-xl sm:text-2xl font-bold">{pendingCount}</p>
           </div>
-          <div className="rounded-xl bg-card border border-border p-5">
+          <div className="rounded-xl bg-card border border-border p-4 sm:p-5">
             <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-2"><DollarSign className="w-3.5 h-3.5" /> Confirmed Revenue</div>
-            <p className="font-display text-2xl font-bold">${totalGuarantee.toLocaleString()}</p>
+            <p className="font-display text-xl sm:text-2xl font-bold">${totalGuarantee.toLocaleString()}</p>
           </div>
-          <div className="rounded-xl bg-card border border-border p-5">
+          <div className="rounded-xl bg-card border border-border p-4 sm:p-5 sm:col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-2"><Calendar className="w-3.5 h-3.5" /> Total Offers</div>
-            <p className="font-display text-2xl font-bold">{offers.length}</p>
+            <p className="font-display text-xl sm:text-2xl font-bold">{offers.length}</p>
           </div>
         </div>
 
@@ -84,30 +84,41 @@ export default function ArtistDashboard() {
             {[1, 2, 3].map((i) => <div key={i} className="h-20 rounded-xl bg-card animate-pulse" />)}
           </div>
         ) : offers.length === 0 ? (
-          <div className="rounded-xl bg-card border border-border p-8 text-center">
+          <div className="rounded-xl bg-card border border-border p-6 sm:p-8 text-center">
             <p className="text-muted-foreground mb-2">No offers yet</p>
             <p className="text-sm text-muted-foreground">When promoters send you offers, they'll appear here.</p>
           </div>
         ) : (
           <div className="space-y-3">
             {offers.map((offer) => (
-              <div key={offer.id} className="rounded-xl bg-card border border-border p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-display font-semibold">{offer.venue_name}</span>
-                    <Badge variant="outline" className={statusColors[offer.status] ?? ""}>{offer.status}</Badge>
+              <div key={offer.id} className="rounded-xl bg-card border border-border p-4 sm:p-5 flex flex-col gap-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="font-display font-semibold text-sm sm:text-base truncate">{offer.venue_name}</span>
+                      <Badge variant="outline" className={statusColors[offer.status] ?? ""}>{offer.status}</Badge>
+                    </div>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      {new Date(offer.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      {" · "}${offer.guarantee.toLocaleString()} guarantee
+                    </p>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(offer.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                    {" · "}${offer.guarantee.toLocaleString()} guarantee
-                  </p>
                 </div>
                 {offer.status === "pending" && (
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={() => handleRespond(offer.id, "accepted")} className="bg-green-600 hover:bg-green-700 text-foreground active:scale-[0.97] transition-transform">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => handleRespond(offer.id, "accepted")}
+                      className="bg-green-600 hover:bg-green-700 text-foreground active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                    >
                       <CheckCircle className="w-3.5 h-3.5 mr-1" /> Accept
                     </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleRespond(offer.id, "declined")} className="border-border hover:bg-destructive/10 active:scale-[0.97] transition-transform">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleRespond(offer.id, "declined")}
+                      className="border-border hover:bg-destructive/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                    >
                       <XCircle className="w-3.5 h-3.5 mr-1" /> Decline
                     </Button>
                   </div>
