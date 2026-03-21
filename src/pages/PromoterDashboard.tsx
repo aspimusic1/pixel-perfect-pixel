@@ -54,6 +54,8 @@ export default function PromoterDashboard() {
   const PAGE_SIZE = 20;
   const [signatures, setSignatures] = useState<Record<string, string[]>>({});
   const [signDialogBooking, setSignDialogBooking] = useState<{ id: string; venueName: string; eventDate: string; guarantee: number } | null>(null);
+  const [attendanceBooking, setAttendanceBooking] = useState<Booking | null>(null);
+  const [attendanceReported, setAttendanceReported] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) return;
