@@ -143,7 +143,9 @@ export default function Navbar() {
       >
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-1">
-            <MobileLink to="/directory" onClick={closeMenu}>{t("nav.browse")}</MobileLink>
+            <MobileLink to={directoryHref} onClick={closeMenu}>
+              <span className="flex items-center gap-1">{t("nav.browse")}{isFree && <Lock className="w-3 h-3 text-[hsl(var(--role-venue))]" />}</span>
+            </MobileLink>
             <MobileLink to="/trending" onClick={closeMenu}>{t("nav.trending")}</MobileLink>
             <MobileLink to="/pricing" onClick={closeMenu}>{t("nav.pricing")}</MobileLink>
             {user ? (

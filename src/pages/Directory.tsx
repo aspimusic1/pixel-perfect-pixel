@@ -479,11 +479,17 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
                           {p.genre && <span>{p.genre}</span>}
                         </div>
                         {p.role === "artist" && (
-                          <Link to={`/offer?artist=${p.id}`}>
-                            <Button size="sm" variant="outline" className="h-7 text-xs border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform">
+                          hasPaidPlan ? (
+                            <Link to={`/offer?artist=${p.id}`}>
+                              <Button size="sm" variant="outline" className="h-7 text-xs border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform">
+                                <Send className="w-3 h-3 mr-1" /> Book
+                              </Button>
+                            </Link>
+                          ) : (
+                            <Button size="sm" variant="outline" onClick={() => setUpgradeModal(true)} className="h-7 text-xs border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform">
                               <Send className="w-3 h-3 mr-1" /> Book
                             </Button>
-                          </Link>
+                          )
                         )}
                       </div>
                     </div>
