@@ -174,7 +174,7 @@ export default function Venues() {
           )}
         </div>
         <p data-reveal className="fade-in-section text-muted-foreground text-sm mb-8 font-body">
-          46 venues across 20 U.S. markets. Claim your venue to update info & photos.
+          391 venues across 50+ U.S. markets. Claim your venue to update info & photos.
         </p>
 
         {/* Search & region filter */}
