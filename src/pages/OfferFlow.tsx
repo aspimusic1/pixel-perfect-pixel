@@ -83,10 +83,9 @@ export default function OfferFlow() {
   useEffect(() => {
     const fetchArtists = async () => {
       const { data } = await supabase
-        .from("profiles")
-        .select("user_id, display_name, genre, city")
-        .eq("role", "artist" as any)
-        .eq("profile_complete", true);
+        .from("public_profiles")
+        .select("user_id:id, display_name, genre, city")
+        .eq("role", "artist" as any);
       setArtists((data as ArtistOption[]) ?? []);
       if (preselectedArtist && data) {
         const found = data.find((a: any) => a.user_id === preselectedArtist);
