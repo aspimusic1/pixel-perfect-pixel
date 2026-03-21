@@ -199,7 +199,7 @@ Deno.serve(async (req) => {
       x: margin + contentWidth / 2, y: y - partiesHeight + 10, width: 1, height: partiesHeight - 20, color: borderColor,
     });
 
-    y -= partiesHeight + 16;
+    y -= partiesHeight + 10;
 
     // ═══════════════════════════════════════════
     // EVENT DETAILS
