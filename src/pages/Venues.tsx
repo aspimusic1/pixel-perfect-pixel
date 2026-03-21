@@ -46,7 +46,7 @@ export default function Venues() {
   const hasPaidPlan = !!profile;
 
   const loadVenues = async () => {
-    let query = supabase.from("venue_listings").select("*");
+    let query = supabase.from("venue_listings_public" as any).select("*");
     if (regionFilter) query = query.eq("region", regionFilter);
     const { data } = await query.order("name", { ascending: true });
     setVenues((data as VenueListing[]) ?? []);
