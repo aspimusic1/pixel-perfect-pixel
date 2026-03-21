@@ -28,6 +28,23 @@ const STEPS = [
 
 const RATE_MAP: Record<string, number> = { free: 0.20, pro: 0.10, agency: 0.06 };
 
+const CURRENCIES = [
+  { code: "USD", symbol: "$", label: "US Dollar", flag: "🇺🇸" },
+  { code: "GBP", symbol: "£", label: "British Pound", flag: "🇬🇧" },
+  { code: "EUR", symbol: "€", label: "Euro", flag: "🇪🇺" },
+  { code: "CAD", symbol: "C$", label: "Canadian Dollar", flag: "🇨🇦" },
+  { code: "AUD", symbol: "A$", label: "Australian Dollar", flag: "🇦🇺" },
+] as const;
+
+// Rates relative to 1 USD (approximate)
+const FX_TO_USD: Record<string, number> = {
+  USD: 1,
+  GBP: 1.27,
+  EUR: 1.09,
+  CAD: 0.74,
+  AUD: 0.66,
+};
+
 export default function OfferFlow() {
   const { user } = useAuth();
   const navigate = useNavigate();
