@@ -40,6 +40,7 @@ const App = () => (
             <Route path="/offer" element={<OfferFlow />} />
             <Route path="/tours" element={<TourManagement />} />
             <Route path="/venue-manage" element={<VenueManage />} />
+            <Route path="/p/:slug" element={<ProfilePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
