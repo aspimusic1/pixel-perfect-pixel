@@ -45,6 +45,8 @@ export default function TourManagement() {
   const [budget, setBudget] = useState<BudgetItem[]>([]);
   const [docs, setDocs] = useState<TourDoc[]>([]);
   const [editingStop, setEditingStop] = useState<TourStop | null>(null);
+  const [optimizing, setOptimizing] = useState(false);
+  const [optimization, setOptimization] = useState<any>(null);
 
   useEffect(() => {
     if (!user) return;
