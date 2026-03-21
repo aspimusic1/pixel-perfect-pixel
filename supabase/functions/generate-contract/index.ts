@@ -329,27 +329,22 @@ Deno.serve(async (req) => {
     }
 
     // ═══════════════════════════════════════════
-    // SIGNATURES
-    // ═══════════════════════════════════════════
-    // Ensure enough room — if y is too low, don't draw (single page constraint)
-    if (y > 70) {
-      y -= 4;
-      page.drawRectangle({ x: margin, y, width: contentWidth, height: 1, color: borderColor });
-      y -= 22;
+    // SIGNATURES — always render above footer
+    const sigY = 68; // Fixed position above footer bar (28px)
+    page.drawRectangle({ x: margin, y: sigY + 26, width: contentWidth, height: 1, color: borderColor });
 
-      const sigLineWidth = (contentWidth - 40) / 2;
+    const sigLineWidth = (contentWidth - 40) / 2;
 
-      // Artist signature
-      page.drawRectangle({ x: margin, y, width: sigLineWidth, height: 1, color: textDim });
-      page.drawText(artistName, { x: margin, y: y - 14, size: 9, font: helveticaBold, color: white });
-      page.drawText("Artist / Performer", { x: margin, y: y - 26, size: 7.5, font: helvetica, color: textDim });
+    // Artist signature
+    page.drawRectangle({ x: margin, y: sigY, width: sigLineWidth, height: 1, color: textDim });
+    page.drawText(artistName, { x: margin, y: sigY - 12, size: 8.5, font: helveticaBold, color: white });
+    page.drawText("Artist / Performer", { x: margin, y: sigY - 22, size: 7, font: helvetica, color: textDim });
 
-      // Promoter signature
-      const sig2x = margin + sigLineWidth + 40;
-      page.drawRectangle({ x: sig2x, y, width: sigLineWidth, height: 1, color: textDim });
-      page.drawText(promoterName, { x: sig2x, y: y - 14, size: 9, font: helveticaBold, color: white });
-      page.drawText("Promoter / Buyer", { x: sig2x, y: y - 26, size: 7.5, font: helvetica, color: textDim });
-    }
+    // Promoter signature
+    const sig2x = margin + sigLineWidth + 40;
+    page.drawRectangle({ x: sig2x, y: sigY, width: sigLineWidth, height: 1, color: textDim });
+    page.drawText(promoterName, { x: sig2x, y: sigY - 12, size: 8.5, font: helveticaBold, color: white });
+    page.drawText("Promoter / Buyer", { x: sig2x, y: sigY - 22, size: 7, font: helvetica, color: textDim });
 
     // ─── Footer bar ───
     page.drawRectangle({ x: 0, y: 0, width, height: 28, color: cardBg });
