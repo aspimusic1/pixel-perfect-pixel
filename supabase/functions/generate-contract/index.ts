@@ -332,10 +332,10 @@ Deno.serve(async (req) => {
     // SIGNATURES
     // ═══════════════════════════════════════════
     // Ensure enough room — if y is too low, don't draw (single page constraint)
-    if (y > 80) {
-      y -= 6;
+    if (y > 70) {
+      y -= 4;
       page.drawRectangle({ x: margin, y, width: contentWidth, height: 1, color: borderColor });
-      y -= 28;
+      y -= 22;
 
       const sigLineWidth = (contentWidth - 40) / 2;
 
