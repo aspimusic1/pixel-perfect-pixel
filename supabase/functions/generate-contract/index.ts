@@ -215,13 +215,13 @@ Deno.serve(async (req) => {
       ["Date", eventDate],
       ...(booking.event_time ? [["Time", formatTime(booking.event_time)]] : []),
     ];
-    const eventCardH = eventRows.length * 20 + 16;
+    const eventCardH = eventRows.length * 18 + 14;
     drawCard(y, eventCardH);
-    let ey = y - 16;
+    let ey = y - 14;
     for (const [label, value] of eventRows) {
       ey = drawKV(label, String(value), ey);
     }
-    y -= eventCardH + 16;
+    y -= eventCardH + 10;
 
     // ═══════════════════════════════════════════
     // FINANCIAL TERMS
