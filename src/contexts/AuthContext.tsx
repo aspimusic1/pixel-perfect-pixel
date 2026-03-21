@@ -16,6 +16,7 @@ type Profile = {
   onboarding_steps: Record<string, boolean> | null;
   rate_min: number | null;
   rate_max: number | null;
+  subscription_plan: string | null;
 };
 
 type AuthContextType = {

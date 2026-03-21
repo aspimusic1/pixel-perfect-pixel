@@ -43,9 +43,9 @@ export default function Insights() {
 
       if (bookings && bookings.length > 0) {
         const artistIds = [...new Set(bookings.map((b) => b.artist_id))];
-        const { data: profiles } = await supabase
+      const { data: profiles } = await supabase
           .from("profiles")
-          .select("user_id, genre, city")
+          .select("user_id, genre, city, display_name")
           .in("user_id", artistIds);
 
         const profileMap = new Map((profiles ?? []).map((p) => [p.user_id, p]));
