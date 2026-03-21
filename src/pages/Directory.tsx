@@ -72,13 +72,25 @@ async function fetchProfiles(roleFilter: string, search: string) {
   return (data as unknown as Profile[]) ?? [];
 }
 
-async function fetchArtistListings(search: string) {
+async function fetchArtistListings(search: string, genre: string | null) {
   let query = supabase
     .from("artist_listings")
     .select("*");
   if (search) query = query.ilike("name", `%${search}%`);
+  if (genre) query = query.ilike("genre", `%${genre}%`);
   const { data } = await query.order("upcoming_concerts", { ascending: false });
   return (data as ArtistListing[]) ?? [];
+}
+
+async function fetchArtistGenres() {
+  const { data } = await supabase
+    .from("artist_listings")
+    .select("genre");
+  const genres = new Set<string>();
+  (data ?? []).forEach((a: any) => {
+    if (a.genre) genres.add(a.genre);
+  });
+  return Array.from(genres).sort();
 }
 
 async function fetchVenueListings(search: string) {
