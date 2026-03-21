@@ -242,6 +242,25 @@ export default function ArtistDashboard() {
                               <Download className="w-3.5 h-3.5 mr-1" /> Download
                             </a>
                           </Button>
+                          {/* Sign button */}
+                          {user && signatures[booking.id]?.includes(user.id) ? (
+                            <div className="flex items-center gap-1.5 text-xs text-[hsl(var(--primary))] font-medium px-3 py-1.5 rounded-md bg-[hsl(var(--primary))]/10 border border-[hsl(var(--primary))]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
+                              <CheckCircle className="w-3.5 h-3.5" /> Signed
+                            </div>
+                          ) : (
+                            <Button
+                              size="sm"
+                              className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                              onClick={() => setSignDialogBooking({
+                                id: booking.id,
+                                venueName: offer.venue_name,
+                                eventDate: offer.event_date,
+                                guarantee: offer.guarantee,
+                              })}
+                            >
+                              <PenLine className="w-3.5 h-3.5 mr-1" /> Sign Contract
+                            </Button>
+                          )}
                         </>
                       ) : (
                         <Button
