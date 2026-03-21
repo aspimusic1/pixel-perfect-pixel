@@ -473,6 +473,11 @@ export default function TourManagement() {
               </div>
             )}
           </TabsContent>
+
+          {/* TRANSPORT */}
+          <TabsContent value="transport">
+            <TransportSection stops={stops} tourId={selectedTour.id} />
+          </TabsContent>
         </Tabs>
       </div>
 
