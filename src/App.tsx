@@ -13,6 +13,7 @@ import PromoterDashboard from "@/pages/PromoterDashboard";
 import Directory from "@/pages/Directory";
 import Pricing from "@/pages/Pricing";
 import OfferFlow from "@/pages/OfferFlow";
+import TourManagement from "@/pages/TourManagement";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/directory" element={<Directory />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/offer" element={<OfferFlow />} />
+            <Route path="/tours" element={<TourManagement />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
