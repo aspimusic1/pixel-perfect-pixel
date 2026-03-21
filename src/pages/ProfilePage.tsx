@@ -50,6 +50,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [availability, setAvailability] = useState<AvailDate[]>([]);
+  const [attendanceStats, setAttendanceStats] = useState<AttendanceStats | null>(null);
 
   useEffect(() => {
     if (!slug) return;
