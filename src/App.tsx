@@ -33,6 +33,7 @@ const App = () => (
             <Route path="/promoter-dashboard" element={<PromoterDashboard />} />
             <Route path="/directory" element={<Directory />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/offer" element={<OfferFlow />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
