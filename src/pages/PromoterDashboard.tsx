@@ -9,6 +9,8 @@ import SignContractDialog from "@/components/SignContractDialog";
 import NegotiationThread from "@/components/NegotiationThread";
 import RecommendedArtists from "@/components/RecommendedArtists";
 import AttendanceReportDialog from "@/components/AttendanceReportDialog";
+import InsuranceOfferCard from "@/components/InsuranceOfferCard";
+import FinancingOption from "@/components/FinancingOption";
 import { openSignedContract } from "@/lib/db-call";
 
 type Offer = {

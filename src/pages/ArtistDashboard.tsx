@@ -515,6 +515,24 @@ export default function ArtistDashboard() {
           }}
         />
       )}
+
+      {/* Advance Request Dialog */}
+      {advanceBooking && (
+        <AdvanceRequestDialog
+          open={!!advanceBooking}
+          onOpenChange={(open) => { if (!open) setAdvanceBooking(null); }}
+          booking={{
+            id: advanceBooking.id,
+            guarantee: advanceBooking.guarantee,
+            venue_name: advanceBooking.venue_name,
+            event_date: advanceBooking.event_date,
+            promoter_id: advanceBooking.promoter_id,
+          }}
+          onRequested={() => {
+            setAdvanceRequested((prev) => new Set([...prev, advanceBooking.id]));
+          }}
+        />
+      )}
     </div>
   );
 }
