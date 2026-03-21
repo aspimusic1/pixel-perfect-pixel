@@ -194,6 +194,28 @@ export default function ProfileSetup() {
                   <Label className="text-sm">Genre</Label>
                   <Input value={genre} onChange={(e) => setGenre(e.target.value)} placeholder="Rock, Hip-Hop, Country..." className="mt-1.5 bg-background border-border" />
                 </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-sm">Min fee ($)</Label>
+                    <Input type="number" value={rateMin} onChange={(e) => setRateMin(e.target.value)} placeholder="500" className="mt-1.5 bg-background border-border" />
+                  </div>
+                  <div>
+                    <Label className="text-sm">Max fee ($)</Label>
+                    <Input type="number" value={rateMax} onChange={(e) => setRateMax(e.target.value)} placeholder="5,000" className="mt-1.5 bg-background border-border" />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-sm">Website</Label>
+                  <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://yoursite.com" className="mt-1.5 bg-background border-border" />
+                </div>
+                <div>
+                  <Label className="text-sm">Instagram</Label>
+                  <Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@yourhandle" className="mt-1.5 bg-background border-border" />
+                </div>
+                <div>
+                  <Label className="text-sm">Spotify</Label>
+                  <Input value={spotify} onChange={(e) => setSpotify(e.target.value)} placeholder="https://open.spotify.com/artist/..." className="mt-1.5 bg-background border-border" />
+                </div>
               </>
             )}
 
