@@ -9,6 +9,7 @@ import OnboardingChecklist from "@/components/OnboardingChecklist";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
 import NegotiationThread from "@/components/NegotiationThread";
+import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 
 type Offer = {
@@ -173,6 +174,11 @@ export default function ArtistDashboard() {
             <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-2"><Calendar className="w-3.5 h-3.5" /> Total Offers</div>
             <p className="font-display text-xl sm:text-2xl font-bold">{offers.length}</p>
           </div>
+        </div>
+
+        {/* Availability Calendar */}
+        <div className="mb-6 sm:mb-8">
+          <AvailabilityCalendar />
         </div>
 
         {/* Offers */}
