@@ -147,10 +147,10 @@ async function fetchFlashBids() {
   if (!avail || avail.length === 0) return new Map<string, FlashBidInfo>();
 
   // Get bid counts per availability
-  const availIds = (avail as any[]).map((a: any) => a.id);
-  const { data: bids } = await supabase
+  const availIds = (avail as any[]).map((a: any) => a.id as string);
+  const { data: bids } = await (supabase
     .from("flash_bids" as any)
-    .select("availability_id, id")
+    .select("availability_id, id") as any)
     .eq("status", "active")
     .in("availability_id", availIds);
 
