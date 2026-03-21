@@ -22,6 +22,7 @@ const VenueManage = lazy(() => import("@/pages/VenueManage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const Pipeline = lazy(() => import("@/pages/Pipeline"));
+const TaxDashboard = lazy(() => import("@/pages/TaxDashboard"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient();
