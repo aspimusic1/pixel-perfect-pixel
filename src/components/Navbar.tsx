@@ -62,6 +62,7 @@ export default function Navbar() {
           {/* Desktop */}
           <div className="hidden md:flex items-center gap-6">
             <Link to="/directory" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">browse</Link>
+            <Link to="/trending" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">trending</Link>
             <Link to="/pricing" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">pricing</Link>
             {user ? (
               <>
@@ -122,6 +123,7 @@ export default function Navbar() {
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-1">
             <MobileLink to="/directory" onClick={closeMenu}>Browse</MobileLink>
+            <MobileLink to="/trending" onClick={closeMenu}>Trending</MobileLink>
             <MobileLink to="/pricing" onClick={closeMenu}>Pricing</MobileLink>
             {user ? (
               <>

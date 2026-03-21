@@ -23,6 +23,7 @@ const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const Pipeline = lazy(() => import("@/pages/Pipeline"));
 const TaxDashboard = lazy(() => import("@/pages/TaxDashboard"));
+const Trending = lazy(() => import("@/pages/Trending"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -59,6 +60,7 @@ const App = () => (
               <Route path="/venue-manage" element={<ProtectedRoute><VenueManage /></ProtectedRoute>} />
               <Route path="/pipeline" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
               <Route path="/tax" element={<ProtectedRoute><TaxDashboard /></ProtectedRoute>} />
+              <Route path="/trending" element={<Trending />} />
               <Route path="/p/:slug" element={<ProfilePage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
