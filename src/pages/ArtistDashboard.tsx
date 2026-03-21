@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2 } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download } from "lucide-react";
 import { toast } from "sonner";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
 
@@ -202,16 +202,28 @@ export default function ArtistDashboard() {
                           Generating contract...
                         </div>
                       ) : booking.contract_url ? (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          asChild
-                          className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
-                        >
-                          <a href={booking.contract_url} target="_blank" rel="noopener noreferrer">
-                            <FileText className="w-3.5 h-3.5 mr-1" /> View Contract
-                          </a>
-                        </Button>
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            asChild
+                            className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                          >
+                            <a href={booking.contract_url} target="_blank" rel="noopener noreferrer">
+                              <FileText className="w-3.5 h-3.5 mr-1" /> View Contract
+                            </a>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            asChild
+                            className="border-border text-muted-foreground hover:text-foreground active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                          >
+                            <a href={booking.contract_url} download>
+                              <Download className="w-3.5 h-3.5 mr-1" /> Download
+                            </a>
+                          </Button>
+                        </>
                       ) : (
                         <Button
                           size="sm"
