@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, DollarSign, Inbox, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "sonner";
+import OnboardingChecklist from "@/components/OnboardingChecklist";
 
 type Offer = {
   id: string;
