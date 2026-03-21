@@ -24,7 +24,7 @@ const STEPS = [
   { label: "Review", icon: Check },
 ];
 
-const COMMISSION_RATE = 0.10;
+const RATE_MAP: Record<string, number> = { free: 0.20, pro: 0.10, agency: 0.06 };
 
 export default function OfferFlow() {
   const { user } = useAuth();
