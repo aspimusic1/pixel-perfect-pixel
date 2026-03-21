@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3 } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote } from "lucide-react";
 import { toast } from "sonner";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
 import BookingAgentPanel from "@/components/BookingAgentPanel";
@@ -15,6 +15,8 @@ import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import ContractReviewDialog from "@/components/ContractReviewDialog";
 import AttendanceReportDialog from "@/components/AttendanceReportDialog";
 import BookkeepingSection from "@/components/BookkeepingSection";
+import AdvanceRequestDialog from "@/components/AdvanceRequestDialog";
+import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 
 type Offer = {
