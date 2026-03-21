@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRightLeft, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
+import TranslateButton from "@/components/TranslateButton";
 
 export type CounterOffer = {
   id: string;
