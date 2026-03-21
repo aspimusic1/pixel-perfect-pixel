@@ -95,6 +95,21 @@ export default function OfferFlow() {
     fetchArtists();
   }, [preselectedArtist]);
 
+  // Fetch recipient's subscription plan for dynamic commission
+  useEffect(() => {
+    if (!recipientId) return;
+    const fetchPlan = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("subscription_plan")
+        .eq("user_id", recipientId)
+        .single();
+      const plan = (data as any)?.subscription_plan ?? "free";
+      setCommissionRate(RATE_MAP[plan] ?? 0.20);
+    };
+    fetchPlan();
+  }, [recipientId]);
+
   const filteredArtists = artists.filter((a) => {
     if (!artistSearch) return true;
     const s = artistSearch.toLowerCase();
