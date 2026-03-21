@@ -96,11 +96,11 @@ async function fetchArtistGenres() {
 
 async function fetchVenueListings(search: string) {
   let query = supabase
-    .from("venue_listings")
+    .from("venue_listings_public" as any)
     .select("*");
   if (search) query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,region.ilike.%${search}%`);
   const { data } = await query.order("name", { ascending: true });
-  return (data as VenueListing[]) ?? [];
+  return (data as unknown as VenueListing[]) ?? [];
 }
 
 async function fetchVenueAvailability() {
