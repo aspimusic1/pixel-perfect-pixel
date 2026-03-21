@@ -142,12 +142,11 @@ Deno.serve(async (req) => {
 
     // ─── Helper: draw section label with lime dot ───
     function drawSectionLabel(label: string, yPos: number): number {
-      // Lime dot
       page.drawCircle({ x: margin + 4, y: yPos + 3, size: 3, color: lime });
       page.drawText(label, {
-        x: margin + 14, y: yPos, size: 8.5, font: helveticaBold, color: lime,
+        x: margin + 14, y: yPos, size: 8, font: helveticaBold, color: lime,
       });
-      return yPos - 20;
+      return yPos - 16;
     }
 
     // ─── Helper: draw a card background ───
