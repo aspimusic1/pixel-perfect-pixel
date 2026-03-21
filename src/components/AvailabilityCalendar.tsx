@@ -89,14 +89,8 @@ export default function AvailabilityCalendar() {
   const availableDates = entries.filter((e) => e.is_available).map((e) => new Date(e.date + "T00:00:00"));
   const unavailableDates = entries.filter((e) => !e.is_available).map((e) => new Date(e.date + "T00:00:00"));
 
-  const selectedEntry = selectedDate ? getEntry(selectedDate) : null;
-
-  return (
-    <div className="rounded-xl bg-card border border-border p-4 sm:p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <CalendarDays className="w-4 h-4 text-primary" />
-        <h3 className="font-display font-semibold text-sm">Availability Calendar</h3>
-      </div>
+  const selectedEntry = selectedDates.length === 1 ? getEntry(selectedDates[0]) : null;
+  const isSingleSelect = selectedDates.length === 1;
 
       {loading ? (
         <div className="flex items-center justify-center py-8">
