@@ -834,10 +834,15 @@ export type Database = {
           display_name: string | null
           genre: string | null
           id: string | null
+          instagram: string | null
           is_verified: boolean | null
           role: Database["public"]["Enums"]["app_role"] | null
           slug: string | null
+          spotify: string | null
           state: string | null
+          updated_at: string | null
+          user_id: string | null
+          website: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -846,10 +851,15 @@ export type Database = {
           display_name?: string | null
           genre?: string | null
           id?: string | null
+          instagram?: string | null
           is_verified?: boolean | null
           role?: Database["public"]["Enums"]["app_role"] | null
           slug?: string | null
+          spotify?: string | null
           state?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          website?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -858,10 +868,15 @@ export type Database = {
           display_name?: string | null
           genre?: string | null
           id?: string | null
+          instagram?: string | null
           is_verified?: boolean | null
           role?: Database["public"]["Enums"]["app_role"] | null
           slug?: string | null
+          spotify?: string | null
           state?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          website?: string | null
         }
         Relationships: []
       }
