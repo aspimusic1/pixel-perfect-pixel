@@ -6,13 +6,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send, Users } from "lucide-react";
+import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send, Users, Star } from "lucide-react";
 import { toast } from "sonner";
 import { format, startOfToday, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import ShowNightMode from "@/components/ShowNightMode";
 import TranslateButton from "@/components/TranslateButton";
 import ReelDisplay from "@/components/ReelDisplay";
+
+type Review = {
+  id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  reviewer_name: string | null;
+  reviewer_avatar: string | null;
+};
 
 type ProfileData = {
   id: string;
@@ -52,6 +61,7 @@ export default function ProfilePage() {
   const [notFound, setNotFound] = useState(false);
   const [availability, setAvailability] = useState<AvailDate[]>([]);
   const [attendanceStats, setAttendanceStats] = useState<AttendanceStats | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
     if (!slug) return;
@@ -93,6 +103,33 @@ export default function ProfilePage() {
           const q1 = values[Math.floor(values.length * 0.25)];
           const q3 = values[Math.floor(values.length * 0.75)];
           setAttendanceStats({ avg_min: q1, avg_max: q3, shows: values.length });
+        }
+      }
+
+      // Fetch reviews where this user is the reviewee
+      if (p.user_id) {
+        const { data: reviewData } = await supabase
+          .from("reviews" as any)
+          .select("id, rating, comment, created_at, reviewer_id")
+          .eq("reviewee_id", p.user_id)
+          .order("created_at", { ascending: false })
+          .limit(10);
+        if (reviewData && reviewData.length > 0) {
+          // Fetch reviewer profiles
+          const reviewerIds = [...new Set((reviewData as any[]).map((r: any) => r.reviewer_id))];
+          const { data: reviewerProfiles } = await supabase
+            .from("public_profiles" as any)
+            .select("user_id, display_name, avatar_url")
+            .in("user_id", reviewerIds);
+          const profileMap = new Map((reviewerProfiles as any[] || []).map((p: any) => [p.user_id, p]));
+          setReviews((reviewData as any[]).map((r: any) => ({
+            id: r.id,
+            rating: r.rating,
+            comment: r.comment,
+            created_at: r.created_at,
+            reviewer_name: profileMap.get(r.reviewer_id)?.display_name || "Anonymous",
+            reviewer_avatar: profileMap.get(r.reviewer_id)?.avatar_url || null,
+          })));
         }
       }
 
@@ -328,6 +365,54 @@ export default function ProfilePage() {
               <span className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-red-500/40" /> Unavailable
               </span>
+            </div>
+          </div>
+        )}
+
+        {/* Reviews */}
+        {reviews.length > 0 && (
+          <div className="rounded-xl bg-card border border-white/[0.06] p-5 mb-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Star className="w-4 h-4 text-primary" />
+              <h2 className="font-syne text-sm font-semibold text-muted-foreground uppercase tracking-wider">Reviews</h2>
+              <span className="text-xs text-muted-foreground ml-auto">
+                {(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)} avg · {reviews.length} review{reviews.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="space-y-4">
+              {reviews.map((r) => (
+                <div key={r.id} className="flex gap-3">
+                  {r.reviewer_avatar ? (
+                    <img src={r.reviewer_avatar} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-syne font-bold text-muted-foreground flex-shrink-0">
+                      {(r.reviewer_name ?? "A").charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-sm font-medium truncate">{r.reviewer_name}</span>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={cn(
+                              "w-3 h-3",
+                              i < r.rating ? "text-primary fill-primary" : "text-muted-foreground/30"
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground ml-auto flex-shrink-0">
+                        {format(new Date(r.created_at), "MMM d, yyyy")}
+                      </span>
+                    </div>
+                    {r.comment && (
+                      <p className="text-sm text-muted-foreground leading-relaxed">{r.comment}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
