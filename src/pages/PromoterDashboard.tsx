@@ -188,6 +188,31 @@ export default function PromoterDashboard() {
             })}
           </div>
         )}
+
+        {/* Pagination */}
+        {offers.length > 0 && (
+          <div className="flex items-center justify-center gap-3 mt-6">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={page === 0}
+              onClick={() => setPage((p) => p - 1)}
+              className="border-border active:scale-[0.97] transition-transform h-9"
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" /> Previous
+            </Button>
+            <span className="text-xs text-muted-foreground">Page {page + 1}</span>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={!hasMore}
+              onClick={() => setPage((p) => p + 1)}
+              className="border-border active:scale-[0.97] transition-transform h-9"
+            >
+              Next <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Sign Contract Dialog */}
