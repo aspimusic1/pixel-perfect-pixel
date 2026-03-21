@@ -575,8 +575,9 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
             )}
           </div>
         )}
-          </div>
-        )}
+        </div>
+
+      <UpgradeOfferModal open={upgradeModal} onClose={() => setUpgradeModal(false)} />
       </div>
 
       {/* Claim dialog */}
