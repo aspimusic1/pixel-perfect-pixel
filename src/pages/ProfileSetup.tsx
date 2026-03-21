@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import ReelUploader from "@/components/ReelUploader";
 
 export default function ProfileSetup() {
   const { user, profile, refreshProfile } = useAuth();
@@ -138,6 +139,12 @@ export default function ProfileSetup() {
               <div>
                 <Label className="text-sm">Genre</Label>
                 <Input value={genre} onChange={(e) => setGenre(e.target.value)} placeholder="Rock, Hip-Hop, Country..." className="mt-1.5 bg-background border-border" />
+              </div>
+            )}
+            {/* Reel uploader — artists only */}
+            {(profile?.role === "artist" || !profile?.role) && (
+              <div className="pt-2 border-t border-border">
+                <ReelUploader />
               </div>
             )}
             <Button type="submit" disabled={loading} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium h-11 active:scale-[0.97] transition-transform">

@@ -11,6 +11,7 @@ import { format, startOfToday, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import ShowNightMode from "@/components/ShowNightMode";
 import TranslateButton from "@/components/TranslateButton";
+import ReelDisplay from "@/components/ReelDisplay";
 
 type ProfileData = {
   id: string;
@@ -236,6 +237,11 @@ export default function ProfilePage() {
             <p className="text-sm text-foreground leading-relaxed" style={{ textWrap: "pretty" }}>{profile.bio}</p>
             <TranslateButton text={profile.bio} className="mt-2" />
           </div>
+        )}
+
+        {/* Performance Reel */}
+        {profile?.role === "artist" && profile?.user_id && (
+          <ReelDisplay userId={profile.user_id} />
         )}
 
         {/* Show Night Mode — auto-activates on booking day */}

@@ -529,6 +529,33 @@ export type Database = {
         }
         Relationships: []
       }
+      reel_clips: {
+        Row: {
+          created_at: string
+          file_path: string
+          id: string
+          sort_order: number
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_path: string
+          id?: string
+          sort_order?: number
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string
+          id?: string
+          sort_order?: number
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       tour_budget_items: {
         Row: {
           actual_cost: number | null
