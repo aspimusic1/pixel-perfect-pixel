@@ -310,7 +310,7 @@ export default function OfferFlow() {
                       <span className="font-medium">${guaranteeNum.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Platform fee ({(COMMISSION_RATE * 100).toFixed(0)}%)</span>
+                      <span className="text-muted-foreground">Platform fee ({(commissionRate * 100).toFixed(0)}%)</span>
                       <span className="font-medium text-destructive">-${commission.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                     <div className="border-t border-border my-1" />
