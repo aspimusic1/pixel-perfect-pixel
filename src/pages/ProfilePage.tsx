@@ -239,6 +239,11 @@ export default function ProfilePage() {
           </div>
         )}
 
+        {/* Performance Reel */}
+        {profile?.role === "artist" && profile?.user_id && (
+          <ReelDisplay userId={profile.user_id} />
+        )}
+
         {/* Show Night Mode — auto-activates on booking day */}
         {profile?.role === "artist" && profile?.user_id && (
           <ShowNightMode
