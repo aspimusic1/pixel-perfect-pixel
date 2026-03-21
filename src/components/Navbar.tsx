@@ -137,34 +137,40 @@ export default function Navbar() {
       >
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-1">
-            <MobileLink to="/directory" onClick={closeMenu}>Browse</MobileLink>
-            <MobileLink to="/trending" onClick={closeMenu}>Trending</MobileLink>
-            <MobileLink to="/pricing" onClick={closeMenu}>Pricing</MobileLink>
+            <MobileLink to="/directory" onClick={closeMenu}>{t("nav.browse")}</MobileLink>
+            <MobileLink to="/trending" onClick={closeMenu}>{t("nav.trending")}</MobileLink>
+            <MobileLink to="/pricing" onClick={closeMenu}>{t("nav.pricing")}</MobileLink>
             {user ? (
               <>
-                <MobileLink to={dashboardRoute} onClick={closeMenu}>Dashboard</MobileLink>
-                {profile?.role === "promoter" && <MobileLink to="/pipeline" onClick={closeMenu}>Pipeline</MobileLink>}
-                {profile?.role === "artist" && <MobileLink to="/tax" onClick={closeMenu}>Tax</MobileLink>}
-                <MobileLink to="/tours" onClick={closeMenu}>Tours</MobileLink>
+                <MobileLink to={dashboardRoute} onClick={closeMenu}>{t("nav.dashboard")}</MobileLink>
+                {profile?.role === "promoter" && <MobileLink to="/pipeline" onClick={closeMenu}>{t("nav.pipeline")}</MobileLink>}
+                {profile?.role === "artist" && <MobileLink to="/tax" onClick={closeMenu}>{t("nav.tax")}</MobileLink>}
+                <MobileLink to="/tours" onClick={closeMenu}>{t("nav.tours")}</MobileLink>
                 <div className="border-t border-border my-3" />
+                <div className="px-3 py-2">
+                  <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                </div>
                 <button
                   className="w-full text-left py-3 px-3 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-white/[0.03] transition-colors active:scale-[0.97]"
                   onClick={() => { signOut(); closeMenu(); }}
                 >
-                  Sign out
+                  {t("nav.signOut")}
                 </button>
               </>
             ) : (
               <>
                 <div className="border-t border-border my-3" />
+                <div className="px-3 py-2">
+                  <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                </div>
                 <Link to="/auth" onClick={closeMenu}>
                   <Button variant="outline" className="w-full border-border text-sm h-11 active:scale-[0.97] transition-transform">
-                    Sign in
+                    {t("nav.signIn")}
                   </Button>
                 </Link>
                 <Link to="/auth?tab=signup" onClick={closeMenu} className="mt-2">
                   <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium h-11 active:scale-[0.97] transition-transform">
-                    Start free
+                    {t("nav.startFree")}
                   </Button>
                 </Link>
               </>
