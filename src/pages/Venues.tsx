@@ -49,7 +49,7 @@ export default function Venues() {
     let query = supabase.from("venue_listings_public" as any).select("*");
     if (regionFilter) query = query.eq("region", regionFilter);
     const { data } = await query.order("name", { ascending: true });
-    setVenues((data as VenueListing[]) ?? []);
+    setVenues((data as unknown as VenueListing[]) ?? []);
 
     // Fetch availability for all venues (future dates only)
     const today = startOfToday().toISOString().split("T")[0];
