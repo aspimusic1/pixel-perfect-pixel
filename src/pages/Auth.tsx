@@ -66,7 +66,14 @@ export default function Auth() {
         navigate("/");
       }
     } catch (err: any) {
-      toast.error(err.message);
+      const msg = err.message ?? "Something went wrong";
+      if (msg.includes("already registered") || msg.includes("already been registered")) {
+        toast.error("An account with this email already exists. Try signing in instead.");
+      } else if (msg.includes("Invalid login")) {
+        toast.error("Invalid email or password. Please try again.");
+      } else {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }
