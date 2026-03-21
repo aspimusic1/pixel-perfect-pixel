@@ -30,6 +30,11 @@ type Booking = {
   offer_id: string;
   contract_url: string | null;
   status: string;
+  artist_id: string;
+  promoter_id: string;
+  venue_name: string;
+  event_date: string;
+  guarantee: number;
 };
 
 const statusColors: Record<string, string> = {
