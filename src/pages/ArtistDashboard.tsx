@@ -297,7 +297,7 @@ export default function ArtistDashboard() {
 
                   {/* Accepted: Contract button */}
                   {offer.status === "accepted" && booking && (
-                    <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-border">
+                    <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-border flex-wrap">
                       {isGenerating ? (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground py-1">
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -321,7 +321,6 @@ export default function ArtistDashboard() {
                           >
                             <Download className="w-3.5 h-3.5 mr-1" /> Download
                           </Button>
-                          {/* Sign button */}
                           {user && signatures[booking.id]?.includes(user.id) ? (
                             <div className="flex items-center gap-1.5 text-xs text-[hsl(var(--primary))] font-medium px-3 py-1.5 rounded-md bg-[hsl(var(--primary))]/10 border border-[hsl(var(--primary))]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
                               <CheckCircle className="w-3.5 h-3.5" /> Signed
@@ -367,6 +366,22 @@ export default function ArtistDashboard() {
                         >
                           <FileText className="w-3.5 h-3.5 mr-1" /> Generate Contract
                         </Button>
+                      )}
+                      {/* Report attendance for past shows */}
+                      {new Date(offer.event_date) < new Date() && !attendanceReported.has(booking.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setAttendanceBooking(booking)}
+                          className="border-[#FFB83E]/30 text-[#FFB83E] hover:bg-[#FFB83E]/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                        >
+                          <Users className="w-3.5 h-3.5 mr-1" /> Report Attendance
+                        </Button>
+                      )}
+                      {attendanceReported.has(booking.id) && (
+                        <div className="flex items-center gap-1.5 text-xs text-[#3EFFBE] font-medium px-3 py-1.5 rounded-md bg-[#3EFFBE]/10 border border-[#3EFFBE]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
+                          <CheckCircle className="w-3.5 h-3.5" /> Attendance Reported
+                        </div>
                       )}
                     </div>
                   )}
