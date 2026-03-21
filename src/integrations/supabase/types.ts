@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      artist_listings: {
+        Row: {
+          created_at: string
+          genre: string | null
+          id: string
+          name: string
+          upcoming_concerts: number | null
+        }
+        Insert: {
+          created_at?: string
+          genre?: string | null
+          id?: string
+          name: string
+          upcoming_concerts?: number | null
+        }
+        Update: {
+          created_at?: string
+          genre?: string | null
+          id?: string
+          name?: string
+          upcoming_concerts?: number | null
+        }
+        Relationships: []
+      }
       crew_members: {
         Row: {
           created_at: string
