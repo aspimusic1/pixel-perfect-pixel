@@ -39,6 +39,22 @@ export default function ArtistDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [generatingContract, setGeneratingContract] = useState<string | null>(null);
+  const [signatures, setSignatures] = useState<Record<string, string[]>>({});
+  const [signDialogBooking, setSignDialogBooking] = useState<{ id: string; venueName: string; eventDate: string; guarantee: number } | null>(null);
+
+  const fetchSignatures = async (bookingIds: string[]) => {
+    if (bookingIds.length === 0) return;
+    const { data } = await supabase
+      .from("contract_signatures")
+      .select("booking_id, user_id")
+      .in("booking_id", bookingIds);
+    const sigMap: Record<string, string[]> = {};
+    (data ?? []).forEach((s: any) => {
+      if (!sigMap[s.booking_id]) sigMap[s.booking_id] = [];
+      sigMap[s.booking_id].push(s.user_id);
+    });
+    setSignatures(sigMap);
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -48,7 +64,9 @@ export default function ArtistDashboard() {
         supabase.from("bookings").select("id, offer_id, contract_url, status").eq("artist_id", user.id),
       ]);
       setOffers((offersRes.data as Offer[]) ?? []);
-      setBookings((bookingsRes.data as Booking[]) ?? []);
+      const bks = (bookingsRes.data as Booking[]) ?? [];
+      setBookings(bks);
+      await fetchSignatures(bks.map((b) => b.id));
       setLoading(false);
     };
     fetchData();
