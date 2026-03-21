@@ -210,6 +210,13 @@ export default function PromoterDashboard() {
                           <CheckCircle className="w-3.5 h-3.5" /> Reported
                         </div>
                       )}
+                      {/* Insurance offer after both signed */}
+                      {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
+                        <div className="w-full mt-1 space-y-2">
+                          <InsuranceOfferCard bookingId={booking.id} guarantee={offer.guarantee} userRole="promoter" />
+                          <FinancingOption bookingId={booking.id} guarantee={offer.guarantee} />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
