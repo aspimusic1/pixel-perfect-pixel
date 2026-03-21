@@ -63,6 +63,8 @@ export default function Navbar() {
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const dashboardRoute = profile?.role === "promoter" ? "/promoter-dashboard" : "/artist-dashboard";
+  const isFree = !profile || profile.subscription_plan === "free";
+  const directoryHref = isFree ? "/pricing" : "/directory";
 
   return (
     <>
