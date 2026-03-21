@@ -173,7 +173,7 @@ export default function OfferFlow() {
                       key={a.user_id}
                       onClick={() => { setRecipientId(a.user_id); setRecipientName(a.display_name ?? ""); }}
                       className={cn(
-                        "w-full text-left px-4 py-3 rounded-lg border transition-all active:scale-[0.98]",
+                        "w-full text-left px-4 py-3.5 sm:py-3 rounded-lg border transition-all active:scale-[0.98]",
                         recipientId === a.user_id
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-border/80 bg-background"
