@@ -115,11 +115,12 @@ async function fetchUserClaims(userId: string) {
   return new Set((data ?? []).map((c: any) => c.venue_id));
 }
 
-export default function Directory() {
+export default function Directory({ initialRole = "" }: { initialRole?: string }) {
   const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState(initialRole);
+  const [genreFilter, setGenreFilter] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const { user, profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
