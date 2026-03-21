@@ -178,7 +178,7 @@ Deno.serve(async (req) => {
     const partiesHeight = artistLocation || promoterLocation ? 50 : 40;
     drawCard(y, partiesHeight);
 
-    const partiesY = y - 18;
+    const partiesY = y - 14;
     // Artist column
     page.drawText("Artist / Performer", { x: margin + 16, y: partiesY, size: 8, font: helvetica, color: textDim });
     page.drawText(artistName, { x: margin + 16, y: partiesY - 14, size: 12, font: helveticaBold, color: white });
