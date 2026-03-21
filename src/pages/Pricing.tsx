@@ -19,7 +19,7 @@ const PLANS = [
     price: "$29",
     period: "/mo",
     desc: "For working artists and active promoters.",
-    commission: "8%",
+    commission: "10%",
     features: ["Everything in Free", "Unlimited offers", "Priority directory placement", "Tour management tools", "Deal room access", "Analytics dashboard"],
     cta: "Start Pro trial",
     highlight: true,
