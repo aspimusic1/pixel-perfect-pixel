@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import EditStopDialog from "@/components/EditStopDialog";
+import TransportSection from "@/components/TransportSection";
 
 type Tour = { id: string; name: string; description: string | null; start_date: string | null; end_date: string | null; status: string };
 type TourStop = { id: string; tour_id: string; venue_name: string; city: string | null; state: string | null; date: string; load_in_time: string | null; sound_check_time: string | null; doors_time: string | null; show_time: string | null; guarantee: number | null; notes: string | null; sort_order: number };
