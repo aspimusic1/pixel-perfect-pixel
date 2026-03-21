@@ -177,6 +177,18 @@ export default function AvailabilityCalendar() {
                   Unavailable
                 </Button>
               </div>
+
+              {/* Flash Bid toggle — only show for available dates */}
+              {selectedEntry?.is_available && (
+                <FlashBidToggle
+                  availabilityId={selectedEntry.id}
+                  date={selectedEntry.date}
+                  flashBidEnabled={selectedEntry.flash_bid_enabled}
+                  flashBidDeadline={selectedEntry.flash_bid_deadline}
+                  flashBidMinPrice={selectedEntry.flash_bid_min_price}
+                  onUpdate={reload}
+                />
+              )}
             </div>
           )}
         </>
