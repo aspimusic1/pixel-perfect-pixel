@@ -176,6 +176,11 @@ export default function ArtistDashboard() {
           </div>
         </div>
 
+        {/* Availability Calendar */}
+        <div className="mb-6 sm:mb-8">
+          <AvailabilityCalendar />
+        </div>
+
         {/* Offers */}
         <h2 className="font-display text-lg font-semibold mb-4">Your Offers</h2>
         {loading ? (
