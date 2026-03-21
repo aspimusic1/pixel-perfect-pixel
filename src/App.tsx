@@ -50,7 +50,7 @@ const App = () => (
               <Route path="/artist-dashboard" element={<ProtectedRoute><ArtistDashboard /></ProtectedRoute>} />
               <Route path="/promoter-dashboard" element={<ProtectedRoute><PromoterDashboard /></ProtectedRoute>} />
               <Route path="/directory" element={<Directory />} />
-              <Route path="/venues" element={<Navigate to="/directory" replace />} />
+              <Route path="/venues" element={<Directory initialRole="venue" />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/offer" element={<ProtectedRoute><OfferFlow /></ProtectedRoute>} />
               <Route path="/tours" element={<ProtectedRoute><TourManagement /></ProtectedRoute>} />

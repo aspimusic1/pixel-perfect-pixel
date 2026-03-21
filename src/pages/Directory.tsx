@@ -286,6 +286,35 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
               </button>
             ))}
           </div>
+
+          {/* Genre filter chips (visible when artists tab or all) */}
+          {showArtists && artistGenres.length > 0 && (
+            <div className="flex gap-1.5 overflow-x-auto pb-1 mt-2">
+              <button
+                onClick={() => setGenreFilter(null)}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
+                  !genreFilter
+                    ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                All genres
+              </button>
+              {artistGenres.map((g) => (
+                <button
+                  key={g}
+                  onClick={() => setGenreFilter(genreFilter === g ? null : g)}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
+                    genreFilter === g
+                      ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
+                      : "bg-secondary text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {loading ? (
