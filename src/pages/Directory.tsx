@@ -10,7 +10,6 @@ import VenueClaimDialog from "@/components/VenueClaimDialog";
 
 type Profile = {
   id: string;
-  user_id: string;
   display_name: string | null;
   role: string | null;
   city: string | null;
@@ -18,6 +17,8 @@ type Profile = {
   genre: string | null;
   bio: string | null;
   avatar_url: string | null;
+  slug: string | null;
+  is_verified: boolean | null;
 };
 
 type ArtistListing = {
