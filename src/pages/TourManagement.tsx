@@ -272,7 +272,7 @@ export default function TourManagement() {
             ) : (
               <div className="space-y-3">
                 {stops.map((stop, i) => (
-                  <div key={stop.id} className="rounded-xl bg-card border border-border p-4">
+                  <div key={stop.id} className="rounded-xl bg-card border border-border p-4 cursor-pointer hover:border-primary/20 transition-all" onClick={() => setEditingStop(stop)}>
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0 mt-1">{i + 1}</span>
                       <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
