@@ -335,7 +335,6 @@ export default function TourManagement() {
                 )}
               </div>
             )}
-            </div>
             {stops.length === 0 ? (
               <div className="rounded-xl bg-card border border-border p-8 text-center text-muted-foreground text-sm">No stops added yet.</div>
             ) : (
