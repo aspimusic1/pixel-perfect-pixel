@@ -270,6 +270,34 @@ export default function Venues() {
                         <p className="text-[11px] text-muted-foreground font-body mb-2">Capacity: {v.capacity.toLocaleString()}</p>
                       )}
 
+                      {/* Available dates */}
+                      {venueAvailability[v.id]?.length > 0 && (
+                        <div className="mb-2">
+                          <div className="flex items-center gap-1 mb-1.5">
+                            <CalendarDays className="w-3 h-3 text-green-400" />
+                            <span className="text-[10px] font-semibold text-green-400 font-body uppercase tracking-wide">
+                              {venueAvailability[v.id].length} open date{venueAvailability[v.id].length !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {venueAvailability[v.id].slice(0, 4).map((a) => (
+                              <span
+                                key={a.available_date}
+                                title={a.notes || undefined}
+                                className="inline-block px-1.5 py-0.5 rounded bg-green-500/10 text-[10px] text-green-400/90 font-body font-medium"
+                              >
+                                {format(parseISO(a.available_date), "MMM d")}
+                              </span>
+                            ))}
+                            {venueAvailability[v.id].length > 4 && (
+                              <span className="inline-block px-1.5 py-0.5 rounded bg-secondary text-[10px] text-muted-foreground font-body">
+                                +{venueAvailability[v.id].length - 4} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
                       {/* Contact info — gated */}
                       <div className="flex flex-wrap gap-1.5 mt-3">
                         {v.phone && (
