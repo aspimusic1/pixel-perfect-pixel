@@ -46,6 +46,7 @@ export default function Navbar() {
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-6">
           <Link to="/directory" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">browse</Link>
+          <Link to="/venues" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">venues</Link>
           <Link to="/pricing" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">pricing</Link>
           {user ? (
             <>
