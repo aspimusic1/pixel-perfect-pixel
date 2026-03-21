@@ -81,6 +81,7 @@ export default function Navbar() {
           {user ? (
             <>
               <Link to={dashboardRoute} className="block py-2 text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+              <Link to="/tours" className="block py-2 text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Tours</Link>
               <button className="block py-2 text-sm text-muted-foreground" onClick={() => { signOut(); setMenuOpen(false); }}>Sign out</button>
             </>
           ) : (
