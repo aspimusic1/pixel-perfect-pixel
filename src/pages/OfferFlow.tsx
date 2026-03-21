@@ -162,7 +162,7 @@ export default function OfferFlow() {
                 value={artistSearch}
                 onChange={(e) => setArtistSearch(e.target.value)}
                 placeholder="Search by name, genre, or city..."
-                className="bg-background border-border mb-3"
+                className="bg-background border-border mb-3 h-11 sm:h-10 text-base sm:text-sm"
               />
               <div className="max-h-64 overflow-y-auto space-y-1.5">
                 {filteredArtists.length === 0 ? (
