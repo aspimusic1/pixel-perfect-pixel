@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, Send, ArrowRight, Mic2, Calendar, Phone, Mail, Globe, Lock, Shield, CheckCircle, Clock, CalendarDays, Building2 } from "lucide-react";
@@ -61,92 +62,108 @@ const roleColorMap: Record<string, string> = {
   photo_video: "bg-role-photo/10 text-role-photo",
 };
 
+// Query functions
+async function fetchProfiles(roleFilter: string) {
+  if (roleFilter === "venue") return [];
+  let query = supabase.from("public_profiles" as any).select("*");
+  if (roleFilter) query = query.eq("role", roleFilter as any);
+  const { data } = await query.order("created_at" as any, { ascending: false });
+  return (data as unknown as Profile[]) ?? [];
+}
+
+async function fetchArtistListings() {
+  const { data } = await supabase
+    .from("artist_listings")
+    .select("*")
+    .order("upcoming_concerts", { ascending: false });
+  return (data as ArtistListing[]) ?? [];
+}
+
+async function fetchVenueListings() {
+  const { data } = await supabase
+    .from("venue_listings")
+    .select("*")
+    .order("name", { ascending: true });
+  return (data as VenueListing[]) ?? [];
+}
+
+async function fetchVenueAvailability() {
+  const today = startOfToday().toISOString().split("T")[0];
+  const { data } = await supabase
+    .from("venue_availability")
+    .select("venue_id, available_date, notes")
+    .gte("available_date", today)
+    .order("available_date", { ascending: true });
+
+  const grouped: Record<string, { available_date: string; notes: string | null }[]> = {};
+  (data ?? []).forEach((a: any) => {
+    if (!grouped[a.venue_id]) grouped[a.venue_id] = [];
+    grouped[a.venue_id].push({ available_date: a.available_date, notes: a.notes });
+  });
+  return grouped;
+}
+
+async function fetchUserClaims(userId: string) {
+  const { data } = await supabase
+    .from("venue_claims")
+    .select("venue_id")
+    .eq("user_id", userId)
+    .eq("status", "pending");
+  return new Set((data ?? []).map((c: any) => c.venue_id));
+}
+
 export default function Directory() {
-  const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [artistListings, setArtistListings] = useState<ArtistListing[]>([]);
-  const [venueListings, setVenueListings] = useState<VenueListing[]>([]);
-  const [venueAvailability, setVenueAvailability] = useState<Record<string, { available_date: string; notes: string | null }[]>>({});
-  const [userClaims, setUserClaims] = useState<Set<string>>(new Set());
   const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
-  const [loading, setLoading] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
   const { user, profile: authProfile } = useAuth();
+  const queryClient = useQueryClient();
 
   const hasPaidPlan = !!authProfile;
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
+  const showProfiles = roleFilter !== "venue";
+  const showArtists = !roleFilter || roleFilter === "artist";
+  const showVenues = !roleFilter || roleFilter === "venue";
 
-      // Fetch user profiles
-      let profileQuery = supabase.from("public_profiles" as any).select("*");
-      if (roleFilter && roleFilter !== "venue") profileQuery = profileQuery.eq("role", roleFilter as any);
-      if (roleFilter === "venue") {
-        // When venue tab is active, don't show user profiles — show venue listings instead
-        setProfiles([]);
-      } else {
-        const { data: profileData } = await profileQuery.order("created_at" as any, { ascending: false });
-        setProfiles((profileData as unknown as Profile[]) ?? []);
-      }
+  const { data: profiles = [], isLoading: profilesLoading } = useQuery({
+    queryKey: ["directory-profiles", roleFilter],
+    queryFn: () => fetchProfiles(roleFilter),
+    enabled: showProfiles,
+    staleTime: 30_000,
+  });
 
-      // Fetch artist listings (only when showing "All" or "Artists")
-      if (!roleFilter || roleFilter === "artist") {
-        const { data: artistData } = await supabase
-          .from("artist_listings")
-          .select("*")
-          .order("upcoming_concerts", { ascending: false });
-        setArtistListings((artistData as ArtistListing[]) ?? []);
-      } else {
-        setArtistListings([]);
-      }
+  const { data: artistListings = [], isLoading: artistsLoading } = useQuery({
+    queryKey: ["directory-artists"],
+    queryFn: fetchArtistListings,
+    enabled: showArtists,
+    staleTime: 30_000,
+  });
 
-      // Fetch venue listings (only when showing "All" or "Venues")
-      if (!roleFilter || roleFilter === "venue") {
-        const { data: venueData } = await supabase
-          .from("venue_listings")
-          .select("*")
-          .order("name", { ascending: true });
-        setVenueListings((venueData as VenueListing[]) ?? []);
+  const { data: venueListings = [], isLoading: venuesLoading } = useQuery({
+    queryKey: ["directory-venues"],
+    queryFn: fetchVenueListings,
+    enabled: showVenues,
+    staleTime: 30_000,
+  });
 
-        // Fetch availability
-        const today = startOfToday().toISOString().split("T")[0];
-        const { data: availData } = await supabase
-          .from("venue_availability")
-          .select("venue_id, available_date, notes")
-          .gte("available_date", today)
-          .order("available_date", { ascending: true });
+  const { data: venueAvailability = {} } = useQuery({
+    queryKey: ["directory-venue-availability"],
+    queryFn: fetchVenueAvailability,
+    enabled: showVenues,
+    staleTime: 30_000,
+  });
 
-        const grouped: Record<string, { available_date: string; notes: string | null }[]> = {};
-        (availData ?? []).forEach((a: any) => {
-          if (!grouped[a.venue_id]) grouped[a.venue_id] = [];
-          grouped[a.venue_id].push({ available_date: a.available_date, notes: a.notes });
-        });
-        setVenueAvailability(grouped);
-      } else {
-        setVenueListings([]);
-      }
+  const { data: userClaims = new Set<string>() } = useQuery({
+    queryKey: ["directory-user-claims", user?.id],
+    queryFn: () => fetchUserClaims(user!.id),
+    enabled: !!user,
+    staleTime: 60_000,
+  });
 
-      setLoading(false);
-    };
-    load();
-  }, [roleFilter]);
+  const loading = (showProfiles && profilesLoading) || (showArtists && artistsLoading) || (showVenues && venuesLoading);
 
-  // Load user's pending venue claims
-  useEffect(() => {
-    if (!user) return;
-    const loadClaims = async () => {
-      const { data } = await supabase
-        .from("venue_claims")
-        .select("venue_id")
-        .eq("user_id", user.id)
-        .eq("status", "pending");
-      setUserClaims(new Set((data ?? []).map((c: any) => c.venue_id)));
-    };
-    loadClaims();
-  }, [user]);
-
+  // Scroll reveal
   useEffect(() => {
     const el = ref.current;
     if (!el || loading) return;
@@ -192,7 +209,6 @@ export default function Directory() {
 
   const hasResults = filteredProfiles.length > 0 || filteredArtists.length > 0 || filteredVenues.length > 0;
 
-  // Group venues by region
   const groupedVenues = filteredVenues.reduce<Record<string, VenueListing[]>>((acc, v) => {
     const key = v.region || "Other";
     if (!acc[key]) acc[key] = [];
@@ -483,7 +499,7 @@ export default function Directory() {
           open={!!claimVenue}
           onOpenChange={(open) => { if (!open) setClaimVenue(null); }}
           onClaimed={() => {
-            setUserClaims((prev) => new Set([...prev, claimVenue.id]));
+            queryClient.invalidateQueries({ queryKey: ["directory-user-claims"] });
             setClaimVenue(null);
           }}
         />
