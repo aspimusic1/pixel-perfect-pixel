@@ -190,7 +190,7 @@ export default function Directory() {
   // Search is now server-side — use query results directly
   const hasResults = profiles.length > 0 || artistListings.length > 0 || venueListings.length > 0;
 
-  const groupedVenues = filteredVenues.reduce<Record<string, VenueListing[]>>((acc, v) => {
+  const groupedVenues = venueListings.reduce<Record<string, VenueListing[]>>((acc, v) => {
     const key = v.region || "Other";
     if (!acc[key]) acc[key] = [];
     acc[key].push(v);
@@ -279,10 +279,10 @@ export default function Directory() {
         ) : (
           <div className="space-y-8">
             {/* User profiles */}
-            {filteredProfiles.length > 0 && (
+            {profiles.length > 0 && (
               <div>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredProfiles.map((p) => (
+                  {profiles.map((p) => (
                     <div key={p.id} data-reveal className="fade-in-section rounded-xl bg-card border border-border p-5 hover:border-primary/20 transition-all duration-300">
                       <div className="flex items-start gap-3 mb-3">
                         <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-display font-bold text-sm text-foreground shrink-0">
@@ -320,13 +320,13 @@ export default function Directory() {
             )}
 
             {/* Artist listings from imported data */}
-            {filteredArtists.length > 0 && (
+            {artistListings.length > 0 && (
               <div>
                 <h2 data-reveal className="fade-in-section font-display text-lg font-bold mb-3 text-foreground/80 lowercase">
-                  artists on tour — {filteredArtists.length} artists
+                  artists on tour — {artistListings.length} artists
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {filteredArtists.map((a) => (
+                  {artistListings.map((a) => (
                     <div
                       key={a.id}
                       data-reveal
@@ -364,7 +364,7 @@ export default function Directory() {
             {Object.keys(groupedVenues).length > 0 && (
               <div>
                 <h2 data-reveal className="fade-in-section font-display text-lg font-bold mb-3 text-foreground/80 lowercase">
-                  venues — {filteredVenues.length} locations
+                  venues — {venueListings.length} locations
                 </h2>
                 <div className="space-y-6">
                   {Object.entries(groupedVenues).map(([region, venueList]) => (
