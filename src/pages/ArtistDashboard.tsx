@@ -87,9 +87,10 @@ export default function ArtistDashboard() {
 
   const handleRespond = async (offerId: string, status: "accepted" | "declined") => {
     if (!user) return;
+    setActionLoading(offerId);
 
     const { error } = await supabase.from("offers").update({ status }).eq("id", offerId);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(error.message); setActionLoading(null); return; }
     setOffers((prev) => prev.map((o) => (o.id === offerId ? { ...o, status } : o)));
 
     if (status === "accepted") {
