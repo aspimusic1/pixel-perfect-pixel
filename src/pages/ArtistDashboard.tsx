@@ -19,6 +19,7 @@ import BookkeepingSection from "@/components/BookkeepingSection";
 import AdvanceRequestDialog from "@/components/AdvanceRequestDialog";
 import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
+import FreeOfferBanner from "@/components/FreeOfferBanner";
 
 type Offer = {
   id: string;
@@ -240,6 +241,7 @@ export default function ArtistDashboard() {
         </div>
 
         {/* Offers */}
+        <FreeOfferBanner mode="received" />
         <h2 className="font-display text-lg font-semibold mb-4">Your Offers</h2>
         {loading ? (
           <div className="space-y-3">

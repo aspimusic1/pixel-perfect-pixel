@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Bell, Globe } from "lucide-react";
+import { Menu, X, Bell, Globe, Lock } from "lucide-react";
 import logoWhite from "@/assets/logo-white.svg";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -63,6 +63,8 @@ export default function Navbar() {
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const dashboardRoute = profile?.role === "promoter" ? "/promoter-dashboard" : "/artist-dashboard";
+  const isFree = !profile || profile.subscription_plan === "free";
+  const directoryHref = isFree ? "/pricing" : "/directory";
 
   return (
     <>
@@ -74,7 +76,10 @@ export default function Navbar() {
 
           {/* Desktop */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/directory" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.browse")}</Link>
+            <Link to={directoryHref} className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase flex items-center gap-1">
+              {t("nav.browse")}
+              {isFree && <Lock className="w-3 h-3 text-[hsl(var(--role-venue))]" />}
+            </Link>
             <Link to="/trending" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.trending")}</Link>
             <Link to="/pricing" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.pricing")}</Link>
             {user ? (
@@ -138,7 +143,9 @@ export default function Navbar() {
       >
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-1">
-            <MobileLink to="/directory" onClick={closeMenu}>{t("nav.browse")}</MobileLink>
+            <MobileLink to={directoryHref} onClick={closeMenu}>
+              <span className="flex items-center gap-1">{t("nav.browse")}{isFree && <Lock className="w-3 h-3 text-[hsl(var(--role-venue))]" />}</span>
+            </MobileLink>
             <MobileLink to="/trending" onClick={closeMenu}>{t("nav.trending")}</MobileLink>
             <MobileLink to="/pricing" onClick={closeMenu}>{t("nav.pricing")}</MobileLink>
             {user ? (

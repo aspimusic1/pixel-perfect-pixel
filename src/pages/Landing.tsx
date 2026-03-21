@@ -8,6 +8,7 @@ import PricingTeaser from "@/components/landing/PricingTeaser";
 import FinalCTA from "@/components/landing/FinalCTA";
 import Footer from "@/components/landing/Footer";
 import RolePickerPopup from "@/components/RolePickerPopup";
+import LockedDirectoryPreview from "@/components/landing/LockedDirectoryPreview";
 
 /* ─── Scroll reveal hook ─── */
 function useScrollReveal() {
@@ -40,6 +41,7 @@ export default function Landing() {
       <RolePickerPopup />
       <HeroSection />
       <ProfileMarquee />
+      <LockedDirectoryPreview />
       <PowerFeaturesSection />
       <RoleSwitcherSection />
       <HowItWorksSection />

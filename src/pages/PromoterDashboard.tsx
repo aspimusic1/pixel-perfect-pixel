@@ -12,6 +12,7 @@ import AttendanceReportDialog from "@/components/AttendanceReportDialog";
 import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import FinancingOption from "@/components/FinancingOption";
 import { openSignedContract } from "@/lib/db-call";
+import FreeOfferBanner from "@/components/FreeOfferBanner";
 
 type Offer = {
   id: string;
@@ -121,6 +122,7 @@ export default function PromoterDashboard() {
         {/* Recommended Artists */}
         <RecommendedArtists />
 
+        <FreeOfferBanner mode="sent" />
         <h2 className="font-display text-lg font-semibold mb-4">Your Offers</h2>
         {loading ? (
           <div className="space-y-3">{[1, 2, 3].map((i) => <div key={i} className="h-20 rounded-xl bg-card animate-pulse" />)}</div>
