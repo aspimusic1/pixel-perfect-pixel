@@ -37,8 +37,6 @@ type VenueListing = {
   city: string | null;
   state: string | null;
   address: string | null;
-  phone: string | null;
-  email: string | null;
   website: string | null;
   region: string | null;
   claim_status: string;
