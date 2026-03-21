@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      advance_requests: {
+        Row: {
+          amount_requested: number
+          artist_id: string
+          booking_id: string
+          collected_at: string | null
+          created_at: string
+          evaluated_at: string | null
+          fee_amount: number
+          fee_percent: number
+          guarantee_net: number
+          id: string
+          paid_at: string | null
+          rejection_reason: string | null
+          status: string
+        }
+        Insert: {
+          amount_requested?: number
+          artist_id: string
+          booking_id: string
+          collected_at?: string | null
+          created_at?: string
+          evaluated_at?: string | null
+          fee_amount?: number
+          fee_percent?: number
+          guarantee_net?: number
+          id?: string
+          paid_at?: string | null
+          rejection_reason?: string | null
+          status?: string
+        }
+        Update: {
+          amount_requested?: number
+          artist_id?: string
+          booking_id?: string
+          collected_at?: string | null
+          created_at?: string
+          evaluated_at?: string | null
+          fee_amount?: number
+          fee_percent?: number
+          guarantee_net?: number
+          id?: string
+          paid_at?: string | null
+          rejection_reason?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advance_requests_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       artist_availability: {
         Row: {
           artist_id: string
@@ -124,6 +180,103 @@ export type Database = {
           upcoming_concerts?: number | null
         }
         Relationships: []
+      }
+      booking_financing: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+          installments: number | null
+          interest_rate: number | null
+          monthly_payment: number | null
+          plan_type: string
+          promoter_id: string
+          status: string
+          total_amount: number
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id?: string
+          installments?: number | null
+          interest_rate?: number | null
+          monthly_payment?: number | null
+          plan_type?: string
+          promoter_id: string
+          status?: string
+          total_amount?: number
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+          installments?: number | null
+          interest_rate?: number | null
+          monthly_payment?: number | null
+          plan_type?: string
+          promoter_id?: string
+          status?: string
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_financing_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      booking_insurance: {
+        Row: {
+          booking_id: string
+          coverage_amount: number
+          coverage_type: string
+          created_at: string
+          id: string
+          policy_id: string | null
+          policy_type: string
+          premium: number
+          purchased_at: string | null
+          purchased_by: string | null
+          status: string
+        }
+        Insert: {
+          booking_id: string
+          coverage_amount?: number
+          coverage_type: string
+          created_at?: string
+          id?: string
+          policy_id?: string | null
+          policy_type?: string
+          premium?: number
+          purchased_at?: string | null
+          purchased_by?: string | null
+          status?: string
+        }
+        Update: {
+          booking_id?: string
+          coverage_amount?: number
+          coverage_type?: string
+          created_at?: string
+          id?: string
+          policy_id?: string | null
+          policy_type?: string
+          premium?: number
+          purchased_at?: string | null
+          purchased_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_insurance_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       bookings: {
         Row: {
@@ -414,6 +567,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      income_smoothing: {
+        Row: {
+          artist_id: string
+          created_at: string
+          end_date: string | null
+          fee_percent: number
+          id: string
+          is_active: boolean
+          monthly_payout: number
+          start_date: string | null
+          total_managed_income: number
+          updated_at: string
+        }
+        Insert: {
+          artist_id: string
+          created_at?: string
+          end_date?: string | null
+          fee_percent?: number
+          id?: string
+          is_active?: boolean
+          monthly_payout?: number
+          start_date?: string | null
+          total_managed_income?: number
+          updated_at?: string
+        }
+        Update: {
+          artist_id?: string
+          created_at?: string
+          end_date?: string | null
+          fee_percent?: number
+          id?: string
+          is_active?: boolean
+          monthly_payout?: number
+          start_date?: string | null
+          total_managed_income?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
