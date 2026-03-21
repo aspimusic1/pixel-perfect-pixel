@@ -31,7 +31,7 @@ type ProfileData = {
 };
 
 type AvailDate = { date: string; is_available: boolean };
-
+type AttendanceStats = { avg_min: number; avg_max: number; shows: number };
 const SITE_URL = "https://getbookedlive.lovable.app";
 const SITE_NAME = "GetBooked.Live";
 
