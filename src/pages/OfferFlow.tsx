@@ -142,7 +142,7 @@ export default function OfferFlow() {
         hospitality: hospitality.trim() || null,
         backline: backline.trim() || null,
         notes: notes.trim() || null,
-        commission_rate: COMMISSION_RATE,
+        commission_rate: commissionRate,
       });
       if (error) throw error;
       localStorage.removeItem(draftKey);
