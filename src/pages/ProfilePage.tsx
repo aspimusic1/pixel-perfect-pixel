@@ -369,6 +369,54 @@ export default function ProfilePage() {
           </div>
         )}
 
+        {/* Reviews */}
+        {reviews.length > 0 && (
+          <div className="rounded-xl bg-card border border-white/[0.06] p-5 mb-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Star className="w-4 h-4 text-primary" />
+              <h2 className="font-syne text-sm font-semibold text-muted-foreground uppercase tracking-wider">Reviews</h2>
+              <span className="text-xs text-muted-foreground ml-auto">
+                {(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)} avg · {reviews.length} review{reviews.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="space-y-4">
+              {reviews.map((r) => (
+                <div key={r.id} className="flex gap-3">
+                  {r.reviewer_avatar ? (
+                    <img src={r.reviewer_avatar} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-syne font-bold text-muted-foreground flex-shrink-0">
+                      {(r.reviewer_name ?? "A").charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-sm font-medium truncate">{r.reviewer_name}</span>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={cn(
+                              "w-3 h-3",
+                              i < r.rating ? "text-primary fill-primary" : "text-muted-foreground/30"
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground ml-auto flex-shrink-0">
+                        {format(new Date(r.created_at), "MMM d, yyyy")}
+                      </span>
+                    </div>
+                    {r.comment && (
+                      <p className="text-sm text-muted-foreground leading-relaxed">{r.comment}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* CTA */}
         {!isOwnProfile && profile?.role === "artist" && (
           <div className="text-center mt-6">
