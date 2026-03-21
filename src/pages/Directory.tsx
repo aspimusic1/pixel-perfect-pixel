@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Send, ArrowRight, Mic2, Calendar, Phone, Mail, Globe, Lock, Shield, CheckCircle, Clock, CalendarDays, Building2 } from "lucide-react";
+import { Search, MapPin, Send, ArrowRight, Mic2, Calendar, Globe, Shield, CheckCircle, Clock, CalendarDays, Building2 } from "lucide-react";
 import { format, parseISO, startOfToday } from "date-fns";
 import VenueClaimDialog from "@/components/VenueClaimDialog";
 import FlashBidBadge from "@/components/FlashBidBadge";
