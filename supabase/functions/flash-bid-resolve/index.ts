@@ -11,6 +11,16 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // This function is called by pg_cron scheduler — verify via Authorization header
+  const authHeader = req.headers.get("Authorization");
+  const expectedKey = `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`;
+  if (!authHeader || authHeader !== expectedKey) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
