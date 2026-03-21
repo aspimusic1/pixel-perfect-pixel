@@ -117,7 +117,7 @@ export default function OfferFlow() {
   };
 
   return (
-    <div className="min-h-screen pt-20 px-4 pb-12">
+    <div className="min-h-screen pt-20 px-4 pb-24 sm:pb-12">
       <div className="container mx-auto max-w-2xl">
         {/* Header */}
         <div className="mb-8">
