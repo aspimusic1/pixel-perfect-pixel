@@ -29,7 +29,7 @@ const PLANS = [
     price: "$79",
     period: "/mo",
     desc: "For agencies, venues, and power users.",
-    commission: "4%",
+    commission: "5%",
     features: ["Everything in Pro", "Team accounts (up to 5)", "Custom branding", "API access", "Priority support", "Bulk offer tools"],
     cta: "Contact us",
     highlight: false,
