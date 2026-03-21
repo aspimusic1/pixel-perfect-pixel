@@ -20,6 +20,7 @@ const OfferFlow = lazy(() => import("@/pages/OfferFlow"));
 const TourManagement = lazy(() => import("@/pages/TourManagement"));
 const VenueManage = lazy(() => import("@/pages/VenueManage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient();
