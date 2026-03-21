@@ -69,6 +69,7 @@ export default function OfferFlow() {
   const [backline, setBackline] = useState("");
   const [notes, setNotes] = useState("");
   const [commissionRate, setCommissionRate] = useState(0.20);
+  const [currency, setCurrency] = useState("USD");
   // Restore draft from localStorage
   const draftKey = `offer-draft-${recipientId || "new"}`;
   useEffect(() => {
