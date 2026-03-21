@@ -191,6 +191,7 @@ export type Database = {
           rate_max: number | null
           rate_min: number | null
           role: Database["public"]["Enums"]["app_role"] | null
+          slug: string | null
           spotify: string | null
           state: string | null
           updated_at: string
@@ -212,6 +213,7 @@ export type Database = {
           rate_max?: number | null
           rate_min?: number | null
           role?: Database["public"]["Enums"]["app_role"] | null
+          slug?: string | null
           spotify?: string | null
           state?: string | null
           updated_at?: string
@@ -233,6 +235,7 @@ export type Database = {
           rate_max?: number | null
           rate_min?: number | null
           role?: Database["public"]["Enums"]["app_role"] | null
+          slug?: string | null
           spotify?: string | null
           state?: string | null
           updated_at?: string
