@@ -14,7 +14,162 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          link: string | null
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message: string
+          read?: boolean
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      offers: {
+        Row: {
+          backline: string | null
+          commission_amount: number | null
+          commission_rate: number
+          created_at: string
+          door_split: number | null
+          event_date: string
+          event_time: string | null
+          guarantee: number
+          hospitality: string | null
+          id: string
+          merch_split: number | null
+          notes: string | null
+          recipient_id: string
+          sender_id: string
+          status: string
+          updated_at: string
+          venue_name: string
+        }
+        Insert: {
+          backline?: string | null
+          commission_amount?: number | null
+          commission_rate?: number
+          created_at?: string
+          door_split?: number | null
+          event_date: string
+          event_time?: string | null
+          guarantee?: number
+          hospitality?: string | null
+          id?: string
+          merch_split?: number | null
+          notes?: string | null
+          recipient_id: string
+          sender_id: string
+          status?: string
+          updated_at?: string
+          venue_name: string
+        }
+        Update: {
+          backline?: string | null
+          commission_amount?: number | null
+          commission_rate?: number
+          created_at?: string
+          door_split?: number | null
+          event_date?: string
+          event_time?: string | null
+          guarantee?: number
+          hospitality?: string | null
+          id?: string
+          merch_split?: number | null
+          notes?: string | null
+          recipient_id?: string
+          sender_id?: string
+          status?: string
+          updated_at?: string
+          venue_name?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          created_at: string
+          display_name: string | null
+          genre: string | null
+          id: string
+          instagram: string | null
+          is_verified: boolean | null
+          profile_complete: boolean | null
+          rate_max: number | null
+          rate_min: number | null
+          role: Database["public"]["Enums"]["app_role"] | null
+          spotify: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          display_name?: string | null
+          genre?: string | null
+          id?: string
+          instagram?: string | null
+          is_verified?: boolean | null
+          profile_complete?: boolean | null
+          rate_max?: number | null
+          rate_min?: number | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          spotify?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          display_name?: string | null
+          genre?: string | null
+          id?: string
+          instagram?: string | null
+          is_verified?: boolean | null
+          profile_complete?: boolean | null
+          rate_max?: number | null
+          rate_min?: number | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          spotify?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +178,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      app_role: "artist" | "promoter" | "venue" | "production" | "photo_video"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +305,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["artist", "promoter", "venue", "production", "photo_video"],
+    },
   },
 } as const
