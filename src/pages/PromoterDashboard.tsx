@@ -161,9 +161,9 @@ export default function PromoterDashboard() {
                     />
                   )}
 
-                  {/* Accepted: Contract + Sign */}
+                  {/* Accepted: Contract + Sign + Attendance */}
                   {offer.status === "accepted" && booking && (
-                    <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-border">
+                    <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-border flex-wrap">
                       {booking.contract_url && (
                         <Button
                           size="sm"
@@ -192,6 +192,22 @@ export default function PromoterDashboard() {
                           <PenLine className="w-3.5 h-3.5 mr-1" /> Sign Contract
                         </Button>
                       ) : null}
+                      {/* Report attendance for past shows */}
+                      {new Date(offer.event_date) < new Date() && !attendanceReported.has(booking.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setAttendanceBooking(booking)}
+                          className="border-[#FFB83E]/30 text-[#FFB83E] hover:bg-[#FFB83E]/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                        >
+                          <Users className="w-3.5 h-3.5 mr-1" /> Report Attendance
+                        </Button>
+                      )}
+                      {attendanceReported.has(booking.id) && (
+                        <div className="flex items-center gap-1.5 text-xs text-[#3EFFBE] font-medium px-3 py-1.5 rounded-md bg-[#3EFFBE]/10 border border-[#3EFFBE]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
+                          <CheckCircle className="w-3.5 h-3.5" /> Reported
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
