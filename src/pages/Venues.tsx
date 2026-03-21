@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Phone, Mail, Globe, Lock, ArrowRight } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Lock, ArrowRight, Shield, CheckCircle, Clock } from "lucide-react";
+import VenueClaimDialog from "@/components/VenueClaimDialog";
 
 type VenueListing = {
   id: string;
@@ -16,6 +17,10 @@ type VenueListing = {
   email: string | null;
   website: string | null;
   region: string | null;
+  claim_status: string;
+  claimed_by: string | null;
+  description: string | null;
+  capacity: number | null;
 };
 
 const REGIONS = [
@@ -31,23 +36,38 @@ export default function Venues() {
   const [search, setSearch] = useState("");
   const [regionFilter, setRegionFilter] = useState("");
   const [loading, setLoading] = useState(true);
-  const { profile } = useAuth();
+  const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
+  const [userClaims, setUserClaims] = useState<Set<string>>(new Set());
+  const { user, profile } = useAuth();
   const ref = useRef<HTMLDivElement>(null);
 
-  // For now, "pro" access = any logged-in user with a profile
-  // In production this would check a subscriptions table
   const hasPaidPlan = !!profile;
 
+  const loadVenues = async () => {
+    let query = supabase.from("venue_listings").select("*");
+    if (regionFilter) query = query.eq("region", regionFilter);
+    const { data } = await query.order("name", { ascending: true });
+    setVenues((data as VenueListing[]) ?? []);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const load = async () => {
-      let query = supabase.from("venue_listings").select("*");
-      if (regionFilter) query = query.eq("region", regionFilter);
-      const { data } = await query.order("name", { ascending: true });
-      setVenues((data as VenueListing[]) ?? []);
-      setLoading(false);
-    };
-    load();
+    loadVenues();
   }, [regionFilter]);
+
+  // Load user's pending claims
+  useEffect(() => {
+    if (!user) return;
+    const loadClaims = async () => {
+      const { data } = await supabase
+        .from("venue_claims")
+        .select("venue_id")
+        .eq("user_id", user.id)
+        .eq("status", "pending");
+      setUserClaims(new Set((data ?? []).map((c: any) => c.venue_id)));
+    };
+    loadClaims();
+  }, [user]);
 
   useEffect(() => {
     const el = ref.current;
@@ -80,6 +100,31 @@ export default function Venues() {
     return acc;
   }, {});
 
+  const getClaimButton = (v: VenueListing) => {
+    if (v.claim_status === "approved") {
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-500/10 text-[10px] text-green-400 font-semibold font-body">
+          <CheckCircle className="w-3 h-3" /> claimed
+        </span>
+      );
+    }
+    if (userClaims.has(v.id)) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-role-venue/10 text-[10px] text-role-venue font-semibold font-body">
+          <Clock className="w-3 h-3" /> pending
+        </span>
+      );
+    }
+    return (
+      <button
+        onClick={() => setClaimVenue(v)}
+        className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary hover:bg-role-venue/10 text-[10px] text-muted-foreground hover:text-role-venue font-semibold transition-colors active:scale-[0.97] font-body"
+      >
+        <Shield className="w-3 h-3" /> claim
+      </button>
+    );
+  };
+
   return (
     <div ref={ref} className="min-h-screen pt-20 px-4 pb-12">
       <div className="container mx-auto max-w-5xl">
@@ -100,9 +145,18 @@ export default function Venues() {
           </div>
         )}
 
-        <h1 data-reveal className="fade-in-section font-display text-3xl font-bold mb-2">venue directory</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 data-reveal className="fade-in-section font-display text-3xl font-bold">venue directory</h1>
+          {user && (
+            <Link to="/venue-manage">
+              <Button size="sm" variant="outline" className="text-xs font-body border-role-venue/30 text-role-venue hover:bg-role-venue/10 active:scale-[0.97] transition-transform">
+                manage venues
+              </Button>
+            </Link>
+          )}
+        </div>
         <p data-reveal className="fade-in-section text-muted-foreground text-sm mb-8 font-body">
-          46 venues across 20 U.S. markets. Contact info available for Pro & Business members.
+          46 venues across 20 U.S. markets. Claim your venue to update info & photos.
         </p>
 
         {/* Search & region filter */}
@@ -130,7 +184,7 @@ export default function Venues() {
           </div>
         </div>
 
-        {/* Region chips - scrollable */}
+        {/* Region chips */}
         <div className="flex gap-1.5 overflow-x-auto pb-4 mb-2">
           {REGIONS.filter(Boolean).map((r) => (
             <button
@@ -171,20 +225,31 @@ export default function Venues() {
                       data-reveal
                       className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-role-venue/20 transition-all duration-300"
                     >
-                      <div className="flex items-start gap-3 mb-2">
-                        <div className="w-9 h-9 rounded-lg bg-role-venue/10 flex items-center justify-center shrink-0">
-                          <MapPin className="w-4 h-4 text-role-venue" />
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-lg bg-role-venue/10 flex items-center justify-center shrink-0">
+                            <MapPin className="w-4 h-4 text-role-venue" />
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="font-display font-semibold text-sm truncate">{v.name}</h3>
+                            <p className="text-xs text-muted-foreground font-body">
+                              {[v.city, v.state].filter(Boolean).join(", ")}
+                            </p>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <h3 className="font-display font-semibold text-sm truncate">{v.name}</h3>
-                          <p className="text-xs text-muted-foreground font-body">
-                            {[v.city, v.state].filter(Boolean).join(", ")}
-                          </p>
-                        </div>
+                        {getClaimButton(v)}
                       </div>
 
-                      {v.address && v.address !== `${v.city}, ${v.state}` && (
+                      {v.description && (
+                        <p className="text-[11px] text-muted-foreground/80 mb-2 font-body line-clamp-2">{v.description}</p>
+                      )}
+
+                      {v.address && v.address !== `${v.city}, ${v.state}` && !v.description && (
                         <p className="text-[11px] text-muted-foreground/70 mb-2 font-body truncate">{v.address}</p>
+                      )}
+
+                      {v.capacity && (
+                        <p className="text-[11px] text-muted-foreground font-body mb-2">Capacity: {v.capacity.toLocaleString()}</p>
                       )}
 
                       {/* Contact info — gated */}
@@ -231,6 +296,20 @@ export default function Venues() {
           </div>
         )}
       </div>
+
+      {/* Claim dialog */}
+      {claimVenue && (
+        <VenueClaimDialog
+          venueId={claimVenue.id}
+          venueName={claimVenue.name}
+          open={!!claimVenue}
+          onOpenChange={(open) => { if (!open) setClaimVenue(null); }}
+          onClaimed={() => {
+            setUserClaims((prev) => new Set([...prev, claimVenue.id]));
+            setClaimVenue(null);
+          }}
+        />
+      )}
     </div>
   );
 }

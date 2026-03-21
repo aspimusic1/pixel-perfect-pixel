@@ -415,11 +415,89 @@ export type Database = {
         }
         Relationships: []
       }
+      venue_availability: {
+        Row: {
+          available_date: string
+          created_at: string
+          id: string
+          notes: string | null
+          venue_id: string
+        }
+        Insert: {
+          available_date: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          venue_id: string
+        }
+        Update: {
+          available_date?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          venue_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venue_availability_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venue_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      venue_claims: {
+        Row: {
+          business_name: string | null
+          created_at: string
+          id: string
+          proof_text: string | null
+          reviewed_at: string | null
+          status: string
+          user_id: string
+          venue_id: string
+        }
+        Insert: {
+          business_name?: string | null
+          created_at?: string
+          id?: string
+          proof_text?: string | null
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+          venue_id: string
+        }
+        Update: {
+          business_name?: string | null
+          created_at?: string
+          id?: string
+          proof_text?: string | null
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+          venue_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venue_claims_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venue_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       venue_listings: {
         Row: {
           address: string | null
+          amenities: string[] | null
+          capacity: number | null
           city: string | null
+          claim_status: string
+          claimed_by: string | null
           created_at: string
+          description: string | null
           email: string | null
           id: string
           name: string
@@ -430,8 +508,13 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          amenities?: string[] | null
+          capacity?: number | null
           city?: string | null
+          claim_status?: string
+          claimed_by?: string | null
           created_at?: string
+          description?: string | null
           email?: string | null
           id?: string
           name: string
@@ -442,8 +525,13 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          amenities?: string[] | null
+          capacity?: number | null
           city?: string | null
+          claim_status?: string
+          claimed_by?: string | null
           created_at?: string
+          description?: string | null
           email?: string | null
           id?: string
           name?: string
@@ -453,6 +541,44 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      venue_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          file_path: string
+          id: string
+          sort_order: number | null
+          uploaded_by: string
+          venue_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          file_path: string
+          id?: string
+          sort_order?: number | null
+          uploaded_by: string
+          venue_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          file_path?: string
+          id?: string
+          sort_order?: number | null
+          uploaded_by?: string
+          venue_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venue_photos_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venue_listings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
