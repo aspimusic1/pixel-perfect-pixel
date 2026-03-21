@@ -234,6 +234,7 @@ export default function ProfilePage() {
           <div className="rounded-xl bg-card border border-white/[0.06] p-5 mb-4">
             <h2 className="font-syne text-sm font-semibold mb-2 text-muted-foreground uppercase tracking-wider">About</h2>
             <p className="text-sm text-foreground leading-relaxed" style={{ textWrap: "pretty" }}>{profile.bio}</p>
+            <TranslateButton text={profile.bio} className="mt-2" />
           </div>
         )}
 

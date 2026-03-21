@@ -187,7 +187,11 @@ export default function NegotiationThread({ offerId, offer, onOfferUpdated }: Ne
             </div>
 
             {counter.message && (
-              <p className="text-xs text-muted-foreground italic">"{counter.message}"</p>
+              <div>
+                <p className="text-xs text-muted-foreground italic">"{counter.message}"</p>
+                <TranslateButton text={counter.message} className="mt-1" />
+              </div>
+            )}
             )}
 
             {/* Response buttons for the latest pending counter (only if not from me) */}
