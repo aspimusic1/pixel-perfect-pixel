@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Send, Users, Plus, PenLine, CheckCircle, FileText } from "lucide-react";
+import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, ChevronRight } from "lucide-react";
 import SignContractDialog from "@/components/SignContractDialog";
 import NegotiationThread from "@/components/NegotiationThread";
 
