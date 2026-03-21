@@ -264,15 +264,15 @@ Deno.serve(async (req) => {
       `Remaining balance ($${(guarantee - deposit).toLocaleString()}) due on event day`,
       `All payments processed through GetBooked.Live`,
     ];
-    const depCardH = depositTerms.length * 16 + 16;
+    const depCardH = depositTerms.length * 14 + 14;
     drawCard(y, depCardH);
-    let dy = y - 14;
+    let dy = y - 12;
     for (const line of depositTerms) {
-      page.drawText("•", { x: margin + 16, y: dy, size: 8, font: helveticaBold, color: limeDim });
-      page.drawText(line, { x: margin + 28, y: dy, size: 8.5, font: helvetica, color: white });
-      dy -= 16;
+      page.drawText("•", { x: margin + 14, y: dy, size: 7, font: helveticaBold, color: limeDim });
+      page.drawText(line, { x: margin + 24, y: dy, size: 8, font: helvetica, color: white });
+      dy -= 14;
     }
-    y -= depCardH + 16;
+    y -= depCardH + 10;
 
     // ═══════════════════════════════════════════
     // CANCELLATION POLICY
