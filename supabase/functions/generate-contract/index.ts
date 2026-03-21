@@ -239,20 +239,19 @@ Deno.serve(async (req) => {
       ...(offer?.merch_split ? [{ label: "Merch Split", value: `${offer.merch_split}%`, color: white }] : []),
       { label: "Platform Fee", value: `-$${commission.toLocaleString()} (${(commissionRate * 100).toFixed(0)}%)`, color: destructive },
     ];
-    const finCardH = (finRows.length + 1) * 20 + 26; // +1 for payout + divider
+    const finCardH = (finRows.length + 1) * 18 + 22;
     drawCard(y, finCardH, cardBg2);
-    let fy = y - 16;
+    let fy = y - 14;
     for (const row of finRows) {
       fy = drawKV(row.label, row.value, fy, { valueColor: row.color });
     }
-    // Divider before net payout
-    fy -= 4;
-    page.drawRectangle({ x: margin + 16, y: fy + 8, width: contentWidth - 32, height: 1, color: borderColor });
-    fy -= 8;
+    fy -= 2;
+    page.drawRectangle({ x: margin + 14, y: fy + 6, width: contentWidth - 28, height: 1, color: borderColor });
+    fy -= 6;
     fy = drawKV("Artist Net Payout", `$${artistPayout.toLocaleString()}`, fy, {
-      valueColor: lime, valueSize: 13, valueFont: helveticaBold,
+      valueColor: lime, valueSize: 12, valueFont: helveticaBold,
     });
-    y -= finCardH + 16;
+    y -= finCardH + 10;
 
     // ═══════════════════════════════════════════
     // DEPOSIT & PAYMENT
