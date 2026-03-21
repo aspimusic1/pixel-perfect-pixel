@@ -15,6 +15,7 @@ import Pricing from "@/pages/Pricing";
 import OfferFlow from "@/pages/OfferFlow";
 import TourManagement from "@/pages/TourManagement";
 import VenueManage from "@/pages/VenueManage";
+import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/offer" element={<OfferFlow />} />
             <Route path="/tours" element={<TourManagement />} />
             <Route path="/venue-manage" element={<VenueManage />} />
+            <Route path="/p/:slug" element={<ProfilePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
