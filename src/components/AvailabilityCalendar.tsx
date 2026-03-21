@@ -25,7 +25,6 @@ export default function AvailabilityCalendar() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-  const [bulkAction, setBulkAction] = useState<"available" | "unavailable" | null>(null);
 
   const reload = async () => {
     if (!user) return;
@@ -47,20 +46,19 @@ export default function AvailabilityCalendar() {
   const getEntry = (date: Date) =>
     entries.find((e) => isSameDay(new Date(e.date + "T00:00:00"), date));
 
-  const toggleDate = async (date: Date, markAvailable: boolean) => {
+  const toggleSingleDate = async (date: Date, markAvailable: boolean) => {
     if (!user) return;
-    setSaving(true);
     const dateStr = format(date, "yyyy-MM-dd");
     const existing = getEntry(date);
 
     if (existing) {
       if (existing.is_available === markAvailable) {
         const { error } = await supabase.from("artist_availability").delete().eq("id", existing.id);
-        if (error) { toast.error("Failed to update"); setSaving(false); return; }
+        if (error) return;
         setEntries((prev) => prev.filter((e) => e.id !== existing.id));
       } else {
         const { error } = await supabase.from("artist_availability").update({ is_available: markAvailable }).eq("id", existing.id);
-        if (error) { toast.error("Failed to update"); setSaving(false); return; }
+        if (error) return;
         setEntries((prev) => prev.map((e) => (e.id === existing.id ? { ...e, is_available: markAvailable } : e)));
       }
     } else {
@@ -69,19 +67,17 @@ export default function AvailabilityCalendar() {
         .insert({ artist_id: user.id, date: dateStr, is_available: markAvailable })
         .select("id, date, is_available, notes")
         .single();
-      if (error) { toast.error("Failed to save"); setSaving(false); return; }
+      if (error) return;
       setEntries((prev) => [...prev, data as AvailabilityEntry]);
     }
-    setSaving(false);
   };
 
   const bulkToggle = async (markAvailable: boolean) => {
     if (!user || selectedDates.length === 0) return;
     setSaving(true);
     for (const date of selectedDates) {
-      await toggleDate(date, markAvailable);
+      await toggleSingleDate(date, markAvailable);
     }
-    setBulkAction(null);
     setSaving(false);
     toast.success(`${selectedDates.length} date${selectedDates.length > 1 ? "s" : ""} marked as ${markAvailable ? "available" : "unavailable"}`);
   };
@@ -89,8 +85,25 @@ export default function AvailabilityCalendar() {
   const availableDates = entries.filter((e) => e.is_available).map((e) => new Date(e.date + "T00:00:00"));
   const unavailableDates = entries.filter((e) => !e.is_available).map((e) => new Date(e.date + "T00:00:00"));
 
-  const selectedEntry = selectedDates.length === 1 ? getEntry(selectedDates[0]) : null;
   const isSingleSelect = selectedDates.length === 1;
+  const selectedEntry = isSingleSelect ? getEntry(selectedDates[0]) : null;
+
+  return (
+    <div className="rounded-xl bg-card border border-border p-4 sm:p-5">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <CalendarDays className="w-4 h-4 text-primary" />
+          <h3 className="font-display font-semibold text-sm">Availability Calendar</h3>
+        </div>
+        {selectedDates.length > 0 && (
+          <button
+            onClick={() => setSelectedDates([])}
+            className="text-[10px] text-muted-foreground hover:text-foreground transition-colors font-body"
+          >
+            clear {selectedDates.length} selected
+          </button>
+        )}
+      </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-8">
@@ -99,9 +112,9 @@ export default function AvailabilityCalendar() {
       ) : (
         <>
           <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
+            mode="multiple"
+            selected={selectedDates}
+            onSelect={(dates) => setSelectedDates(dates || [])}
             disabled={(date) => date < startOfToday()}
             className={cn("p-0 pointer-events-auto")}
             modifiers={{
@@ -124,19 +137,30 @@ export default function AvailabilityCalendar() {
               <span className="w-2.5 h-2.5 rounded-full bg-red-500/40 border border-red-500/50" />
               Unavailable
             </span>
+            <span className="ml-auto text-[10px] text-muted-foreground/60 font-body">
+              tap multiple dates to bulk-edit
+            </span>
           </div>
 
-          {/* Actions for selected date */}
-          {selectedDate && selectedDate >= startOfToday() && (
+          {/* Actions for selected dates */}
+          {selectedDates.length > 0 && (
             <div className="mt-4 p-3 rounded-lg bg-muted/30 border border-border">
-              <p className="text-xs text-muted-foreground mb-2">
-                {format(selectedDate, "EEEE, MMMM d, yyyy")}
-                {selectedEntry && (
-                  <span className={cn(
-                    "ml-2 font-medium",
-                    selectedEntry.is_available ? "text-green-400" : "text-red-400"
-                  )}>
-                    — {selectedEntry.is_available ? "Available" : "Unavailable"}
+              <p className="text-xs text-muted-foreground mb-2 font-body">
+                {isSingleSelect ? (
+                  <>
+                    {format(selectedDates[0], "EEEE, MMMM d, yyyy")}
+                    {selectedEntry && (
+                      <span className={cn(
+                        "ml-2 font-medium",
+                        selectedEntry.is_available ? "text-green-400" : "text-red-400"
+                      )}>
+                        — {selectedEntry.is_available ? "Available" : "Unavailable"}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className="font-medium text-foreground">
+                    {selectedDates.length} dates selected
                   </span>
                 )}
               </p>
@@ -145,36 +169,26 @@ export default function AvailabilityCalendar() {
                   size="sm"
                   variant="outline"
                   disabled={saving}
-                  onClick={() => toggleDate(selectedDate, true)}
-                  className={cn(
-                    "h-8 text-xs active:scale-[0.97] transition-transform",
-                    selectedEntry?.is_available
-                      ? "bg-green-500/20 text-green-400 border-green-500/30"
-                      : "border-border"
-                  )}
+                  onClick={() => bulkToggle(true)}
+                  className="h-8 text-xs active:scale-[0.97] transition-transform border-border hover:bg-green-500/10 hover:text-green-400 hover:border-green-500/30"
                 >
                   {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Check className="w-3 h-3 mr-1" />}
-                  Available
+                  {isSingleSelect ? "Available" : `Mark ${selectedDates.length} available`}
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
                   disabled={saving}
-                  onClick={() => toggleDate(selectedDate, false)}
-                  className={cn(
-                    "h-8 text-xs active:scale-[0.97] transition-transform",
-                    selectedEntry && !selectedEntry.is_available
-                      ? "bg-red-500/20 text-red-400 border-red-500/30"
-                      : "border-border"
-                  )}
+                  onClick={() => bulkToggle(false)}
+                  className="h-8 text-xs active:scale-[0.97] transition-transform border-border hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
                 >
                   {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <X className="w-3 h-3 mr-1" />}
-                  Unavailable
+                  {isSingleSelect ? "Unavailable" : `Mark ${selectedDates.length} unavailable`}
                 </Button>
               </div>
 
-              {/* Flash Bid toggle — only show for available dates */}
-              {selectedEntry?.is_available && (
+              {/* Flash Bid toggle — only for single available date */}
+              {isSingleSelect && selectedEntry?.is_available && (
                 <FlashBidToggle
                   availabilityId={selectedEntry.id}
                   date={selectedEntry.date}
