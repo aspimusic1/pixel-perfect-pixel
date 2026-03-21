@@ -50,6 +50,7 @@ export default function Navbar() {
           {user ? (
             <>
               <Link to={dashboardRoute} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Dashboard</Link>
+              <Link to="/tours" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Tours</Link>
               <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors">
                 <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
