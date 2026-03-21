@@ -59,6 +59,8 @@ export default function ArtistDashboard() {
         <h1 className="font-display text-2xl font-bold mb-1">Welcome back, {profile?.display_name ?? "Artist"}</h1>
         <p className="text-muted-foreground text-sm mb-8">Here's your booking overview.</p>
 
+        <OnboardingChecklist />
+
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           <div className="rounded-xl bg-card border border-border p-5">

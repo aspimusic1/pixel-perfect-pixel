@@ -13,6 +13,9 @@ type Profile = {
   state: string | null;
   genre: string | null;
   profile_complete: boolean | null;
+  onboarding_steps: Record<string, boolean> | null;
+  rate_min: number | null;
+  rate_max: number | null;
 };
 
 type AuthContextType = {
