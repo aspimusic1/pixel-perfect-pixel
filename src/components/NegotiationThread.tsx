@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRightLeft, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
+import TranslateButton from "@/components/TranslateButton";
 
 export type CounterOffer = {
   id: string;
@@ -186,7 +187,10 @@ export default function NegotiationThread({ offerId, offer, onOfferUpdated }: Ne
             </div>
 
             {counter.message && (
-              <p className="text-xs text-muted-foreground italic">"{counter.message}"</p>
+              <div>
+                <p className="text-xs text-muted-foreground italic">"{counter.message}"</p>
+                <TranslateButton text={counter.message} className="mt-1" />
+              </div>
             )}
 
             {/* Response buttons for the latest pending counter (only if not from me) */}
