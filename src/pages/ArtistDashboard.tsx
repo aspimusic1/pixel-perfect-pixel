@@ -417,6 +417,19 @@ export default function ArtistDashboard() {
           }}
         />
       )}
+
+      {/* Contract Review Dialog */}
+      {reviewOffer && (
+        <ContractReviewDialog
+          open={!!reviewOffer}
+          onOpenChange={(open) => { if (!open) setReviewOffer(null); }}
+          offerId={reviewOffer.id}
+          onProceed={(addedClauses) => {
+            handleRespond(reviewOffer.id, "accepted", addedClauses);
+            setReviewOffer(null);
+          }}
+        />
+      )}
     </div>
   );
 }
