@@ -24,7 +24,8 @@ export default function AvailabilityCalendar() {
   const [entries, setEntries] = useState<AvailabilityEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [bulkAction, setBulkAction] = useState<"available" | "unavailable" | null>(null);
 
   const reload = async () => {
     if (!user) return;
