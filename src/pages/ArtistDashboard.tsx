@@ -35,6 +35,7 @@ const statusColors: Record<string, string> = {
   pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
   accepted: "bg-green-500/10 text-green-400 border-green-500/20",
   declined: "bg-red-500/10 text-red-400 border-red-500/20",
+  negotiating: "bg-amber-500/10 text-amber-400 border-amber-500/20",
 };
 
 export default function ArtistDashboard() {
