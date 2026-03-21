@@ -123,6 +123,7 @@ export default function Navbar() {
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-1">
             <MobileLink to="/directory" onClick={closeMenu}>Browse</MobileLink>
+            <MobileLink to="/trending" onClick={closeMenu}>Trending</MobileLink>
             <MobileLink to="/pricing" onClick={closeMenu}>Pricing</MobileLink>
             {user ? (
               <>
