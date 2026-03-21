@@ -3,13 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield } from "lucide-react";
 import { toast } from "sonner";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
 import NegotiationThread from "@/components/NegotiationThread";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
+import ContractReviewDialog from "@/components/ContractReviewDialog";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 
 type Offer = {
@@ -21,6 +22,7 @@ type Offer = {
   door_split: number | null;
   merch_split: number | null;
   commission_amount: number | null;
+  notes: string | null;
   status: string;
   sender_id: string;
   recipient_id: string;
@@ -54,6 +56,7 @@ export default function ArtistDashboard() {
   const [signDialogBooking, setSignDialogBooking] = useState<{ id: string; venueName: string; eventDate: string; guarantee: number } | null>(null);
   const [counterDialogOffer, setCounterDialogOffer] = useState<Offer | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [reviewOffer, setReviewOffer] = useState<Offer | null>(null);
 
   const fetchSignatures = async (bookingIds: string[]) => {
     if (bookingIds.length === 0) return;
@@ -87,7 +90,7 @@ export default function ArtistDashboard() {
     fetchData();
   }, [user, page]);
 
-  const handleRespond = async (offerId: string, status: "accepted" | "declined") => {
+  const handleRespond = async (offerId: string, status: "accepted" | "declined", addedClauses?: string[]) => {
     if (!user) return;
     setActionLoading(offerId);
 
@@ -98,6 +101,12 @@ export default function ArtistDashboard() {
     if (status === "accepted") {
       const offer = offers.find((o) => o.id === offerId);
       if (!offer) return;
+
+      // Build notes with any AI-suggested clauses
+      let notes = offer.notes || "";
+      if (addedClauses && addedClauses.length > 0) {
+        notes = (notes ? notes + "\n\n" : "") + "AI-Suggested Clauses:\n" + addedClauses.join("\n");
+      }
 
       // Create booking
       const { data: booking, error: bookingErr } = await supabase
@@ -219,10 +228,10 @@ export default function ArtistDashboard() {
                       <Button
                         size="sm"
                         disabled={actionLoading === offer.id}
-                        onClick={() => handleRespond(offer.id, "accepted")}
+                        onClick={() => setReviewOffer(offer)}
                         className="bg-green-600 hover:bg-green-700 text-foreground active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                       >
-                        {actionLoading === offer.id ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5 mr-1" />} Accept
+                        {actionLoading === offer.id ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Shield className="w-3.5 h-3.5 mr-1" />} Review & Accept
                       </Button>
                       <Button
                         size="sm"
@@ -405,6 +414,19 @@ export default function ArtistDashboard() {
             setOffers((prev) => prev.map((o) =>
               o.id === counterDialogOffer.id ? { ...o, status: "negotiating" } : o
             ));
+          }}
+        />
+      )}
+
+      {/* Contract Review Dialog */}
+      {reviewOffer && (
+        <ContractReviewDialog
+          open={!!reviewOffer}
+          onOpenChange={(open) => { if (!open) setReviewOffer(null); }}
+          offerId={reviewOffer.id}
+          onProceed={(addedClauses) => {
+            handleRespond(reviewOffer.id, "accepted", addedClauses);
+            setReviewOffer(null);
           }}
         />
       )}
