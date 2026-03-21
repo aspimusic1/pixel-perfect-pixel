@@ -12,6 +12,7 @@ import ArtistDashboard from "@/pages/ArtistDashboard";
 import PromoterDashboard from "@/pages/PromoterDashboard";
 import Directory from "@/pages/Directory";
 import Pricing from "@/pages/Pricing";
+import Venues from "@/pages/Venues";
 import OfferFlow from "@/pages/OfferFlow";
 import TourManagement from "@/pages/TourManagement";
 import NotFound from "@/pages/NotFound";
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/artist-dashboard" element={<ArtistDashboard />} />
             <Route path="/promoter-dashboard" element={<PromoterDashboard />} />
             <Route path="/directory" element={<Directory />} />
+            <Route path="/venues" element={<Venues />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/offer" element={<OfferFlow />} />
             <Route path="/tours" element={<TourManagement />} />
