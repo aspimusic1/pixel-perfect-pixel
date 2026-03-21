@@ -191,6 +191,11 @@ export default function ArtistDashboard() {
           <AvailabilityCalendar />
         </div>
 
+        {/* AI Booking Agent */}
+        <div className="mb-6 sm:mb-8">
+          <BookingAgentPanel />
+        </div>
+
         {/* Offers */}
         <h2 className="font-display text-lg font-semibold mb-4">Your Offers</h2>
         {loading ? (
