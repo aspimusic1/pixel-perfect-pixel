@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { format, startOfToday, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import ShowNightMode from "@/components/ShowNightMode";
+import TranslateButton from "@/components/TranslateButton";
 
 type ProfileData = {
   id: string;
