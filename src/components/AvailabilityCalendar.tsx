@@ -31,11 +31,11 @@ export default function AvailabilityCalendar() {
     const load = async () => {
       const { data } = await supabase
         .from("artist_availability")
-        .select("id, date, is_available, notes")
+        .select("id, date, is_available, notes, flash_bid_enabled, flash_bid_deadline, flash_bid_min_price" as any)
         .eq("artist_id", user.id)
         .gte("date", format(startOfToday(), "yyyy-MM-dd"))
         .order("date");
-      setEntries((data as AvailabilityEntry[]) ?? []);
+      setEntries((data as any as AvailabilityEntry[]) ?? []);
       setLoading(false);
     };
     load();
