@@ -347,6 +347,28 @@ export default function ArtistDashboard() {
           }}
         />
       )}
+
+      {/* Counter Offer Dialog */}
+      {counterDialogOffer && (
+        <CounterOfferDialog
+          open={!!counterDialogOffer}
+          onOpenChange={(open) => { if (!open) setCounterDialogOffer(null); }}
+          offerId={counterDialogOffer.id}
+          currentTerms={{
+            guarantee: counterDialogOffer.guarantee,
+            doorSplit: counterDialogOffer.door_split,
+            merchSplit: counterDialogOffer.merch_split,
+            eventDate: counterDialogOffer.event_date,
+            eventTime: counterDialogOffer.event_time,
+            venueName: counterDialogOffer.venue_name,
+          }}
+          onCountered={() => {
+            setOffers((prev) => prev.map((o) =>
+              o.id === counterDialogOffer.id ? { ...o, status: "negotiating" } : o
+            ));
+          }}
+        />
+      )}
     </div>
   );
 }
