@@ -180,6 +180,16 @@ export default function ArtistDashboard() {
 
         <OnboardingChecklist />
 
+        <Tabs defaultValue="offers" className="mb-6">
+          <div className="overflow-x-auto -mx-4 px-4 pb-2 scrollbar-hide">
+            <TabsList className="bg-secondary border border-border mb-4 w-max min-w-full sm:w-auto">
+              <TabsTrigger value="offers" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Inbox className="w-3.5 h-3.5 mr-1" />Offers</TabsTrigger>
+              <TabsTrigger value="bookkeeping" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><BarChart3 className="w-3.5 h-3.5 mr-1" />Bookkeeping</TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="offers">
+
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="rounded-xl bg-card border border-border p-4 sm:p-5">
