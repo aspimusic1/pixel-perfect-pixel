@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Users, DollarSign, FileText, Plus, Trash2, ArrowLeft, MapPin, Clock, Sparkles, Loader2 as SpinnerIcon } from "lucide-react";
+import { Calendar, Users, DollarSign, FileText, Plus, Trash2, ArrowLeft, MapPin, Clock, Sparkles, Loader2 as SpinnerIcon, Car } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
