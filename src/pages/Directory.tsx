@@ -137,11 +137,11 @@ type FlashBidInfo = {
 async function fetchFlashBids() {
   const today = startOfToday().toISOString().split("T")[0];
   // Get availability entries with flash bids enabled
-  const { data: avail } = await supabase
-    .from("artist_availability")
-    .select("id, artist_id, flash_bid_deadline" as any)
+  const { data: avail } = await (supabase
+    .from("artist_availability") as any)
+    .select("id, artist_id, flash_bid_deadline")
     .eq("is_available", true)
-    .eq("flash_bid_enabled" as any, true)
+    .eq("flash_bid_enabled", true)
     .gte("date", today);
 
   if (!avail || avail.length === 0) return new Map<string, FlashBidInfo>();
