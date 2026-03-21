@@ -106,6 +106,33 @@ export default function ProfilePage() {
         }
       }
 
+      // Fetch reviews where this user is the reviewee
+      if (p.user_id) {
+        const { data: reviewData } = await supabase
+          .from("reviews" as any)
+          .select("id, rating, comment, created_at, reviewer_id")
+          .eq("reviewee_id", p.user_id)
+          .order("created_at", { ascending: false })
+          .limit(10);
+        if (reviewData && reviewData.length > 0) {
+          // Fetch reviewer profiles
+          const reviewerIds = [...new Set((reviewData as any[]).map((r: any) => r.reviewer_id))];
+          const { data: reviewerProfiles } = await supabase
+            .from("public_profiles" as any)
+            .select("user_id, display_name, avatar_url")
+            .in("user_id", reviewerIds);
+          const profileMap = new Map((reviewerProfiles as any[] || []).map((p: any) => [p.user_id, p]));
+          setReviews((reviewData as any[]).map((r: any) => ({
+            id: r.id,
+            rating: r.rating,
+            comment: r.comment,
+            created_at: r.created_at,
+            reviewer_name: profileMap.get(r.reviewer_id)?.display_name || "Anonymous",
+            reviewer_avatar: profileMap.get(r.reviewer_id)?.avatar_url || null,
+          })));
+        }
+      }
+
       setLoading(false);
     };
     load();
