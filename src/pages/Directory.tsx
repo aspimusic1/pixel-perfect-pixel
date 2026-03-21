@@ -211,8 +211,8 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
   const showVenues = !roleFilter || roleFilter === "venue";
 
   const { data: profiles = [], isLoading: profilesLoading } = useQuery<Profile[]>({
-    queryKey: ["directory-profiles", roleFilter, debouncedSearch],
-    queryFn: () => fetchProfiles(roleFilter, debouncedSearch),
+    queryKey: ["directory-profiles", roleFilter, debouncedSearch, cityFilter],
+    queryFn: () => fetchProfiles(roleFilter, debouncedSearch, cityFilter),
     enabled: showProfiles,
     staleTime: 30_000,
   });
@@ -231,9 +231,15 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
     staleTime: 120_000,
   });
 
+  const { data: allCities = [] } = useQuery<string[]>({
+    queryKey: ["directory-all-cities"],
+    queryFn: fetchAllCities,
+    staleTime: 120_000,
+  });
+
   const { data: venueListings = [], isLoading: venuesLoading } = useQuery<VenueListing[]>({
-    queryKey: ["directory-venues", debouncedSearch],
-    queryFn: () => fetchVenueListings(debouncedSearch),
+    queryKey: ["directory-venues", debouncedSearch, cityFilter],
+    queryFn: () => fetchVenueListings(debouncedSearch, cityFilter),
     enabled: showVenues,
     staleTime: 30_000,
   });
