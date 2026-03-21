@@ -7,6 +7,7 @@ import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import PricingTeaser from "@/components/landing/PricingTeaser";
 import FinalCTA from "@/components/landing/FinalCTA";
 import Footer from "@/components/landing/Footer";
+import RolePickerPopup from "@/components/RolePickerPopup";
 
 /* ─── Scroll reveal hook ─── */
 function useScrollReveal() {
@@ -36,6 +37,7 @@ export default function Landing() {
 
   return (
     <div ref={revealRef} className="min-h-screen">
+      <RolePickerPopup />
       <HeroSection />
       <ProfileMarquee />
       <PowerFeaturesSection />

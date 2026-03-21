@@ -6,24 +6,25 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Music, ArrowRight } from "lucide-react";
+import { Music, ArrowRight, Mic2, Megaphone, Building2, Wrench, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 const ROLES = [
-  { value: "artist", label: "Artist", color: "border-role-artist text-role-artist" },
-  { value: "promoter", label: "Promoter", color: "border-role-promoter text-role-promoter" },
-  { value: "venue", label: "Venue", color: "border-role-venue text-role-venue" },
-  { value: "production", label: "Production", color: "border-role-production text-role-production" },
-  { value: "photo_video", label: "Photo/Video", color: "border-role-photo text-role-photo" },
+  { value: "artist", label: "Artist", color: "border-role-artist text-role-artist", icon: Mic2, accent: "text-role-artist", tagline: "Get booked. Get paid. Tour smarter." },
+  { value: "promoter", label: "Promoter", color: "border-role-promoter text-role-promoter", icon: Megaphone, accent: "text-role-promoter", tagline: "Find talent. Fill rooms. Build your brand." },
+  { value: "venue", label: "Venue", color: "border-role-venue text-role-venue", icon: Building2, accent: "text-role-venue", tagline: "List your space. Book artists. Sell out shows." },
+  { value: "production", label: "Production", color: "border-role-production text-role-production", icon: Wrench, accent: "text-role-production", tagline: "Crew up. Get hired. Run the show." },
+  { value: "photo_video", label: "Photo/Video", color: "border-role-photo text-role-photo", icon: Camera, accent: "text-role-photo", tagline: "Capture moments. Build your reel. Get booked." },
 ];
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
+  const presetRole = searchParams.get("role") || "";
   const [isSignUp, setIsSignUp] = useState(searchParams.get("tab") === "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState(presetRole);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -31,6 +32,17 @@ export default function Auth() {
   useEffect(() => {
     if (user) navigate("/profile-setup");
   }, [user, navigate]);
+
+  // Sync role from URL when it changes
+  useEffect(() => {
+    if (presetRole) {
+      setSelectedRole(presetRole);
+      setIsSignUp(true);
+    }
+  }, [presetRole]);
+
+  const activeRoleInfo = ROLES.find((r) => r.value === selectedRole);
+  const ActiveIcon = activeRoleInfo?.icon;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,13 +95,27 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center px-4 pt-20">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 font-display font-bold text-xl mb-2">
-            <Music className="w-5 h-5 text-primary" />
-            GetBooked<span className="text-primary">.Live</span>
-          </div>
-          <p className="text-muted-foreground text-sm">
-            {isSignUp ? "Create your account" : "Sign in to your account"}
-          </p>
+          {isSignUp && activeRoleInfo && ActiveIcon ? (
+            <>
+              <div className={`w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center ${activeRoleInfo.accent.replace("text-", "bg-")}/10`}>
+                <ActiveIcon className={`w-6 h-6 ${activeRoleInfo.accent}`} />
+              </div>
+              <h1 className="font-display font-bold text-xl mb-1">
+                Sign up as <span className={activeRoleInfo.accent}>{activeRoleInfo.label}</span>
+              </h1>
+              <p className="text-muted-foreground text-sm font-body">{activeRoleInfo.tagline}</p>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center justify-center gap-2 font-display font-bold text-xl mb-2">
+                <Music className="w-5 h-5 text-primary" />
+                GetBooked<span className="text-primary">.Live</span>
+              </div>
+              <p className="text-muted-foreground text-sm">
+                {isSignUp ? "Create your account" : "Sign in to your account"}
+              </p>
+            </>
+          )}
         </div>
 
         <div className="rounded-xl bg-card border border-border p-6">
@@ -103,20 +129,24 @@ export default function Auth() {
                 <div>
                   <Label className="text-sm mb-2 block">I am a...</Label>
                   <div className="grid grid-cols-2 gap-2">
-                    {ROLES.map((role) => (
-                      <button
-                        key={role.value}
-                        type="button"
-                        onClick={() => setSelectedRole(role.value)}
-                        className={`px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all active:scale-[0.97] ${
-                          selectedRole === role.value
-                            ? `${role.color} bg-secondary`
-                            : "border-border text-muted-foreground hover:border-border/80"
-                        }`}
-                      >
-                        {role.label}
-                      </button>
-                    ))}
+                    {ROLES.map((role) => {
+                      const Icon = role.icon;
+                      return (
+                        <button
+                          key={role.value}
+                          type="button"
+                          onClick={() => setSelectedRole(role.value)}
+                          className={`px-3 py-2.5 rounded-lg border-2 text-sm font-medium transition-all active:scale-[0.97] flex items-center gap-2 ${
+                            selectedRole === role.value
+                              ? `${role.color} bg-secondary`
+                              : "border-border text-muted-foreground hover:border-border/80"
+                          }`}
+                        >
+                          <Icon className="w-3.5 h-3.5 shrink-0" />
+                          {role.label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </>
