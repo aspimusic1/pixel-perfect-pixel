@@ -87,8 +87,8 @@ export default function Directory() {
         // When venue tab is active, don't show user profiles — show venue listings instead
         setProfiles([]);
       } else {
-        const { data: profileData } = await profileQuery.order("created_at", { ascending: false });
-        setProfiles((profileData as Profile[]) ?? []);
+        const { data: profileData } = await profileQuery.order("created_at" as any, { ascending: false });
+        setProfiles((profileData as unknown as Profile[]) ?? []);
       }
 
       // Fetch artist listings (only when showing "All" or "Artists")
