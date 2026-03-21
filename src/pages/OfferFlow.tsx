@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon, ArrowLeft, ArrowRight, Check, DollarSign, Music, MapPin, Clock } from "lucide-react";
 import { toast } from "sonner";
+import OfferIntelligence from "@/components/OfferIntelligence";
 
 type ArtistOption = { user_id: string; display_name: string | null; genre: string | null; city: string | null };
 
