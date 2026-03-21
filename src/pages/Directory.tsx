@@ -120,6 +120,7 @@ export default function Directory() {
   const [roleFilter, setRoleFilter] = useState("");
   const ref = useRef<HTMLDivElement>(null);
   const { user, profile: authProfile } = useAuth();
+  const queryClient = useQueryClient();
 
   const hasPaidPlan = !!authProfile;
 
