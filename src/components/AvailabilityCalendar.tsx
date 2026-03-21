@@ -7,12 +7,16 @@ import { CalendarDays, Check, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format, isSameDay, startOfToday } from "date-fns";
+import FlashBidToggle from "@/components/FlashBidToggle";
 
 type AvailabilityEntry = {
   id: string;
   date: string;
   is_available: boolean;
   notes: string | null;
+  flash_bid_enabled: boolean;
+  flash_bid_deadline: string | null;
+  flash_bid_min_price: number;
 };
 
 export default function AvailabilityCalendar() {
@@ -22,19 +26,21 @@ export default function AvailabilityCalendar() {
   const [saving, setSaving] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
+  const reload = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("artist_availability")
+      .select("id, date, is_available, notes, flash_bid_enabled, flash_bid_deadline, flash_bid_min_price" as any)
+      .eq("artist_id", user.id)
+      .gte("date", format(startOfToday(), "yyyy-MM-dd"))
+      .order("date");
+    setEntries((data as any as AvailabilityEntry[]) ?? []);
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (!user) return;
-    const load = async () => {
-      const { data } = await supabase
-        .from("artist_availability")
-        .select("id, date, is_available, notes")
-        .eq("artist_id", user.id)
-        .gte("date", format(startOfToday(), "yyyy-MM-dd"))
-        .order("date");
-      setEntries((data as AvailabilityEntry[]) ?? []);
-      setLoading(false);
-    };
-    load();
+    reload();
   }, [user]);
 
   const getEntry = (date: Date) =>
@@ -171,6 +177,18 @@ export default function AvailabilityCalendar() {
                   Unavailable
                 </Button>
               </div>
+
+              {/* Flash Bid toggle — only show for available dates */}
+              {selectedEntry?.is_available && (
+                <FlashBidToggle
+                  availabilityId={selectedEntry.id}
+                  date={selectedEntry.date}
+                  flashBidEnabled={selectedEntry.flash_bid_enabled}
+                  flashBidDeadline={selectedEntry.flash_bid_deadline}
+                  flashBidMinPrice={selectedEntry.flash_bid_min_price}
+                  onUpdate={reload}
+                />
+              )}
             </div>
           )}
         </>

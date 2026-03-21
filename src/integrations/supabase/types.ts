@@ -19,6 +19,9 @@ export type Database = {
           artist_id: string
           created_at: string
           date: string
+          flash_bid_deadline: string | null
+          flash_bid_enabled: boolean
+          flash_bid_min_price: number | null
           id: string
           is_available: boolean
           notes: string | null
@@ -27,6 +30,9 @@ export type Database = {
           artist_id: string
           created_at?: string
           date: string
+          flash_bid_deadline?: string | null
+          flash_bid_enabled?: boolean
+          flash_bid_min_price?: number | null
           id?: string
           is_available?: boolean
           notes?: string | null
@@ -35,6 +41,9 @@ export type Database = {
           artist_id?: string
           created_at?: string
           date?: string
+          flash_bid_deadline?: string | null
+          flash_bid_enabled?: boolean
+          flash_bid_min_price?: number | null
           id?: string
           is_available?: boolean
           notes?: string | null
@@ -313,6 +322,44 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: true
             referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flash_bids: {
+        Row: {
+          amount: number
+          artist_id: string
+          availability_id: string
+          bidder_id: string
+          created_at: string
+          id: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          artist_id: string
+          availability_id: string
+          bidder_id: string
+          created_at?: string
+          id?: string
+          status?: string
+        }
+        Update: {
+          amount?: number
+          artist_id?: string
+          availability_id?: string
+          bidder_id?: string
+          created_at?: string
+          id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flash_bids_availability_id_fkey"
+            columns: ["availability_id"]
+            isOneToOne: false
+            referencedRelation: "artist_availability"
             referencedColumns: ["id"]
           },
         ]

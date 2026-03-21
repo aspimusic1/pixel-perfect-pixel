@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Search, MapPin, Send, ArrowRight, Mic2, Calendar, Phone, Mail, Globe, Lock, Shield, CheckCircle, Clock, CalendarDays, Building2 } from "lucide-react";
 import { format, parseISO, startOfToday } from "date-fns";
 import VenueClaimDialog from "@/components/VenueClaimDialog";
+import FlashBidBadge from "@/components/FlashBidBadge";
 
 type Profile = {
   id: string;
@@ -127,6 +128,52 @@ async function fetchUserClaims(userId: string) {
   return new Set((data ?? []).map((c: any) => c.venue_id));
 }
 
+type FlashBidInfo = {
+  artist_id: string;
+  flash_bid_deadline: string;
+  bid_count: number;
+};
+
+async function fetchFlashBids() {
+  const today = startOfToday().toISOString().split("T")[0];
+  // Get availability entries with flash bids enabled
+  const { data: avail } = await (supabase
+    .from("artist_availability") as any)
+    .select("id, artist_id, flash_bid_deadline")
+    .eq("is_available", true)
+    .eq("flash_bid_enabled", true)
+    .gte("date", today);
+
+  if (!avail || avail.length === 0) return new Map<string, FlashBidInfo>();
+
+  // Get bid counts per availability
+  const availIds = (avail as any[]).map((a: any) => a.id as string);
+  const { data: bids } = await (supabase
+    .from("flash_bids" as any)
+    .select("availability_id, id") as any)
+    .eq("status", "active")
+    .in("availability_id", availIds);
+
+  const bidCounts = new Map<string, number>();
+  ((bids as any[]) ?? []).forEach((b: any) => {
+    bidCounts.set(b.availability_id, (bidCounts.get(b.availability_id) ?? 0) + 1);
+  });
+
+  const result = new Map<string, FlashBidInfo>();
+  (avail as any[]).forEach((a: any) => {
+    // Only keep the soonest deadline per artist
+    const existing = result.get(a.artist_id);
+    if (!existing || new Date(a.flash_bid_deadline) < new Date(existing.flash_bid_deadline)) {
+      result.set(a.artist_id, {
+        artist_id: a.artist_id,
+        flash_bid_deadline: a.flash_bid_deadline,
+        bid_count: bidCounts.get(a.id) ?? 0,
+      });
+    }
+  });
+  return result;
+}
+
 export default function Directory({ initialRole = "" }: { initialRole?: string }) {
   const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
   const [search, setSearch] = useState("");
@@ -189,6 +236,13 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
     queryFn: () => fetchUserClaims(user!.id),
     enabled: !!user,
     staleTime: 60_000,
+  });
+
+  const { data: flashBids = new Map<string, FlashBidInfo>() } = useQuery({
+    queryKey: ["directory-flash-bids"],
+    queryFn: fetchFlashBids,
+    enabled: showArtists || showProfiles,
+    staleTime: 30_000,
   });
 
   const loading = (showProfiles && profilesLoading) || (showArtists && artistsLoading) || (showVenues && venuesLoading);
@@ -346,6 +400,15 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
                           )}
                         </div>
                       </div>
+                      {/* Flash bid badge */}
+                      {p.role === "artist" && p.id && flashBids.has(p.id) && (
+                        <div className="mb-2">
+                          <FlashBidBadge
+                            deadline={flashBids.get(p.id)!.flash_bid_deadline}
+                            bidCount={flashBids.get(p.id)!.bid_count}
+                          />
+                        </div>
+                      )}
                       {p.bio && <p className="text-xs text-muted-foreground line-clamp-2 mb-2 font-body">{p.bio}</p>}
                       <div className="flex items-center justify-between mt-3">
                         <div className="flex items-center gap-3 text-xs text-muted-foreground font-body">
