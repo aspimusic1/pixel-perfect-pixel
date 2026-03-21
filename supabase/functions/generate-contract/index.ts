@@ -172,7 +172,7 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════
     // PARTIES
     // ═══════════════════════════════════════════
-    y -= 22;
+    y -= 18;
     y = drawSectionLabel("PARTIES", y);
 
     const partiesHeight = artistLocation || promoterLocation ? 56 : 44;
