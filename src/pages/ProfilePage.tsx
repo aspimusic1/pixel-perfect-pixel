@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send } from "lucide-react";
+import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send, Users } from "lucide-react";
 import { toast } from "sonner";
 import { format, startOfToday, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
