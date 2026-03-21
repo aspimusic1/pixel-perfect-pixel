@@ -1155,6 +1155,13 @@ export type Database = {
             referencedRelation: "venue_listings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "venue_availability_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venue_listings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       venue_claims: {
@@ -1194,6 +1201,13 @@ export type Database = {
             columns: ["venue_id"]
             isOneToOne: false
             referencedRelation: "venue_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "venue_claims_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venue_listings_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1288,6 +1302,13 @@ export type Database = {
             referencedRelation: "venue_listings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "venue_photos_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venue_listings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
@@ -1345,6 +1366,54 @@ export type Database = {
           subscription_plan?: string | null
           updated_at?: string | null
           user_id?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      venue_listings_public: {
+        Row: {
+          address: string | null
+          amenities: string[] | null
+          capacity: number | null
+          city: string | null
+          claim_status: string | null
+          claimed_by: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          name: string | null
+          region: string | null
+          state: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          amenities?: string[] | null
+          capacity?: number | null
+          city?: string | null
+          claim_status?: string | null
+          claimed_by?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          name?: string | null
+          region?: string | null
+          state?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          amenities?: string[] | null
+          capacity?: number | null
+          city?: string | null
+          claim_status?: string | null
+          claimed_by?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          name?: string | null
+          region?: string | null
+          state?: string | null
           website?: string | null
         }
         Relationships: []
