@@ -432,7 +432,8 @@ export default function OfferFlow() {
                 <ReviewRow label="Venue" value={venueName} />
                 <ReviewRow label="Date" value={eventDate ? format(eventDate, "MMMM d, yyyy") : "—"} />
                 {eventTime && <ReviewRow label="Time" value={eventTime} />}
-                <ReviewRow label="Guarantee" value={`$${guaranteeNum.toLocaleString()}`} />
+                <ReviewRow label="Guarantee" value={`${currencyInfo.symbol}${guaranteeNum.toLocaleString()}${currency !== "USD" ? ` (≈ $${guaranteeUsd.toLocaleString(undefined, { maximumFractionDigits: 0 })} USD)` : ""}`} />
+                <ReviewRow label="Currency" value={`${currencyInfo.flag} ${currency}`} />
                 {doorSplit && <ReviewRow label="Door split" value={`${doorSplit}%`} />}
                 {merchSplit && <ReviewRow label="Merch split" value={`${merchSplit}%`} />}
                 {hospitality && <ReviewRow label="Hospitality" value={hospitality} />}
@@ -441,11 +442,17 @@ export default function OfferFlow() {
                 <div className="border-t border-border pt-3 mt-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Platform fee</span>
-                    <span className="text-destructive font-medium">-${commission.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                    <span className="text-destructive font-medium">-{currencyInfo.symbol}{(guaranteeNum * commissionRate).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                   </div>
+                  {currency !== "USD" && (
+                    <div className="flex justify-between text-xs mt-0.5">
+                      <span className="text-muted-foreground">≈ ${commission.toLocaleString(undefined, { minimumFractionDigits: 2 })} USD</span>
+                      <span />
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm mt-1">
                     <span className="font-semibold">Artist receives</span>
-                    <span className="font-bold text-primary">${artistPayout.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                    <span className="font-bold text-primary">{currencyInfo.symbol}{artistPayout.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
