@@ -8,6 +8,7 @@ import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, Chevron
 import SignContractDialog from "@/components/SignContractDialog";
 import NegotiationThread from "@/components/NegotiationThread";
 import RecommendedArtists from "@/components/RecommendedArtists";
+import AttendanceReportDialog from "@/components/AttendanceReportDialog";
 import { openSignedContract } from "@/lib/db-call";
 
 type Offer = {
