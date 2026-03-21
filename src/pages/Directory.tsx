@@ -157,10 +157,17 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
   });
 
   const { data: artistListings = [], isLoading: artistsLoading } = useQuery<ArtistListing[]>({
-    queryKey: ["directory-artists", debouncedSearch],
-    queryFn: () => fetchArtistListings(debouncedSearch),
+    queryKey: ["directory-artists", debouncedSearch, genreFilter],
+    queryFn: () => fetchArtistListings(debouncedSearch, genreFilter),
     enabled: showArtists,
     staleTime: 30_000,
+  });
+
+  const { data: artistGenres = [] } = useQuery<string[]>({
+    queryKey: ["directory-artist-genres"],
+    queryFn: fetchArtistGenres,
+    enabled: showArtists,
+    staleTime: 120_000,
   });
 
   const { data: venueListings = [], isLoading: venuesLoading } = useQuery<VenueListing[]>({
