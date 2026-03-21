@@ -10,7 +10,6 @@ import VenueClaimDialog from "@/components/VenueClaimDialog";
 
 type Profile = {
   id: string;
-  user_id: string;
   display_name: string | null;
   role: string | null;
   city: string | null;
@@ -18,6 +17,8 @@ type Profile = {
   genre: string | null;
   bio: string | null;
   avatar_url: string | null;
+  slug: string | null;
+  is_verified: boolean | null;
 };
 
 type ArtistListing = {
@@ -80,14 +81,14 @@ export default function Directory() {
       setLoading(true);
 
       // Fetch user profiles
-      let profileQuery = supabase.from("profiles").select("*").eq("profile_complete", true);
+      let profileQuery = supabase.from("public_profiles" as any).select("*");
       if (roleFilter && roleFilter !== "venue") profileQuery = profileQuery.eq("role", roleFilter as any);
       if (roleFilter === "venue") {
         // When venue tab is active, don't show user profiles — show venue listings instead
         setProfiles([]);
       } else {
-        const { data: profileData } = await profileQuery.order("created_at", { ascending: false });
-        setProfiles((profileData as Profile[]) ?? []);
+        const { data: profileData } = await profileQuery.order("created_at" as any, { ascending: false });
+        setProfiles((profileData as unknown as Profile[]) ?? []);
       }
 
       // Fetch artist listings (only when showing "All" or "Artists")
@@ -308,7 +309,7 @@ export default function Directory() {
                           {p.genre && <span>{p.genre}</span>}
                         </div>
                         {p.role === "artist" && (
-                          <Link to={`/offer?artist=${p.user_id}`}>
+                          <Link to={`/offer?artist=${p.id}`}>
                             <Button size="sm" variant="outline" className="h-7 text-xs border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform">
                               <Send className="w-3 h-3 mr-1" /> Book
                             </Button>
