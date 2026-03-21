@@ -306,26 +306,26 @@ Deno.serve(async (req) => {
       if (offer.backline) addLines.push({ label: "Backline", value: offer.backline });
       if (offer.notes) addLines.push({ label: "Notes", value: offer.notes });
 
-      let totalH = 12;
+      let totalH = 10;
       const wrappedEntries: { label: string; lines: string[] }[] = [];
       for (const entry of addLines) {
-        const lines = wrapText(entry.value, 65);
+        const lines = wrapText(entry.value, 70);
         wrappedEntries.push({ label: entry.label, lines });
-        totalH += 16 + lines.length * 14 + 6;
+        totalH += 14 + lines.length * 12 + 4;
       }
 
       drawCard(y, totalH);
-      let ay = y - 14;
+      let ay = y - 12;
       for (const entry of wrappedEntries) {
-        page.drawText(entry.label, { x: margin + 16, y: ay, size: 8.5, font: helveticaBold, color: textMuted });
-        ay -= 14;
+        page.drawText(entry.label, { x: margin + 14, y: ay, size: 8, font: helveticaBold, color: textMuted });
+        ay -= 12;
         for (const line of entry.lines) {
-          page.drawText(line, { x: margin + 16, y: ay, size: 9, font: helvetica, color: white });
-          ay -= 14;
+          page.drawText(line, { x: margin + 14, y: ay, size: 8.5, font: helvetica, color: white });
+          ay -= 12;
         }
-        ay -= 4;
+        ay -= 2;
       }
-      y -= totalH + 16;
+      y -= totalH + 10;
     }
 
     // ═══════════════════════════════════════════
