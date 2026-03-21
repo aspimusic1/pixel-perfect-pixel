@@ -48,7 +48,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Fetch booking + offer data
     const { data: booking, error: bErr } = await supabase
       .from("bookings")
       .select("*, offers(*)")
@@ -64,7 +63,6 @@ Deno.serve(async (req) => {
 
     const offer = booking.offers;
 
-    // Fetch artist + promoter profiles
     const [artistRes, promoterRes] = await Promise.all([
       supabase.from("profiles").select("display_name, city, state").eq("user_id", booking.artist_id).single(),
       supabase.from("profiles").select("display_name, city, state").eq("user_id", booking.promoter_id).single(),
@@ -73,224 +71,300 @@ Deno.serve(async (req) => {
     const artistName = artistRes.data?.display_name ?? "Artist";
     const promoterName = promoterRes.data?.display_name ?? "Promoter";
     const artistLocation = [artistRes.data?.city, artistRes.data?.state].filter(Boolean).join(", ");
+    const promoterLocation = [promoterRes.data?.city, promoterRes.data?.state].filter(Boolean).join(", ");
 
-    // Generate PDF
+    // ─── Brand palette ───
+    const bgDark = rgb(0.02, 0.03, 0.05);       // #050810
+    const cardBg = rgb(0.055, 0.078, 0.125);     // #0E1420
+    const cardBg2 = rgb(0.078, 0.106, 0.157);    // #141B28
+    const lime = rgb(0.784, 1, 0.243);            // #C8FF3E
+    const limeDim = rgb(0.47, 0.6, 0.145);        // dimmed lime for subtle accents
+    const teal = rgb(0.243, 1, 0.745);            // #3EFFBE
+    const white = rgb(0.941, 0.949, 0.969);       // #F0F2F7
+    const textMuted = rgb(0.533, 0.573, 0.643);   // #8892A4
+    const textDim = rgb(0.353, 0.392, 0.471);     // #5A6478
+    const borderColor = rgb(0.15, 0.17, 0.21);
+    const destructive = rgb(1, 0.36, 0.36);        // #FF5C5C for fees
+
+    // ─── Create PDF ───
     const pdfDoc = await PDFDocument.create();
     const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const helveticaOblique = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
-    const page = pdfDoc.addPage([612, 792]); // Letter size
+    const page = pdfDoc.addPage([612, 792]);
     const { width, height } = page.getSize();
+    const margin = 48;
+    const contentWidth = width - margin * 2;
 
-    const dark = rgb(0.031, 0.047, 0.078); // #080C14
-    const lime = rgb(0.784, 1, 0.243); // #C8FF3E
-    const white = rgb(0.941, 0.949, 0.969); // #F0F2F7
-    const gray = rgb(0.533, 0.573, 0.643); // #8892A4
-    const lineColor = rgb(0.2, 0.22, 0.26);
+    // ─── Full-page dark background ───
+    page.drawRectangle({ x: 0, y: 0, width, height, color: bgDark });
 
-    // Dark background
-    page.drawRectangle({ x: 0, y: 0, width, height, color: dark });
+    // ─── Top accent bar (lime) ───
+    page.drawRectangle({ x: 0, y: height - 6, width, height: 6, color: lime });
 
-    let y = height - 60;
+    let y = height - 50;
 
-    // Header
-    page.drawText("GETBOOKED.LIVE", {
-      x: 50, y, size: 10, font: helveticaBold, color: lime,
+    // ─── Header section ───
+    // Logo text in bold lime
+    page.drawText("GETBOOKED", {
+      x: margin, y, size: 18, font: helveticaBold, color: lime,
+    });
+    const gbWidth = helveticaBold.widthOfTextAtSize("GETBOOKED", 18);
+    page.drawText(".LIVE", {
+      x: margin + gbWidth, y, size: 18, font: helveticaBold, color: white,
     });
 
-    y -= 12;
-    page.drawText("PERFORMANCE CONTRACT", {
-      x: 50, y, size: 10, font: helvetica, color: gray,
+    // Contract number right-aligned
+    const contractId = booking.id.substring(0, 8).toUpperCase();
+    const contractLabel = `#${contractId}`;
+    const contractLabelWidth = helvetica.widthOfTextAtSize(contractLabel, 9);
+    page.drawText(contractLabel, {
+      x: width - margin - contractLabelWidth, y: y + 2, size: 9, font: helvetica, color: textDim,
     });
 
-    y -= 40;
+    y -= 28;
+
+    // Title
     page.drawText("Performance Agreement", {
-      x: 50, y, size: 24, font: helveticaBold, color: white,
+      x: margin, y, size: 22, font: helveticaBold, color: white,
     });
-
-    y -= 20;
-    page.drawRectangle({ x: 50, y, width: width - 100, height: 1, color: lineColor });
-
-    y -= 30;
-    const contractDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-    page.drawText(`Date: ${contractDate}`, {
-      x: 50, y, size: 10, font: helvetica, color: gray,
-    });
-    page.drawText(`Contract #${booking.id.substring(0, 8).toUpperCase()}`, {
-      x: width - 250, y, size: 10, font: helvetica, color: gray,
-    });
-
-    // Parties section
-    y -= 40;
-    page.drawText("PARTIES", {
-      x: 50, y, size: 9, font: helveticaBold, color: lime,
-    });
-
-    y -= 22;
-    page.drawText("Artist / Performer", { x: 50, y, size: 9, font: helvetica, color: gray });
-    page.drawText("Promoter / Buyer", { x: 320, y, size: 9, font: helvetica, color: gray });
 
     y -= 16;
-    page.drawText(artistName, { x: 50, y, size: 13, font: helveticaBold, color: white });
-    page.drawText(promoterName, { x: 320, y, size: 13, font: helveticaBold, color: white });
+    const contractDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    page.drawText(`Issued ${contractDate}`, {
+      x: margin, y, size: 9, font: helveticaOblique, color: textDim,
+    });
 
-    if (artistLocation) {
-      y -= 14;
-      page.drawText(artistLocation, { x: 50, y, size: 9, font: helvetica, color: gray });
+    // ─── Divider ───
+    y -= 18;
+    page.drawRectangle({ x: margin, y, width: contentWidth, height: 1, color: borderColor });
+
+    // ─── Helper: draw section label with lime dot ───
+    function drawSectionLabel(label: string, yPos: number): number {
+      // Lime dot
+      page.drawCircle({ x: margin + 4, y: yPos + 3, size: 3, color: lime });
+      page.drawText(label, {
+        x: margin + 14, y: yPos, size: 8.5, font: helveticaBold, color: lime,
+      });
+      return yPos - 20;
     }
 
-    // Event details section
-    y -= 40;
-    page.drawRectangle({ x: 50, y: y - 5, width: width - 100, height: 1, color: lineColor });
-    y -= 25;
-    page.drawText("EVENT DETAILS", {
-      x: 50, y, size: 9, font: helveticaBold, color: lime,
+    // ─── Helper: draw a card background ───
+    function drawCard(yTop: number, cardHeight: number, bg = cardBg) {
+      const radius = 6;
+      // Rounded card approximation (rectangle with slight inset)
+      page.drawRectangle({
+        x: margin, y: yTop - cardHeight, width: contentWidth, height: cardHeight,
+        color: bg, borderColor: borderColor, borderWidth: 0.5,
+      });
+    }
+
+    // ─── Helper: draw key-value row ───
+    function drawKV(label: string, value: string, yPos: number, opts?: { valueColor?: typeof lime; valueSize?: number; valueFont?: typeof helveticaBold }) {
+      page.drawText(label, { x: margin + 16, y: yPos, size: 9, font: helvetica, color: textMuted });
+      page.drawText(value, {
+        x: margin + 160, y: yPos, size: opts?.valueSize ?? 10,
+        font: opts?.valueFont ?? helveticaBold, color: opts?.valueColor ?? white,
+      });
+      return yPos - 20;
+    }
+
+    // ═══════════════════════════════════════════
+    // PARTIES
+    // ═══════════════════════════════════════════
+    y -= 22;
+    y = drawSectionLabel("PARTIES", y);
+
+    const partiesHeight = artistLocation || promoterLocation ? 56 : 44;
+    drawCard(y, partiesHeight);
+
+    const partiesY = y - 18;
+    // Artist column
+    page.drawText("Artist / Performer", { x: margin + 16, y: partiesY, size: 8, font: helvetica, color: textDim });
+    page.drawText(artistName, { x: margin + 16, y: partiesY - 14, size: 12, font: helveticaBold, color: white });
+    if (artistLocation) {
+      page.drawText(artistLocation, { x: margin + 16, y: partiesY - 28, size: 8, font: helvetica, color: textMuted });
+    }
+
+    // Promoter column
+    const col2 = margin + contentWidth / 2 + 10;
+    page.drawText("Promoter / Buyer", { x: col2, y: partiesY, size: 8, font: helvetica, color: textDim });
+    page.drawText(promoterName, { x: col2, y: partiesY - 14, size: 12, font: helveticaBold, color: white });
+    if (promoterLocation) {
+      page.drawText(promoterLocation, { x: col2, y: partiesY - 28, size: 8, font: helvetica, color: textMuted });
+    }
+
+    // Vertical divider between parties
+    page.drawRectangle({
+      x: margin + contentWidth / 2, y: y - partiesHeight + 10, width: 1, height: partiesHeight - 20, color: borderColor,
     });
+
+    y -= partiesHeight + 16;
+
+    // ═══════════════════════════════════════════
+    // EVENT DETAILS
+    // ═══════════════════════════════════════════
+    y = drawSectionLabel("EVENT DETAILS", y);
 
     const eventDate = new Date(booking.event_date).toLocaleDateString("en-US", {
       weekday: "long", month: "long", day: "numeric", year: "numeric",
     });
 
-    const details = [
+    const eventRows = [
       ["Venue", booking.venue_name],
       ["Date", eventDate],
-      ...(booking.event_time ? [["Time", booking.event_time]] : []),
+      ...(booking.event_time ? [["Time", formatTime(booking.event_time)]] : []),
     ];
-
-    for (const [label, value] of details) {
-      y -= 22;
-      page.drawText(label, { x: 50, y, size: 9, font: helvetica, color: gray });
-      page.drawText(String(value), { x: 180, y, size: 11, font: helveticaBold, color: white });
+    const eventCardH = eventRows.length * 20 + 16;
+    drawCard(y, eventCardH);
+    let ey = y - 16;
+    for (const [label, value] of eventRows) {
+      ey = drawKV(label, String(value), ey);
     }
+    y -= eventCardH + 16;
 
-    // Financial terms
-    y -= 35;
-    page.drawRectangle({ x: 50, y: y - 5, width: width - 100, height: 1, color: lineColor });
-    y -= 25;
-    page.drawText("FINANCIAL TERMS", {
-      x: 50, y, size: 9, font: helveticaBold, color: lime,
-    });
+    // ═══════════════════════════════════════════
+    // FINANCIAL TERMS
+    // ═══════════════════════════════════════════
+    y = drawSectionLabel("FINANCIAL TERMS", y);
 
     const guarantee = Number(offer?.guarantee ?? booking.guarantee);
     const commissionRate = Number(offer?.commission_rate ?? 0.1);
     const commission = Math.floor(guarantee * commissionRate);
     const artistPayout = guarantee - commission;
 
-    const financials = [
-      ["Guarantee", `$${guarantee.toLocaleString()}`],
-      ...(offer?.door_split ? [["Door Split", `${offer.door_split}%`]] : []),
-      ...(offer?.merch_split ? [["Merch Split", `${offer.merch_split}%`]] : []),
-      ["Platform Fee", `${(commissionRate * 100).toFixed(0)}% ($${commission.toLocaleString()})`],
-      ["Artist Net Payout", `$${artistPayout.toLocaleString()}`],
+    const finRows = [
+      { label: "Guarantee", value: `$${guarantee.toLocaleString()}`, color: white },
+      ...(offer?.door_split ? [{ label: "Door Split", value: `${offer.door_split}%`, color: white }] : []),
+      ...(offer?.merch_split ? [{ label: "Merch Split", value: `${offer.merch_split}%`, color: white }] : []),
+      { label: "Platform Fee", value: `-$${commission.toLocaleString()} (${(commissionRate * 100).toFixed(0)}%)`, color: destructive },
     ];
-
-    for (const [label, value] of financials) {
-      y -= 22;
-      page.drawText(label, { x: 50, y, size: 9, font: helvetica, color: gray });
-      const isNet = label === "Artist Net Payout";
-      page.drawText(String(value), {
-        x: 180, y, size: isNet ? 13 : 11,
-        font: isNet ? helveticaBold : helveticaBold,
-        color: isNet ? lime : white,
-      });
+    const finCardH = (finRows.length + 1) * 20 + 26; // +1 for payout + divider
+    drawCard(y, finCardH, cardBg2);
+    let fy = y - 16;
+    for (const row of finRows) {
+      fy = drawKV(row.label, row.value, fy, { valueColor: row.color });
     }
-
-    // Deposit terms
-    y -= 35;
-    page.drawRectangle({ x: 50, y: y - 5, width: width - 100, height: 1, color: lineColor });
-    y -= 25;
-    page.drawText("DEPOSIT & PAYMENT TERMS", {
-      x: 50, y, size: 9, font: helveticaBold, color: lime,
+    // Divider before net payout
+    fy -= 4;
+    page.drawRectangle({ x: margin + 16, y: fy + 8, width: contentWidth - 32, height: 1, color: borderColor });
+    fy -= 8;
+    fy = drawKV("Artist Net Payout", `$${artistPayout.toLocaleString()}`, fy, {
+      valueColor: lime, valueSize: 13, valueFont: helveticaBold,
     });
+    y -= finCardH + 16;
+
+    // ═══════════════════════════════════════════
+    // DEPOSIT & PAYMENT
+    // ═══════════════════════════════════════════
+    y = drawSectionLabel("DEPOSIT & PAYMENT", y);
 
     const deposit = Math.round(guarantee * 0.5);
     const depositTerms = [
-      `50% deposit ($${deposit.toLocaleString()}) due within 14 days of signing.`,
-      `Remaining balance ($${(guarantee - deposit).toLocaleString()}) due on the day of the event.`,
-      `All payments processed through GetBooked.Live platform.`,
+      `50% deposit ($${deposit.toLocaleString()}) due within 14 days of signing`,
+      `Remaining balance ($${(guarantee - deposit).toLocaleString()}) due on event day`,
+      `All payments processed through GetBooked.Live`,
     ];
-
+    const depCardH = depositTerms.length * 16 + 16;
+    drawCard(y, depCardH);
+    let dy = y - 14;
     for (const line of depositTerms) {
-      y -= 18;
-      page.drawText(`•  ${line}`, { x: 55, y, size: 9, font: helvetica, color: white });
+      page.drawText("•", { x: margin + 16, y: dy, size: 8, font: helveticaBold, color: limeDim });
+      page.drawText(line, { x: margin + 28, y: dy, size: 8.5, font: helvetica, color: white });
+      dy -= 16;
     }
+    y -= depCardH + 16;
 
-    // Cancellation policy
-    y -= 35;
-    page.drawRectangle({ x: 50, y: y - 5, width: width - 100, height: 1, color: lineColor });
-    y -= 25;
-    page.drawText("CANCELLATION POLICY", {
-      x: 50, y, size: 9, font: helveticaBold, color: lime,
-    });
+    // ═══════════════════════════════════════════
+    // CANCELLATION POLICY
+    // ═══════════════════════════════════════════
+    y = drawSectionLabel("CANCELLATION POLICY", y);
 
-    const cancellation = [
-      "30+ days before event: Full deposit refund.",
-      "15-29 days before event: 50% deposit retained.",
-      "Under 15 days: Full deposit non-refundable.",
-      "Artist cancellation: Full deposit returned, plus 10% penalty.",
+    const cancelTerms = [
+      "30+ days notice: Full deposit refund",
+      "15–29 days notice: 50% deposit retained",
+      "Under 15 days: Full deposit non-refundable",
+      "Artist cancellation: Deposit returned + 10% penalty",
     ];
-
-    for (const line of cancellation) {
-      y -= 18;
-      page.drawText(`•  ${line}`, { x: 55, y, size: 9, font: helvetica, color: white });
+    const cancelCardH = cancelTerms.length * 16 + 16;
+    drawCard(y, cancelCardH);
+    let cy = y - 14;
+    for (const line of cancelTerms) {
+      page.drawText("•", { x: margin + 16, y: cy, size: 8, font: helveticaBold, color: limeDim });
+      page.drawText(line, { x: margin + 28, y: cy, size: 8.5, font: helvetica, color: white });
+      cy -= 16;
     }
+    y -= cancelCardH + 16;
 
-    // Hospitality / backline notes
-    if (offer?.hospitality || offer?.backline) {
-      y -= 35;
-      page.drawRectangle({ x: 50, y: y - 5, width: width - 100, height: 1, color: lineColor });
-      y -= 25;
-      page.drawText("ADDITIONAL TERMS", {
-        x: 50, y, size: 9, font: helveticaBold, color: lime,
-      });
+    // ═══════════════════════════════════════════
+    // ADDITIONAL TERMS (if any)
+    // ═══════════════════════════════════════════
+    if (offer?.hospitality || offer?.backline || offer?.notes) {
+      y = drawSectionLabel("ADDITIONAL TERMS", y);
 
-      if (offer.hospitality) {
-        y -= 20;
-        page.drawText("Hospitality:", { x: 50, y, size: 9, font: helveticaBold, color: gray });
-        y -= 16;
-        // Wrap text at ~80 chars
-        const hospLines = wrapText(offer.hospitality, 80);
-        for (const line of hospLines) {
-          page.drawText(line, { x: 55, y, size: 9, font: helvetica, color: white });
-          y -= 14;
-        }
+      const addLines: { label: string; value: string }[] = [];
+      if (offer.hospitality) addLines.push({ label: "Hospitality", value: offer.hospitality });
+      if (offer.backline) addLines.push({ label: "Backline", value: offer.backline });
+      if (offer.notes) addLines.push({ label: "Notes", value: offer.notes });
+
+      let totalH = 12;
+      const wrappedEntries: { label: string; lines: string[] }[] = [];
+      for (const entry of addLines) {
+        const lines = wrapText(entry.value, 65);
+        wrappedEntries.push({ label: entry.label, lines });
+        totalH += 16 + lines.length * 14 + 6;
       }
 
-      if (offer.backline) {
-        y -= 8;
-        page.drawText("Backline provided:", { x: 50, y, size: 9, font: helveticaBold, color: gray });
-        y -= 16;
-        const blLines = wrapText(offer.backline, 80);
-        for (const line of blLines) {
-          page.drawText(line, { x: 55, y, size: 9, font: helvetica, color: white });
-          y -= 14;
+      drawCard(y, totalH);
+      let ay = y - 14;
+      for (const entry of wrappedEntries) {
+        page.drawText(entry.label, { x: margin + 16, y: ay, size: 8.5, font: helveticaBold, color: textMuted });
+        ay -= 14;
+        for (const line of entry.lines) {
+          page.drawText(line, { x: margin + 16, y: ay, size: 9, font: helvetica, color: white });
+          ay -= 14;
         }
+        ay -= 4;
       }
+      y -= totalH + 16;
     }
 
-    // Signature section
-    y -= 40;
-    page.drawRectangle({ x: 50, y: y - 5, width: width - 100, height: 1, color: lineColor });
-    y -= 30;
-    page.drawText("SIGNATURES", {
-      x: 50, y, size: 9, font: helveticaBold, color: lime,
+    // ═══════════════════════════════════════════
+    // SIGNATURES
+    // ═══════════════════════════════════════════
+    // Ensure enough room — if y is too low, don't draw (single page constraint)
+    if (y > 80) {
+      y -= 6;
+      page.drawRectangle({ x: margin, y, width: contentWidth, height: 1, color: borderColor });
+      y -= 28;
+
+      const sigLineWidth = (contentWidth - 40) / 2;
+
+      // Artist signature
+      page.drawRectangle({ x: margin, y, width: sigLineWidth, height: 1, color: textDim });
+      page.drawText(artistName, { x: margin, y: y - 14, size: 9, font: helveticaBold, color: white });
+      page.drawText("Artist / Performer", { x: margin, y: y - 26, size: 7.5, font: helvetica, color: textDim });
+
+      // Promoter signature
+      const sig2x = margin + sigLineWidth + 40;
+      page.drawRectangle({ x: sig2x, y, width: sigLineWidth, height: 1, color: textDim });
+      page.drawText(promoterName, { x: sig2x, y: y - 14, size: 9, font: helveticaBold, color: white });
+      page.drawText("Promoter / Buyer", { x: sig2x, y: y - 26, size: 7.5, font: helvetica, color: textDim });
+    }
+
+    // ─── Footer bar ───
+    page.drawRectangle({ x: 0, y: 0, width, height: 28, color: cardBg });
+    page.drawRectangle({ x: 0, y: 28, width, height: 1, color: borderColor });
+
+    const footerText = "Generated by GetBooked.Live  —  The music booking marketplace";
+    const footerWidth = helvetica.widthOfTextAtSize(footerText, 7);
+    page.drawText(footerText, {
+      x: (width - footerWidth) / 2, y: 10, size: 7, font: helvetica, color: textDim,
     });
 
-    y -= 30;
-    // Artist signature line
-    page.drawRectangle({ x: 50, y, width: 200, height: 1, color: gray });
-    page.drawText(artistName, { x: 50, y: y - 14, size: 9, font: helvetica, color: gray });
-    page.drawText("Artist / Performer", { x: 50, y: y - 26, size: 8, font: helvetica, color: gray });
-
-    // Promoter signature line
-    page.drawRectangle({ x: 320, y, width: 200, height: 1, color: gray });
-    page.drawText(promoterName, { x: 320, y: y - 14, size: 9, font: helvetica, color: gray });
-    page.drawText("Promoter / Buyer", { x: 320, y: y - 26, size: 8, font: helvetica, color: gray });
-
-    // Footer
-    page.drawText("Generated by GetBooked.Live — The music booking marketplace", {
-      x: 50, y: 30, size: 7, font: helvetica, color: gray,
-    });
+    // Small lime accent dot in footer
+    page.drawCircle({ x: margin, y: 14, size: 2, color: lime });
 
     const pdfBytes = await pdfDoc.save();
 
@@ -312,11 +386,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Get public URL
     const { data: urlData } = supabase.storage.from("contracts").getPublicUrl(filePath);
     const contractUrl = urlData.publicUrl;
 
-    // Update booking with contract URL
     await supabase
       .from("bookings")
       .update({ contract_url: contractUrl })
@@ -347,4 +419,12 @@ function wrapText(text: string, maxChars: number): string[] {
   }
   if (current.trim()) lines.push(current.trim());
   return lines;
+}
+
+function formatTime(time: string): string {
+  const [h, m] = time.split(":");
+  const hour = parseInt(h, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const h12 = hour % 12 || 12;
+  return `${h12}:${m} ${ampm}`;
 }
