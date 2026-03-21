@@ -97,8 +97,10 @@ export default function OfferFlow() {
   }, [venueName, eventDate, eventTime, guarantee, doorSplit, merchSplit, hospitality, backline, notes, draftKey]);
 
   const guaranteeNum = parseFloat(guarantee) || 0;
-  const commission = guaranteeNum * commissionRate;
-  const artistPayout = guaranteeNum - commission;
+  const guaranteeUsd = guaranteeNum * (FX_TO_USD[currency] ?? 1);
+  const commission = guaranteeUsd * commissionRate;
+  const artistPayout = guaranteeNum - (guaranteeNum * commissionRate);
+  const currencyInfo = CURRENCIES.find(c => c.code === currency) ?? CURRENCIES[0];
 
   useEffect(() => {
     const fetchArtists = async () => {
