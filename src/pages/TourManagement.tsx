@@ -267,7 +267,74 @@ export default function TourManagement() {
                 <h2 className="font-display font-semibold">Itinerary</h2>
                 <p className="text-xs text-muted-foreground">{stops.length} stop{stops.length !== 1 ? "s" : ""} · ${totalGuarantees.toLocaleString()} total guarantees</p>
               </div>
-              <Button size="sm" onClick={addStop} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform"><Plus className="w-3.5 h-3.5 mr-1" /> Add Stop</Button>
+              <div className="flex gap-2">
+                {stops.length >= 2 && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={optimizing}
+                    onClick={async () => {
+                      setOptimizing(true);
+                      try {
+                        const { data, error } = await supabase.functions.invoke("optimize-tour", {
+                          body: { stops: stops.map((s) => ({ venue_name: s.venue_name, city: s.city, state: s.state, date: s.date })) },
+                        });
+                        if (error) throw error;
+                        setOptimization(data);
+                        toast.success("Tour optimization complete!");
+                      } catch (err: any) {
+                        toast.error(err.message || "Optimization failed");
+                      } finally {
+                        setOptimizing(false);
+                      }
+                    }}
+                    className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform"
+                  >
+                    {optimizing ? <SpinnerIcon className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 mr-1" />}
+                    Optimise Tour
+                  </Button>
+                )}
+                <Button size="sm" onClick={addStop} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform"><Plus className="w-3.5 h-3.5 mr-1" /> Add Stop</Button>
+              </div>
+            </div>
+
+            {/* Optimization Results */}
+            {optimization && (
+              <div className="rounded-xl bg-card border border-primary/20 p-4 mb-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-syne font-semibold text-sm flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary" /> Route Optimization</h3>
+                  <button onClick={() => setOptimization(null)} className="text-xs text-muted-foreground hover:text-foreground">Dismiss</button>
+                </div>
+                <p className="text-xs text-muted-foreground mb-3">{optimization.summary}</p>
+                {optimization.savings_pct > 0 && (
+                  <p className="text-xs text-primary font-medium mb-2">
+                    Estimated {optimization.savings_pct}% travel savings ({optimization.total_current_miles?.toLocaleString()} → {optimization.total_optimized_miles?.toLocaleString()} miles)
+                  </p>
+                )}
+                {optimization.optimized_order && (
+                  <div className="space-y-1.5 mb-3">
+                    {optimization.optimized_order.map((stop: any, i: number) => (
+                      <div key={i} className="flex items-center gap-2 text-xs">
+                        <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center shrink-0">{i + 1}</span>
+                        <span className="text-foreground">{stop.venue_name}</span>
+                        <span className="text-muted-foreground">· {stop.city}, {stop.state}</span>
+                        <span className={cn("text-[10px] px-1.5 py-0 rounded", stop.travel_mode === "fly" ? "bg-blue-500/10 text-blue-400" : "bg-green-500/10 text-green-400")}>
+                          {stop.travel_mode} · {stop.distance_miles}mi
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {optimization.gap_opportunities?.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Gap Opportunities</p>
+                    {optimization.gap_opportunities.map((gap: any, i: number) => (
+                      <p key={i} className="text-xs text-muted-foreground">{gap.suggestion}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             </div>
             {stops.length === 0 ? (
               <div className="rounded-xl bg-card border border-border p-8 text-center text-muted-foreground text-sm">No stops added yet.</div>
