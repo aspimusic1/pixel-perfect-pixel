@@ -16,6 +16,8 @@ type Offer = {
   event_date: string;
   event_time: string | null;
   guarantee: number;
+  door_split: number | null;
+  merch_split: number | null;
   commission_amount: number | null;
   status: string;
   sender_id: string;
