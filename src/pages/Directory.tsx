@@ -10,6 +10,8 @@ import { Search, MapPin, Send, ArrowRight, Mic2, Calendar, Globe, Shield, CheckC
 import { format, parseISO, startOfToday } from "date-fns";
 import VenueClaimDialog from "@/components/VenueClaimDialog";
 import FlashBidBadge from "@/components/FlashBidBadge";
+import UpgradeWall from "@/components/UpgradeWall";
+import UpgradeOfferModal from "@/components/UpgradeOfferModal";
 
 type Profile = {
   id: string;
