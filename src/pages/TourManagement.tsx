@@ -405,6 +405,18 @@ export default function TourManagement() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {editingStop && (
+        <EditStopDialog
+          stop={editingStop}
+          open={!!editingStop}
+          onOpenChange={(open) => { if (!open) setEditingStop(null); }}
+          onSaved={(updates) => {
+            setStops(stops.map((s) => (s.id === editingStop.id ? { ...s, ...updates } : s)));
+            setEditingStop(null);
+          }}
+        />
+      )}
     </div>
   );
 }
