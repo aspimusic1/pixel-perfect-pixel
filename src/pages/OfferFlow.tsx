@@ -301,6 +301,16 @@ export default function OfferFlow() {
             <div>
               <h2 className="font-display font-semibold text-lg mb-1">Set the deal terms</h2>
               <p className="text-sm text-muted-foreground mb-4">Enter the financial details for this offer.</p>
+
+              {/* AI Offer Intelligence */}
+              {recipientId && (
+                <OfferIntelligence
+                  artistId={recipientId}
+                  genre={artists.find((a) => a.user_id === recipientId)?.genre ?? null}
+                  city={artists.find((a) => a.user_id === recipientId)?.city ?? null}
+                />
+              )}
+
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm">Guarantee ($)</Label>
