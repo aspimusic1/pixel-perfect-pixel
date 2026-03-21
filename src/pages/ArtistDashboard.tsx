@@ -3,9 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine } from "lucide-react";
 import { toast } from "sonner";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
+import SignContractDialog from "@/components/SignContractDialog";
 
 type Offer = {
   id: string;
@@ -38,6 +39,22 @@ export default function ArtistDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [generatingContract, setGeneratingContract] = useState<string | null>(null);
+  const [signatures, setSignatures] = useState<Record<string, string[]>>({});
+  const [signDialogBooking, setSignDialogBooking] = useState<{ id: string; venueName: string; eventDate: string; guarantee: number } | null>(null);
+
+  const fetchSignatures = async (bookingIds: string[]) => {
+    if (bookingIds.length === 0) return;
+    const { data } = await supabase
+      .from("contract_signatures")
+      .select("booking_id, user_id")
+      .in("booking_id", bookingIds);
+    const sigMap: Record<string, string[]> = {};
+    (data ?? []).forEach((s: any) => {
+      if (!sigMap[s.booking_id]) sigMap[s.booking_id] = [];
+      sigMap[s.booking_id].push(s.user_id);
+    });
+    setSignatures(sigMap);
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -47,7 +64,9 @@ export default function ArtistDashboard() {
         supabase.from("bookings").select("id, offer_id, contract_url, status").eq("artist_id", user.id),
       ]);
       setOffers((offersRes.data as Offer[]) ?? []);
-      setBookings((bookingsRes.data as Booking[]) ?? []);
+      const bks = (bookingsRes.data as Booking[]) ?? [];
+      setBookings(bks);
+      await fetchSignatures(bks.map((b) => b.id));
       setLoading(false);
     };
     fetchData();
@@ -223,6 +242,25 @@ export default function ArtistDashboard() {
                               <Download className="w-3.5 h-3.5 mr-1" /> Download
                             </a>
                           </Button>
+                          {/* Sign button */}
+                          {user && signatures[booking.id]?.includes(user.id) ? (
+                            <div className="flex items-center gap-1.5 text-xs text-[hsl(var(--primary))] font-medium px-3 py-1.5 rounded-md bg-[hsl(var(--primary))]/10 border border-[hsl(var(--primary))]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
+                              <CheckCircle className="w-3.5 h-3.5" /> Signed
+                            </div>
+                          ) : (
+                            <Button
+                              size="sm"
+                              className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                              onClick={() => setSignDialogBooking({
+                                id: booking.id,
+                                venueName: offer.venue_name,
+                                eventDate: offer.event_date,
+                                guarantee: offer.guarantee,
+                              })}
+                            >
+                              <PenLine className="w-3.5 h-3.5 mr-1" /> Sign Contract
+                            </Button>
+                          )}
                         </>
                       ) : (
                         <Button
@@ -259,6 +297,26 @@ export default function ArtistDashboard() {
           </div>
         )}
       </div>
+
+      {/* Sign Contract Dialog */}
+      {signDialogBooking && (
+        <SignContractDialog
+          open={!!signDialogBooking}
+          onOpenChange={(open) => { if (!open) setSignDialogBooking(null); }}
+          bookingId={signDialogBooking.id}
+          venueName={signDialogBooking.venueName}
+          eventDate={signDialogBooking.eventDate}
+          guarantee={signDialogBooking.guarantee}
+          onSigned={() => {
+            if (user) {
+              setSignatures((prev) => ({
+                ...prev,
+                [signDialogBooking.id]: [...(prev[signDialogBooking.id] ?? []), user.id],
+              }));
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
