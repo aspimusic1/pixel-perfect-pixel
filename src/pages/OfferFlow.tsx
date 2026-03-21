@@ -10,9 +10,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarIcon, ArrowLeft, ArrowRight, Check, DollarSign, Music, MapPin, Clock } from "lucide-react";
+import { CalendarIcon, ArrowLeft, ArrowRight, Check, DollarSign, Music, MapPin, Clock, Globe } from "lucide-react";
 import { toast } from "sonner";
 import OfferIntelligence from "@/components/OfferIntelligence";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type ArtistOption = { user_id: string; display_name: string | null; genre: string | null; city: string | null };
 
@@ -26,6 +27,23 @@ const STEPS = [
 ];
 
 const RATE_MAP: Record<string, number> = { free: 0.20, pro: 0.10, agency: 0.06 };
+
+const CURRENCIES = [
+  { code: "USD", symbol: "$", label: "US Dollar", flag: "🇺🇸" },
+  { code: "GBP", symbol: "£", label: "British Pound", flag: "🇬🇧" },
+  { code: "EUR", symbol: "€", label: "Euro", flag: "🇪🇺" },
+  { code: "CAD", symbol: "C$", label: "Canadian Dollar", flag: "🇨🇦" },
+  { code: "AUD", symbol: "A$", label: "Australian Dollar", flag: "🇦🇺" },
+] as const;
+
+// Rates relative to 1 USD (approximate)
+const FX_TO_USD: Record<string, number> = {
+  USD: 1,
+  GBP: 1.27,
+  EUR: 1.09,
+  CAD: 0.74,
+  AUD: 0.66,
+};
 
 export default function OfferFlow() {
   const { user } = useAuth();
@@ -51,6 +69,7 @@ export default function OfferFlow() {
   const [backline, setBackline] = useState("");
   const [notes, setNotes] = useState("");
   const [commissionRate, setCommissionRate] = useState(0.20);
+  const [currency, setCurrency] = useState("USD");
   // Restore draft from localStorage
   const draftKey = `offer-draft-${recipientId || "new"}`;
   useEffect(() => {
@@ -78,8 +97,10 @@ export default function OfferFlow() {
   }, [venueName, eventDate, eventTime, guarantee, doorSplit, merchSplit, hospitality, backline, notes, draftKey]);
 
   const guaranteeNum = parseFloat(guarantee) || 0;
-  const commission = guaranteeNum * commissionRate;
-  const artistPayout = guaranteeNum - commission;
+  const guaranteeUsd = guaranteeNum * (FX_TO_USD[currency] ?? 1);
+  const commission = guaranteeUsd * commissionRate;
+  const artistPayout = guaranteeNum - (guaranteeNum * commissionRate);
+  const currencyInfo = CURRENCIES.find(c => c.code === currency) ?? CURRENCIES[0];
 
   useEffect(() => {
     const fetchArtists = async () => {
@@ -312,8 +333,25 @@ export default function OfferFlow() {
               )}
 
               <div className="space-y-4">
+                {/* Currency selector */}
                 <div>
-                  <Label className="text-sm">Guarantee ($)</Label>
+                  <Label className="text-sm flex items-center gap-1.5"><Globe className="w-3.5 h-3.5" /> Currency</Label>
+                  <Select value={currency} onValueChange={setCurrency}>
+                    <SelectTrigger className="mt-1.5 bg-background border-border">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CURRENCIES.map(c => (
+                        <SelectItem key={c.code} value={c.code}>
+                          {c.flag} {c.code} — {c.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm">Guarantee ({currencyInfo.symbol})</Label>
                   <Input type="number" min="0" step="50" value={guarantee} onChange={(e) => setGuarantee(e.target.value)} placeholder="2500" className="mt-1.5 bg-background border-border" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -333,16 +371,28 @@ export default function OfferFlow() {
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Commission Breakdown</h3>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Guarantee</span>
-                      <span className="font-medium">${guaranteeNum.toLocaleString()}</span>
+                      <span className="font-medium">{currencyInfo.symbol}{guaranteeNum.toLocaleString()}</span>
                     </div>
+                    {currency !== "USD" && (
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">≈ USD equivalent</span>
+                        <span className="text-muted-foreground">${guaranteeUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Platform fee ({(commissionRate * 100).toFixed(0)}%)</span>
-                      <span className="font-medium text-destructive">-${commission.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                      <span className="font-medium text-destructive">-{currencyInfo.symbol}{(guaranteeNum * commissionRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
+                    {currency !== "USD" && (
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">≈ ${commission.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD commission</span>
+                        <span />
+                      </div>
+                    )}
                     <div className="border-t border-border my-1" />
                     <div className="flex justify-between text-sm">
                       <span className="font-semibold">Artist payout</span>
-                      <span className="font-bold text-primary">${artistPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                      <span className="font-bold text-primary">{currencyInfo.symbol}{artistPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                   </div>
                 )}
@@ -382,7 +432,8 @@ export default function OfferFlow() {
                 <ReviewRow label="Venue" value={venueName} />
                 <ReviewRow label="Date" value={eventDate ? format(eventDate, "MMMM d, yyyy") : "—"} />
                 {eventTime && <ReviewRow label="Time" value={eventTime} />}
-                <ReviewRow label="Guarantee" value={`$${guaranteeNum.toLocaleString()}`} />
+                <ReviewRow label="Guarantee" value={`${currencyInfo.symbol}${guaranteeNum.toLocaleString()}${currency !== "USD" ? ` (≈ $${guaranteeUsd.toLocaleString(undefined, { maximumFractionDigits: 0 })} USD)` : ""}`} />
+                <ReviewRow label="Currency" value={`${currencyInfo.flag} ${currency}`} />
                 {doorSplit && <ReviewRow label="Door split" value={`${doorSplit}%`} />}
                 {merchSplit && <ReviewRow label="Merch split" value={`${merchSplit}%`} />}
                 {hospitality && <ReviewRow label="Hospitality" value={hospitality} />}
@@ -391,11 +442,17 @@ export default function OfferFlow() {
                 <div className="border-t border-border pt-3 mt-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Platform fee</span>
-                    <span className="text-destructive font-medium">-${commission.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                    <span className="text-destructive font-medium">-{currencyInfo.symbol}{(guaranteeNum * commissionRate).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                   </div>
+                  {currency !== "USD" && (
+                    <div className="flex justify-between text-xs mt-0.5">
+                      <span className="text-muted-foreground">≈ ${commission.toLocaleString(undefined, { minimumFractionDigits: 2 })} USD</span>
+                      <span />
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm mt-1">
                     <span className="font-semibold">Artist receives</span>
-                    <span className="font-bold text-primary">${artistPayout.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                    <span className="font-bold text-primary">{currencyInfo.symbol}{artistPayout.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
