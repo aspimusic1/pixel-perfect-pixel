@@ -55,6 +55,7 @@ export default function ArtistDashboard() {
   const [signDialogBooking, setSignDialogBooking] = useState<{ id: string; venueName: string; eventDate: string; guarantee: number } | null>(null);
   const [counterDialogOffer, setCounterDialogOffer] = useState<Offer | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [reviewOffer, setReviewOffer] = useState<Offer | null>(null);
 
   const fetchSignatures = async (bookingIds: string[]) => {
     if (bookingIds.length === 0) return;
