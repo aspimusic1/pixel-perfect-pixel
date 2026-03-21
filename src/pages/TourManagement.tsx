@@ -258,6 +258,7 @@ export default function TourManagement() {
               <TabsTrigger value="crew" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Users className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Crew</span></TabsTrigger>
               <TabsTrigger value="budget" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><DollarSign className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Budget</span></TabsTrigger>
               <TabsTrigger value="documents" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><FileText className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Docs</span></TabsTrigger>
+              <TabsTrigger value="transport" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Car className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Transport</span></TabsTrigger>
             </TabsList>
           </div>
 
