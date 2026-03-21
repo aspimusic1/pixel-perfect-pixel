@@ -91,6 +91,41 @@ export type Database = {
           },
         ]
       }
+      contract_signatures: {
+        Row: {
+          booking_id: string
+          id: string
+          signature_data: string
+          signature_type: string
+          signed_at: string
+          user_id: string
+        }
+        Insert: {
+          booking_id: string
+          id?: string
+          signature_data: string
+          signature_type?: string
+          signed_at?: string
+          user_id: string
+        }
+        Update: {
+          booking_id?: string
+          id?: string
+          signature_data?: string
+          signature_type?: string
+          signed_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_signatures_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crew_members: {
         Row: {
           created_at: string
