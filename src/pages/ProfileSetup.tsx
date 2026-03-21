@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import ReelUploader from "@/components/ReelUploader";
 
 export default function ProfileSetup() {
   const { user, profile, refreshProfile } = useAuth();
