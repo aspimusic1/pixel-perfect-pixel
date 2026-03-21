@@ -7,12 +7,16 @@ import { CalendarDays, Check, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format, isSameDay, startOfToday } from "date-fns";
+import FlashBidToggle from "@/components/FlashBidToggle";
 
 type AvailabilityEntry = {
   id: string;
   date: string;
   is_available: boolean;
   notes: string | null;
+  flash_bid_enabled: boolean;
+  flash_bid_deadline: string | null;
+  flash_bid_min_price: number;
 };
 
 export default function AvailabilityCalendar() {
