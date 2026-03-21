@@ -197,7 +197,7 @@ export default function ArtistDashboard() {
                     </div>
                   </div>
 
-                  {/* Pending: Accept/Decline */}
+                  {/* Pending: Accept/Decline/Counter */}
                   {offer.status === "pending" && (
                     <div className="flex flex-col sm:flex-row gap-2">
                       <Button
@@ -210,12 +210,35 @@ export default function ArtistDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
+                        onClick={() => setCounterDialogOffer(offer)}
+                        className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                      >
+                        <ArrowRightLeft className="w-3.5 h-3.5 mr-1" /> Counter
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => handleRespond(offer.id, "declined")}
                         className="border-border hover:bg-destructive/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                       >
                         <XCircle className="w-3.5 h-3.5 mr-1" /> Decline
                       </Button>
                     </div>
+                  )}
+
+                  {/* Negotiating: show thread */}
+                  {offer.status === "negotiating" && (
+                    <NegotiationThread
+                      offerId={offer.id}
+                      offer={offer}
+                      onOfferUpdated={(newStatus, updatedTerms) => {
+                        setOffers((prev) => prev.map((o) =>
+                          o.id === offer.id
+                            ? { ...o, status: newStatus, ...(updatedTerms ?? {}) }
+                            : o
+                        ));
+                      }}
+                    />
                   )}
 
                   {/* Accepted: Contract button */}
