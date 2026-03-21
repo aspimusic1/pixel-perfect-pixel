@@ -181,7 +181,7 @@ Deno.serve(async (req) => {
     const partiesY = y - 14;
     // Artist column
     page.drawText("Artist / Performer", { x: margin + 16, y: partiesY, size: 8, font: helvetica, color: textDim });
-    page.drawText(artistName, { x: margin + 16, y: partiesY - 14, size: 12, font: helveticaBold, color: white });
+    page.drawText(artistName, { x: margin + 14, y: partiesY - 13, size: 11, font: helveticaBold, color: white });
     if (artistLocation) {
       page.drawText(artistLocation, { x: margin + 16, y: partiesY - 28, size: 8, font: helvetica, color: textMuted });
     }
