@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,7 +12,6 @@ import ArtistDashboard from "@/pages/ArtistDashboard";
 import PromoterDashboard from "@/pages/PromoterDashboard";
 import Directory from "@/pages/Directory";
 import Pricing from "@/pages/Pricing";
-import Venues from "@/pages/Venues";
 import OfferFlow from "@/pages/OfferFlow";
 import TourManagement from "@/pages/TourManagement";
 import VenueManage from "@/pages/VenueManage";
@@ -35,7 +34,7 @@ const App = () => (
             <Route path="/artist-dashboard" element={<ArtistDashboard />} />
             <Route path="/promoter-dashboard" element={<PromoterDashboard />} />
             <Route path="/directory" element={<Directory />} />
-            <Route path="/venues" element={<Venues />} />
+            <Route path="/venues" element={<Navigate to="/directory" replace />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/offer" element={<OfferFlow />} />
             <Route path="/tours" element={<TourManagement />} />
