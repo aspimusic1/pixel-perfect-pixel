@@ -211,14 +211,16 @@ export default function ArtistDashboard() {
                     <div className="flex flex-col sm:flex-row gap-2">
                       <Button
                         size="sm"
+                        disabled={actionLoading === offer.id}
                         onClick={() => handleRespond(offer.id, "accepted")}
                         className="bg-green-600 hover:bg-green-700 text-foreground active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                       >
-                        <CheckCircle className="w-3.5 h-3.5 mr-1" /> Accept
+                        {actionLoading === offer.id ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5 mr-1" />} Accept
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
+                        disabled={actionLoading === offer.id}
                         onClick={() => setCounterDialogOffer(offer)}
                         className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                       >
@@ -227,6 +229,7 @@ export default function ArtistDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
+                        disabled={actionLoading === offer.id}
                         onClick={() => handleRespond(offer.id, "declined")}
                         className="border-border hover:bg-destructive/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                       >
