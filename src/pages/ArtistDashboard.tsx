@@ -70,10 +70,12 @@ export default function ArtistDashboard() {
     if (!user) return;
     const fetchData = async () => {
       const [offersRes, bookingsRes] = await Promise.all([
-        supabase.from("offers").select("*").eq("recipient_id", user.id).order("created_at", { ascending: false }),
+        supabase.from("offers").select("*").eq("recipient_id", user.id).order("created_at", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1),
         supabase.from("bookings").select("id, offer_id, contract_url, status").eq("artist_id", user.id),
       ]);
-      setOffers((offersRes.data as Offer[]) ?? []);
+      const fetchedOffers = (offersRes.data as Offer[]) ?? [];
+      setHasMore(fetchedOffers.length === PAGE_SIZE);
+      setOffers(fetchedOffers);
       const bks = (bookingsRes.data as Booking[]) ?? [];
       setBookings(bks);
       await fetchSignatures(bks.map((b) => b.id));
