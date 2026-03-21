@@ -74,27 +74,29 @@ export default function Navbar() {
 
           {/* Desktop */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/directory" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">browse</Link>
-            <Link to="/trending" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">trending</Link>
-            <Link to="/pricing" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">pricing</Link>
+            <Link to="/directory" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.browse")}</Link>
+            <Link to="/trending" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.trending")}</Link>
+            <Link to="/pricing" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.pricing")}</Link>
             {user ? (
               <>
-                <Link to={dashboardRoute} className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">dashboard</Link>
-                {profile?.role === "promoter" && <Link to="/pipeline" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">pipeline</Link>}
-                {profile?.role === "artist" && <Link to="/tax" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">tax</Link>}
-                <Link to="/tours" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">tours</Link>
+                <Link to={dashboardRoute} className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.dashboard")}</Link>
+                {profile?.role === "promoter" && <Link to="/pipeline" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.pipeline")}</Link>}
+                {profile?.role === "artist" && <Link to="/tax" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.tax")}</Link>}
+                <Link to="/tours" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.tours")}</Link>
                 <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors">
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
                   )}
                 </button>
-                <Button size="sm" variant="ghost" onClick={signOut} className="text-xs lowercase">sign out</Button>
+                <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                <Button size="sm" variant="ghost" onClick={signOut} className="text-xs lowercase">{t("nav.signOut")}</Button>
               </>
             ) : (
               <>
-                <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs lowercase">sign in</Button></Link>
-                <Link to="/auth?tab=signup"><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase">start free</Button></Link>
+                <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs lowercase">{t("nav.signIn")}</Button></Link>
+                <Link to="/auth?tab=signup"><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase">{t("nav.startFree")}</Button></Link>
               </>
             )}
           </div>
