@@ -218,6 +218,17 @@ export default function ProfilePage() {
             </div>
           )}
 
+          {/* Attendance stats */}
+          {attendanceStats && profile?.role === "artist" && (
+            <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-[#FFB83E]/10 border border-[#FFB83E]/20">
+              <Users className="w-4 h-4 text-[#FFB83E]" />
+              <span className="text-xs font-medium text-[#FFB83E]">
+                Average draw: {attendanceStats.avg_min.toLocaleString()}–{attendanceStats.avg_max.toLocaleString()}
+              </span>
+              <span className="text-[10px] text-muted-foreground">({attendanceStats.shows} shows)</span>
+            </div>
+          )}
+
           {/* Social links */}
           <div className="flex items-center gap-2 mb-2">
             {profile?.website && (
