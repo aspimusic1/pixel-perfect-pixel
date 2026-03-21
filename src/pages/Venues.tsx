@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Phone, Mail, Globe, Lock, ArrowRight, Shield, CheckCircle, Clock } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Lock, ArrowRight, Shield, CheckCircle, Clock, CalendarDays } from "lucide-react";
+import { format, parseISO, isAfter, startOfToday } from "date-fns";
 import VenueClaimDialog from "@/components/VenueClaimDialog";
 
 type VenueListing = {
