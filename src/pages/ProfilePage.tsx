@@ -61,6 +61,7 @@ export default function ProfilePage() {
   const [notFound, setNotFound] = useState(false);
   const [availability, setAvailability] = useState<AvailDate[]>([]);
   const [attendanceStats, setAttendanceStats] = useState<AttendanceStats | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
     if (!slug) return;
