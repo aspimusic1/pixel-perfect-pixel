@@ -67,6 +67,7 @@ export default function Navbar() {
               <>
                 <Link to={dashboardRoute} className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">dashboard</Link>
                 {profile?.role === "promoter" && <Link to="/pipeline" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">pipeline</Link>}
+                {profile?.role === "artist" && <Link to="/tax" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">tax</Link>}
                 <Link to="/tours" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">tours</Link>
                 <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors">
                   <Bell className="w-4 h-4" />
