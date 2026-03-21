@@ -76,7 +76,7 @@ export default function PromoterDashboard() {
       setLoading(false);
     };
     fetchData();
-  }, [user]);
+  }, [user, page]);
 
   const getBookingForOffer = (offerId: string) => bookings.find((b) => b.offer_id === offerId);
 
