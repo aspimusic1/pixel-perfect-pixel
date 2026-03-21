@@ -63,13 +63,14 @@ const roleColorMap: Record<string, string> = {
 };
 
 // Query functions
-async function fetchProfiles(roleFilter: string, search: string) {
+async function fetchProfiles(roleFilter: string, search: string, city: string | null) {
   if (roleFilter === "venue") return [];
-  let query = supabase.from("public_profiles" as any).select("*");
-  if (roleFilter) query = query.eq("role", roleFilter as any);
-  if (search) query = query.ilike("display_name" as any, `%${search}%`);
-  const { data } = await query.order("created_at" as any, { ascending: false });
-  return (data as unknown as Profile[]) ?? [];
+  let query = supabase.from("public_profiles" as any).select("*") as any;
+  if (roleFilter) query = query.eq("role", roleFilter);
+  if (search) query = query.ilike("display_name", `%${search}%`);
+  if (city) query = query.eq("city", city);
+  const { data } = await query.order("created_at", { ascending: false });
+  return (data as Profile[]) ?? [];
 }
 
 async function fetchArtistListings(search: string, genre: string | null) {
@@ -93,13 +94,26 @@ async function fetchArtistGenres() {
   return Array.from(genres).sort();
 }
 
-async function fetchVenueListings(search: string) {
+async function fetchVenueListings(search: string, city: string | null) {
   let query = supabase
     .from("venue_listings_public" as any)
     .select("*");
   if (search) query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,region.ilike.%${search}%`);
+  if (city) query = query.eq("city", city);
   const { data } = await query.order("name", { ascending: true });
   return (data as unknown as VenueListing[]) ?? [];
+}
+
+async function fetchAllCities() {
+  const [profileRes, venueRes] = await Promise.all([
+    supabase.from("public_profiles" as any).select("city"),
+    supabase.from("venue_listings_public" as any).select("city"),
+  ]);
+  const cities = new Set<string>();
+  [...(profileRes.data ?? []), ...(venueRes.data ?? [])].forEach((r: any) => {
+    if (r.city && r.city.trim()) cities.add(r.city.trim());
+  });
+  return Array.from(cities).sort();
 }
 
 async function fetchVenueAvailability() {
@@ -179,6 +193,7 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState(initialRole);
   const [genreFilter, setGenreFilter] = useState<string | null>(null);
+  const [cityFilter, setCityFilter] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const { user, profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
@@ -196,8 +211,8 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
   const showVenues = !roleFilter || roleFilter === "venue";
 
   const { data: profiles = [], isLoading: profilesLoading } = useQuery<Profile[]>({
-    queryKey: ["directory-profiles", roleFilter, debouncedSearch],
-    queryFn: () => fetchProfiles(roleFilter, debouncedSearch),
+    queryKey: ["directory-profiles", roleFilter, debouncedSearch, cityFilter],
+    queryFn: () => fetchProfiles(roleFilter, debouncedSearch, cityFilter),
     enabled: showProfiles,
     staleTime: 30_000,
   });
@@ -216,9 +231,15 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
     staleTime: 120_000,
   });
 
+  const { data: allCities = [] } = useQuery<string[]>({
+    queryKey: ["directory-all-cities"],
+    queryFn: fetchAllCities,
+    staleTime: 120_000,
+  });
+
   const { data: venueListings = [], isLoading: venuesLoading } = useQuery<VenueListing[]>({
-    queryKey: ["directory-venues", debouncedSearch],
-    queryFn: () => fetchVenueListings(debouncedSearch),
+    queryKey: ["directory-venues", debouncedSearch, cityFilter],
+    queryFn: () => fetchVenueListings(debouncedSearch, cityFilter),
     enabled: showVenues,
     staleTime: 30_000,
   });
@@ -314,15 +335,30 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
         <h1 className="font-display text-3xl font-bold mb-2">Directory</h1>
         <p className="text-muted-foreground text-sm mb-8 font-body">Discover artists, venues, crew, and more.</p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="search by name, city, or genre..."
-              className="pl-9 bg-card border-border font-body"
-            />
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="search by name, city, or genre..."
+                className="pl-9 bg-card border-border font-body"
+              />
+            </div>
+            {/* City filter */}
+            {allCities.length > 0 && (
+              <select
+                value={cityFilter ?? ""}
+                onChange={(e) => setCityFilter(e.target.value || null)}
+                className="h-10 rounded-lg border border-border bg-card px-3 text-xs text-foreground font-body min-w-[140px] shrink-0"
+              >
+                <option value="">All cities</option>
+                {allCities.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            )}
           </div>
           <div className="flex gap-1.5 overflow-x-auto pb-1">
             {ROLE_TABS.map((tab) => (
