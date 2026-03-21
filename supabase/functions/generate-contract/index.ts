@@ -189,7 +189,7 @@ Deno.serve(async (req) => {
     // Promoter column
     const col2 = margin + contentWidth / 2 + 10;
     page.drawText("Promoter / Buyer", { x: col2, y: partiesY, size: 8, font: helvetica, color: textDim });
-    page.drawText(promoterName, { x: col2, y: partiesY - 14, size: 12, font: helveticaBold, color: white });
+    page.drawText(promoterName, { x: col2, y: partiesY - 13, size: 11, font: helveticaBold, color: white });
     if (promoterLocation) {
       page.drawText(promoterLocation, { x: col2, y: partiesY - 28, size: 8, font: helvetica, color: textMuted });
     }
