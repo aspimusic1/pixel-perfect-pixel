@@ -501,7 +501,7 @@ export default function Directory() {
           open={!!claimVenue}
           onOpenChange={(open) => { if (!open) setClaimVenue(null); }}
           onClaimed={() => {
-            setUserClaims((prev) => new Set([...prev, claimVenue.id]));
+            queryClient.invalidateQueries({ queryKey: ["directory-user-claims"] });
             setClaimVenue(null);
           }}
         />
