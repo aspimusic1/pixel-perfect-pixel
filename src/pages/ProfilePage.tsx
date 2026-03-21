@@ -236,6 +236,15 @@ export default function ProfilePage() {
           </div>
         )}
 
+        {/* Show Night Mode — auto-activates on booking day */}
+        {profile?.role === "artist" && profile?.user_id && (
+          <ShowNightMode
+            artistUserId={profile.user_id}
+            artistName={name}
+            isOwner={isOwnProfile}
+          />
+        )}
+
         {/* Availability strip */}
         {profile?.role === "artist" && availability.length > 0 && (
           <div className="rounded-xl bg-card border border-white/[0.06] p-5 mb-4">
