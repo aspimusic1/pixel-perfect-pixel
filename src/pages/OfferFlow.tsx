@@ -102,6 +102,8 @@ export default function OfferFlow() {
     return a.display_name?.toLowerCase().includes(s) || a.genre?.toLowerCase().includes(s) || a.city?.toLowerCase().includes(s);
   });
 
+  const [stepError, setStepError] = useState("");
+
   const canProceed = () => {
     switch (step) {
       case 0: return !!recipientId;
@@ -112,6 +114,17 @@ export default function OfferFlow() {
       case 5: return true;
       default: return false;
     }
+  };
+
+  const validateStep = () => {
+    setStepError("");
+    // No step-specific validation beyond canProceed for now
+    return true;
+  };
+
+  const goNext = () => {
+    if (!canProceed() || !validateStep()) return;
+    setStep(step + 1);
   };
 
   const handleSubmit = async () => {
