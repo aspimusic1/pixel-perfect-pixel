@@ -152,7 +152,7 @@ export default function OfferFlow() {
         </div>
 
         {/* Step content */}
-        <div className="rounded-xl bg-card border border-border p-6 mb-6">
+        <div className="rounded-xl bg-card border border-border p-4 sm:p-6 mb-6">
           {/* Step 0: Select Artist */}
           {step === 0 && (
             <div>
