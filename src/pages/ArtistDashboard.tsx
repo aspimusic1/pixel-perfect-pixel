@@ -9,6 +9,7 @@ import OnboardingChecklist from "@/components/OnboardingChecklist";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
 import NegotiationThread from "@/components/NegotiationThread";
+import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 
 type Offer = {
   id: string;
