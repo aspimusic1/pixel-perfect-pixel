@@ -72,13 +72,25 @@ async function fetchProfiles(roleFilter: string, search: string) {
   return (data as unknown as Profile[]) ?? [];
 }
 
-async function fetchArtistListings(search: string) {
+async function fetchArtistListings(search: string, genre: string | null) {
   let query = supabase
     .from("artist_listings")
     .select("*");
   if (search) query = query.ilike("name", `%${search}%`);
+  if (genre) query = query.ilike("genre", `%${genre}%`);
   const { data } = await query.order("upcoming_concerts", { ascending: false });
   return (data as ArtistListing[]) ?? [];
+}
+
+async function fetchArtistGenres() {
+  const { data } = await supabase
+    .from("artist_listings")
+    .select("genre");
+  const genres = new Set<string>();
+  (data ?? []).forEach((a: any) => {
+    if (a.genre) genres.add(a.genre);
+  });
+  return Array.from(genres).sort();
 }
 
 async function fetchVenueListings(search: string) {
@@ -115,11 +127,12 @@ async function fetchUserClaims(userId: string) {
   return new Set((data ?? []).map((c: any) => c.venue_id));
 }
 
-export default function Directory() {
+export default function Directory({ initialRole = "" }: { initialRole?: string }) {
   const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState(initialRole);
+  const [genreFilter, setGenreFilter] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const { user, profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
@@ -144,10 +157,17 @@ export default function Directory() {
   });
 
   const { data: artistListings = [], isLoading: artistsLoading } = useQuery<ArtistListing[]>({
-    queryKey: ["directory-artists", debouncedSearch],
-    queryFn: () => fetchArtistListings(debouncedSearch),
+    queryKey: ["directory-artists", debouncedSearch, genreFilter],
+    queryFn: () => fetchArtistListings(debouncedSearch, genreFilter),
     enabled: showArtists,
     staleTime: 30_000,
+  });
+
+  const { data: artistGenres = [] } = useQuery<string[]>({
+    queryKey: ["directory-artist-genres"],
+    queryFn: fetchArtistGenres,
+    enabled: showArtists,
+    staleTime: 120_000,
   });
 
   const { data: venueListings = [], isLoading: venuesLoading } = useQuery<VenueListing[]>({
@@ -266,6 +286,35 @@ export default function Directory() {
               </button>
             ))}
           </div>
+
+          {/* Genre filter chips (visible when artists tab or all) */}
+          {showArtists && artistGenres.length > 0 && (
+            <div className="flex gap-1.5 overflow-x-auto pb-1 mt-2">
+              <button
+                onClick={() => setGenreFilter(null)}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
+                  !genreFilter
+                    ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                All genres
+              </button>
+              {artistGenres.map((g) => (
+                <button
+                  key={g}
+                  onClick={() => setGenreFilter(genreFilter === g ? null : g)}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
+                    genreFilter === g
+                      ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
+                      : "bg-secondary text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {loading ? (

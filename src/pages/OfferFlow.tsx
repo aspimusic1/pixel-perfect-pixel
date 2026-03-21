@@ -102,6 +102,8 @@ export default function OfferFlow() {
     return a.display_name?.toLowerCase().includes(s) || a.genre?.toLowerCase().includes(s) || a.city?.toLowerCase().includes(s);
   });
 
+  const [stepError, setStepError] = useState("");
+
   const canProceed = () => {
     switch (step) {
       case 0: return !!recipientId;
@@ -112,6 +114,17 @@ export default function OfferFlow() {
       case 5: return true;
       default: return false;
     }
+  };
+
+  const validateStep = () => {
+    setStepError("");
+    // No step-specific validation beyond canProceed for now
+    return true;
+  };
+
+  const goNext = () => {
+    if (!canProceed() || !validateStep()) return;
+    setStep(step + 1);
   };
 
   const handleSubmit = async () => {
@@ -371,8 +384,9 @@ export default function OfferFlow() {
             <Button variant="outline" onClick={() => setStep(step - 1)} disabled={step === 0} className="border-border active:scale-[0.97] transition-transform h-11 sm:h-10 flex-1 sm:flex-none">
               <ArrowLeft className="w-4 h-4 mr-1" /> Back
             </Button>
+            {stepError && <p className="text-xs text-destructive self-center">{stepError}</p>}
             {step < 5 ? (
-              <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform h-11 sm:h-10 flex-1 sm:flex-none">
+              <Button onClick={goNext} disabled={!canProceed()} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform h-11 sm:h-10 flex-1 sm:flex-none">
                 Next <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             ) : (

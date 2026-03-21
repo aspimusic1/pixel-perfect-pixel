@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,6 +13,7 @@ import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import EditStopDialog from "@/components/EditStopDialog";
 
 type Tour = { id: string; name: string; description: string | null; start_date: string | null; end_date: string | null; status: string };
 type TourStop = { id: string; tour_id: string; venue_name: string; city: string | null; state: string | null; date: string; load_in_time: string | null; sound_check_time: string | null; doors_time: string | null; show_time: string | null; guarantee: number | null; notes: string | null; sort_order: number };
@@ -37,6 +38,7 @@ export default function TourManagement() {
   const [crew, setCrew] = useState<CrewMember[]>([]);
   const [budget, setBudget] = useState<BudgetItem[]>([]);
   const [docs, setDocs] = useState<TourDoc[]>([]);
+  const [editingStop, setEditingStop] = useState<TourStop | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -270,7 +272,7 @@ export default function TourManagement() {
             ) : (
               <div className="space-y-3">
                 {stops.map((stop, i) => (
-                  <div key={stop.id} className="rounded-xl bg-card border border-border p-4">
+                  <div key={stop.id} className="rounded-xl bg-card border border-border p-4 cursor-pointer hover:border-primary/20 transition-all" onClick={() => setEditingStop(stop)}>
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0 mt-1">{i + 1}</span>
                       <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -403,6 +405,18 @@ export default function TourManagement() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {editingStop && (
+        <EditStopDialog
+          stop={editingStop}
+          open={!!editingStop}
+          onOpenChange={(open) => { if (!open) setEditingStop(null); }}
+          onSaved={(updates) => {
+            setStops(stops.map((s) => (s.id === editingStop.id ? { ...s, ...updates } : s)));
+            setEditingStop(null);
+          }}
+        />
+      )}
     </div>
   );
 }
