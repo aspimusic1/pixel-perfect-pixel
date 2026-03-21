@@ -297,6 +297,26 @@ export default function ArtistDashboard() {
           </div>
         )}
       </div>
+
+      {/* Sign Contract Dialog */}
+      {signDialogBooking && (
+        <SignContractDialog
+          open={!!signDialogBooking}
+          onOpenChange={(open) => { if (!open) setSignDialogBooking(null); }}
+          bookingId={signDialogBooking.id}
+          venueName={signDialogBooking.venueName}
+          eventDate={signDialogBooking.eventDate}
+          guarantee={signDialogBooking.guarantee}
+          onSigned={() => {
+            if (user) {
+              setSignatures((prev) => ({
+                ...prev,
+                [signDialogBooking.id]: [...(prev[signDialogBooking.id] ?? []), user.id],
+              }));
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
