@@ -167,7 +167,9 @@ export default function OfferFlow() {
     if (!user || !eventDate) return;
     setLoading(true);
     try {
+      const offerId = crypto.randomUUID();
       const { error } = await supabase.from("offers").insert({
+        id: offerId,
         sender_id: user.id,
         recipient_id: recipientId,
         venue_name: venueName.trim(),
@@ -182,6 +184,25 @@ export default function OfferFlow() {
         commission_rate: commissionRate,
       });
       if (error) throw error;
+
+      // Send email notification to artist about new offer
+      try {
+        await supabase.functions.invoke("send-transactional-email", {
+          body: {
+            templateName: "new-offer-received",
+            recipientEmail: recipientId, // Edge function resolves user_id → email
+            idempotencyKey: `new-offer-${offerId}`,
+            templateData: {
+              venueName: venueName.trim(),
+              eventDate: format(eventDate, "MMM d, yyyy"),
+              guarantee: guaranteeNum,
+            },
+          },
+        });
+      } catch {
+        // Email is best-effort, don't block the flow
+      }
+
       localStorage.removeItem(draftKey);
       toast.success("Offer sent successfully!");
       navigate("/promoter-dashboard");

@@ -148,6 +148,24 @@ export default function ArtistDashboard() {
       setBookings((prev) => [...prev, newBooking]);
       toast.success("Offer accepted! Generating contract...");
 
+      // Notify promoter that offer was accepted
+      try {
+        await supabase.functions.invoke("send-transactional-email", {
+          body: {
+            templateName: "offer-accepted",
+            recipientEmail: offer.sender_id, // Edge function resolves user_id → email
+            idempotencyKey: `offer-accepted-${newBooking.id}`,
+            templateData: {
+              venueName: offer.venue_name,
+              eventDate: offer.event_date,
+              guarantee: offer.guarantee,
+            },
+          },
+        });
+      } catch {
+        // Email is best-effort
+      }
+
       // Generate contract PDF
       setGeneratingContract(newBooking.id);
       try {
