@@ -6,13 +6,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send, Users } from "lucide-react";
+import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send, Users, Star } from "lucide-react";
 import { toast } from "sonner";
 import { format, startOfToday, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import ShowNightMode from "@/components/ShowNightMode";
 import TranslateButton from "@/components/TranslateButton";
 import ReelDisplay from "@/components/ReelDisplay";
+
+type Review = {
+  id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  reviewer_name: string | null;
+  reviewer_avatar: string | null;
+};
 
 type ProfileData = {
   id: string;
