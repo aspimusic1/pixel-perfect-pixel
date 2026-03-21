@@ -82,6 +82,7 @@ export default function Navbar() {
                 <Link to={dashboardRoute} className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.dashboard")}</Link>
                 {profile?.role === "promoter" && <Link to="/pipeline" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.pipeline")}</Link>}
                 {profile?.role === "artist" && <Link to="/tax" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.tax")}</Link>}
+                <Link to="/insights" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">insights</Link>
                 <Link to="/tours" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.tours")}</Link>
                 <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors">
                   <Bell className="w-4 h-4" />
@@ -145,6 +146,7 @@ export default function Navbar() {
                 <MobileLink to={dashboardRoute} onClick={closeMenu}>{t("nav.dashboard")}</MobileLink>
                 {profile?.role === "promoter" && <MobileLink to="/pipeline" onClick={closeMenu}>{t("nav.pipeline")}</MobileLink>}
                 {profile?.role === "artist" && <MobileLink to="/tax" onClick={closeMenu}>{t("nav.tax")}</MobileLink>}
+                <MobileLink to="/insights" onClick={closeMenu}>insights</MobileLink>
                 <MobileLink to="/tours" onClick={closeMenu}>{t("nav.tours")}</MobileLink>
                 <div className="border-t border-border my-3" />
                 <div className="px-3 py-2">

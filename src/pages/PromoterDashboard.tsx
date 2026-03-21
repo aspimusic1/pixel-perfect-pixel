@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, ChevronRight } from "lucide-react";
 import SignContractDialog from "@/components/SignContractDialog";
 import NegotiationThread from "@/components/NegotiationThread";
+import RecommendedArtists from "@/components/RecommendedArtists";
 import { openSignedContract } from "@/lib/db-call";
 
 type Offer = {
@@ -106,6 +107,9 @@ export default function PromoterDashboard() {
             <p className="font-display text-xl sm:text-2xl font-bold">{offers.filter((o) => o.status === "accepted").length}</p>
           </div>
         </div>
+
+        {/* Recommended Artists */}
+        <RecommendedArtists />
 
         <h2 className="font-display text-lg font-semibold mb-4">Your Offers</h2>
         {loading ? (
