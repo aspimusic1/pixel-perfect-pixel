@@ -13,6 +13,7 @@ import PromoterDashboard from "@/pages/PromoterDashboard";
 import Directory from "@/pages/Directory";
 import Pricing from "@/pages/Pricing";
 import OfferFlow from "@/pages/OfferFlow";
+import TourManagement from "@/pages/TourManagement";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
