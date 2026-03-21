@@ -55,26 +55,15 @@ export default function AvailabilityCalendar() {
 
     if (existing) {
       if (existing.is_available === markAvailable) {
-        // Remove entry (toggle off)
-        const { error } = await supabase
-          .from("artist_availability")
-          .delete()
-          .eq("id", existing.id);
+        const { error } = await supabase.from("artist_availability").delete().eq("id", existing.id);
         if (error) { toast.error("Failed to update"); setSaving(false); return; }
         setEntries((prev) => prev.filter((e) => e.id !== existing.id));
       } else {
-        // Flip availability
-        const { error } = await supabase
-          .from("artist_availability")
-          .update({ is_available: markAvailable })
-          .eq("id", existing.id);
+        const { error } = await supabase.from("artist_availability").update({ is_available: markAvailable }).eq("id", existing.id);
         if (error) { toast.error("Failed to update"); setSaving(false); return; }
-        setEntries((prev) =>
-          prev.map((e) => (e.id === existing.id ? { ...e, is_available: markAvailable } : e))
-        );
+        setEntries((prev) => prev.map((e) => (e.id === existing.id ? { ...e, is_available: markAvailable } : e)));
       }
     } else {
-      // Insert new
       const { data, error } = await supabase
         .from("artist_availability")
         .insert({ artist_id: user.id, date: dateStr, is_available: markAvailable })
@@ -84,6 +73,17 @@ export default function AvailabilityCalendar() {
       setEntries((prev) => [...prev, data as AvailabilityEntry]);
     }
     setSaving(false);
+  };
+
+  const bulkToggle = async (markAvailable: boolean) => {
+    if (!user || selectedDates.length === 0) return;
+    setSaving(true);
+    for (const date of selectedDates) {
+      await toggleDate(date, markAvailable);
+    }
+    setBulkAction(null);
+    setSaving(false);
+    toast.success(`${selectedDates.length} date${selectedDates.length > 1 ? "s" : ""} marked as ${markAvailable ? "available" : "unavailable"}`);
   };
 
   const availableDates = entries.filter((e) => e.is_available).map((e) => new Date(e.date + "T00:00:00"));
