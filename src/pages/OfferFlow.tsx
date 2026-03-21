@@ -10,9 +10,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarIcon, ArrowLeft, ArrowRight, Check, DollarSign, Music, MapPin, Clock } from "lucide-react";
+import { CalendarIcon, ArrowLeft, ArrowRight, Check, DollarSign, Music, MapPin, Clock, Globe } from "lucide-react";
 import { toast } from "sonner";
 import OfferIntelligence from "@/components/OfferIntelligence";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type ArtistOption = { user_id: string; display_name: string | null; genre: string | null; city: string | null };
 
