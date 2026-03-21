@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield } from "lucide-react";
 import { toast } from "sonner";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
+import BookingAgentPanel from "@/components/BookingAgentPanel";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
 import NegotiationThread from "@/components/NegotiationThread";
