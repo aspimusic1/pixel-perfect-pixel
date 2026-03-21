@@ -50,6 +50,22 @@ export default function Venues() {
     if (regionFilter) query = query.eq("region", regionFilter);
     const { data } = await query.order("name", { ascending: true });
     setVenues((data as VenueListing[]) ?? []);
+
+    // Fetch availability for all venues (future dates only)
+    const today = startOfToday().toISOString().split("T")[0];
+    const { data: availData } = await supabase
+      .from("venue_availability")
+      .select("venue_id, available_date, notes")
+      .gte("available_date", today)
+      .order("available_date", { ascending: true });
+
+    const grouped: Record<string, { available_date: string; notes: string | null }[]> = {};
+    (availData ?? []).forEach((a: any) => {
+      if (!grouped[a.venue_id]) grouped[a.venue_id] = [];
+      grouped[a.venue_id].push({ available_date: a.available_date, notes: a.notes });
+    });
+    setVenueAvailability(grouped);
+
     setLoading(false);
   };
 
