@@ -318,6 +318,13 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
     );
   };
 
+  // Subscription gate: free or unauthenticated users see upgrade wall
+  const plan = authProfile?.subscription_plan ?? "free";
+  const hasPaidPlan = plan === "pro" || plan === "agency";
+  if (!user || !hasPaidPlan) {
+    return <UpgradeWall />;
+  }
+
   return (
     <div ref={ref} className="min-h-screen pt-20 px-4 pb-12">
       <div className="container mx-auto max-w-5xl">
