@@ -175,7 +175,7 @@ Deno.serve(async (req) => {
     y -= 18;
     y = drawSectionLabel("PARTIES", y);
 
-    const partiesHeight = artistLocation || promoterLocation ? 56 : 44;
+    const partiesHeight = artistLocation || promoterLocation ? 50 : 40;
     drawCard(y, partiesHeight);
 
     const partiesY = y - 18;
