@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, DollarSign, TrendingUp, Download } from "lucide-react";
+import { Plus, Trash2, DollarSign, TrendingUp, FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import TaxReportButton from "@/components/TaxReportButton";
+import IncomeSmoothingPanel from "@/components/IncomeSmoothingPanel";
 
 type Expense = {
   id: string;
@@ -16,6 +18,7 @@ type Expense = {
   description: string;
   expense_date: string;
   booking_id: string | null;
+  tour_stop_id: string | null;
 };
 
 type BookingIncome = {
@@ -25,33 +28,43 @@ type BookingIncome = {
   guarantee: number;
 };
 
+type TourStop = {
+  id: string;
+  venue_name: string;
+  date: string;
+  city: string | null;
+};
+
 const EXPENSE_CATEGORIES = [
-  { value: "travel_flight", label: "Flights" },
-  { value: "travel_ground", label: "Ground Transport" },
-  { value: "lodging", label: "Hotels" },
-  { value: "crew_fees", label: "Crew Fees" },
-  { value: "equipment", label: "Equipment Rental" },
-  { value: "meals", label: "Meals & Entertainment" },
-  { value: "marketing", label: "Marketing" },
-  { value: "insurance", label: "Insurance" },
-  { value: "misc", label: "Other" },
+  { value: "travel_flight", label: "Flights", irs: "Travel" },
+  { value: "travel_ground", label: "Ground Transport", irs: "Travel" },
+  { value: "lodging", label: "Hotels", irs: "Business Travel" },
+  { value: "crew_fees", label: "Crew Fees", irs: "Contract Labor" },
+  { value: "equipment", label: "Equipment Rental", irs: "Rent/Lease" },
+  { value: "meals", label: "Meals & Entertainment", irs: "Meals (50%)" },
+  { value: "marketing", label: "Marketing", irs: "Advertising" },
+  { value: "insurance", label: "Insurance", irs: "Insurance" },
+  { value: "misc", label: "Other", irs: "Other Expenses" },
 ];
 
 export default function BookkeepingSection() {
   const { user } = useAuth();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [income, setIncome] = useState<BookingIncome[]>([]);
+  const [tourStops, setTourStops] = useState<TourStop[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
     const load = async () => {
-      const [expRes, incRes] = await Promise.all([
-        supabase.from("artist_expenses" as any).select("*").eq("user_id", user.id).order("expense_date", { ascending: false }).limit(100),
-        supabase.from("bookings").select("id, venue_name, event_date, guarantee").eq("artist_id", user.id).eq("status", "confirmed").order("event_date", { ascending: false }).limit(100),
+      const [expRes, incRes, stopsRes] = await Promise.all([
+        supabase.from("artist_expenses").select("*").eq("user_id", user.id).order("expense_date", { ascending: false }).limit(200),
+        supabase.from("bookings").select("id, venue_name, event_date, guarantee").eq("artist_id", user.id).eq("status", "confirmed").order("event_date", { ascending: false }).limit(200),
+        supabase.from("tour_stops").select("id, venue_name, date, city").order("date", { ascending: false }).limit(200),
       ]);
-      setExpenses((expRes.data as any[]) ?? []);
+      setExpenses((expRes.data as Expense[]) ?? []);
       setIncome((incRes.data as BookingIncome[]) ?? []);
+      setTourStops((stopsRes.data as TourStop[]) ?? []);
       setLoading(false);
     };
     load();
@@ -59,7 +72,7 @@ export default function BookkeepingSection() {
 
   const addExpense = async () => {
     if (!user) return;
-    const { data, error } = await supabase.from("artist_expenses" as any).insert({
+    const { data, error } = await supabase.from("artist_expenses").insert({
       user_id: user.id,
       amount: 0,
       category: "misc",
@@ -67,16 +80,16 @@ export default function BookkeepingSection() {
       expense_date: new Date().toISOString().split("T")[0],
     }).select().single();
     if (error) { toast.error(error.message); return; }
-    setExpenses([data as any, ...expenses]);
+    setExpenses([data as Expense, ...expenses]);
   };
 
   const updateExpense = async (id: string, updates: Partial<Expense>) => {
-    await supabase.from("artist_expenses" as any).update(updates).eq("id", id);
+    await supabase.from("artist_expenses").update(updates as any).eq("id", id);
     setExpenses(expenses.map((e) => (e.id === id ? { ...e, ...updates } : e)));
   };
 
   const deleteExpense = async (id: string) => {
-    await supabase.from("artist_expenses" as any).delete().eq("id", id);
+    await supabase.from("artist_expenses").delete().eq("id", id);
     setExpenses(expenses.filter((e) => e.id !== id));
   };
 
@@ -105,14 +118,21 @@ export default function BookkeepingSection() {
     profit: d.income - d.expenses,
   })).reverse().slice(-6);
 
-  // Insights
+  // Per-show profits
   const showProfits = income.map((b) => {
     const showExpenses = expenses.filter((e) => e.booking_id === b.id).reduce((s, e) => s + Number(e.amount), 0);
-    return { venue: b.venue_name, date: b.event_date, profit: Number(b.guarantee) - showExpenses, guarantee: Number(b.guarantee) };
+    return { venue: b.venue_name, date: b.event_date, profit: Number(b.guarantee) - showExpenses, guarantee: Number(b.guarantee), expenses: showExpenses, margin: Number(b.guarantee) > 0 ? Math.round(((Number(b.guarantee) - showExpenses) / Number(b.guarantee)) * 100) : 0 };
   });
   const mostProfitable = showProfits.length > 0 ? showProfits.sort((a, b) => b.profit - a.profit)[0] : null;
   const avgExpensePerShow = income.length > 0 ? Math.round(totalExpenses / income.length) : 0;
-  const breakEvenGuarantee = avgExpensePerShow;
+
+  // IRS category summary
+  const irsSummary = new Map<string, number>();
+  expenses.forEach(e => {
+    const cat = EXPENSE_CATEGORIES.find(c => c.value === e.category);
+    const irs = cat?.irs || "Other";
+    irsSummary.set(irs, (irsSummary.get(irs) || 0) + Number(e.amount));
+  });
 
   if (loading) return <div className="h-48 rounded-xl bg-card animate-pulse" />;
 
@@ -122,7 +142,7 @@ export default function BookkeepingSection() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="rounded-xl bg-card border border-border p-4">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Total Income</p>
-          <p className="font-syne text-lg font-bold text-primary">${totalIncome.toLocaleString()}</p>
+          <p className="font-syne text-lg font-bold text-[hsl(var(--primary))]">${totalIncome.toLocaleString()}</p>
         </div>
         <div className="rounded-xl bg-card border border-border p-4">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Total Expenses</p>
@@ -134,18 +154,18 @@ export default function BookkeepingSection() {
         </div>
         <div className="rounded-xl bg-card border border-border p-4">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Break-even</p>
-          <p className="font-syne text-lg font-bold">${breakEvenGuarantee.toLocaleString()}</p>
+          <p className="font-syne text-lg font-bold">${avgExpensePerShow.toLocaleString()}</p>
         </div>
       </div>
 
       {/* Insights */}
       {mostProfitable && (
-        <div className="rounded-xl bg-card border border-primary/20 p-4 flex items-center gap-3">
-          <TrendingUp className="w-5 h-5 text-primary shrink-0" />
+        <div className="rounded-xl bg-card border border-[hsl(var(--primary))]/20 p-4 flex items-center gap-3">
+          <TrendingUp className="w-5 h-5 text-[hsl(var(--primary))] shrink-0" />
           <div>
             <p className="text-xs font-medium">Most Profitable Show</p>
             <p className="text-xs text-muted-foreground">
-              {mostProfitable.venue} — ${mostProfitable.profit.toLocaleString()} profit on ${mostProfitable.guarantee.toLocaleString()} guarantee
+              {mostProfitable.venue} — ${mostProfitable.profit.toLocaleString()} profit ({mostProfitable.margin}% margin) on ${mostProfitable.guarantee.toLocaleString()} guarantee
             </p>
           </div>
         </div>
@@ -154,9 +174,12 @@ export default function BookkeepingSection() {
       {/* Monthly P&L Chart */}
       {chartData.length > 0 && (
         <div className="rounded-xl bg-card border border-border p-5">
-          <h3 className="font-syne font-semibold text-sm mb-4 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-primary" /> Monthly P&L
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-syne font-semibold text-sm flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-[hsl(var(--primary))]" /> Monthly P&L
+            </h3>
+            <TaxReportButton />
+          </div>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={chartData}>
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
@@ -168,6 +191,46 @@ export default function BookkeepingSection() {
           </ResponsiveContainer>
         </div>
       )}
+
+      {/* IRS Category Summary */}
+      {irsSummary.size > 0 && (
+        <div className="rounded-xl bg-card border border-border p-5">
+          <h3 className="font-syne font-semibold text-sm mb-3 flex items-center gap-2">
+            <FileText className="w-4 h-4 text-[hsl(var(--primary))]" /> IRS Schedule C Categories
+          </h3>
+          <div className="space-y-1.5">
+            {Array.from(irsSummary.entries()).sort((a, b) => b[1] - a[1]).map(([cat, amt]) => (
+              <div key={cat} className="flex justify-between text-xs">
+                <span className="text-muted-foreground">{cat}</span>
+                <span className="font-medium tabular-nums">${amt.toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Per-show profit margins */}
+      {showProfits.length > 0 && (
+        <div className="rounded-xl bg-card border border-border p-5">
+          <h3 className="font-syne font-semibold text-sm mb-3">Per-Show Profit Margins</h3>
+          <div className="space-y-1.5">
+            {showProfits.slice(0, 10).map((s, i) => (
+              <div key={i} className="flex justify-between items-center text-xs">
+                <span className="text-muted-foreground truncate max-w-[45%]">{s.venue} ({new Date(s.date).toLocaleDateString("en", { month: "short", day: "numeric" })})</span>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className={`text-[10px] ${s.margin >= 50 ? "border-[#3EFFBE]/20 text-[#3EFFBE]" : s.margin >= 0 ? "border-[#FFB83E]/20 text-[#FFB83E]" : "border-[#FF5C5C]/20 text-[#FF5C5C]"}`}>
+                    {s.margin}% margin
+                  </Badge>
+                  <span className={`font-medium tabular-nums ${s.profit >= 0 ? "text-[#3EFFBE]" : "text-[#FF5C5C]"}`}>${s.profit.toLocaleString()}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Income Smoothing */}
+      <IncomeSmoothingPanel />
 
       {/* Expenses List */}
       <div className="rounded-xl bg-card border border-border p-5">
@@ -182,7 +245,7 @@ export default function BookkeepingSection() {
         ) : (
           <div className="space-y-2">
             {expenses.slice(0, 20).map((exp) => (
-              <div key={exp.id} className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-end">
+              <div key={exp.id} className="grid grid-cols-2 sm:grid-cols-6 gap-2 items-end">
                 <div>
                   <Label className="text-[10px] text-muted-foreground">Category</Label>
                   <select
@@ -190,7 +253,7 @@ export default function BookkeepingSection() {
                     onChange={(e) => updateExpense(exp.id, { category: e.target.value })}
                     className="mt-0.5 h-8 w-full rounded-md border border-border bg-background px-2 text-xs text-foreground"
                   >
-                    {EXPENSE_CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+                    {EXPENSE_CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label} ({c.irs})</option>)}
                   </select>
                 </div>
                 <div className="sm:col-span-2">
@@ -200,6 +263,17 @@ export default function BookkeepingSection() {
                 <div>
                   <Label className="text-[10px] text-muted-foreground">Amount</Label>
                   <Input type="number" min="0" value={exp.amount} onChange={(e) => updateExpense(exp.id, { amount: parseFloat(e.target.value) || 0 })} className="mt-0.5 h-8 text-xs bg-background border-border" />
+                </div>
+                <div>
+                  <Label className="text-[10px] text-muted-foreground">Tour Stop</Label>
+                  <select
+                    value={exp.tour_stop_id || ""}
+                    onChange={(e) => updateExpense(exp.id, { tour_stop_id: e.target.value || null } as any)}
+                    className="mt-0.5 h-8 w-full rounded-md border border-border bg-background px-2 text-xs text-foreground"
+                  >
+                    <option value="">None</option>
+                    {tourStops.map(s => <option key={s.id} value={s.id}>{s.venue_name} ({s.city || s.date})</option>)}
+                  </select>
                 </div>
                 <div className="flex gap-1 items-end">
                   <div className="flex-1">

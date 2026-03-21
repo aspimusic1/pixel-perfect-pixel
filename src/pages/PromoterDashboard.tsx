@@ -9,6 +9,8 @@ import SignContractDialog from "@/components/SignContractDialog";
 import NegotiationThread from "@/components/NegotiationThread";
 import RecommendedArtists from "@/components/RecommendedArtists";
 import AttendanceReportDialog from "@/components/AttendanceReportDialog";
+import InsuranceOfferCard from "@/components/InsuranceOfferCard";
+import FinancingOption from "@/components/FinancingOption";
 import { openSignedContract } from "@/lib/db-call";
 
 type Offer = {
@@ -206,6 +208,13 @@ export default function PromoterDashboard() {
                       {attendanceReported.has(booking.id) && (
                         <div className="flex items-center gap-1.5 text-xs text-[#3EFFBE] font-medium px-3 py-1.5 rounded-md bg-[#3EFFBE]/10 border border-[#3EFFBE]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
                           <CheckCircle className="w-3.5 h-3.5" /> Reported
+                        </div>
+                      )}
+                      {/* Insurance offer after both signed */}
+                      {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
+                        <div className="w-full mt-1 space-y-2">
+                          <InsuranceOfferCard bookingId={booking.id} guarantee={offer.guarantee} userRole="promoter" />
+                          <FinancingOption bookingId={booking.id} guarantee={offer.guarantee} />
                         </div>
                       )}
                     </div>

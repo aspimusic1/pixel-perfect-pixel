@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3 } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote } from "lucide-react";
 import { toast } from "sonner";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
 import BookingAgentPanel from "@/components/BookingAgentPanel";
@@ -15,6 +15,8 @@ import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import ContractReviewDialog from "@/components/ContractReviewDialog";
 import AttendanceReportDialog from "@/components/AttendanceReportDialog";
 import BookkeepingSection from "@/components/BookkeepingSection";
+import AdvanceRequestDialog from "@/components/AdvanceRequestDialog";
+import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 
 type Offer = {
@@ -68,6 +70,8 @@ export default function ArtistDashboard() {
   const [reviewOffer, setReviewOffer] = useState<Offer | null>(null);
   const [attendanceBooking, setAttendanceBooking] = useState<Booking | null>(null);
   const [attendanceReported, setAttendanceReported] = useState<Set<string>>(new Set());
+  const [advanceBooking, setAdvanceBooking] = useState<Booking | null>(null);
+  const [advanceRequested, setAdvanceRequested] = useState<Set<string>>(new Set());
 
   const fetchSignatures = async (bookingIds: string[]) => {
     if (bookingIds.length === 0) return;
@@ -383,6 +387,28 @@ export default function ArtistDashboard() {
                           <CheckCircle className="w-3.5 h-3.5" /> Attendance Reported
                         </div>
                       )}
+                      {/* Request advance */}
+                      {booking.status === "confirmed" && new Date(offer.event_date) > new Date() && !advanceRequested.has(booking.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setAdvanceBooking(booking)}
+                          className="border-[#3EC8FF]/30 text-[#3EC8FF] hover:bg-[#3EC8FF]/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                        >
+                          <Banknote className="w-3.5 h-3.5 mr-1" /> Request Advance
+                        </Button>
+                      )}
+                      {advanceRequested.has(booking.id) && (
+                        <div className="flex items-center gap-1.5 text-xs text-[#3EC8FF] font-medium px-3 py-1.5 rounded-md bg-[#3EC8FF]/10 border border-[#3EC8FF]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
+                          <CheckCircle className="w-3.5 h-3.5" /> Advance Requested
+                        </div>
+                      )}
+                      {/* Insurance offer - show after both parties signed */}
+                      {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
+                        <div className="w-full mt-1">
+                          <InsuranceOfferCard bookingId={booking.id} guarantee={offer.guarantee} userRole="artist" />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -486,6 +512,24 @@ export default function ArtistDashboard() {
           onProceed={(addedClauses) => {
             handleRespond(reviewOffer.id, "accepted", addedClauses);
             setReviewOffer(null);
+          }}
+        />
+      )}
+
+      {/* Advance Request Dialog */}
+      {advanceBooking && (
+        <AdvanceRequestDialog
+          open={!!advanceBooking}
+          onOpenChange={(open) => { if (!open) setAdvanceBooking(null); }}
+          booking={{
+            id: advanceBooking.id,
+            guarantee: advanceBooking.guarantee,
+            venue_name: advanceBooking.venue_name,
+            event_date: advanceBooking.event_date,
+            promoter_id: advanceBooking.promoter_id,
+          }}
+          onRequested={() => {
+            setAdvanceRequested((prev) => new Set([...prev, advanceBooking.id]));
           }}
         />
       )}
