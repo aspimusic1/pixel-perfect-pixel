@@ -387,6 +387,28 @@ export default function ArtistDashboard() {
                           <CheckCircle className="w-3.5 h-3.5" /> Attendance Reported
                         </div>
                       )}
+                      {/* Request advance */}
+                      {booking.status === "confirmed" && new Date(offer.event_date) > new Date() && !advanceRequested.has(booking.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setAdvanceBooking(booking)}
+                          className="border-[#3EC8FF]/30 text-[#3EC8FF] hover:bg-[#3EC8FF]/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                        >
+                          <Banknote className="w-3.5 h-3.5 mr-1" /> Request Advance
+                        </Button>
+                      )}
+                      {advanceRequested.has(booking.id) && (
+                        <div className="flex items-center gap-1.5 text-xs text-[#3EC8FF] font-medium px-3 py-1.5 rounded-md bg-[#3EC8FF]/10 border border-[#3EC8FF]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
+                          <CheckCircle className="w-3.5 h-3.5" /> Advance Requested
+                        </div>
+                      )}
+                      {/* Insurance offer - show after both parties signed */}
+                      {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
+                        <div className="w-full mt-1">
+                          <InsuranceOfferCard bookingId={booking.id} guarantee={offer.guarantee} userRole="artist" />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
