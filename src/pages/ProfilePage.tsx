@@ -81,6 +81,20 @@ export default function ProfilePage() {
         setAvailability((avail as AvailDate[]) ?? []);
       }
 
+      // Fetch attendance stats for artists
+      if (p.role === "artist" && p.user_id) {
+        const { data: attendance } = await supabase
+          .from("show_attendance" as any)
+          .select("actual_attendance")
+          .eq("artist_id", p.user_id);
+        if (attendance && attendance.length >= 2) {
+          const values = (attendance as any[]).map((a) => a.actual_attendance).sort((a: number, b: number) => a - b);
+          const q1 = values[Math.floor(values.length * 0.25)];
+          const q3 = values[Math.floor(values.length * 0.75)];
+          setAttendanceStats({ avg_min: q1, avg_max: q3, shows: values.length });
+        }
+      }
+
       setLoading(false);
     };
     load();
