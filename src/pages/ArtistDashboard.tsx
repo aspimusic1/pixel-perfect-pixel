@@ -21,6 +21,7 @@ type Offer = {
   commission_amount: number | null;
   status: string;
   sender_id: string;
+  recipient_id: string;
   created_at: string;
 };
 
