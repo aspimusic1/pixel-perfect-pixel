@@ -89,7 +89,7 @@ export default function ArtistDashboard() {
     fetchData();
   }, [user, page]);
 
-  const handleRespond = async (offerId: string, status: "accepted" | "declined") => {
+  const handleRespond = async (offerId: string, status: "accepted" | "declined", addedClauses?: string[]) => {
     if (!user) return;
     setActionLoading(offerId);
 
@@ -100,6 +100,12 @@ export default function ArtistDashboard() {
     if (status === "accepted") {
       const offer = offers.find((o) => o.id === offerId);
       if (!offer) return;
+
+      // Build notes with any AI-suggested clauses
+      let notes = offer.notes || "";
+      if (addedClauses && addedClauses.length > 0) {
+        notes = (notes ? notes + "\n\n" : "") + "AI-Suggested Clauses:\n" + addedClauses.join("\n");
+      }
 
       // Create booking
       const { data: booking, error: bookingErr } = await supabase
