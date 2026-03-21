@@ -39,7 +39,7 @@ export default function ProfilePage() {
     if (!slug) return;
     const load = async () => {
       const { data, error } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("*")
         .eq("slug", slug)
         .single();

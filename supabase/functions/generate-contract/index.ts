@@ -388,15 +388,19 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { data: urlData } = supabase.storage.from("contracts").getPublicUrl(filePath);
-    const contractUrl = urlData.publicUrl;
-
+    // Store file path (not public URL) since bucket is private
     await supabase
       .from("bookings")
-      .update({ contract_url: contractUrl })
+      .update({ contract_url: filePath })
       .eq("id", booking.id);
 
-    return new Response(JSON.stringify({ contract_url: contractUrl }), {
+    // Generate a signed URL valid for 1 hour for immediate download
+    const { data: signedData } = await supabase.storage
+      .from("contracts")
+      .createSignedUrl(filePath, 3600);
+    const contractUrl = signedData?.signedUrl ?? filePath;
+
+    return new Response(JSON.stringify({ contract_url: contractUrl, file_path: filePath }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {

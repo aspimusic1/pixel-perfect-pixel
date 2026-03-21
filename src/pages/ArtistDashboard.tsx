@@ -9,6 +9,7 @@ import OnboardingChecklist from "@/components/OnboardingChecklist";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
 import NegotiationThread from "@/components/NegotiationThread";
+import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 
 type Offer = {
   id: string;
@@ -266,22 +267,18 @@ export default function ArtistDashboard() {
                           <Button
                             size="sm"
                             variant="outline"
-                            asChild
+                            onClick={() => openSignedContract(booking.contract_url!)}
                             className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                           >
-                            <a href={booking.contract_url} target="_blank" rel="noopener noreferrer">
-                              <FileText className="w-3.5 h-3.5 mr-1" /> View Contract
-                            </a>
+                            <FileText className="w-3.5 h-3.5 mr-1" /> View Contract
                           </Button>
                           <Button
                             size="sm"
                             variant="outline"
-                            asChild
+                            onClick={() => downloadSignedContract(booking.contract_url!)}
                             className="border-border text-muted-foreground hover:text-foreground active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                           >
-                            <a href={booking.contract_url} download>
-                              <Download className="w-3.5 h-3.5 mr-1" /> Download
-                            </a>
+                            <Download className="w-3.5 h-3.5 mr-1" /> Download
                           </Button>
                           {/* Sign button */}
                           {user && signatures[booking.id]?.includes(user.id) ? (
