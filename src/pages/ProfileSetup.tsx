@@ -18,6 +18,7 @@ export default function ProfileSetup() {
   const [state, setState] = useState(profile?.state ?? "");
   const [genre, setGenre] = useState(profile?.genre ?? "");
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? "");
+  const [timezone, setTimezone] = useState("America/New_York");
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
