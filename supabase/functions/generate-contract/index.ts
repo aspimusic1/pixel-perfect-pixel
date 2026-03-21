@@ -161,12 +161,12 @@ Deno.serve(async (req) => {
 
     // ─── Helper: draw key-value row ───
     function drawKV(label: string, value: string, yPos: number, opts?: { valueColor?: typeof lime; valueSize?: number; valueFont?: typeof helveticaBold }) {
-      page.drawText(label, { x: margin + 16, y: yPos, size: 9, font: helvetica, color: textMuted });
+      page.drawText(label, { x: margin + 14, y: yPos, size: 8.5, font: helvetica, color: textMuted });
       page.drawText(value, {
-        x: margin + 160, y: yPos, size: opts?.valueSize ?? 10,
+        x: margin + 150, y: yPos, size: opts?.valueSize ?? 9.5,
         font: opts?.valueFont ?? helveticaBold, color: opts?.valueColor ?? white,
       });
-      return yPos - 20;
+      return yPos - 18;
     }
 
     // ═══════════════════════════════════════════
