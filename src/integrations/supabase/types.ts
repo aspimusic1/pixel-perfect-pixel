@@ -50,6 +50,57 @@ export type Database = {
         }
         Relationships: []
       }
+      artist_expenses: {
+        Row: {
+          amount: number
+          booking_id: string | null
+          category: string
+          created_at: string
+          description: string
+          expense_date: string
+          id: string
+          tour_stop_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          booking_id?: string | null
+          category?: string
+          created_at?: string
+          description?: string
+          expense_date?: string
+          id?: string
+          tour_stop_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          booking_id?: string | null
+          category?: string
+          created_at?: string
+          description?: string
+          expense_date?: string
+          id?: string
+          tour_stop_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_expenses_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "artist_expenses_tour_stop_id_fkey"
+            columns: ["tour_stop_id"]
+            isOneToOne: false
+            referencedRelation: "tour_stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       artist_listings: {
         Row: {
           created_at: string
@@ -477,6 +528,7 @@ export type Database = {
           spotify: string | null
           state: string | null
           subscription_plan: string
+          timezone: string | null
           updated_at: string
           user_id: string
           website: string | null
@@ -500,6 +552,7 @@ export type Database = {
           spotify?: string | null
           state?: string | null
           subscription_plan?: string
+          timezone?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -523,6 +576,7 @@ export type Database = {
           spotify?: string | null
           state?: string | null
           subscription_plan?: string
+          timezone?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null
@@ -555,6 +609,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      show_attendance: {
+        Row: {
+          actual_attendance: number
+          artist_id: string
+          booking_id: string
+          created_at: string
+          id: string
+          promoter_id: string
+          reported_by: string
+          venue_capacity: number | null
+          venue_name: string
+        }
+        Insert: {
+          actual_attendance: number
+          artist_id: string
+          booking_id: string
+          created_at?: string
+          id?: string
+          promoter_id: string
+          reported_by: string
+          venue_capacity?: number | null
+          venue_name: string
+        }
+        Update: {
+          actual_attendance?: number
+          artist_id?: string
+          booking_id?: string
+          created_at?: string
+          id?: string
+          promoter_id?: string
+          reported_by?: string
+          venue_capacity?: number | null
+          venue_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "show_attendance_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tour_budget_items: {
         Row: {
@@ -730,6 +828,108 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      transport_bookings: {
+        Row: {
+          booked_by: string
+          created_at: string
+          dropoff_location: string | null
+          id: string
+          listing_id: string
+          pickup_location: string | null
+          pickup_time: string | null
+          provider_id: string
+          status: string
+          total_cost: number
+          tour_stop_id: string
+        }
+        Insert: {
+          booked_by: string
+          created_at?: string
+          dropoff_location?: string | null
+          id?: string
+          listing_id: string
+          pickup_location?: string | null
+          pickup_time?: string | null
+          provider_id: string
+          status?: string
+          total_cost?: number
+          tour_stop_id: string
+        }
+        Update: {
+          booked_by?: string
+          created_at?: string
+          dropoff_location?: string | null
+          id?: string
+          listing_id?: string
+          pickup_location?: string | null
+          pickup_time?: string | null
+          provider_id?: string
+          status?: string
+          total_cost?: number
+          tour_stop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transport_bookings_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "transport_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transport_bookings_tour_stop_id_fkey"
+            columns: ["tour_stop_id"]
+            isOneToOne: false
+            referencedRelation: "tour_stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transport_listings: {
+        Row: {
+          cities_served: string[] | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          provider_id: string
+          rate_per_hour: number | null
+          rate_per_trip: number | null
+          rating: number | null
+          review_count: number | null
+          vehicle_capacity: number
+          vehicle_type: string
+        }
+        Insert: {
+          cities_served?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          provider_id: string
+          rate_per_hour?: number | null
+          rate_per_trip?: number | null
+          rating?: number | null
+          review_count?: number | null
+          vehicle_capacity?: number
+          vehicle_type?: string
+        }
+        Update: {
+          cities_served?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          provider_id?: string
+          rate_per_hour?: number | null
+          rate_per_trip?: number | null
+          rating?: number | null
+          review_count?: number | null
+          vehicle_capacity?: number
+          vehicle_type?: string
         }
         Relationships: []
       }

@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
 import BookingAgentPanel from "@/components/BookingAgentPanel";
@@ -12,6 +13,8 @@ import CounterOfferDialog from "@/components/CounterOfferDialog";
 import NegotiationThread from "@/components/NegotiationThread";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import ContractReviewDialog from "@/components/ContractReviewDialog";
+import AttendanceReportDialog from "@/components/AttendanceReportDialog";
+import BookkeepingSection from "@/components/BookkeepingSection";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 
 type Offer = {
@@ -35,6 +38,11 @@ type Booking = {
   offer_id: string;
   contract_url: string | null;
   status: string;
+  artist_id: string;
+  promoter_id: string;
+  venue_name: string;
+  event_date: string;
+  guarantee: number;
 };
 
 const statusColors: Record<string, string> = {
@@ -58,6 +66,8 @@ export default function ArtistDashboard() {
   const [counterDialogOffer, setCounterDialogOffer] = useState<Offer | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [reviewOffer, setReviewOffer] = useState<Offer | null>(null);
+  const [attendanceBooking, setAttendanceBooking] = useState<Booking | null>(null);
+  const [attendanceReported, setAttendanceReported] = useState<Set<string>>(new Set());
 
   const fetchSignatures = async (bookingIds: string[]) => {
     if (bookingIds.length === 0) return;
@@ -78,7 +88,7 @@ export default function ArtistDashboard() {
     const fetchData = async () => {
       const [offersRes, bookingsRes] = await Promise.all([
         supabase.from("offers").select("*").eq("recipient_id", user.id).order("created_at", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1),
-        supabase.from("bookings").select("id, offer_id, contract_url, status").eq("artist_id", user.id),
+        supabase.from("bookings").select("id, offer_id, contract_url, status, artist_id, promoter_id, venue_name, event_date, guarantee").eq("artist_id", user.id),
       ]);
       const fetchedOffers = (offersRes.data as Offer[]) ?? [];
       setHasMore(fetchedOffers.length === PAGE_SIZE);
@@ -169,6 +179,16 @@ export default function ArtistDashboard() {
         <p className="text-muted-foreground text-sm mb-6 sm:mb-8">Here's your booking overview.</p>
 
         <OnboardingChecklist />
+
+        <Tabs defaultValue="offers" className="mb-6">
+          <div className="overflow-x-auto -mx-4 px-4 pb-2 scrollbar-hide">
+            <TabsList className="bg-secondary border border-border mb-4 w-max min-w-full sm:w-auto">
+              <TabsTrigger value="offers" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Inbox className="w-3.5 h-3.5 mr-1" />Offers</TabsTrigger>
+              <TabsTrigger value="bookkeeping" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><BarChart3 className="w-3.5 h-3.5 mr-1" />Bookkeeping</TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="offers">
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
@@ -277,7 +297,7 @@ export default function ArtistDashboard() {
 
                   {/* Accepted: Contract button */}
                   {offer.status === "accepted" && booking && (
-                    <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-border">
+                    <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-border flex-wrap">
                       {isGenerating ? (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground py-1">
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -301,7 +321,6 @@ export default function ArtistDashboard() {
                           >
                             <Download className="w-3.5 h-3.5 mr-1" /> Download
                           </Button>
-                          {/* Sign button */}
                           {user && signatures[booking.id]?.includes(user.id) ? (
                             <div className="flex items-center gap-1.5 text-xs text-[hsl(var(--primary))] font-medium px-3 py-1.5 rounded-md bg-[hsl(var(--primary))]/10 border border-[hsl(var(--primary))]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
                               <CheckCircle className="w-3.5 h-3.5" /> Signed
@@ -348,6 +367,22 @@ export default function ArtistDashboard() {
                           <FileText className="w-3.5 h-3.5 mr-1" /> Generate Contract
                         </Button>
                       )}
+                      {/* Report attendance for past shows */}
+                      {new Date(offer.event_date) < new Date() && !attendanceReported.has(booking.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setAttendanceBooking(booking)}
+                          className="border-[#FFB83E]/30 text-[#FFB83E] hover:bg-[#FFB83E]/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                        >
+                          <Users className="w-3.5 h-3.5 mr-1" /> Report Attendance
+                        </Button>
+                      )}
+                      {attendanceReported.has(booking.id) && (
+                        <div className="flex items-center gap-1.5 text-xs text-[#3EFFBE] font-medium px-3 py-1.5 rounded-md bg-[#3EFFBE]/10 border border-[#3EFFBE]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
+                          <CheckCircle className="w-3.5 h-3.5" /> Attendance Reported
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -380,7 +415,25 @@ export default function ArtistDashboard() {
             </Button>
           </div>
         )}
+          </TabsContent>
+
+          <TabsContent value="bookkeeping">
+            <BookkeepingSection />
+          </TabsContent>
+        </Tabs>
       </div>
+
+      {/* Attendance Report Dialog */}
+      {attendanceBooking && (
+        <AttendanceReportDialog
+          open={!!attendanceBooking}
+          onOpenChange={(open) => { if (!open) setAttendanceBooking(null); }}
+          booking={attendanceBooking}
+          onReported={() => {
+            setAttendanceReported((prev) => new Set([...prev, attendanceBooking.id]));
+          }}
+        />
+      )}
 
       {/* Sign Contract Dialog */}
       {signDialogBooking && (

@@ -7,13 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Users, DollarSign, FileText, Plus, Trash2, ArrowLeft, MapPin, Clock, Sparkles, Loader2 as SpinnerIcon } from "lucide-react";
+import { Calendar, Users, DollarSign, FileText, Plus, Trash2, ArrowLeft, MapPin, Clock, Sparkles, Loader2 as SpinnerIcon, Car } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import EditStopDialog from "@/components/EditStopDialog";
+import TransportSection from "@/components/TransportSection";
 
 type Tour = { id: string; name: string; description: string | null; start_date: string | null; end_date: string | null; status: string };
 type TourStop = { id: string; tour_id: string; venue_name: string; city: string | null; state: string | null; date: string; load_in_time: string | null; sound_check_time: string | null; doors_time: string | null; show_time: string | null; guarantee: number | null; notes: string | null; sort_order: number };
@@ -257,6 +258,7 @@ export default function TourManagement() {
               <TabsTrigger value="crew" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Users className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Crew</span></TabsTrigger>
               <TabsTrigger value="budget" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><DollarSign className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Budget</span></TabsTrigger>
               <TabsTrigger value="documents" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><FileText className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Docs</span></TabsTrigger>
+              <TabsTrigger value="transport" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Car className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Transport</span></TabsTrigger>
             </TabsList>
           </div>
 
@@ -470,6 +472,11 @@ export default function TourManagement() {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          {/* TRANSPORT */}
+          <TabsContent value="transport">
+            <TransportSection stops={stops} tourId={selectedTour.id} />
           </TabsContent>
         </Tabs>
       </div>

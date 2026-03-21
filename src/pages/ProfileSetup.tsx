@@ -18,6 +18,7 @@ export default function ProfileSetup() {
   const [state, setState] = useState(profile?.state ?? "");
   const [genre, setGenre] = useState(profile?.genre ?? "");
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? "");
+  const [timezone, setTimezone] = useState("America/New_York");
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -68,7 +69,7 @@ export default function ProfileSetup() {
     try {
       const { error } = await supabase
         .from("profiles")
-        .update({ bio, city, state, genre, profile_complete: true, avatar_url: avatarUrl || null })
+        .update({ bio, city, state, genre, profile_complete: true, avatar_url: avatarUrl || null, timezone } as any)
         .eq("user_id", user.id);
       if (error) throw error;
       await refreshProfile();
@@ -141,6 +142,19 @@ export default function ProfileSetup() {
                 <Input value={genre} onChange={(e) => setGenre(e.target.value)} placeholder="Rock, Hip-Hop, Country..." className="mt-1.5 bg-background border-border" />
               </div>
             )}
+            {/* Timezone selector */}
+            <div>
+              <Label className="text-sm">Timezone</Label>
+              <select
+                value={timezone}
+                onChange={(e) => setTimezone(e.target.value)}
+                className="mt-1.5 w-full h-10 rounded-lg border border-border bg-background px-3 text-sm text-foreground"
+              >
+                {["America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles", "America/Anchorage", "Pacific/Honolulu", "Europe/London", "Europe/Berlin", "America/Sao_Paulo", "Asia/Tokyo", "Australia/Sydney"].map((tz) => (
+                  <option key={tz} value={tz}>{tz.replace(/_/g, " ")}</option>
+                ))}
+              </select>
+            </div>
             {/* Reel uploader — artists only */}
             {(profile?.role === "artist" || !profile?.role) && (
               <div className="pt-2 border-t border-border">

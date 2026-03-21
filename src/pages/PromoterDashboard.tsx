@@ -8,6 +8,7 @@ import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, Chevron
 import SignContractDialog from "@/components/SignContractDialog";
 import NegotiationThread from "@/components/NegotiationThread";
 import RecommendedArtists from "@/components/RecommendedArtists";
+import AttendanceReportDialog from "@/components/AttendanceReportDialog";
 import { openSignedContract } from "@/lib/db-call";
 
 type Offer = {
@@ -29,6 +30,11 @@ type Booking = {
   offer_id: string;
   contract_url: string | null;
   status: string;
+  artist_id: string;
+  promoter_id: string;
+  venue_name: string;
+  event_date: string;
+  guarantee: number;
 };
 
 const statusColors: Record<string, string> = {
@@ -48,13 +54,15 @@ export default function PromoterDashboard() {
   const PAGE_SIZE = 20;
   const [signatures, setSignatures] = useState<Record<string, string[]>>({});
   const [signDialogBooking, setSignDialogBooking] = useState<{ id: string; venueName: string; eventDate: string; guarantee: number } | null>(null);
+  const [attendanceBooking, setAttendanceBooking] = useState<Booking | null>(null);
+  const [attendanceReported, setAttendanceReported] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) return;
     const fetchData = async () => {
       const [offersRes, bookingsRes] = await Promise.all([
         supabase.from("offers").select("*").eq("sender_id", user.id).order("created_at", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1),
-        supabase.from("bookings").select("id, offer_id, contract_url, status").eq("promoter_id", user.id),
+        supabase.from("bookings").select("id, offer_id, contract_url, status, artist_id, promoter_id, venue_name, event_date, guarantee").eq("promoter_id", user.id),
       ]);
       const fetchedOffers = (offersRes.data as Offer[]) ?? [];
       setHasMore(fetchedOffers.length === PAGE_SIZE);
@@ -153,9 +161,9 @@ export default function PromoterDashboard() {
                     />
                   )}
 
-                  {/* Accepted: Contract + Sign */}
+                  {/* Accepted: Contract + Sign + Attendance */}
                   {offer.status === "accepted" && booking && (
-                    <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-border">
+                    <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-border flex-wrap">
                       {booking.contract_url && (
                         <Button
                           size="sm"
@@ -184,6 +192,22 @@ export default function PromoterDashboard() {
                           <PenLine className="w-3.5 h-3.5 mr-1" /> Sign Contract
                         </Button>
                       ) : null}
+                      {/* Report attendance for past shows */}
+                      {new Date(offer.event_date) < new Date() && !attendanceReported.has(booking.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setAttendanceBooking(booking)}
+                          className="border-[#FFB83E]/30 text-[#FFB83E] hover:bg-[#FFB83E]/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                        >
+                          <Users className="w-3.5 h-3.5 mr-1" /> Report Attendance
+                        </Button>
+                      )}
+                      {attendanceReported.has(booking.id) && (
+                        <div className="flex items-center gap-1.5 text-xs text-[#3EFFBE] font-medium px-3 py-1.5 rounded-md bg-[#3EFFBE]/10 border border-[#3EFFBE]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
+                          <CheckCircle className="w-3.5 h-3.5" /> Reported
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -217,6 +241,18 @@ export default function PromoterDashboard() {
           </div>
         )}
       </div>
+
+      {/* Attendance Report Dialog */}
+      {attendanceBooking && (
+        <AttendanceReportDialog
+          open={!!attendanceBooking}
+          onOpenChange={(open) => { if (!open) setAttendanceBooking(null); }}
+          booking={attendanceBooking}
+          onReported={() => {
+            setAttendanceReported((prev) => new Set([...prev, attendanceBooking.id]));
+          }}
+        />
+      )}
 
       {/* Sign Contract Dialog */}
       {signDialogBooking && (

@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send } from "lucide-react";
+import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send, Users } from "lucide-react";
 import { toast } from "sonner";
 import { format, startOfToday, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ type ProfileData = {
 };
 
 type AvailDate = { date: string; is_available: boolean };
-
+type AttendanceStats = { avg_min: number; avg_max: number; shows: number };
 const SITE_URL = "https://getbookedlive.lovable.app";
 const SITE_NAME = "GetBooked.Live";
 
@@ -50,6 +50,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [availability, setAvailability] = useState<AvailDate[]>([]);
+  const [attendanceStats, setAttendanceStats] = useState<AttendanceStats | null>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -78,6 +79,20 @@ export default function ProfilePage() {
           .order("date")
           .limit(14);
         setAvailability((avail as AvailDate[]) ?? []);
+      }
+
+      // Fetch attendance stats for artists
+      if (p.role === "artist" && p.user_id) {
+        const { data: attendance } = await supabase
+          .from("show_attendance" as any)
+          .select("actual_attendance")
+          .eq("artist_id", p.user_id);
+        if (attendance && attendance.length >= 2) {
+          const values = (attendance as any[]).map((a) => a.actual_attendance).sort((a: number, b: number) => a - b);
+          const q1 = values[Math.floor(values.length * 0.25)];
+          const q3 = values[Math.floor(values.length * 0.75)];
+          setAttendanceStats({ avg_min: q1, avg_max: q3, shows: values.length });
+        }
       }
 
       setLoading(false);
@@ -200,6 +215,17 @@ export default function ProfilePage() {
                   {g}
                 </span>
               ))}
+            </div>
+          )}
+
+          {/* Attendance stats */}
+          {attendanceStats && profile?.role === "artist" && (
+            <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-[#FFB83E]/10 border border-[#FFB83E]/20">
+              <Users className="w-4 h-4 text-[#FFB83E]" />
+              <span className="text-xs font-medium text-[#FFB83E]">
+                Average draw: {attendanceStats.avg_min.toLocaleString()}–{attendanceStats.avg_max.toLocaleString()}
+              </span>
+              <span className="text-[10px] text-muted-foreground">({attendanceStats.shows} shows)</span>
             </div>
           )}
 
