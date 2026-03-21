@@ -1,7 +1,21 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check, ArrowRight } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Check, ArrowRight, Loader2, Settings } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+const STRIPE_TIERS = {
+  pro: {
+    price_id: "price_1TDYpGRdIALML9YuWtcG1UCG",
+    product_id: "prod_UBwiBhPDnrEdUZ",
+  },
+  business: {
+    price_id: "price_1TDYpZRdIALML9YuPIs1CHiA",
+    product_id: "prod_UBwjw5DHeMV0yo",
+  },
+};
 
 const PLANS = [
   {
@@ -13,6 +27,7 @@ const PLANS = [
     features: ["Create your profile", "Receive & respond to offers", "Basic directory listing", "5 offers/month"],
     cta: "Get started",
     highlight: false,
+    tier: "free" as const,
   },
   {
     name: "Pro",
@@ -23,6 +38,7 @@ const PLANS = [
     features: ["Everything in Free", "Unlimited offers", "Priority directory placement", "Tour management tools", "Deal room access", "Analytics dashboard"],
     cta: "Start Pro trial",
     highlight: true,
+    tier: "pro" as const,
   },
   {
     name: "Business",
@@ -33,11 +49,28 @@ const PLANS = [
     features: ["Everything in Pro", "Team accounts (up to 5)", "Custom branding", "API access", "Priority support", "Bulk offer tools"],
     cta: "Contact us",
     highlight: false,
+    tier: "business" as const,
   },
 ];
 
 export default function Pricing() {
   const ref = useRef<HTMLDivElement>(null);
+  const { user, profile, subscription, checkSubscription } = useAuth();
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [portalLoading, setPortalLoading] = useState(false);
+
+  // Check for success/cancel URL params
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("success") === "true") {
+      toast.success("Subscription activated! Welcome aboard.");
+      checkSubscription();
+      window.history.replaceState({}, "", "/pricing");
+    } else if (params.get("canceled") === "true") {
+      toast("Checkout canceled. No charges were made.");
+      window.history.replaceState({}, "", "/pricing");
+    }
+  }, [checkSubscription]);
 
   useEffect(() => {
     const el = ref.current;
@@ -50,6 +83,45 @@ export default function Pricing() {
     return () => observer.disconnect();
   }, []);
 
+  const currentPlan = profile?.subscription_plan || "free";
+
+  const handleCheckout = async (tier: "pro" | "business") => {
+    if (!user) {
+      window.location.href = "/auth?tab=signup";
+      return;
+    }
+
+    setLoadingTier(tier);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { priceId: STRIPE_TIERS[tier].price_id },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to start checkout");
+    } finally {
+      setLoadingTier(null);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    setPortalLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("customer-portal");
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to open subscription management");
+    } finally {
+      setPortalLoading(false);
+    }
+  };
+
   return (
     <div ref={ref} className="min-h-screen pt-24 px-4 pb-16">
       <div className="container mx-auto max-w-5xl">
@@ -60,51 +132,94 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5">
-          {PLANS.map((plan, i) => (
-            <div
-              key={plan.name}
-              data-reveal
-              className={`opacity-0 rounded-2xl p-6 border transition-all duration-300 ${
-                plan.highlight
-                  ? "bg-card border-primary/40 glow-primary scale-[1.02]"
-                  : "bg-card border-border hover:border-border/80"
-              }`}
-              style={{ animationDelay: `${i * 100}ms` }}
+        {subscription?.subscribed && (
+          <div data-reveal className="opacity-0 mb-8 flex justify-center">
+            <Button
+              variant="outline"
+              onClick={handleManageSubscription}
+              disabled={portalLoading}
+              className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform"
             >
-              {plan.highlight && (
-                <span className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-primary text-primary-foreground mb-4">Most popular</span>
-              )}
-              <h3 className="font-display text-xl font-bold mb-1">{plan.name}</h3>
-              <p className="text-sm text-muted-foreground mb-4">{plan.desc}</p>
-              <div className="mb-1">
-                <span className="font-display text-4xl font-bold">{plan.price}</span>
-                <span className="text-muted-foreground text-sm">{plan.period}</span>
+              {portalLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Settings className="w-4 h-4 mr-2" />}
+              Manage Subscription
+            </Button>
+          </div>
+        )}
+
+        <div className="grid md:grid-cols-3 gap-5">
+          {PLANS.map((plan, i) => {
+            const isCurrentPlan = currentPlan === plan.tier;
+            const isLoading = loadingTier === plan.tier;
+
+            return (
+              <div
+                key={plan.name}
+                data-reveal
+                className={`opacity-0 rounded-2xl p-6 border transition-all duration-300 ${
+                  plan.highlight
+                    ? "bg-card border-primary/40 glow-primary scale-[1.02]"
+                    : "bg-card border-border hover:border-border/80"
+                } ${isCurrentPlan ? "ring-2 ring-primary/50" : ""}`}
+                style={{ animationDelay: `${i * 100}ms` }}
+              >
+                {isCurrentPlan && (
+                  <span className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#3EFFBE] text-[#080C14] mb-4">Your Plan</span>
+                )}
+                {plan.highlight && !isCurrentPlan && (
+                  <span className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-primary text-primary-foreground mb-4">Most popular</span>
+                )}
+                <h3 className="font-display text-xl font-bold mb-1">{plan.name}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{plan.desc}</p>
+                <div className="mb-1">
+                  <span className="font-display text-4xl font-bold">{plan.price}</span>
+                  <span className="text-muted-foreground text-sm">{plan.period}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Commission: <span className="text-primary font-semibold">{plan.commission}</span>
+                </p>
+
+                {plan.tier === "free" ? (
+                  <Link to={user ? "#" : "/auth?tab=signup"}>
+                    <Button
+                      disabled={isCurrentPlan}
+                      className="w-full mb-6 font-medium h-10 active:scale-[0.97] transition-transform bg-secondary text-foreground hover:bg-secondary/80"
+                    >
+                      {isCurrentPlan ? "Current plan" : plan.cta} {!isCurrentPlan && <ArrowRight className="ml-2 w-3.5 h-3.5" />}
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button
+                    disabled={isCurrentPlan || isLoading}
+                    onClick={() => handleCheckout(plan.tier)}
+                    className={`w-full mb-6 font-medium h-10 active:scale-[0.97] transition-transform ${
+                      plan.highlight
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                        : "bg-secondary text-foreground hover:bg-secondary/80"
+                    }`}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : isCurrentPlan ? (
+                      "Current plan"
+                    ) : (
+                      <>
+                        {plan.cta} <ArrowRight className="ml-2 w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </Button>
+                )}
+
+                <ul className="space-y-2.5">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
-                Commission: <span className="text-primary font-semibold">{plan.commission}</span>
-              </p>
-              <Link to="/auth?tab=signup">
-                <Button
-                  className={`w-full mb-6 font-medium h-10 active:scale-[0.97] transition-transform ${
-                    plan.highlight
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "bg-secondary text-foreground hover:bg-secondary/80"
-                  }`}
-                >
-                  {plan.cta} <ArrowRight className="ml-2 w-3.5 h-3.5" />
-                </Button>
-              </Link>
-              <ul className="space-y-2.5">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
