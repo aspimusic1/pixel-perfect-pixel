@@ -204,7 +204,7 @@ export default function Landing() {
         <div className="relative">
           <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
           <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
-          <div className="flex animate-marquee" style={{ width: "max-content" }}>
+          <div className="flex animate-marquee hover:[animation-play-state:paused]" style={{ width: "max-content" }}>
             {[...SAMPLE_PROFILES, ...SAMPLE_PROFILES].map((p, i) => (
               <div
                 key={i}

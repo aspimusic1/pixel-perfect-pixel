@@ -50,6 +50,32 @@ export default function OfferFlow() {
   const [backline, setBackline] = useState("");
   const [notes, setNotes] = useState("");
 
+  // Restore draft from localStorage
+  const draftKey = `offer-draft-${recipientId || "new"}`;
+  useEffect(() => {
+    const saved = localStorage.getItem(draftKey);
+    if (saved) {
+      try {
+        const draft = JSON.parse(saved);
+        if (draft.venueName) setVenueName(draft.venueName);
+        if (draft.eventDate) setEventDate(new Date(draft.eventDate));
+        if (draft.eventTime) setEventTime(draft.eventTime);
+        if (draft.guarantee) setGuarantee(draft.guarantee);
+        if (draft.doorSplit) setDoorSplit(draft.doorSplit);
+        if (draft.merchSplit) setMerchSplit(draft.merchSplit);
+        if (draft.hospitality) setHospitality(draft.hospitality);
+        if (draft.backline) setBackline(draft.backline);
+        if (draft.notes) setNotes(draft.notes);
+      } catch {}
+    }
+  }, [draftKey]);
+
+  // Save draft on form changes
+  useEffect(() => {
+    const draft = { venueName, eventDate: eventDate?.toISOString(), eventTime, guarantee, doorSplit, merchSplit, hospitality, backline, notes };
+    localStorage.setItem(draftKey, JSON.stringify(draft));
+  }, [venueName, eventDate, eventTime, guarantee, doorSplit, merchSplit, hospitality, backline, notes, draftKey]);
+
   const guaranteeNum = parseFloat(guarantee) || 0;
   const commission = guaranteeNum * COMMISSION_RATE;
   const artistPayout = guaranteeNum - commission;
@@ -107,6 +133,7 @@ export default function OfferFlow() {
         commission_rate: COMMISSION_RATE,
       });
       if (error) throw error;
+      localStorage.removeItem(draftKey);
       toast.success("Offer sent successfully!");
       navigate("/promoter-dashboard");
     } catch (err: any) {
