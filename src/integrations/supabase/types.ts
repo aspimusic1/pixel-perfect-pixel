@@ -38,6 +38,59 @@ export type Database = {
         }
         Relationships: []
       }
+      bookings: {
+        Row: {
+          artist_id: string
+          contract_url: string | null
+          created_at: string
+          event_date: string
+          event_time: string | null
+          guarantee: number
+          id: string
+          offer_id: string
+          promoter_id: string
+          status: string
+          updated_at: string
+          venue_name: string
+        }
+        Insert: {
+          artist_id: string
+          contract_url?: string | null
+          created_at?: string
+          event_date: string
+          event_time?: string | null
+          guarantee?: number
+          id?: string
+          offer_id: string
+          promoter_id: string
+          status?: string
+          updated_at?: string
+          venue_name: string
+        }
+        Update: {
+          artist_id?: string
+          contract_url?: string | null
+          created_at?: string
+          event_date?: string
+          event_time?: string | null
+          guarantee?: number
+          id?: string
+          offer_id?: string
+          promoter_id?: string
+          status?: string
+          updated_at?: string
+          venue_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: true
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crew_members: {
         Row: {
           created_at: string
