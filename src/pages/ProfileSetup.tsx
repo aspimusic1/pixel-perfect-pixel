@@ -37,6 +37,11 @@ export default function ProfileSetup() {
 
   // Artist-specific
   const [genre, setGenre] = useState(profile?.genre ?? "");
+  const [website, setWebsite] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [spotify, setSpotify] = useState("");
+  const [rateMin, setRateMin] = useState(profile?.rate_min?.toString() ?? "");
+  const [rateMax, setRateMax] = useState(profile?.rate_max?.toString() ?? "");
   // Promoter-specific
   const [companyName, setCompanyName] = useState("");
   const [eventTypes, setEventTypes] = useState("");
@@ -86,6 +91,11 @@ export default function ProfileSetup() {
       // Add role-specific fields
       if (role === "artist") {
         baseUpdate.genre = genre;
+        baseUpdate.website = website || null;
+        baseUpdate.instagram = instagram || null;
+        baseUpdate.spotify = spotify || null;
+        baseUpdate.rate_min = rateMin ? parseFloat(rateMin) : null;
+        baseUpdate.rate_max = rateMax ? parseFloat(rateMax) : null;
       }
       // For other roles, we store extra info in the bio or as part of the profile
       // since the profiles table has limited columns. We'll append context to bio.
@@ -183,6 +193,28 @@ export default function ProfileSetup() {
                 <div>
                   <Label className="text-sm">Genre</Label>
                   <Input value={genre} onChange={(e) => setGenre(e.target.value)} placeholder="Rock, Hip-Hop, Country..." className="mt-1.5 bg-background border-border" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-sm">Min fee ($)</Label>
+                    <Input type="number" value={rateMin} onChange={(e) => setRateMin(e.target.value)} placeholder="500" className="mt-1.5 bg-background border-border" />
+                  </div>
+                  <div>
+                    <Label className="text-sm">Max fee ($)</Label>
+                    <Input type="number" value={rateMax} onChange={(e) => setRateMax(e.target.value)} placeholder="5,000" className="mt-1.5 bg-background border-border" />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-sm">Website</Label>
+                  <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://yoursite.com" className="mt-1.5 bg-background border-border" />
+                </div>
+                <div>
+                  <Label className="text-sm">Instagram</Label>
+                  <Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@yourhandle" className="mt-1.5 bg-background border-border" />
+                </div>
+                <div>
+                  <Label className="text-sm">Spotify</Label>
+                  <Input value={spotify} onChange={(e) => setSpotify(e.target.value)} placeholder="https://open.spotify.com/artist/..." className="mt-1.5 bg-background border-border" />
                 </div>
               </>
             )}
