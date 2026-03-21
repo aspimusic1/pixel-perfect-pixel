@@ -196,9 +196,17 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
   const [roleFilter, setRoleFilter] = useState(initialRole);
   const [genreFilter, setGenreFilter] = useState<string | null>(null);
   const [cityFilter, setCityFilter] = useState<string | null>(null);
+  const [upgradeModal, setUpgradeModal] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { user, profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
+
+  // Subscription gate: free or unauthenticated users see upgrade wall
+  const plan = authProfile?.subscription_plan ?? "free";
+  const hasPaidPlan = plan === "pro" || plan === "agency";
+  if (!user || !hasPaidPlan) {
+    return <UpgradeWall />;
+  }
 
   // Debounce search for server-side queries
   useEffect(() => {
