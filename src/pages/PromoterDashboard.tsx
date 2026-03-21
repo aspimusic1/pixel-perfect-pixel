@@ -242,6 +242,18 @@ export default function PromoterDashboard() {
         )}
       </div>
 
+      {/* Attendance Report Dialog */}
+      {attendanceBooking && (
+        <AttendanceReportDialog
+          open={!!attendanceBooking}
+          onOpenChange={(open) => { if (!open) setAttendanceBooking(null); }}
+          booking={attendanceBooking}
+          onReported={() => {
+            setAttendanceReported((prev) => new Set([...prev, attendanceBooking.id]));
+          }}
+        />
+      )}
+
       {/* Sign Contract Dialog */}
       {signDialogBooking && (
         <SignContractDialog
