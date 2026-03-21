@@ -37,6 +37,11 @@ export default function ProfileSetup() {
 
   // Artist-specific
   const [genre, setGenre] = useState(profile?.genre ?? "");
+  const [website, setWebsite] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [spotify, setSpotify] = useState("");
+  const [rateMin, setRateMin] = useState(profile?.rate_min?.toString() ?? "");
+  const [rateMax, setRateMax] = useState(profile?.rate_max?.toString() ?? "");
   // Promoter-specific
   const [companyName, setCompanyName] = useState("");
   const [eventTypes, setEventTypes] = useState("");
