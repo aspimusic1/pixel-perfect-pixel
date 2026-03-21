@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Bell } from "lucide-react";
-import logoColor from "@/assets/logo-color.svg";
+import logoWhite from "@/assets/logo-white.svg";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
