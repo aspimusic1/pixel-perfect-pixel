@@ -3,10 +3,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft } from "lucide-react";
 import { toast } from "sonner";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
 import SignContractDialog from "@/components/SignContractDialog";
+import CounterOfferDialog from "@/components/CounterOfferDialog";
+import NegotiationThread from "@/components/NegotiationThread";
 
 type Offer = {
   id: string;
@@ -14,9 +16,12 @@ type Offer = {
   event_date: string;
   event_time: string | null;
   guarantee: number;
+  door_split: number | null;
+  merch_split: number | null;
   commission_amount: number | null;
   status: string;
   sender_id: string;
+  recipient_id: string;
   created_at: string;
 };
 
@@ -31,6 +36,7 @@ const statusColors: Record<string, string> = {
   pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
   accepted: "bg-green-500/10 text-green-400 border-green-500/20",
   declined: "bg-red-500/10 text-red-400 border-red-500/20",
+  negotiating: "bg-amber-500/10 text-amber-400 border-amber-500/20",
 };
 
 export default function ArtistDashboard() {
@@ -41,6 +47,7 @@ export default function ArtistDashboard() {
   const [generatingContract, setGeneratingContract] = useState<string | null>(null);
   const [signatures, setSignatures] = useState<Record<string, string[]>>({});
   const [signDialogBooking, setSignDialogBooking] = useState<{ id: string; venueName: string; eventDate: string; guarantee: number } | null>(null);
+  const [counterDialogOffer, setCounterDialogOffer] = useState<Offer | null>(null);
 
   const fetchSignatures = async (bookingIds: string[]) => {
     if (bookingIds.length === 0) return;
@@ -191,7 +198,7 @@ export default function ArtistDashboard() {
                     </div>
                   </div>
 
-                  {/* Pending: Accept/Decline */}
+                  {/* Pending: Accept/Decline/Counter */}
                   {offer.status === "pending" && (
                     <div className="flex flex-col sm:flex-row gap-2">
                       <Button
@@ -204,12 +211,35 @@ export default function ArtistDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
+                        onClick={() => setCounterDialogOffer(offer)}
+                        className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
+                      >
+                        <ArrowRightLeft className="w-3.5 h-3.5 mr-1" /> Counter
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => handleRespond(offer.id, "declined")}
                         className="border-border hover:bg-destructive/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                       >
                         <XCircle className="w-3.5 h-3.5 mr-1" /> Decline
                       </Button>
                     </div>
+                  )}
+
+                  {/* Negotiating: show thread */}
+                  {offer.status === "negotiating" && (
+                    <NegotiationThread
+                      offerId={offer.id}
+                      offer={offer}
+                      onOfferUpdated={(newStatus, updatedTerms) => {
+                        setOffers((prev) => prev.map((o) =>
+                          o.id === offer.id
+                            ? { ...o, status: newStatus, ...(updatedTerms ?? {}) }
+                            : o
+                        ));
+                      }}
+                    />
                   )}
 
                   {/* Accepted: Contract button */}
@@ -314,6 +344,28 @@ export default function ArtistDashboard() {
                 [signDialogBooking.id]: [...(prev[signDialogBooking.id] ?? []), user.id],
               }));
             }
+          }}
+        />
+      )}
+
+      {/* Counter Offer Dialog */}
+      {counterDialogOffer && (
+        <CounterOfferDialog
+          open={!!counterDialogOffer}
+          onOpenChange={(open) => { if (!open) setCounterDialogOffer(null); }}
+          offerId={counterDialogOffer.id}
+          currentTerms={{
+            guarantee: counterDialogOffer.guarantee,
+            doorSplit: counterDialogOffer.door_split,
+            merchSplit: counterDialogOffer.merch_split,
+            eventDate: counterDialogOffer.event_date,
+            eventTime: counterDialogOffer.event_time,
+            venueName: counterDialogOffer.venue_name,
+          }}
+          onCountered={() => {
+            setOffers((prev) => prev.map((o) =>
+              o.id === counterDialogOffer.id ? { ...o, status: "negotiating" } : o
+            ));
           }}
         />
       )}

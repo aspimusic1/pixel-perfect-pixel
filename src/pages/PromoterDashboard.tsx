@@ -6,14 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Send, Users, Plus, PenLine, CheckCircle, FileText } from "lucide-react";
 import SignContractDialog from "@/components/SignContractDialog";
+import NegotiationThread from "@/components/NegotiationThread";
 
 type Offer = {
   id: string;
   venue_name: string;
   event_date: string;
+  event_time: string | null;
   guarantee: number;
+  door_split: number | null;
+  merch_split: number | null;
   status: string;
   recipient_id: string;
+  sender_id: string;
   created_at: string;
 };
 
@@ -28,6 +33,7 @@ const statusColors: Record<string, string> = {
   pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
   accepted: "bg-green-500/10 text-green-400 border-green-500/20",
   declined: "bg-red-500/10 text-red-400 border-red-500/20",
+  negotiating: "bg-amber-500/10 text-amber-400 border-amber-500/20",
 };
 
 export default function PromoterDashboard() {
@@ -49,7 +55,6 @@ export default function PromoterDashboard() {
       const bks = (bookingsRes.data as Booking[]) ?? [];
       setBookings(bks);
 
-      // Fetch signatures
       if (bks.length > 0) {
         const { data: sigData } = await supabase
           .from("contract_signatures")
@@ -73,7 +78,7 @@ export default function PromoterDashboard() {
   return (
     <div className="min-h-screen pt-20 px-4 pb-12">
       <div className="container mx-auto max-w-4xl">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
           <div>
             <h1 className="font-display text-xl sm:text-2xl font-bold mb-1">Welcome back, {profile?.display_name ?? "Promoter"}</h1>
             <p className="text-muted-foreground text-sm">Manage your offers and discover talent.</p>
@@ -85,7 +90,7 @@ export default function PromoterDashboard() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="rounded-xl bg-card border border-border p-4 sm:p-5">
             <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-2"><Send className="w-3.5 h-3.5" /> Offers Sent</div>
             <p className="font-display text-xl sm:text-2xl font-bold">{offers.length}</p>
@@ -122,6 +127,21 @@ export default function PromoterDashboard() {
                       </p>
                     </div>
                   </div>
+
+                  {/* Negotiating: show thread */}
+                  {offer.status === "negotiating" && (
+                    <NegotiationThread
+                      offerId={offer.id}
+                      offer={offer}
+                      onOfferUpdated={(newStatus, updatedTerms) => {
+                        setOffers((prev) => prev.map((o) =>
+                          o.id === offer.id
+                            ? { ...o, status: newStatus, ...(updatedTerms ?? {}) }
+                            : o
+                        ));
+                      }}
+                    />
+                  )}
 
                   {/* Accepted: Contract + Sign */}
                   {offer.status === "accepted" && booking && (

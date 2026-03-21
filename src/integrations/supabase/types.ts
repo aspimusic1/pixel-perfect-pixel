@@ -126,6 +126,56 @@ export type Database = {
           },
         ]
       }
+      counter_offers: {
+        Row: {
+          created_at: string
+          door_split: number | null
+          event_date: string
+          event_time: string | null
+          guarantee: number
+          id: string
+          merch_split: number | null
+          message: string | null
+          offer_id: string
+          sender_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          door_split?: number | null
+          event_date: string
+          event_time?: string | null
+          guarantee?: number
+          id?: string
+          merch_split?: number | null
+          message?: string | null
+          offer_id: string
+          sender_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          door_split?: number | null
+          event_date?: string
+          event_time?: string | null
+          guarantee?: number
+          id?: string
+          merch_split?: number | null
+          message?: string | null
+          offer_id?: string
+          sender_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "counter_offers_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crew_members: {
         Row: {
           created_at: string
