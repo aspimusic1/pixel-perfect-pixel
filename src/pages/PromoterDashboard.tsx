@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, ChevronRight } from "lucide-react";
 import SignContractDialog from "@/components/SignContractDialog";
 import NegotiationThread from "@/components/NegotiationThread";
+import { openSignedContract } from "@/lib/db-call";
 
 type Offer = {
   id: string;
