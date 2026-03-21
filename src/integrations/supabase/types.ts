@@ -726,7 +726,45 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          display_name: string | null
+          genre: string | null
+          id: string | null
+          is_verified: boolean | null
+          role: Database["public"]["Enums"]["app_role"] | null
+          slug: string | null
+          state: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          display_name?: string | null
+          genre?: string | null
+          id?: string | null
+          is_verified?: boolean | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          slug?: string | null
+          state?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          display_name?: string | null
+          genre?: string | null
+          id?: string | null
+          is_verified?: boolean | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          slug?: string | null
+          state?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
