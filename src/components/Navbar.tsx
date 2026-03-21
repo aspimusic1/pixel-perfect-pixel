@@ -193,3 +193,29 @@ function MobileLink({ to, onClick, children }: { to: string; onClick: () => void
     </Link>
   );
 }
+
+function LanguageSelector({ currentLang, onChange }: { currentLang: string; onChange: (lang: string) => void }) {
+  const current = LANGS.find(l => currentLang.startsWith(l.code)) ?? LANGS[0];
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors active:scale-[0.97]">
+          <Globe className="w-3.5 h-3.5" />
+          <span>{current.flag}</span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-[140px]">
+        {LANGS.map(l => (
+          <DropdownMenuItem
+            key={l.code}
+            onClick={() => onChange(l.code)}
+            className={currentLang.startsWith(l.code) ? "bg-accent" : ""}
+          >
+            <span className="mr-2">{l.flag}</span>
+            {l.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
