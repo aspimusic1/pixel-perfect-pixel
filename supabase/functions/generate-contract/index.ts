@@ -61,6 +61,15 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Verify caller is a party to this booking
+    const userId = claims.user.id;
+    if (booking.artist_id !== userId && booking.promoter_id !== userId) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const offer = booking.offers;
 
     const [artistRes, promoterRes] = await Promise.all([
