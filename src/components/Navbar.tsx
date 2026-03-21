@@ -1,10 +1,22 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Bell } from "lucide-react";
+import { Menu, X, Bell, Globe } from "lucide-react";
 import logoWhite from "@/assets/logo-white.svg";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+const LANGS = [
+  { code: "en", label: "English", flag: "🇺🇸" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
+  { code: "pt", label: "Português", flag: "🇧🇷" },
+];
 
 export default function Navbar() {
   const { user, profile, signOut } = useAuth();
@@ -12,6 +24,7 @@ export default function Navbar() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const { t, i18n } = useTranslation();
 
   // Close menu on route change
   useEffect(() => {
@@ -61,27 +74,29 @@ export default function Navbar() {
 
           {/* Desktop */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/directory" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">browse</Link>
-            <Link to="/trending" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">trending</Link>
-            <Link to="/pricing" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">pricing</Link>
+            <Link to="/directory" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.browse")}</Link>
+            <Link to="/trending" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.trending")}</Link>
+            <Link to="/pricing" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.pricing")}</Link>
             {user ? (
               <>
-                <Link to={dashboardRoute} className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">dashboard</Link>
-                {profile?.role === "promoter" && <Link to="/pipeline" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">pipeline</Link>}
-                {profile?.role === "artist" && <Link to="/tax" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">tax</Link>}
-                <Link to="/tours" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">tours</Link>
+                <Link to={dashboardRoute} className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.dashboard")}</Link>
+                {profile?.role === "promoter" && <Link to="/pipeline" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.pipeline")}</Link>}
+                {profile?.role === "artist" && <Link to="/tax" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.tax")}</Link>}
+                <Link to="/tours" className="text-xs text-muted-foreground hover:text-foreground transition-colors lowercase">{t("nav.tours")}</Link>
                 <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors">
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
                   )}
                 </button>
-                <Button size="sm" variant="ghost" onClick={signOut} className="text-xs lowercase">sign out</Button>
+                <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                <Button size="sm" variant="ghost" onClick={signOut} className="text-xs lowercase">{t("nav.signOut")}</Button>
               </>
             ) : (
               <>
-                <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs lowercase">sign in</Button></Link>
-                <Link to="/auth?tab=signup"><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase">start free</Button></Link>
+                <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs lowercase">{t("nav.signIn")}</Button></Link>
+                <Link to="/auth?tab=signup"><Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase">{t("nav.startFree")}</Button></Link>
               </>
             )}
           </div>
@@ -122,34 +137,40 @@ export default function Navbar() {
       >
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-1">
-            <MobileLink to="/directory" onClick={closeMenu}>Browse</MobileLink>
-            <MobileLink to="/trending" onClick={closeMenu}>Trending</MobileLink>
-            <MobileLink to="/pricing" onClick={closeMenu}>Pricing</MobileLink>
+            <MobileLink to="/directory" onClick={closeMenu}>{t("nav.browse")}</MobileLink>
+            <MobileLink to="/trending" onClick={closeMenu}>{t("nav.trending")}</MobileLink>
+            <MobileLink to="/pricing" onClick={closeMenu}>{t("nav.pricing")}</MobileLink>
             {user ? (
               <>
-                <MobileLink to={dashboardRoute} onClick={closeMenu}>Dashboard</MobileLink>
-                {profile?.role === "promoter" && <MobileLink to="/pipeline" onClick={closeMenu}>Pipeline</MobileLink>}
-                {profile?.role === "artist" && <MobileLink to="/tax" onClick={closeMenu}>Tax</MobileLink>}
-                <MobileLink to="/tours" onClick={closeMenu}>Tours</MobileLink>
+                <MobileLink to={dashboardRoute} onClick={closeMenu}>{t("nav.dashboard")}</MobileLink>
+                {profile?.role === "promoter" && <MobileLink to="/pipeline" onClick={closeMenu}>{t("nav.pipeline")}</MobileLink>}
+                {profile?.role === "artist" && <MobileLink to="/tax" onClick={closeMenu}>{t("nav.tax")}</MobileLink>}
+                <MobileLink to="/tours" onClick={closeMenu}>{t("nav.tours")}</MobileLink>
                 <div className="border-t border-border my-3" />
+                <div className="px-3 py-2">
+                  <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                </div>
                 <button
                   className="w-full text-left py-3 px-3 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-white/[0.03] transition-colors active:scale-[0.97]"
                   onClick={() => { signOut(); closeMenu(); }}
                 >
-                  Sign out
+                  {t("nav.signOut")}
                 </button>
               </>
             ) : (
               <>
                 <div className="border-t border-border my-3" />
+                <div className="px-3 py-2">
+                  <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                </div>
                 <Link to="/auth" onClick={closeMenu}>
                   <Button variant="outline" className="w-full border-border text-sm h-11 active:scale-[0.97] transition-transform">
-                    Sign in
+                    {t("nav.signIn")}
                   </Button>
                 </Link>
                 <Link to="/auth?tab=signup" onClick={closeMenu} className="mt-2">
                   <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium h-11 active:scale-[0.97] transition-transform">
-                    Start free
+                    {t("nav.startFree")}
                   </Button>
                 </Link>
               </>
@@ -170,5 +191,31 @@ function MobileLink({ to, onClick, children }: { to: string; onClick: () => void
     >
       {children}
     </Link>
+  );
+}
+
+function LanguageSelector({ currentLang, onChange }: { currentLang: string; onChange: (lang: string) => void }) {
+  const current = LANGS.find(l => currentLang.startsWith(l.code)) ?? LANGS[0];
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors active:scale-[0.97]">
+          <Globe className="w-3.5 h-3.5" />
+          <span>{current.flag}</span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-[140px]">
+        {LANGS.map(l => (
+          <DropdownMenuItem
+            key={l.code}
+            onClick={() => onChange(l.code)}
+            className={currentLang.startsWith(l.code) ? "bg-accent" : ""}
+          >
+            <span className="mr-2">{l.flag}</span>
+            {l.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
