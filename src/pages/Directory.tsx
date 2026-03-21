@@ -63,27 +63,30 @@ const roleColorMap: Record<string, string> = {
 };
 
 // Query functions
-async function fetchProfiles(roleFilter: string) {
+async function fetchProfiles(roleFilter: string, search: string) {
   if (roleFilter === "venue") return [];
   let query = supabase.from("public_profiles" as any).select("*");
   if (roleFilter) query = query.eq("role", roleFilter as any);
+  if (search) query = query.ilike("display_name" as any, `%${search}%`);
   const { data } = await query.order("created_at" as any, { ascending: false });
   return (data as unknown as Profile[]) ?? [];
 }
 
-async function fetchArtistListings() {
-  const { data } = await supabase
+async function fetchArtistListings(search: string) {
+  let query = supabase
     .from("artist_listings")
-    .select("*")
-    .order("upcoming_concerts", { ascending: false });
+    .select("*");
+  if (search) query = query.ilike("name", `%${search}%`);
+  const { data } = await query.order("upcoming_concerts", { ascending: false });
   return (data as ArtistListing[]) ?? [];
 }
 
-async function fetchVenueListings() {
-  const { data } = await supabase
+async function fetchVenueListings(search: string) {
+  let query = supabase
     .from("venue_listings")
-    .select("*")
-    .order("name", { ascending: true });
+    .select("*");
+  if (search) query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,region.ilike.%${search}%`);
+  const { data } = await query.order("name", { ascending: true });
   return (data as VenueListing[]) ?? [];
 }
 
@@ -115,10 +118,17 @@ async function fetchUserClaims(userId: string) {
 export default function Directory() {
   const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const ref = useRef<HTMLDivElement>(null);
   const { user, profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
+
+  // Debounce search for server-side queries
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(t);
+  }, [search]);
 
   const hasPaidPlan = !!authProfile;
 
@@ -126,23 +136,23 @@ export default function Directory() {
   const showArtists = !roleFilter || roleFilter === "artist";
   const showVenues = !roleFilter || roleFilter === "venue";
 
-  const { data: profiles = [], isLoading: profilesLoading } = useQuery({
-    queryKey: ["directory-profiles", roleFilter],
-    queryFn: () => fetchProfiles(roleFilter),
+  const { data: profiles = [], isLoading: profilesLoading } = useQuery<Profile[]>({
+    queryKey: ["directory-profiles", roleFilter, debouncedSearch],
+    queryFn: () => fetchProfiles(roleFilter, debouncedSearch),
     enabled: showProfiles,
     staleTime: 30_000,
   });
 
-  const { data: artistListings = [], isLoading: artistsLoading } = useQuery({
-    queryKey: ["directory-artists"],
-    queryFn: fetchArtistListings,
+  const { data: artistListings = [], isLoading: artistsLoading } = useQuery<ArtistListing[]>({
+    queryKey: ["directory-artists", debouncedSearch],
+    queryFn: () => fetchArtistListings(debouncedSearch),
     enabled: showArtists,
     staleTime: 30_000,
   });
 
-  const { data: venueListings = [], isLoading: venuesLoading } = useQuery({
-    queryKey: ["directory-venues"],
-    queryFn: fetchVenueListings,
+  const { data: venueListings = [], isLoading: venuesLoading } = useQuery<VenueListing[]>({
+    queryKey: ["directory-venues", debouncedSearch],
+    queryFn: () => fetchVenueListings(debouncedSearch),
     enabled: showVenues,
     staleTime: 30_000,
   });
@@ -177,39 +187,10 @@ export default function Directory() {
     return () => observer.disconnect();
   }, [loading, profiles, artistListings, venueListings]);
 
-  const filteredProfiles = profiles.filter((p) => {
-    if (!search) return true;
-    const s = search.toLowerCase();
-    return (
-      p.display_name?.toLowerCase().includes(s) ||
-      p.city?.toLowerCase().includes(s) ||
-      p.genre?.toLowerCase().includes(s)
-    );
-  });
+  // Search is now server-side — use query results directly
+  const hasResults = profiles.length > 0 || artistListings.length > 0 || venueListings.length > 0;
 
-  const filteredArtists = artistListings.filter((a) => {
-    if (!search) return true;
-    const s = search.toLowerCase();
-    return (
-      a.name.toLowerCase().includes(s) ||
-      a.genre?.toLowerCase().includes(s)
-    );
-  });
-
-  const filteredVenues = venueListings.filter((v) => {
-    if (!search) return true;
-    const s = search.toLowerCase();
-    return (
-      v.name.toLowerCase().includes(s) ||
-      v.city?.toLowerCase().includes(s) ||
-      v.state?.toLowerCase().includes(s) ||
-      v.region?.toLowerCase().includes(s)
-    );
-  });
-
-  const hasResults = filteredProfiles.length > 0 || filteredArtists.length > 0 || filteredVenues.length > 0;
-
-  const groupedVenues = filteredVenues.reduce<Record<string, VenueListing[]>>((acc, v) => {
+  const groupedVenues = venueListings.reduce<Record<string, VenueListing[]>>((acc, v) => {
     const key = v.region || "Other";
     if (!acc[key]) acc[key] = [];
     acc[key].push(v);
@@ -298,10 +279,10 @@ export default function Directory() {
         ) : (
           <div className="space-y-8">
             {/* User profiles */}
-            {filteredProfiles.length > 0 && (
+            {profiles.length > 0 && (
               <div>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredProfiles.map((p) => (
+                  {profiles.map((p) => (
                     <div key={p.id} data-reveal className="fade-in-section rounded-xl bg-card border border-border p-5 hover:border-primary/20 transition-all duration-300">
                       <div className="flex items-start gap-3 mb-3">
                         <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-display font-bold text-sm text-foreground shrink-0">
@@ -339,13 +320,13 @@ export default function Directory() {
             )}
 
             {/* Artist listings from imported data */}
-            {filteredArtists.length > 0 && (
+            {artistListings.length > 0 && (
               <div>
                 <h2 data-reveal className="fade-in-section font-display text-lg font-bold mb-3 text-foreground/80 lowercase">
-                  artists on tour — {filteredArtists.length} artists
+                  artists on tour — {artistListings.length} artists
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {filteredArtists.map((a) => (
+                  {artistListings.map((a) => (
                     <div
                       key={a.id}
                       data-reveal
@@ -383,7 +364,7 @@ export default function Directory() {
             {Object.keys(groupedVenues).length > 0 && (
               <div>
                 <h2 data-reveal className="fade-in-section font-display text-lg font-bold mb-3 text-foreground/80 lowercase">
-                  venues — {filteredVenues.length} locations
+                  venues — {venueListings.length} locations
                 </h2>
                 <div className="space-y-6">
                   {Object.entries(groupedVenues).map(([region, venueList]) => (

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Send, Users, Plus, PenLine, CheckCircle, FileText } from "lucide-react";
+import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, ChevronRight } from "lucide-react";
 import SignContractDialog from "@/components/SignContractDialog";
 import NegotiationThread from "@/components/NegotiationThread";
 
@@ -41,6 +41,9 @@ export default function PromoterDashboard() {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const PAGE_SIZE = 20;
   const [signatures, setSignatures] = useState<Record<string, string[]>>({});
   const [signDialogBooking, setSignDialogBooking] = useState<{ id: string; venueName: string; eventDate: string; guarantee: number } | null>(null);
 
@@ -48,10 +51,12 @@ export default function PromoterDashboard() {
     if (!user) return;
     const fetchData = async () => {
       const [offersRes, bookingsRes] = await Promise.all([
-        supabase.from("offers").select("*").eq("sender_id", user.id).order("created_at", { ascending: false }),
+        supabase.from("offers").select("*").eq("sender_id", user.id).order("created_at", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1),
         supabase.from("bookings").select("id, offer_id, contract_url, status").eq("promoter_id", user.id),
       ]);
-      setOffers((offersRes.data as Offer[]) ?? []);
+      const fetchedOffers = (offersRes.data as Offer[]) ?? [];
+      setHasMore(fetchedOffers.length === PAGE_SIZE);
+      setOffers(fetchedOffers);
       const bks = (bookingsRes.data as Booking[]) ?? [];
       setBookings(bks);
 
@@ -71,7 +76,7 @@ export default function PromoterDashboard() {
       setLoading(false);
     };
     fetchData();
-  }, [user]);
+  }, [user, page]);
 
   const getBookingForOffer = (offerId: string) => bookings.find((b) => b.offer_id === offerId);
 
@@ -181,6 +186,31 @@ export default function PromoterDashboard() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {offers.length > 0 && (
+          <div className="flex items-center justify-center gap-3 mt-6">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={page === 0}
+              onClick={() => setPage((p) => p - 1)}
+              className="border-border active:scale-[0.97] transition-transform h-9"
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" /> Previous
+            </Button>
+            <span className="text-xs text-muted-foreground">Page {page + 1}</span>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={!hasMore}
+              onClick={() => setPage((p) => p + 1)}
+              className="border-border active:scale-[0.97] transition-transform h-9"
+            >
+              Next <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
           </div>
         )}
       </div>
