@@ -201,20 +201,11 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
   const { user, profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
 
-  // Subscription gate: free or unauthenticated users see upgrade wall
-  const plan = authProfile?.subscription_plan ?? "free";
-  const hasPaidPlan = plan === "pro" || plan === "agency";
-  if (!user || !hasPaidPlan) {
-    return <UpgradeWall />;
-  }
-
   // Debounce search for server-side queries
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(t);
   }, [search]);
-
-  const hasPaidPlan = !!authProfile;
 
   const showProfiles = roleFilter !== "venue";
   const showArtists = !roleFilter || roleFilter === "artist";
