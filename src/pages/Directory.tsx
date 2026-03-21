@@ -193,6 +193,7 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState(initialRole);
   const [genreFilter, setGenreFilter] = useState<string | null>(null);
+  const [cityFilter, setCityFilter] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const { user, profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
