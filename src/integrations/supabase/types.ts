@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      artist_availability: {
+        Row: {
+          artist_id: string
+          created_at: string
+          date: string
+          id: string
+          is_available: boolean
+          notes: string | null
+        }
+        Insert: {
+          artist_id: string
+          created_at?: string
+          date: string
+          id?: string
+          is_available?: boolean
+          notes?: string | null
+        }
+        Update: {
+          artist_id?: string
+          created_at?: string
+          date?: string
+          id?: string
+          is_available?: boolean
+          notes?: string | null
+        }
+        Relationships: []
+      }
       artist_listings: {
         Row: {
           created_at: string
@@ -220,6 +247,76 @@ export type Database = {
           },
         ]
       }
+      deal_milestones: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          deal_room_id: string
+          description: string | null
+          due_date: string | null
+          id: string
+          sort_order: number
+          status: string
+          title: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          deal_room_id: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          sort_order?: number
+          status?: string
+          title: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          deal_room_id?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          sort_order?: number
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_milestones_deal_room_id_fkey"
+            columns: ["deal_room_id"]
+            isOneToOne: false
+            referencedRelation: "deal_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_rooms: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_rooms_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -332,6 +429,7 @@ export type Database = {
           slug: string | null
           spotify: string | null
           state: string | null
+          subscription_plan: string
           updated_at: string
           user_id: string
           website: string | null
@@ -354,6 +452,7 @@ export type Database = {
           slug?: string | null
           spotify?: string | null
           state?: string | null
+          subscription_plan?: string
           updated_at?: string
           user_id: string
           website?: string | null
@@ -376,6 +475,7 @@ export type Database = {
           slug?: string | null
           spotify?: string | null
           state?: string | null
+          subscription_plan?: string
           updated_at?: string
           user_id?: string
           website?: string | null
