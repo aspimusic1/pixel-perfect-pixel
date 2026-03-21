@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Space Grotesk", "system-ui", "sans-serif"],
-        body: ["Inter", "system-ui", "sans-serif"],
+        display: ["Graphik Super", "system-ui", "sans-serif"],
+        body: ["Neue Haas Unica", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
