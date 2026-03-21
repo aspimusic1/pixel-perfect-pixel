@@ -186,6 +186,7 @@ export type Database = {
           id: string
           instagram: string | null
           is_verified: boolean | null
+          onboarding_steps: Json | null
           profile_complete: boolean | null
           rate_max: number | null
           rate_min: number | null
@@ -206,6 +207,7 @@ export type Database = {
           id?: string
           instagram?: string | null
           is_verified?: boolean | null
+          onboarding_steps?: Json | null
           profile_complete?: boolean | null
           rate_max?: number | null
           rate_min?: number | null
@@ -226,6 +228,7 @@ export type Database = {
           id?: string
           instagram?: string | null
           is_verified?: boolean | null
+          onboarding_steps?: Json | null
           profile_complete?: boolean | null
           rate_max?: number | null
           rate_min?: number | null
