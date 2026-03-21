@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Landing from "@/pages/Landing";
 import Auth from "@/pages/Auth";
 import ProfileSetup from "@/pages/ProfileSetup";
@@ -31,15 +32,15 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/profile-setup" element={<ProfileSetup />} />
-            <Route path="/artist-dashboard" element={<ArtistDashboard />} />
-            <Route path="/promoter-dashboard" element={<PromoterDashboard />} />
+            <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
+            <Route path="/artist-dashboard" element={<ProtectedRoute><ArtistDashboard /></ProtectedRoute>} />
+            <Route path="/promoter-dashboard" element={<ProtectedRoute><PromoterDashboard /></ProtectedRoute>} />
             <Route path="/directory" element={<Directory />} />
             <Route path="/venues" element={<Navigate to="/directory" replace />} />
             <Route path="/pricing" element={<Pricing />} />
-            <Route path="/offer" element={<OfferFlow />} />
-            <Route path="/tours" element={<TourManagement />} />
-            <Route path="/venue-manage" element={<VenueManage />} />
+            <Route path="/offer" element={<ProtectedRoute><OfferFlow /></ProtectedRoute>} />
+            <Route path="/tours" element={<ProtectedRoute><TourManagement /></ProtectedRoute>} />
+            <Route path="/venue-manage" element={<ProtectedRoute><VenueManage /></ProtectedRoute>} />
             <Route path="/p/:slug" element={<ProfilePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
