@@ -9,7 +9,7 @@ const PLANS = [
     price: "$0",
     period: "/mo",
     desc: "Get started and explore the platform.",
-    commission: "15%",
+    commission: "25%",
     features: ["Create your profile", "Receive & respond to offers", "Basic directory listing", "5 offers/month"],
     cta: "Get started",
     highlight: false,
