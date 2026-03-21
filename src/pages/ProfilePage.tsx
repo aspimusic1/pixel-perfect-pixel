@@ -7,8 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Music, Globe, ExternalLink, Share2, CalendarDays, Check, X, Send } from "lucide-react";
 import { toast } from "sonner";
-import { format, startOfToday } from "date-fns";
+import { format, startOfToday, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
+import ShowNightMode from "@/components/ShowNightMode";
 
 type ProfileData = {
   id: string;
@@ -233,6 +234,15 @@ export default function ProfilePage() {
             <h2 className="font-syne text-sm font-semibold mb-2 text-muted-foreground uppercase tracking-wider">About</h2>
             <p className="text-sm text-foreground leading-relaxed" style={{ textWrap: "pretty" }}>{profile.bio}</p>
           </div>
+        )}
+
+        {/* Show Night Mode — auto-activates on booking day */}
+        {profile?.role === "artist" && profile?.user_id && (
+          <ShowNightMode
+            artistUserId={profile.user_id}
+            artistName={name}
+            isOwner={isOwnProfile}
+          />
         )}
 
         {/* Availability strip */}
