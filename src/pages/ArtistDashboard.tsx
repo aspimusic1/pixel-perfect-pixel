@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, DollarSign, Inbox, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "sonner";
+import OnboardingChecklist from "@/components/OnboardingChecklist";
 
 type Offer = {
   id: string;
@@ -57,6 +58,8 @@ export default function ArtistDashboard() {
       <div className="container mx-auto max-w-4xl">
         <h1 className="font-display text-2xl font-bold mb-1">Welcome back, {profile?.display_name ?? "Artist"}</h1>
         <p className="text-muted-foreground text-sm mb-8">Here's your booking overview.</p>
+
+        <OnboardingChecklist />
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
