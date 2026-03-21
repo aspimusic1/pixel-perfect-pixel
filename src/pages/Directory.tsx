@@ -80,7 +80,7 @@ export default function Directory() {
       setLoading(true);
 
       // Fetch user profiles
-      let profileQuery = supabase.from("profiles").select("*").eq("profile_complete", true);
+      let profileQuery = supabase.from("public_profiles" as any).select("*");
       if (roleFilter && roleFilter !== "venue") profileQuery = profileQuery.eq("role", roleFilter as any);
       if (roleFilter === "venue") {
         // When venue tab is active, don't show user profiles — show venue listings instead
