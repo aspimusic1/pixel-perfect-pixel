@@ -247,12 +247,14 @@ export default function TourManagement() {
         {selectedTour.description && <p className="text-muted-foreground text-sm mb-6">{selectedTour.description}</p>}
 
         <Tabs defaultValue="itinerary" className="mt-4">
-          <TabsList className="bg-secondary border border-border mb-6">
-            <TabsTrigger value="itinerary" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><MapPin className="w-3.5 h-3.5 mr-1" /> Itinerary</TabsTrigger>
-            <TabsTrigger value="crew" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><Users className="w-3.5 h-3.5 mr-1" /> Crew</TabsTrigger>
-            <TabsTrigger value="budget" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><DollarSign className="w-3.5 h-3.5 mr-1" /> Budget</TabsTrigger>
-            <TabsTrigger value="documents" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><FileText className="w-3.5 h-3.5 mr-1" /> Docs</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto -mx-4 px-4 pb-2 scrollbar-hide">
+            <TabsList className="bg-secondary border border-border mb-6 w-max min-w-full sm:w-auto">
+              <TabsTrigger value="itinerary" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><MapPin className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Itinerary</span></TabsTrigger>
+              <TabsTrigger value="crew" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Users className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Crew</span></TabsTrigger>
+              <TabsTrigger value="budget" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><DollarSign className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Budget</span></TabsTrigger>
+              <TabsTrigger value="documents" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><FileText className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Docs</span></TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* ITINERARY */}
           <TabsContent value="itinerary">
@@ -290,12 +292,12 @@ export default function TourManagement() {
                       </div>
                       <Button variant="ghost" size="sm" onClick={() => deleteStop(stop.id)} className="text-muted-foreground hover:text-destructive shrink-0"><Trash2 className="w-3.5 h-3.5" /></Button>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 ml-9">
-                      <div><Label className="text-xs text-muted-foreground">Load-in</Label><Input type="time" value={stop.load_in_time ?? ""} onChange={(e) => updateStop(stop.id, { load_in_time: e.target.value || null })} className="mt-0.5 h-7 text-xs bg-background border-border" /></div>
-                      <div><Label className="text-xs text-muted-foreground">Soundcheck</Label><Input type="time" value={stop.sound_check_time ?? ""} onChange={(e) => updateStop(stop.id, { sound_check_time: e.target.value || null })} className="mt-0.5 h-7 text-xs bg-background border-border" /></div>
-                      <div><Label className="text-xs text-muted-foreground">Doors</Label><Input type="time" value={stop.doors_time ?? ""} onChange={(e) => updateStop(stop.id, { doors_time: e.target.value || null })} className="mt-0.5 h-7 text-xs bg-background border-border" /></div>
-                      <div><Label className="text-xs text-muted-foreground">Show</Label><Input type="time" value={stop.show_time ?? ""} onChange={(e) => updateStop(stop.id, { show_time: e.target.value || null })} className="mt-0.5 h-7 text-xs bg-background border-border" /></div>
-                      <div><Label className="text-xs text-muted-foreground">Guarantee</Label><Input type="number" min="0" value={stop.guarantee ?? ""} onChange={(e) => updateStop(stop.id, { guarantee: parseFloat(e.target.value) || 0 })} className="mt-0.5 h-7 text-xs bg-background border-border" /></div>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 ml-0 sm:ml-9 mt-2 sm:mt-0">
+                      <div><Label className="text-xs text-muted-foreground">Load-in</Label><Input type="time" value={stop.load_in_time ?? ""} onChange={(e) => updateStop(stop.id, { load_in_time: e.target.value || null })} className="mt-0.5 h-9 sm:h-7 text-xs bg-background border-border" /></div>
+                      <div><Label className="text-xs text-muted-foreground">Soundcheck</Label><Input type="time" value={stop.sound_check_time ?? ""} onChange={(e) => updateStop(stop.id, { sound_check_time: e.target.value || null })} className="mt-0.5 h-9 sm:h-7 text-xs bg-background border-border" /></div>
+                      <div><Label className="text-xs text-muted-foreground">Doors</Label><Input type="time" value={stop.doors_time ?? ""} onChange={(e) => updateStop(stop.id, { doors_time: e.target.value || null })} className="mt-0.5 h-9 sm:h-7 text-xs bg-background border-border" /></div>
+                      <div><Label className="text-xs text-muted-foreground">Show</Label><Input type="time" value={stop.show_time ?? ""} onChange={(e) => updateStop(stop.id, { show_time: e.target.value || null })} className="mt-0.5 h-9 sm:h-7 text-xs bg-background border-border" /></div>
+                      <div className="col-span-2 sm:col-span-1"><Label className="text-xs text-muted-foreground">Guarantee</Label><Input type="number" min="0" value={stop.guarantee ?? ""} onChange={(e) => updateStop(stop.id, { guarantee: parseFloat(e.target.value) || 0 })} className="mt-0.5 h-9 sm:h-7 text-xs bg-background border-border" /></div>
                     </div>
                   </div>
                 ))}
