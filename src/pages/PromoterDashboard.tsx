@@ -156,12 +156,10 @@ export default function PromoterDashboard() {
                         <Button
                           size="sm"
                           variant="outline"
-                          asChild
+                          onClick={() => openSignedContract(booking.contract_url!)}
                           className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
                         >
-                          <a href={booking.contract_url} target="_blank" rel="noopener noreferrer">
-                            <FileText className="w-3.5 h-3.5 mr-1" /> View Contract
-                          </a>
+                          <FileText className="w-3.5 h-3.5 mr-1" /> View Contract
                         </Button>
                       )}
                       {user && signatures[booking.id]?.includes(user.id) ? (
