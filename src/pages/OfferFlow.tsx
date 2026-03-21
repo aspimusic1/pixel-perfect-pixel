@@ -129,7 +129,7 @@ export default function OfferFlow() {
         </div>
 
         {/* Step indicator */}
-        <div className="flex items-center gap-1 mb-8 overflow-x-auto pb-2">
+        <div className="flex items-center gap-1 mb-6 sm:mb-8 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
           {STEPS.map((s, i) => (
             <div key={s.label} className="flex items-center">
               <button
