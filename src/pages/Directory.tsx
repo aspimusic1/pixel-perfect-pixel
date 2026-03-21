@@ -187,37 +187,8 @@ export default function Directory() {
     return () => observer.disconnect();
   }, [loading, profiles, artistListings, venueListings]);
 
-  const filteredProfiles = profiles.filter((p) => {
-    if (!search) return true;
-    const s = search.toLowerCase();
-    return (
-      p.display_name?.toLowerCase().includes(s) ||
-      p.city?.toLowerCase().includes(s) ||
-      p.genre?.toLowerCase().includes(s)
-    );
-  });
-
-  const filteredArtists = artistListings.filter((a) => {
-    if (!search) return true;
-    const s = search.toLowerCase();
-    return (
-      a.name.toLowerCase().includes(s) ||
-      a.genre?.toLowerCase().includes(s)
-    );
-  });
-
-  const filteredVenues = venueListings.filter((v) => {
-    if (!search) return true;
-    const s = search.toLowerCase();
-    return (
-      v.name.toLowerCase().includes(s) ||
-      v.city?.toLowerCase().includes(s) ||
-      v.state?.toLowerCase().includes(s) ||
-      v.region?.toLowerCase().includes(s)
-    );
-  });
-
-  const hasResults = filteredProfiles.length > 0 || filteredArtists.length > 0 || filteredVenues.length > 0;
+  // Search is now server-side — use query results directly
+  const hasResults = profiles.length > 0 || artistListings.length > 0 || venueListings.length > 0;
 
   const groupedVenues = filteredVenues.reduce<Record<string, VenueListing[]>>((acc, v) => {
     const key = v.region || "Other";
