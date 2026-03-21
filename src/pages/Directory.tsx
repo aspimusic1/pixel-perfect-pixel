@@ -414,39 +414,8 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
           )}
         </div>
 
-        {/* Content area — gated for logged-out users */}
-        <div className="relative">
-          {!user && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none" style={{ top: "180px" }}>
-              <div className="pointer-events-auto rounded-2xl border border-primary/20 bg-background/95 backdrop-blur-sm px-8 py-10 text-center max-w-sm mx-4 shadow-2xl">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <Search className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-display text-xl font-bold mb-2">Sign up to explore</h3>
-                <p className="text-sm text-muted-foreground mb-6 font-body">
-                  Create a free account to browse artists, venues, production crews, and more.
-                </p>
-                <div className="flex flex-col gap-2">
-                  <Link to="/auth?tab=signup">
-                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform font-medium">
-                      Sign up free <ArrowRight className="ml-2 w-4 h-4" />
-                    </Button>
-                  </Link>
-                  <Link to="/auth?tab=login">
-                    <Button variant="outline" className="w-full border-border text-muted-foreground hover:text-foreground active:scale-[0.97] transition-transform">
-                      Already have an account? Log in
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className={!user ? "max-h-[420px] overflow-hidden" : ""}>
-            {!user && (
-              <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent z-10 pointer-events-none" />
-            )}
-
+        {/* Content area */}
+        <div>
         {loading ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
