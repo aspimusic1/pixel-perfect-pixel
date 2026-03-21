@@ -241,6 +241,7 @@ export default function ArtistDashboard() {
         </div>
 
         {/* Offers */}
+        <FreeOfferBanner mode="received" />
         <h2 className="font-display text-lg font-semibold mb-4">Your Offers</h2>
         {loading ? (
           <div className="space-y-3">
