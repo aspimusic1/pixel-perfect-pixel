@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
-import { Search, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, MapPin, Send } from "lucide-react";
 
 type Profile = {
   id: string;
@@ -118,11 +120,20 @@ export default function Directory() {
                   </div>
                 </div>
                 {p.bio && <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{p.bio}</p>}
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  {(p.city || p.state) && (
-                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{[p.city, p.state].filter(Boolean).join(", ")}</span>
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    {(p.city || p.state) && (
+                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{[p.city, p.state].filter(Boolean).join(", ")}</span>
+                    )}
+                    {p.genre && <span>{p.genre}</span>}
+                  </div>
+                  {p.role === "artist" && (
+                    <Link to={`/offer?artist=${p.user_id}`}>
+                      <Button size="sm" variant="outline" className="h-7 text-xs border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform">
+                        <Send className="w-3 h-3 mr-1" /> Book
+                      </Button>
+                    </Link>
                   )}
-                  {p.genre && <span>{p.genre}</span>}
                 </div>
               </div>
             ))}
