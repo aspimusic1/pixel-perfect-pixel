@@ -335,15 +335,30 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
         <h1 className="font-display text-3xl font-bold mb-2">Directory</h1>
         <p className="text-muted-foreground text-sm mb-8 font-body">Discover artists, venues, crew, and more.</p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="search by name, city, or genre..."
-              className="pl-9 bg-card border-border font-body"
-            />
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="search by name, city, or genre..."
+                className="pl-9 bg-card border-border font-body"
+              />
+            </div>
+            {/* City filter */}
+            {allCities.length > 0 && (
+              <select
+                value={cityFilter ?? ""}
+                onChange={(e) => setCityFilter(e.target.value || null)}
+                className="h-10 rounded-lg border border-border bg-card px-3 text-xs text-foreground font-body min-w-[140px] shrink-0"
+              >
+                <option value="">All cities</option>
+                {allCities.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            )}
           </div>
           <div className="flex gap-1.5 overflow-x-auto pb-1">
             {ROLE_TABS.map((tab) => (
