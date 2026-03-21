@@ -77,7 +77,7 @@ export default function OfferFlow() {
   }, [venueName, eventDate, eventTime, guarantee, doorSplit, merchSplit, hospitality, backline, notes, draftKey]);
 
   const guaranteeNum = parseFloat(guarantee) || 0;
-  const commission = guaranteeNum * COMMISSION_RATE;
+  const commission = guaranteeNum * commissionRate;
   const artistPayout = guaranteeNum - commission;
 
   useEffect(() => {
