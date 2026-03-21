@@ -338,20 +338,22 @@ export default function OfferFlow() {
           )}
         </div>
 
-        {/* Navigation */}
-        <div className="flex justify-between">
-          <Button variant="outline" onClick={() => setStep(step - 1)} disabled={step === 0} className="border-border active:scale-[0.97] transition-transform">
-            <ArrowLeft className="w-4 h-4 mr-1" /> Back
-          </Button>
-          {step < 5 ? (
-            <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform">
-              Next <ArrowRight className="w-4 h-4 ml-1" />
+        {/* Navigation — fixed bottom on mobile */}
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t border-border sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:p-0">
+          <div className="flex justify-between gap-3 container mx-auto max-w-2xl">
+            <Button variant="outline" onClick={() => setStep(step - 1)} disabled={step === 0} className="border-border active:scale-[0.97] transition-transform h-11 sm:h-10 flex-1 sm:flex-none">
+              <ArrowLeft className="w-4 h-4 mr-1" /> Back
             </Button>
-          ) : (
-            <Button onClick={handleSubmit} disabled={loading} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform">
-              {loading ? "Sending..." : "Send Offer"} <Check className="w-4 h-4 ml-1" />
-            </Button>
-          )}
+            {step < 5 ? (
+              <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform h-11 sm:h-10 flex-1 sm:flex-none">
+                Next <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
+            ) : (
+              <Button onClick={handleSubmit} disabled={loading} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform h-11 sm:h-10 flex-1 sm:flex-none">
+                {loading ? "Sending..." : "Send Offer"} <Check className="w-4 h-4 ml-1" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
