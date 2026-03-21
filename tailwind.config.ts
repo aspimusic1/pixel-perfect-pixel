@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Graphik Super", "system-ui", "sans-serif"],
-        body: ["Neue Haas Unica", "system-ui", "sans-serif"],
+        display: ["Roboto", "system-ui", "sans-serif"],
+        body: ["Nunito", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
