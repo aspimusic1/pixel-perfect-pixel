@@ -192,7 +192,6 @@ export default function NegotiationThread({ offerId, offer, onOfferUpdated }: Ne
                 <TranslateButton text={counter.message} className="mt-1" />
               </div>
             )}
-            )}
 
             {/* Response buttons for the latest pending counter (only if not from me) */}
             {counter.status === "pending" && !isFromMe && idx === counters.length - 1 && (
