@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
@@ -128,10 +129,15 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen pt-24 px-4">
-        <div className="container mx-auto max-w-2xl">
-          <div className="h-32 w-32 rounded-full bg-card animate-pulse mx-auto mb-6" />
-          <div className="h-8 w-48 bg-card animate-pulse mx-auto mb-3 rounded-lg" />
-          <div className="h-4 w-64 bg-card animate-pulse mx-auto rounded-lg" />
+        <div className="container mx-auto max-w-2xl flex flex-col items-center">
+          <Skeleton className="w-28 h-28 rounded-full mb-6" />
+          <Skeleton className="h-7 w-48 mb-3" />
+          <Skeleton className="h-4 w-64 mb-2" />
+          <div className="flex gap-2 mt-4">
+            <Skeleton className="h-8 w-20 rounded-full" />
+            <Skeleton className="h-8 w-20 rounded-full" />
+            <Skeleton className="h-8 w-20 rounded-full" />
+          </div>
         </div>
       </div>
     );

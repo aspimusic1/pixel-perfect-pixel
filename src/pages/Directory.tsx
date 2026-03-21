@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Send, ArrowRight, Mic2, Calendar, Phone, Mail, Globe, Lock, Shield, CheckCircle, Clock, CalendarDays, Building2 } from "lucide-react";
+import { Search, MapPin, Send, ArrowRight, Mic2, Calendar, Globe, Shield, CheckCircle, Clock, CalendarDays, Building2 } from "lucide-react";
 import { format, parseISO, startOfToday } from "date-fns";
 import VenueClaimDialog from "@/components/VenueClaimDialog";
 import FlashBidBadge from "@/components/FlashBidBadge";
@@ -36,8 +37,6 @@ type VenueListing = {
   city: string | null;
   state: string | null;
   address: string | null;
-  phone: string | null;
-  email: string | null;
   website: string | null;
   region: string | null;
   claim_status: string;
@@ -373,7 +372,23 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
 
         {loading ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => <div key={i} className="h-40 rounded-xl bg-card animate-pulse" />)}
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="rounded-xl bg-card border border-border p-5 space-y-3">
+                <div className="flex items-start gap-3">
+                  <Skeleton className="w-10 h-10 rounded-full" />
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/3" />
+                  </div>
+                </div>
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-2/3" />
+                <div className="flex justify-between items-center pt-1">
+                  <Skeleton className="h-3 w-1/4" />
+                  <Skeleton className="h-7 w-16 rounded-md" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : !hasResults ? (
           <div className="rounded-xl bg-card border border-border p-8 text-center">
@@ -536,42 +551,14 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
                               </div>
                             )}
 
-                            {/* Contact info — gated */}
-                            <div className="flex flex-wrap gap-1.5 mt-3">
-                              {v.phone && (
-                                hasPaidPlan ? (
-                                  <a href={`tel:${v.phone}`} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-foreground hover:bg-secondary/80 transition-colors font-body">
-                                    <Phone className="w-3 h-3 text-role-venue" /> {v.phone}
-                                  </a>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary/50 text-xs text-muted-foreground font-body">
-                                    <Lock className="w-3 h-3" /> phone
-                                  </span>
-                                )
-                              )}
-                              {v.email && (
-                                hasPaidPlan ? (
-                                  <a href={`mailto:${v.email}`} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-foreground hover:bg-secondary/80 transition-colors font-body">
-                                    <Mail className="w-3 h-3 text-role-venue" /> {v.email}
-                                  </a>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary/50 text-xs text-muted-foreground font-body">
-                                    <Lock className="w-3 h-3" /> email
-                                  </span>
-                                )
-                              )}
-                              {v.website && (
-                                hasPaidPlan ? (
-                                  <a href={`https://${v.website}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-foreground hover:bg-secondary/80 transition-colors font-body">
-                                    <Globe className="w-3 h-3 text-role-venue" /> {v.website}
-                                  </a>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary/50 text-xs text-muted-foreground font-body">
-                                    <Lock className="w-3 h-3" /> website
-                                  </span>
-                                )
-                              )}
-                            </div>
+                            {/* Website link */}
+                            {v.website && (
+                              <div className="mt-3">
+                                <a href={v.website.startsWith("http") ? v.website : `https://${v.website}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-foreground hover:bg-secondary/80 transition-colors font-body">
+                                  <Globe className="w-3 h-3 text-role-venue" /> Website
+                                </a>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>

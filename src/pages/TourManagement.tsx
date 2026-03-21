@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -214,7 +215,18 @@ export default function TourManagement() {
           )}
 
           {loading ? (
-            <div className="space-y-3">{[1, 2, 3].map((i) => <div key={i} className="h-20 rounded-xl bg-card animate-pulse" />)}</div>
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="rounded-xl bg-card border border-border p-5 flex items-center justify-between">
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-5 w-48" />
+                    <Skeleton className="h-3 w-32" />
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                  <Skeleton className="h-8 w-8 rounded-md" />
+                </div>
+              ))}
+            </div>
           ) : tours.length === 0 ? (
             <div className="rounded-xl bg-card border border-border p-8 text-center">
               <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
