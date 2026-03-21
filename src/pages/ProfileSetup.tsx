@@ -68,7 +68,7 @@ export default function ProfileSetup() {
     try {
       const { error } = await supabase
         .from("profiles")
-        .update({ bio, city, state, genre, profile_complete: true, avatar_url: avatarUrl || null })
+        .update({ bio, city, state, genre, profile_complete: true, avatar_url: avatarUrl || null, timezone } as any)
         .eq("user_id", user.id);
       if (error) throw error;
       await refreshProfile();
