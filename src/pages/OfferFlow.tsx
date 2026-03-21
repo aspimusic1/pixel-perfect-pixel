@@ -49,7 +49,7 @@ export default function OfferFlow() {
   const [hospitality, setHospitality] = useState("");
   const [backline, setBackline] = useState("");
   const [notes, setNotes] = useState("");
-
+  const [commissionRate, setCommissionRate] = useState(0.20);
   // Restore draft from localStorage
   const draftKey = `offer-draft-${recipientId || "new"}`;
   useEffect(() => {
