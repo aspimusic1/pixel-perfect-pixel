@@ -22,6 +22,7 @@ type Offer = {
   door_split: number | null;
   merch_split: number | null;
   commission_amount: number | null;
+  notes: string | null;
   status: string;
   sender_id: string;
   recipient_id: string;
