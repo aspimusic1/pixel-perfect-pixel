@@ -1,5 +1,6 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import logoWhite from "@/assets/logo-white.svg";
 
 const NotFound = () => {
   const location = useLocation();
@@ -9,13 +10,20 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-        <a href="/" className="text-primary underline hover:text-primary/90">
-          Return to Home
-        </a>
+        <img src={logoWhite} alt="GetBooked.Live" className="h-5 mx-auto mb-8 opacity-40" />
+        <p className="font-display text-6xl font-bold text-primary mb-3">404</p>
+        <h1 className="font-display text-xl font-semibold mb-2">page not found</h1>
+        <p className="text-sm text-muted-foreground mb-8 max-w-xs mx-auto font-body">
+          the page you're looking for doesn't exist or has been moved.
+        </p>
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-sm hover:bg-primary/90 active:scale-[0.97] transition-transform lowercase"
+        >
+          back to home
+        </Link>
       </div>
     </div>
   );
