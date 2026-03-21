@@ -92,7 +92,6 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden glass border-t border-border px-4 pb-4 pt-2 space-y-2">
           <Link to="/directory" className="block py-2 text-xs text-muted-foreground lowercase" onClick={() => setMenuOpen(false)}>browse</Link>
-          <Link to="/venues" className="block py-2 text-xs text-muted-foreground lowercase" onClick={() => setMenuOpen(false)}>venues</Link>
           <Link to="/pricing" className="block py-2 text-xs text-muted-foreground lowercase" onClick={() => setMenuOpen(false)}>pricing</Link>
           {user ? (
             <>
