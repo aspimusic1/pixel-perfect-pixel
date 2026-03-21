@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon, ArrowLeft, ArrowRight, Check, DollarSign, Music, MapPin, Clock } from "lucide-react";
 import { toast } from "sonner";
+import OfferIntelligence from "@/components/OfferIntelligence";
 
 type ArtistOption = { user_id: string; display_name: string | null; genre: string | null; city: string | null };
 
@@ -300,6 +301,16 @@ export default function OfferFlow() {
             <div>
               <h2 className="font-display font-semibold text-lg mb-1">Set the deal terms</h2>
               <p className="text-sm text-muted-foreground mb-4">Enter the financial details for this offer.</p>
+
+              {/* AI Offer Intelligence */}
+              {recipientId && (
+                <OfferIntelligence
+                  artistId={recipientId}
+                  genre={artists.find((a) => a.user_id === recipientId)?.genre ?? null}
+                  city={artists.find((a) => a.user_id === recipientId)?.city ?? null}
+                />
+              )}
+
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm">Guarantee ($)</Label>
