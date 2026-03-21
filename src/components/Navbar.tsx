@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Bell, Globe } from "lucide-react";
+import { Menu, X, Bell, Globe, Lock } from "lucide-react";
 import logoWhite from "@/assets/logo-white.svg";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
