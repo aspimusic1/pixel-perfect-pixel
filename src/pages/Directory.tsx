@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Send } from "lucide-react";
+import { Search, MapPin, Send, ArrowRight } from "lucide-react";
 
 type Profile = {
   id: string;
