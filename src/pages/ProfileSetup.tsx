@@ -141,6 +141,12 @@ export default function ProfileSetup() {
                 <Input value={genre} onChange={(e) => setGenre(e.target.value)} placeholder="Rock, Hip-Hop, Country..." className="mt-1.5 bg-background border-border" />
               </div>
             )}
+            {/* Reel uploader — artists only */}
+            {(profile?.role === "artist" || !profile?.role) && (
+              <div className="pt-2 border-t border-border">
+                <ReelUploader />
+              </div>
+            )}
             <Button type="submit" disabled={loading} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium h-11 active:scale-[0.97] transition-transform">
               {loading ? "Saving..." : "Save & continue"}
             </Button>

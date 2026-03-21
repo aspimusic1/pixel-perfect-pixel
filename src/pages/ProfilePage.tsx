@@ -11,6 +11,7 @@ import { format, startOfToday, isToday } from "date-fns";
 import { cn } from "@/lib/utils";
 import ShowNightMode from "@/components/ShowNightMode";
 import TranslateButton from "@/components/TranslateButton";
+import ReelDisplay from "@/components/ReelDisplay";
 
 type ProfileData = {
   id: string;
