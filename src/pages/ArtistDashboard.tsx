@@ -391,6 +391,8 @@ export default function ArtistDashboard() {
                       <div className="space-y-1.5">{offers.slice(0, 5).map(renderOfferCard)}</div>
                     )}
                   </div>
+                    </>
+                  )}
                 </>
               )}
 
