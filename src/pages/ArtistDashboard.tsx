@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
-import BookingAgentPanel from "@/components/BookingAgentPanel";
+import AIAgentPanel, { AgentActiveBanner } from "@/components/AIAgentPanel";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
 import NegotiationThread from "@/components/NegotiationThread";
@@ -22,13 +22,13 @@ import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
 import EditProfilePanel from "@/components/EditProfilePanel";
 import ProfileCompletionRing from "@/components/ProfileCompletionRing";
-import StreamingStatsEditor from "@/components/StreamingStatsEditor";
+import StreamingStatsPills from "@/components/StreamingStatsPills";
 import EventsTab from "@/components/EventsTab";
 import SpotifyAnalytics from "@/components/SpotifyAnalytics";
 import PresaleSection from "@/components/PresaleSection";
 import PlatformConnectionCards from "@/components/PlatformConnectionCards";
 
-type ArtistView = "overview" | "offers" | "events" | "analytics" | "calendar" | "bookkeeping" | "agent" | "profile";
+type ArtistView = "overview" | "offers" | "events" | "analytics" | "bookkeeping" | "agent" | "profile";
 
 type Offer = {
   id: string;
