@@ -105,7 +105,7 @@ export default function PowerFeaturesSection() {
           AI-powered booking, real-time bidding, financial tools, and logistics — built for how the industry actually works.
         </p>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {FEATURES.map((f, i) => (
             <div
               key={f.title}

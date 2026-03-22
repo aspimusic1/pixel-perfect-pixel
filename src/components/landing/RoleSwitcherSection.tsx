@@ -90,7 +90,7 @@ export default function RoleSwitcherSection() {
               <button
                 key={tab.key}
                 onClick={() => setActiveRole(tab.key)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-display font-medium transition-all duration-200 active:scale-[0.96] lowercase ${
+                className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-display font-medium transition-all duration-200 active:scale-[0.96] lowercase min-h-[44px] ${
                   active
                     ? tab.color
                     : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
