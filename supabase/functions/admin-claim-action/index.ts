@@ -36,18 +36,40 @@ Deno.serve(async (req) => {
 
     if (!roleRow) throw new Error("Forbidden: not an admin");
 
-    const { claim_id, action, rejection_reason } = await req.json();
+    const body = await req.json();
+    const { action } = body;
+
+    // Handle admin role management
+    if (action === "grant_admin" || action === "remove_admin") {
+      const { user_id } = body;
+      if (!user_id) throw new Error("Missing user_id");
+
+      if (action === "grant_admin") {
+        const { error } = await supabaseAdmin
+          .from("user_roles")
+          .upsert({ user_id, role: "admin" }, { onConflict: "user_id,role" });
+        if (error) throw error;
+      } else {
+        const { error } = await supabaseAdmin
+          .from("user_roles")
+          .delete()
+          .eq("user_id", user_id)
+          .eq("role", "admin");
+        if (error) throw error;
+      }
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Handle claim actions
+    const { claim_id, rejection_reason } = body;
     if (!claim_id || !["approve", "reject"].includes(action)) {
       throw new Error("Invalid payload");
     }
 
     const newStatus = action === "approve" ? "approved" : "rejected";
-
-    const updateData: Record<string, unknown> = { status: newStatus, reviewed_at: new Date().toISOString() };
-    if (action === "reject" && rejection_reason) {
-      // We don't have a rejection_reason column on artist_claims currently,
-      // but we set status which triggers the approval trigger for 'approved'
-    }
 
     const { error: updateErr } = await supabaseAdmin
       .from("artist_claims")

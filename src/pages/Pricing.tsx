@@ -141,6 +141,15 @@ export default function Pricing() {
           </p>
         </div>
 
+        {isAdmin && (
+          <div data-reveal className="opacity-0 mb-8 flex justify-center">
+            <div className="px-5 py-3 rounded-xl bg-[#C8FF3E]/10 border border-[#C8FF3E]/20 text-center">
+              <p className="text-[#C8FF3E] font-syne font-bold text-sm">🛡️ admin — all access</p>
+              <p className="text-[10px] text-muted-foreground mt-1">you have full platform access as an administrator</p>
+            </div>
+          </div>
+        )}
+
         {subscription?.subscribed && (
           <div data-reveal className="opacity-0 mb-8 flex justify-center">
             <Button
