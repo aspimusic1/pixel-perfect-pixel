@@ -14,7 +14,7 @@ export default function FinalCTA() {
           join the platform built by and for the live music industry.
         </p>
         <Link to="/auth?tab=signup">
-          <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold text-sm px-12 h-13 active:scale-[0.96] transition-transform lowercase shadow-[0_0_50px_-10px_hsl(var(--primary)/0.35)]">
+          <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold text-sm px-12 h-13 active:scale-[0.96] transition-transform lowercase shadow-[0_0_24px_rgba(200,255,62,0.35)]">
             get started free <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
         </Link>

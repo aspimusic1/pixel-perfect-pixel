@@ -52,6 +52,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <div className="page-atmosphere" aria-hidden="true" />
           <Navbar />
           <Suspense fallback={<RouteLoadingFallback />}>
             <Routes>
