@@ -142,12 +142,10 @@ export default function ProfilePage() {
 
       // Parallel fetches
       const today = format(startOfToday(), "yyyy-MM-dd");
-      const promises: Promise<void>[] = [];
 
       // 2. Availability (artists)
-      if (p.role === "artist") {
-        promises.push(
-          supabase
+      const availPromise = p.role === "artist"
+        ? supabase
             .from("artist_availability")
             .select("date, is_available")
             .eq("artist_id", uid)
@@ -155,93 +153,92 @@ export default function ProfilePage() {
             .eq("is_available", true)
             .order("date")
             .limit(8)
-            .then(({ data: avail }) => { setAvailability((avail as AvailDate[]) ?? []); })
-        );
-      }
+        : null;
 
-      // 3. Booking count + acceptance rate
-      promises.push(
-        supabase
-          .from("bookings")
-          .select("id", { count: "exact", head: true })
-          .eq("artist_id", uid)
-          .eq("status", "confirmed")
-          .then(({ count }) => { setBookingCount(count ?? 0); })
-      );
+      // 3. Booking count
+      const bookingCountPromise = supabase
+        .from("bookings")
+        .select("id", { count: "exact", head: true })
+        .eq("artist_id", uid)
+        .eq("status", "confirmed");
 
-      promises.push(
-        supabase
-          .from("offers")
-          .select("status")
-          .eq("recipient_id", uid)
-          .then(({ data: offers }) => {
-            if (offers && offers.length > 0) {
-              const accepted = offers.filter((o: any) => o.status === "accepted").length;
-              setAcceptanceRate(Math.round((accepted / offers.length) * 100));
-            }
-          })
-      );
+      // Acceptance rate
+      const offersPromise = supabase
+        .from("offers")
+        .select("status")
+        .eq("recipient_id", uid);
 
-      // 4. Past shows (last 6 confirmed bookings)
-      promises.push(
-        supabase
-          .from("bookings")
-          .select("id, venue_name, event_date")
-          .eq("artist_id", uid)
-          .eq("status", "confirmed")
-          .lt("event_date", today)
-          .order("event_date", { ascending: false })
-          .limit(6)
-          .then(({ data: shows }) => { setPastShows((shows as PastShow[]) ?? []); })
-      );
+      // 4. Past shows
+      const pastShowsPromise = supabase
+        .from("bookings")
+        .select("id, venue_name, event_date")
+        .eq("artist_id", uid)
+        .eq("status", "confirmed")
+        .lt("event_date", today)
+        .order("event_date", { ascending: false })
+        .limit(6);
 
       // 5. Reviews
-      promises.push(
-        (async () => {
-          const { data: reviewData } = await supabase
-            .from("reviews" as any)
-            .select("id, rating, comment, created_at, reviewer_id, booking_id")
-            .eq("reviewee_id", uid)
-            .order("created_at", { ascending: false })
-            .limit(5);
-          if (reviewData && reviewData.length > 0) {
-            const reviewerIds = [...new Set((reviewData as any[]).map((r: any) => r.reviewer_id))];
-            const bookingIds = [...new Set((reviewData as any[]).map((r: any) => r.booking_id).filter(Boolean))];
-            const [profilesRes, bookingsRes] = await Promise.all([
-              supabase.from("public_profiles" as any).select("user_id, display_name, avatar_url").in("user_id", reviewerIds),
-              bookingIds.length > 0 ? supabase.from("bookings").select("id, venue_name").in("id", bookingIds) : Promise.resolve({ data: [] }),
-            ]);
-            const profileMap = new Map((profilesRes.data as any[] || []).map((p: any) => [p.user_id, p]));
-            const bookingMap = new Map((bookingsRes.data as any[] || []).map((b: any) => [b.id, b]));
-            setReviews((reviewData as any[]).map((r: any) => ({
-              id: r.id,
-              rating: r.rating,
-              comment: r.comment,
-              created_at: r.created_at,
-              reviewer_name: profileMap.get(r.reviewer_id)?.display_name || "Anonymous",
-              reviewer_avatar: profileMap.get(r.reviewer_id)?.avatar_url || null,
-              booking_venue: bookingMap.get(r.booking_id)?.venue_name || null,
-            })));
-          }
-        })()
-      );
+      const reviewsPromise = supabase
+        .from("reviews" as any)
+        .select("id, rating, comment, created_at, reviewer_id, booking_id")
+        .eq("reviewee_id", uid)
+        .order("created_at", { ascending: false })
+        .limit(5);
 
-      // 6. Similar artists (same genre or city, limit 3)
-      if (p.role === "artist" && p.genre) {
-        const firstGenre = p.genre.split(",")[0]?.trim();
-        if (firstGenre) {
-          promises.push(
-            supabase
-              .from("public_profiles" as any)
-              .select("user_id, display_name, avatar_url, genre, city, slug")
-              .eq("role", "artist")
-              .ilike("genre", `%${firstGenre}%`)
-              .neq("user_id", uid)
-              .limit(3)
-              .then(({ data: similar }) => { setSimilarArtists((similar as SimilarArtist[]) ?? []); })
-          );
-        }
+      // 6. Similar artists
+      const firstGenre = p.role === "artist" && p.genre ? p.genre.split(",")[0]?.trim() : null;
+      const similarPromise = firstGenre
+        ? supabase
+            .from("public_profiles" as any)
+            .select("user_id, display_name, avatar_url, genre, city, slug")
+            .eq("role", "artist")
+            .ilike("genre", `%${firstGenre}%`)
+            .neq("user_id", uid)
+            .limit(3)
+        : null;
+
+      const [availRes, bookingCountRes, offersRes, pastShowsRes, reviewsRes, similarRes] = await Promise.all([
+        availPromise,
+        bookingCountPromise,
+        offersPromise,
+        pastShowsPromise,
+        reviewsPromise,
+        similarPromise,
+      ]);
+
+      if (availRes?.data) setAvailability(availRes.data as AvailDate[]);
+      setBookingCount(bookingCountRes.count ?? 0);
+
+      if (offersRes.data && offersRes.data.length > 0) {
+        const accepted = offersRes.data.filter((o: any) => o.status === "accepted").length;
+        setAcceptanceRate(Math.round((accepted / offersRes.data.length) * 100));
       }
+
+      setPastShows((pastShowsRes.data as PastShow[]) ?? []);
+
+      if (reviewsRes.data && (reviewsRes.data as any[]).length > 0) {
+        const rd = reviewsRes.data as any[];
+        const reviewerIds = [...new Set(rd.map((r: any) => r.reviewer_id))];
+        const bookingIds = [...new Set(rd.map((r: any) => r.booking_id).filter(Boolean))];
+        const [profilesRes2, bookingsRes2] = await Promise.all([
+          supabase.from("public_profiles" as any).select("user_id, display_name, avatar_url").in("user_id", reviewerIds),
+          bookingIds.length > 0 ? supabase.from("bookings").select("id, venue_name").in("id", bookingIds) : Promise.resolve({ data: [] as any[] }),
+        ]);
+        const profileMap = new Map((profilesRes2.data as any[] || []).map((pp: any) => [pp.user_id, pp]));
+        const bookingMap = new Map((bookingsRes2.data as any[] || []).map((b: any) => [b.id, b]));
+        setReviews(rd.map((r: any) => ({
+          id: r.id,
+          rating: r.rating,
+          comment: r.comment,
+          created_at: r.created_at,
+          reviewer_name: profileMap.get(r.reviewer_id)?.display_name || "Anonymous",
+          reviewer_avatar: profileMap.get(r.reviewer_id)?.avatar_url || null,
+          booking_venue: bookingMap.get(r.booking_id)?.venue_name || null,
+        })));
+      }
+
+      if (similarRes?.data) setSimilarArtists((similarRes.data as unknown as SimilarArtist[]) ?? []);
 
       await Promise.all(promises);
       setLoading(false);
