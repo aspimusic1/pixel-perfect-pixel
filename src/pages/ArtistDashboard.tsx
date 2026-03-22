@@ -24,6 +24,7 @@ import EditProfilePanel from "@/components/EditProfilePanel";
 import ProfileCompletionRing from "@/components/ProfileCompletionRing";
 import StreamingStatsEditor from "@/components/StreamingStatsEditor";
 import EventsTab from "@/components/EventsTab";
+import SpotifyAnalytics from "@/components/SpotifyAnalytics";
 
 type ArtistView = "overview" | "offers" | "events" | "calendar" | "bookkeeping" | "agent" | "profile";
 
