@@ -845,7 +845,11 @@ export type Database = {
       }
       profiles: {
         Row: {
+          apple_music: string | null
           avatar_url: string | null
+          bandcamp: string | null
+          bandsintown: string | null
+          beatport: string | null
           bio: string | null
           city: string | null
           created_at: string
@@ -860,17 +864,25 @@ export type Database = {
           rate_min: number | null
           role: Database["public"]["Enums"]["app_role"] | null
           slug: string | null
+          songkick: string | null
+          soundcloud: string | null
           spotify: string | null
           state: string | null
           subscription_plan: string
           suspended: boolean
+          tiktok: string | null
           timezone: string | null
           updated_at: string
           user_id: string
           website: string | null
+          youtube: string | null
         }
         Insert: {
+          apple_music?: string | null
           avatar_url?: string | null
+          bandcamp?: string | null
+          bandsintown?: string | null
+          beatport?: string | null
           bio?: string | null
           city?: string | null
           created_at?: string
@@ -885,17 +897,25 @@ export type Database = {
           rate_min?: number | null
           role?: Database["public"]["Enums"]["app_role"] | null
           slug?: string | null
+          songkick?: string | null
+          soundcloud?: string | null
           spotify?: string | null
           state?: string | null
           subscription_plan?: string
           suspended?: boolean
+          tiktok?: string | null
           timezone?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
+          youtube?: string | null
         }
         Update: {
+          apple_music?: string | null
           avatar_url?: string | null
+          bandcamp?: string | null
+          bandsintown?: string | null
+          beatport?: string | null
           bio?: string | null
           city?: string | null
           created_at?: string
@@ -910,14 +930,18 @@ export type Database = {
           rate_min?: number | null
           role?: Database["public"]["Enums"]["app_role"] | null
           slug?: string | null
+          songkick?: string | null
+          soundcloud?: string | null
           spotify?: string | null
           state?: string | null
           subscription_plan?: string
           suspended?: boolean
+          tiktok?: string | null
           timezone?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null
+          youtube?: string | null
         }
         Relationships: []
       }
@@ -1544,7 +1568,11 @@ export type Database = {
     Views: {
       public_profiles: {
         Row: {
+          apple_music: string | null
           avatar_url: string | null
+          bandcamp: string | null
+          bandsintown: string | null
+          beatport: string | null
           bio: string | null
           city: string | null
           display_name: string | null
@@ -1554,14 +1582,22 @@ export type Database = {
           is_verified: boolean | null
           role: Database["public"]["Enums"]["app_role"] | null
           slug: string | null
+          songkick: string | null
+          soundcloud: string | null
           spotify: string | null
           state: string | null
+          tiktok: string | null
           updated_at: string | null
           user_id: string | null
           website: string | null
+          youtube: string | null
         }
         Insert: {
+          apple_music?: string | null
           avatar_url?: string | null
+          bandcamp?: string | null
+          bandsintown?: string | null
+          beatport?: string | null
           bio?: string | null
           city?: string | null
           display_name?: string | null
@@ -1571,14 +1607,22 @@ export type Database = {
           is_verified?: boolean | null
           role?: Database["public"]["Enums"]["app_role"] | null
           slug?: string | null
+          songkick?: string | null
+          soundcloud?: string | null
           spotify?: string | null
           state?: string | null
+          tiktok?: string | null
           updated_at?: string | null
           user_id?: string | null
           website?: string | null
+          youtube?: string | null
         }
         Update: {
+          apple_music?: string | null
           avatar_url?: string | null
+          bandcamp?: string | null
+          bandsintown?: string | null
+          beatport?: string | null
           bio?: string | null
           city?: string | null
           display_name?: string | null
@@ -1588,11 +1632,15 @@ export type Database = {
           is_verified?: boolean | null
           role?: Database["public"]["Enums"]["app_role"] | null
           slug?: string | null
+          songkick?: string | null
+          soundcloud?: string | null
           spotify?: string | null
           state?: string | null
+          tiktok?: string | null
           updated_at?: string | null
           user_id?: string | null
           website?: string | null
+          youtube?: string | null
         }
         Relationships: []
       }
