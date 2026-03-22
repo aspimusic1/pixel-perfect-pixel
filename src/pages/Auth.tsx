@@ -183,7 +183,7 @@ export default function Auth() {
               <>
                 <div>
                   <Label htmlFor="name" className="text-sm font-display font-medium lowercase text-muted-foreground">display name</Label>
-                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
+                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required aria-required="true" autoComplete="name" className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
                 </div>
                 <div>
                   <Label className="text-sm font-display font-medium lowercase mb-2.5 block text-muted-foreground">I am a...</Label>
