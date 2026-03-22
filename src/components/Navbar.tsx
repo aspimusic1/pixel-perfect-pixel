@@ -65,6 +65,7 @@ export default function Navbar() {
 
   const role = profile?.role;
   const dashboardRoute = (() => {
+    if (isAdmin) return "/admin";
     switch (role) {
       case "promoter": return "/promoter-dashboard";
       case "venue": return "/venue-manage";
