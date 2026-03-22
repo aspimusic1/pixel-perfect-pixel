@@ -96,6 +96,8 @@ export default function Navbar() {
                 {profile?.role === "artist" && <NavItem to="/tax">{t("nav.tax")}</NavItem>}
                 <NavItem to="/insights">insights</NavItem>
                 <NavItem to="/tours">{t("nav.tours")}</NavItem>
+                {isAdmin && <NavItem to="/admin/claims"><ShieldCheck className="w-3 h-3 mr-1" />admin</NavItem>}
+                <NavItem to="/tours">{t("nav.tours")}</NavItem>
                 <button onClick={() => navigate("/notifications")} className="relative text-primary-foreground/70 hover:text-primary-foreground transition-colors">
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
