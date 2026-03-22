@@ -15,6 +15,7 @@ import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import FinancingOption from "@/components/FinancingOption";
 import { openSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
+import EditProfilePanel from "@/components/EditProfilePanel";
 
 type PromoterView = "overview" | "offers" | "discover";
 type Offer = { id: string; venue_name: string; event_date: string; event_time: string | null; guarantee: number; door_split: number | null; merch_split: number | null; status: string; recipient_id: string; sender_id: string; created_at: string };
