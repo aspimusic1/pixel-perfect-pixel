@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logoBlack from "@/assets/logo-black.png";
+import logoColor from "@/assets/logo-color.png";
 import { useTranslation } from "react-i18next";
 
 const QUICK_MENU = [
