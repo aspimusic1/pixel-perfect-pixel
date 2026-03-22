@@ -44,7 +44,7 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <KeyRound className="w-5 h-5 text-primary" />
+            <KeyRound className="w-5 h-5 text-[#C8FF3E]" />
           </div>
           <h1 className="font-display font-bold text-xl mb-1">Set new password</h1>
           <p className="text-muted-foreground text-sm">Enter your new password below.</p>
