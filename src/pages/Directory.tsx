@@ -361,7 +361,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setGenreFilter(null); }} className="w-full">
-          <TabsList className="bg-card border border-border w-full justify-start gap-0 h-auto p-1 flex-wrap">
+          <TabsList className="bg-card border border-border w-full justify-start gap-0 h-auto p-1 grid grid-cols-2 md:grid-cols-5">
             {ROLE_TABS.map((tab) => (
               <TabsTrigger
                 key={tab.value}
@@ -376,10 +376,10 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
 
           {/* Genre filter (artists only) */}
           {isArtistTab && artistGenres.length > 0 && (
-            <div className="flex gap-1.5 overflow-x-auto pb-1 mt-4">
+            <div className="flex flex-wrap gap-1.5 mt-4">
               <button
                 onClick={() => setGenreFilter(null)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
+                className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
                   !genreFilter
                     ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
                     : "bg-secondary text-muted-foreground hover:text-foreground"
@@ -391,7 +391,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                 <button
                   key={g}
                   onClick={() => setGenreFilter(genreFilter === g ? null : g)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
+                  className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
                     genreFilter === g
                       ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
                       : "bg-secondary text-muted-foreground hover:text-foreground"
@@ -407,7 +407,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
           {ROLE_TABS.map((tab) => (
             <TabsContent key={tab.value} value={tab.value} className="mt-6">
               {loading ? (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div key={i} className="rounded-xl bg-card border border-border p-5 space-y-3">
                       <div className="flex items-start gap-3">
@@ -430,7 +430,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                     {Object.entries(groupedVenues).map(([region, venueList]) => (
                       <div key={region}>
                         <h3 data-reveal className="fade-in-section font-display text-sm font-semibold mb-2 text-role-venue/80 lowercase">{region}</h3>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {venueList.map((v) => (
                             <div key={v.id} data-reveal className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-role-venue/20 transition-all duration-300">
                               <div className="flex items-start justify-between gap-2 mb-2">
@@ -495,7 +495,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                     {profiles.length > 0 && (
                       <div>
                         <p className="text-xs text-muted-foreground font-body mb-3">{profiles.length} registered artists</p>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                           {profiles.map((p) => (
                             <ProfileCard key={p.id} p={p} flashBids={flashBids} hasPaidPlan={hasPaidPlan} onUpgrade={() => setUpgradeModal(true)} />
                           ))}
@@ -507,7 +507,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                         <h2 data-reveal className="fade-in-section font-display text-lg font-bold mb-3 text-foreground/80 lowercase">
                           artist directory — {artistListings.length} artists
                         </h2>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {artistListings.map((a) => (
                             <div key={a.id} data-reveal className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-primary/20 transition-all duration-300">
                               <div className="flex items-start justify-between gap-2 mb-2">
@@ -549,7 +549,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                 profiles.length > 0 ? (
                   <div>
                     <p className="text-xs text-muted-foreground font-body mb-3">{profiles.length} {tab.label.toLowerCase()}</p>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {profiles.map((p) => (
                         <ProfileCard key={p.id} p={p} flashBids={flashBids} hasPaidPlan={hasPaidPlan} onUpgrade={() => setUpgradeModal(true)} />
                       ))}
