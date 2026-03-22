@@ -52,7 +52,7 @@ function MockupWindow() {
 
 export default function HeroSection() {
   return (
-    <section className="relative pt-32 sm:pt-40 pb-20 sm:pb-28 px-4 overflow-hidden">
+    <section className="relative pt-24 sm:pt-40 pb-16 sm:pb-28 px-4 overflow-hidden">
       {/* Subtle ambient glow */}
       <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-primary/[0.04] blur-[120px] pointer-events-none" />
 
