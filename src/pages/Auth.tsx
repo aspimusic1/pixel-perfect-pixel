@@ -122,6 +122,8 @@ export default function Auth() {
                     onChange={(e) => setResetEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
+                    aria-required="true"
+                    autoComplete="email"
                     className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30"
                   />
                 </div>
