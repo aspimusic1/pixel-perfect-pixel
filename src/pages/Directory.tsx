@@ -26,6 +26,11 @@ type Profile = {
   avatar_url: string | null;
   slug: string | null;
   is_verified: boolean | null;
+  streaming_stats: {
+    followers?: number;
+    source?: string;
+    spotify_artist_id?: string;
+  } | null;
 };
 
 type ArtistListing = {
