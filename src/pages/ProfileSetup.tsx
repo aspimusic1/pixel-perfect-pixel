@@ -97,14 +97,38 @@ export default function ProfileSetup() {
         baseUpdate.rate_min = rateMin ? parseFloat(rateMin) : null;
         baseUpdate.rate_max = rateMax ? parseFloat(rateMax) : null;
       }
-      // For other roles, we store extra info in the bio or as part of the profile
-      // since the profiles table has limited columns. We'll append context to bio.
+
+      if (role === "venue" && venueName.trim()) {
+        baseUpdate.display_name = venueName.trim();
+      }
 
       const { error } = await supabase
         .from("profiles")
         .update(baseUpdate as any)
         .eq("user_id", user.id);
       if (error) throw error;
+
+      // Save venue listing if venue role
+      if (role === "venue" && venueName.trim()) {
+        const { error: venueError } = await supabase
+          .from("venue_listings")
+          .upsert(
+            {
+              name: venueName.trim(),
+              city: city || null,
+              state: state || null,
+              capacity: capacity ? parseInt(capacity) : null,
+              amenities: amenities ? amenities.split(",").map((a) => a.trim()).filter(Boolean) : null,
+              description: bio || null,
+              claimed_by: user.id,
+              claim_status: "approved",
+            } as any,
+            { onConflict: "claimed_by" }
+          );
+        if (venueError) {
+          toast.error("Profile saved, but venue listing failed: " + venueError.message);
+        }
+      }
       await refreshProfile();
       toast.success("Profile saved!");
 
