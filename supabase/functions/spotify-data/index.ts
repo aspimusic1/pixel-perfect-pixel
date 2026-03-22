@@ -133,7 +133,7 @@ Deno.serve(async (req) => {
     }
     const userId = claimsData.claims.sub;
 
-    const { spotify_url } = await req.json();
+    const { spotify_url } = body;
     if (!spotify_url) {
       return new Response(JSON.stringify({ error: "spotify_url required" }), {
         status: 400,
