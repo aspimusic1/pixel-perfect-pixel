@@ -31,6 +31,7 @@ const Insights = lazy(() => import("@/pages/Insights"));
 const AdminClaims = lazy(() => import("@/pages/AdminClaims"));
 const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
 const PresalePage = lazy(() => import("@/pages/PresalePage"));
+const ReviewPage = lazy(() => import("@/pages/ReviewPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const Welcome = lazy(() => import("@/pages/Welcome"));
 
