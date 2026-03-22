@@ -65,6 +65,13 @@ export default function EditProfilePanel() {
   const [rateMax, setRateMax] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
+  const [emailPrefs, setEmailPrefs] = useState({
+    offer_received: true,
+    offer_accepted: true,
+    offer_declined: true,
+    booking_confirmed: true,
+    new_message: false,
+  });
 
   const [socialLinks, setSocialLinks] = useState<Record<SocialKey, string>>(
     Object.fromEntries(SOCIAL_LINKS.map(l => [l.key, ""])) as Record<SocialKey, string>
