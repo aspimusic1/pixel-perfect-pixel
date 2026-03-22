@@ -355,17 +355,19 @@ export default function TourManagement() {
                   </Button>
                 </Link>
               </div>
-            ) : stops.length >= 2 && stops.some((s, i) => i > 0 && s.city && stops[i-1].city && s.city !== stops[i-1].city) ? (
-              <div className="mb-4 flex flex-wrap gap-2">
-                {stops.filter((s) => s.city).map((s) => (
-                  <Link key={s.id} to={`/directory?role=venue&city=${encodeURIComponent(s.city!)}`}>
-                    <Button size="sm" variant="ghost" className="text-[11px] h-7 text-muted-foreground hover:text-foreground">
-                      Browse venues in {s.city} <ArrowRight className="w-3 h-3 ml-1" />
-                    </Button>
-                  </Link>
-                ))}
-              </div>
             ) : (
+              <>
+                {stops.length >= 2 && (
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {[...new Set(stops.filter((s) => s.city).map((s) => s.city!))].map((city) => (
+                      <Link key={city} to={`/directory?role=venue&city=${encodeURIComponent(city)}`}>
+                        <Button size="sm" variant="ghost" className="text-[11px] h-7 text-muted-foreground hover:text-foreground">
+                          Browse venues in {city} <ArrowRight className="w-3 h-3 ml-1" />
+                        </Button>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               <div className="space-y-3">
                 {stops.map((stop, i) => (
                   <div key={stop.id} className="rounded-xl bg-card border border-border p-4 cursor-pointer hover:border-primary/20 transition-all" onClick={() => setEditingStop(stop)}>
