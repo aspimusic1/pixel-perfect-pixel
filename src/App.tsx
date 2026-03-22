@@ -14,6 +14,8 @@ const Auth = lazy(() => import("@/pages/Auth"));
 const ProfileSetup = lazy(() => import("@/pages/ProfileSetup"));
 const ArtistDashboard = lazy(() => import("@/pages/ArtistDashboard"));
 const PromoterDashboard = lazy(() => import("@/pages/PromoterDashboard"));
+const ProductionDashboard = lazy(() => import("@/pages/ProductionDashboard"));
+const CreativeDashboard = lazy(() => import("@/pages/CreativeDashboard"));
 const Directory = lazy(() => import("@/pages/Directory"));
 const Pricing = lazy(() => import("@/pages/Pricing"));
 const OfferFlow = lazy(() => import("@/pages/OfferFlow"));
