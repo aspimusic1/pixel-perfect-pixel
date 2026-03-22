@@ -28,6 +28,7 @@ type ProfileData = {
   user_id: string;
   display_name: string | null;
   avatar_url: string | null;
+  banner_url: string | null;
   bio: string | null;
   city: string | null;
   state: string | null;
@@ -44,6 +45,9 @@ type ProfileData = {
   beatport: string | null;
   bandsintown: string | null;
   songkick: string | null;
+  facebook: string | null;
+  twitter: string | null;
+  threads: string | null;
   is_verified: boolean | null;
   slug: string | null;
 };
