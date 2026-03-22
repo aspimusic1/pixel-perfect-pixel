@@ -72,21 +72,24 @@ interface NotificationMeta {
 }
 
 function buildOfferReceivedEmail(meta: NotificationMeta) {
+  const eventName = escapeHtml(meta.event_name || "New Event");
+  const eventDate = escapeHtml(meta.event_date || "TBD");
+  const city = escapeHtml(meta.city || "—");
   const subject = `New booking offer — ${meta.event_name || "New Event"}`;
   const html = wrapEmail(subject, `
     <h1>You've received a new offer 🎉</h1>
     <div style="margin: 20px 0;">
       <div class="detail-row">
         <span class="detail-label">Event</span>
-        <span class="detail-value">${meta.event_name || "—"}</span>
+        <span class="detail-value">${eventName}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Date</span>
-        <span class="detail-value">${meta.event_date || "TBD"}</span>
+        <span class="detail-value">${eventDate}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">City</span>
-        <span class="detail-value">${meta.city || "—"}</span>
+        <span class="detail-value">${city}</span>
       </div>
       <div class="detail-row" style="border-bottom:none;">
         <span class="detail-label">Offer Amount</span>
