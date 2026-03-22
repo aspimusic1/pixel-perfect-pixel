@@ -430,7 +430,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                     {Object.entries(groupedVenues).map(([region, venueList]) => (
                       <div key={region}>
                         <h3 data-reveal className="fade-in-section font-display text-sm font-semibold mb-2 text-role-venue/80 lowercase">{region}</h3>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {venueList.map((v) => (
                             <div key={v.id} data-reveal className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-role-venue/20 transition-all duration-300">
                               <div className="flex items-start justify-between gap-2 mb-2">
