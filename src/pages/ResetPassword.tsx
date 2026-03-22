@@ -40,17 +40,17 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 pt-20">
+    <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 pt-20">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <KeyRound className="w-5 h-5 text-primary" />
+            <KeyRound className="w-5 h-5 text-[#C8FF3E]" />
           </div>
-          <h1 className="font-display font-bold text-xl mb-1">Set new password</h1>
+          <h1 className="font-display font-bold text-xl mb-1 text-foreground">Set new password</h1>
           <p className="text-muted-foreground text-sm">Enter your new password below.</p>
         </div>
 
-        <div className="rounded-xl bg-card border border-border p-6">
+        <div className="rounded-xl bg-white/[0.04] border border-white/[0.08] p-6">
           {done ? (
             <div className="text-center py-4">
               <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-3" />
@@ -69,7 +69,7 @@ export default function ResetPassword() {
                   placeholder="••••••••"
                   required
                   minLength={6}
-                  className="mt-1.5 bg-background border-border"
+                  className="mt-1.5 bg-white/[0.04] border-white/[0.08]"
                 />
               </div>
               <div>
@@ -82,13 +82,13 @@ export default function ResetPassword() {
                   placeholder="••••••••"
                   required
                   minLength={6}
-                  className="mt-1.5 bg-background border-border"
+                  className="mt-1.5 bg-white/[0.04] border-white/[0.08]"
                 />
               </div>
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium h-11 active:scale-[0.97] transition-transform"
+                className="w-full bg-[#C8FF3E] text-[#080C14] hover:bg-[#C8FF3E]/90 font-medium h-11 active:scale-[0.97] transition-transform"
               >
                 {loading ? "Updating..." : "Update password"}
                 <ArrowRight className="ml-2 w-4 h-4" />

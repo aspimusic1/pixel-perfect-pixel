@@ -71,42 +71,42 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-primary flex items-center justify-center px-4 pt-20 pb-12">
+    <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 pt-20 pb-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           {isSignUp && activeRoleInfo && ActiveIcon ? (
             <>
-              <div className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center bg-primary-foreground/10">
-                <ActiveIcon className="w-6 h-6 text-primary-foreground" />
+              <div className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center bg-white/[0.06]">
+                <ActiveIcon className="w-6 h-6 text-[#C8FF3E]" />
               </div>
-              <h1 className="font-display font-bold text-xl mb-1.5 lowercase text-primary-foreground">
-                sign up as <span className="text-primary-foreground">{activeRoleInfo.label.toLowerCase()}</span>
+              <h1 className="font-display font-bold text-xl mb-1.5 lowercase text-foreground">
+                sign up as <span className="text-[#C8FF3E]">{activeRoleInfo.label.toLowerCase()}</span>
               </h1>
-              <p className="text-primary-foreground/60 text-sm font-body">{activeRoleInfo.tagline}</p>
+              <p className="text-muted-foreground text-sm font-body">{activeRoleInfo.tagline}</p>
             </>
           ) : (
             <>
               <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" />
-              <h1 className="font-display font-bold text-xl mb-1 lowercase text-primary-foreground">
+              <h1 className="font-display font-bold text-xl mb-1 lowercase text-foreground">
                 {isSignUp ? "create your account" : "welcome back"}
               </h1>
-              <p className="text-primary-foreground/60 text-sm font-body">
+              <p className="text-muted-foreground text-sm font-body">
                 {isSignUp ? "join the live music operating system" : "sign in to your account"}
               </p>
             </>
           )}
         </div>
 
-        <div className="rounded-2xl bg-primary-foreground/[0.08] border border-primary-foreground/[0.12] p-7 backdrop-blur-sm">
+        <div className="rounded-2xl bg-white/[0.04] border border-white/[0.08] p-7">
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
               <>
                 <div>
-                  <Label htmlFor="name" className="text-sm font-display font-medium lowercase text-primary-foreground/80">display name</Label>
-                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required className="mt-2 bg-primary-foreground/[0.06] border-primary-foreground/[0.12] text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30" />
+                  <Label htmlFor="name" className="text-sm font-display font-medium lowercase text-muted-foreground">display name</Label>
+                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
                 </div>
                 <div>
-                  <Label className="text-sm font-display font-medium lowercase mb-2.5 block text-primary-foreground/80">I am a...</Label>
+                  <Label className="text-sm font-display font-medium lowercase mb-2.5 block text-muted-foreground">I am a...</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {ROLES.map((role) => {
                       const Icon = role.icon;
@@ -118,8 +118,8 @@ export default function Auth() {
                           onClick={() => setSelectedRole(role.value)}
                           className={`px-3 py-2.5 rounded-lg border text-sm font-display font-medium transition-all active:scale-[0.96] flex items-center gap-2 lowercase ${
                             selected
-                              ? "border-primary-foreground/40 bg-primary-foreground/15 text-primary-foreground"
-                              : "border-primary-foreground/[0.1] text-primary-foreground/50 hover:text-primary-foreground/70 hover:border-primary-foreground/20"
+                              ? "border-[#C8FF3E]/40 bg-[#C8FF3E]/10 text-[#C8FF3E]"
+                              : "border-white/[0.08] text-muted-foreground hover:text-foreground hover:border-white/[0.15]"
                           }`}
                         >
                           <Icon className="w-3.5 h-3.5 shrink-0" />
@@ -132,12 +132,12 @@ export default function Auth() {
               </>
             )}
             <div>
-              <Label htmlFor="email" className="text-sm font-display font-medium lowercase text-primary-foreground/80">email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-2 bg-primary-foreground/[0.06] border-primary-foreground/[0.12] text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30" />
+              <Label htmlFor="email" className="text-sm font-display font-medium lowercase text-muted-foreground">email</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
             </div>
             <div>
-              <Label htmlFor="password" className="text-sm font-display font-medium lowercase text-primary-foreground/80">password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-2 bg-primary-foreground/[0.06] border-primary-foreground/[0.12] text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30" />
+              <Label htmlFor="password" className="text-sm font-display font-medium lowercase text-muted-foreground">password</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
               {!isSignUp && (
                 <button
                   type="button"
@@ -149,28 +149,28 @@ export default function Auth() {
                     if (error) toast.error(error.message);
                     else toast.success("Check your email for a reset link");
                   }}
-                  className="text-xs text-primary-foreground/60 hover:text-primary-foreground/80 transition-colors mt-2 float-right font-display"
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors mt-2 float-right font-display"
                 >
                   forgot password?
                 </button>
               )}
             </div>
-            <Button type="submit" disabled={loading} className="w-full font-display font-semibold h-11 lowercase bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+            <Button type="submit" disabled={loading} className="w-full font-display font-semibold h-11 lowercase bg-[#C8FF3E] text-[#080C14] hover:bg-[#C8FF3E]/90">
               {loading ? "loading..." : isSignUp ? "create account" : "sign in"}
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </form>
 
           <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-primary-foreground/[0.1]" /></div>
-            <div className="relative flex justify-center text-xs"><span className="bg-transparent px-3 text-primary-foreground/50 font-body">or continue with</span></div>
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/[0.06]" /></div>
+            <div className="relative flex justify-center text-xs"><span className="bg-transparent px-3 text-muted-foreground font-body">or continue with</span></div>
           </div>
 
           <div className="flex gap-2">
             <Button
               type="button"
               variant="outline"
-              className="flex-1 h-11 font-display font-medium lowercase border-primary-foreground/[0.12] text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10"
+              className="flex-1 h-11 font-display font-medium lowercase border-white/[0.08] text-muted-foreground hover:text-foreground hover:bg-white/[0.06]"
               onClick={async () => {
                 const { error } = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
                 if (error) toast.error(error.message ?? "Google sign-in failed");
@@ -182,7 +182,7 @@ export default function Auth() {
             <Button
               type="button"
               variant="outline"
-              className="flex-1 h-11 font-display font-medium lowercase border-primary-foreground/[0.12] text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10"
+              className="flex-1 h-11 font-display font-medium lowercase border-white/[0.08] text-muted-foreground hover:text-foreground hover:bg-white/[0.06]"
               onClick={async () => {
                 const { error } = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin });
                 if (error) toast.error(error.message ?? "Apple sign-in failed");
@@ -194,7 +194,7 @@ export default function Auth() {
           </div>
 
           <div className="mt-5 text-center">
-            <button onClick={() => setIsSignUp(!isSignUp)} className="text-sm text-primary-foreground/50 hover:text-primary-foreground/70 transition-colors font-body">
+            <button onClick={() => setIsSignUp(!isSignUp)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-body">
               {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
             </button>
           </div>
