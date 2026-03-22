@@ -41,9 +41,26 @@ export async function downloadSignedContract(filePath: string) {
 
 
 
+const SAFE_ERROR_MESSAGES: Record<string, string> = {
+  "23505": "This record already exists.",
+  "23503": "A referenced record was not found.",
+  "23502": "A required field is missing.",
+  "42501": "You don't have permission to do that.",
+  "PGRST301": "You don't have permission to do that.",
+  "22P02": "Invalid input format.",
+  "23514": "The value provided is not allowed.",
+};
+
+function getSafeErrorMessage(error: { code?: string; message?: string }): string {
+  if (error.code && SAFE_ERROR_MESSAGES[error.code]) {
+    return SAFE_ERROR_MESSAGES[error.code];
+  }
+  return "Something went wrong. Please try again.";
+}
+
 /**
  * Wraps a Supabase query call with error handling.
- * Shows a toast on error and returns null.
+ * Shows a safe toast on error and returns null.
  */
 export async function dbCall<T>(
   query: PromiseLike<{ data: T; error: any }>
@@ -51,7 +68,7 @@ export async function dbCall<T>(
   const { data, error } = await query;
   if (error) {
     console.error("[dbCall]", error);
-    toast.error(error.message || "Something went wrong. Please try again.");
+    toast.error(getSafeErrorMessage(error));
     return null;
   }
   return data;

@@ -181,7 +181,7 @@ export default function OfferFlow() {
         hospitality: hospitality.trim() || null,
         backline: backline.trim() || null,
         notes: notes.trim() || null,
-        commission_rate: commissionRate,
+        // commission_rate is set server-side by trigger
       });
       if (error) throw error;
 
