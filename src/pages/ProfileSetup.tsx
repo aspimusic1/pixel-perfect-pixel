@@ -1,12 +1,12 @@
-import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Loader2, Mic2, Megaphone, Building2, Wrench, Camera as CameraIcon } from "lucide-react";
+import { Camera, Loader2, Mic2, Megaphone, Building2, Wrench, Camera as CameraIcon, Music } from "lucide-react";
 import toast from "react-hot-toast";
 import ReelUploader from "@/components/ReelUploader";
 
