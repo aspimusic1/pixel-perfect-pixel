@@ -159,6 +159,7 @@ serve(async (req) => {
 });
 
 function buildReviewRequestEmail(message: string, link: string): string {
+  const safeMessage = escapeHtml(message);
   return `<!DOCTYPE html>
 <html>
 <head>
