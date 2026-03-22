@@ -28,6 +28,7 @@ const navItems: NavItem<PromoterView>[] = [
   { title: "overview", value: "overview", icon: Megaphone },
   { title: "offers", value: "offers", icon: Send },
   { title: "discover", value: "discover", icon: Users },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function PromoterDashboard() {
