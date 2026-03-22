@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import InstallBanner from "@/components/InstallBanner";
 
 // Route-level code splitting
 const Landing = lazy(() => import("@/pages/Landing"));
