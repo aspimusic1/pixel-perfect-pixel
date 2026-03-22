@@ -96,7 +96,7 @@ export default function EditProfilePanel() {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("website, instagram, facebook, twitter, threads, spotify, apple_music, soundcloud, youtube, tiktok, bandcamp, beatport, bandsintown, songkick, banner_url")
+      .select("website, instagram, facebook, twitter, threads, spotify, apple_music, soundcloud, youtube, tiktok, bandcamp, beatport, bandsintown, songkick, banner_url, email_preferences")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
