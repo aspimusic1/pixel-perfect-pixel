@@ -16,6 +16,7 @@ const navItems: NavItem<ProductionView>[] = [
   { title: "crew", value: "crew", icon: Users },
   { title: "calendar", value: "calendar", icon: Calendar },
   { title: "documents", value: "documents", icon: FileText },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function ProductionDashboard() {
