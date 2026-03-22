@@ -170,7 +170,7 @@ export default function Auth() {
             <Button
               type="button"
               variant="outline"
-              className="flex-1 h-11 font-display font-medium lowercase border-primary-foreground/[0.12] text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10"
+              className="flex-1 h-11 font-display font-medium lowercase border-white/[0.08] text-muted-foreground hover:text-foreground hover:bg-white/[0.06]"
               onClick={async () => {
                 const { error } = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
                 if (error) toast.error(error.message ?? "Google sign-in failed");
