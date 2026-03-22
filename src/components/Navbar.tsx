@@ -20,11 +20,11 @@ const LANGS = [
 ];
 
 const NAV_LINKS = [
-  { label: "Browse", to: "/directory", pro: true },
-  { label: "Directory", to: "/directory", pro: false },
-  { label: "Pricing", to: "/pricing", pro: false },
-  { label: "For Artists", to: "/auth?tab=signup&role=artist", pro: false },
-  { label: "For Promoters", to: "/auth?tab=signup&role=promoter", pro: false },
+  { label: "browse", to: "/directory", pro: true },
+  { label: "directory", to: "/directory", pro: false },
+  { label: "pricing", to: "/pricing", pro: false },
+  { label: "for artists", to: "/auth?tab=signup&role=artist", pro: false },
+  { label: "for promoters", to: "/auth?tab=signup&role=promoter", pro: false },
 ];
 
 export default function Navbar() {
@@ -132,7 +132,7 @@ export default function Navbar() {
                 className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                Admin Login
+                admin login
               </Link>
             )}
             {user && isAdmin && (
@@ -141,7 +141,7 @@ export default function Navbar() {
                 className="text-sm font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                Admin
+                admin
               </Link>
             )}
           </div>
@@ -163,8 +163,8 @@ export default function Navbar() {
                     </span>
                   )}
                 </button>
-                <button
-                  onClick={() => navigate("/setup")}
+                <Link
+                  to={dashboardRoute}
                   className="w-8 h-8 rounded-full overflow-hidden border border-white/10 hover:border-white/20 transition-colors flex items-center justify-center bg-secondary active:scale-[0.96]"
                 >
                   {profile?.avatar_url ? (
@@ -174,7 +174,7 @@ export default function Navbar() {
                       {(profile?.display_name ?? "?")[0].toUpperCase()}
                     </span>
                   )}
-                </button>
+                </Link>
                 <button
                   onClick={signOut}
                   className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors"
@@ -250,7 +250,7 @@ export default function Navbar() {
             })}
             {!user && (
               <MobileLink to="/auth" onClick={closeMenu}>
-                Admin Login
+                admin login
               </MobileLink>
             )}
 

@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Loader2, Mic2, Megaphone, Building2, Wrench, Camera as CameraIcon, Music } from "lucide-react";
+import { Camera, Loader2, Mic2, Megaphone, Building2, Wrench, Camera as CameraIcon, Music, Youtube } from "lucide-react";
 import toast from "react-hot-toast";
-import ReelUploader from "@/components/ReelUploader";
 
 const ROLE_META: Record<string, { icon: any; label: string; accent: string; stepLabel: string }> = {
   artist: { icon: Mic2, label: "Artist", accent: "text-[hsl(var(--role-artist))]", stepLabel: "Set up your artist profile" },
@@ -28,7 +27,6 @@ export default function ProfileSetup() {
   const [spotifyConnecting, setSpotifyConnecting] = useState(false);
   const [spotifyConnected, setSpotifyConnected] = useState(!!(profile as any)?.streaming_stats?.source);
 
-  // Handle Spotify OAuth callback
   useEffect(() => {
     const code = searchParams.get("code");
     if (code && !spotifyConnected) {
@@ -65,7 +63,6 @@ export default function ProfileSetup() {
       toast.success("Spotify connected!");
       setSpotifyConnected(true);
       await refreshProfile();
-      // Clean up URL params
       window.history.replaceState({}, "", "/profile-setup");
     } catch (err: any) {
       toast.error(err.message || "Failed to connect Spotify");
@@ -89,8 +86,8 @@ export default function ProfileSetup() {
   const [website, setWebsite] = useState("");
   const [instagram, setInstagram] = useState("");
   const [spotify, setSpotify] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState(profile?.youtube ?? "");
   const [rateMin, setRateMin] = useState(profile?.rate_min?.toString() ?? "");
-  const [rateMax, setRateMax] = useState(profile?.rate_max?.toString() ?? "");
   // Promoter-specific
   const [companyName, setCompanyName] = useState("");
   const [eventTypes, setEventTypes] = useState("");
@@ -137,14 +134,13 @@ export default function ProfileSetup() {
         avatar_url: avatarUrl || null, timezone,
       };
 
-      // Add role-specific fields
       if (role === "artist") {
         baseUpdate.genre = genre;
         baseUpdate.website = website || null;
         baseUpdate.instagram = instagram || null;
         baseUpdate.spotify = spotify || null;
+        baseUpdate.youtube = youtubeUrl || null;
         baseUpdate.rate_min = rateMin ? parseFloat(rateMin) : null;
-        baseUpdate.rate_max = rateMax ? parseFloat(rateMax) : null;
       }
 
       if (role === "venue" && venueName.trim()) {
@@ -157,7 +153,6 @@ export default function ProfileSetup() {
         .eq("user_id", user.id);
       if (error) throw error;
 
-      // Save venue listing if venue role
       if (role === "venue" && venueName.trim()) {
         const { error: venueError } = await supabase
           .from("venue_listings")
@@ -181,7 +176,6 @@ export default function ProfileSetup() {
       await refreshProfile();
       toast.success("Profile saved!");
 
-      // Route to role-appropriate dashboard
       const dashboardMap: Record<string, string> = {
         artist: "/artist-dashboard",
         promoter: "/promoter-dashboard",
@@ -202,7 +196,6 @@ export default function ProfileSetup() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-12">
       <div className="w-full max-w-lg">
-        {/* Role-aware header */}
         <div className="flex items-center gap-3 mb-2">
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${meta.accent.replace("text-", "bg-")}/10`}>
             <RoleIcon className={`w-5 h-5 ${meta.accent}`} />
@@ -236,7 +229,7 @@ export default function ProfileSetup() {
               <p className="text-[11px] text-muted-foreground mt-2 font-body">click to upload photo</p>
             </div>
 
-            {/* Bio — all roles */}
+            {/* Bio */}
             <div>
               <Label className="text-sm">Bio</Label>
               <Textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder={
@@ -248,7 +241,7 @@ export default function ProfileSetup() {
               } className="mt-1.5 bg-background border-border" rows={3} />
             </div>
 
-            {/* Location — all roles */}
+            {/* Location */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-sm">City</Label>
@@ -267,26 +260,33 @@ export default function ProfileSetup() {
                   <Label className="text-sm">Genre</Label>
                   <Input value={genre} onChange={(e) => setGenre(e.target.value)} placeholder="Rock, Hip-Hop, Country..." className="mt-1.5 bg-background border-border" />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-sm">Min fee ($)</Label>
-                    <Input type="number" value={rateMin} onChange={(e) => setRateMin(e.target.value)} placeholder="500" className="mt-1.5 bg-background border-border" />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Max fee ($)</Label>
-                    <Input type="number" value={rateMax} onChange={(e) => setRateMax(e.target.value)} placeholder="5,000" className="mt-1.5 bg-background border-border" />
-                  </div>
+                <div>
+                  <Label className="text-sm">Your booking fee (starting from $)</Label>
+                  <Input type="number" value={rateMin} onChange={(e) => setRateMin(e.target.value)} placeholder="500" className="mt-1.5 bg-background border-border" />
                 </div>
                 <div>
                   <Label className="text-sm">Website</Label>
                   <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://yoursite.com" className="mt-1.5 bg-background border-border" />
                 </div>
                 <div>
-                  <Label className="text-sm">Instagram</Label>
+                  <Label className="text-sm flex items-center gap-1.5">
+                    <svg className="w-4 h-4 text-[#E1306C]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    Instagram
+                  </Label>
                   <Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@yourhandle" className="mt-1.5 bg-background border-border" />
                 </div>
                 <div>
-                  <Label className="text-sm">Spotify</Label>
+                  <Label className="text-sm flex items-center gap-1.5">
+                    <Youtube className="w-4 h-4 text-[#FF0000]" />
+                    YouTube channel URL
+                  </Label>
+                  <Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="https://youtube.com/@yourchannel" className="mt-1.5 bg-background border-border" />
+                </div>
+                <div>
+                  <Label className="text-sm flex items-center gap-1.5">
+                    <Music className="w-4 h-4 text-[#1DB954]" />
+                    Spotify
+                  </Label>
                   {spotifyConnected ? (
                     <div className="mt-1.5 flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1DB954]/10 border border-[#1DB954]/20">
                       <Music className="w-4 h-4 text-[#1DB954]" />
@@ -369,7 +369,7 @@ export default function ProfileSetup() {
               </>
             )}
 
-            {/* Timezone — all roles */}
+            {/* Timezone */}
             <div>
               <Label className="text-sm">Timezone</Label>
               <select
@@ -382,13 +382,6 @@ export default function ProfileSetup() {
                 ))}
               </select>
             </div>
-
-            {/* Reel uploader — artists only */}
-            {role === "artist" && (
-              <div className="pt-2 border-t border-border">
-                <ReelUploader />
-              </div>
-            )}
 
             <Button type="submit" disabled={loading} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium h-11 active:scale-[0.97] transition-transform">
               {loading ? "Saving..." : "Save & continue"}
