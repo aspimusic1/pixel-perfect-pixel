@@ -28,12 +28,11 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isAdmin, setIsAdmin] = useState(false);
   const { t, i18n } = useTranslation();
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
