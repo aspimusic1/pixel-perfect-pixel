@@ -240,6 +240,10 @@ export default function Navbar() {
 
       {/* Mobile slide-out */}
       <div
+        id="mobile-nav-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
         className={`fixed top-[60px] right-0 bottom-0 z-50 w-72 bg-card border-l border-white/[0.06] transform transition-transform duration-200 ease-out md:hidden ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
