@@ -36,7 +36,7 @@ const ROLE_ICON: Record<string, React.ElementType> = {
 };
 
 export default function Welcome() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   // If already seen welcome, redirect
