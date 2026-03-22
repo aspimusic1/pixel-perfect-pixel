@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Loader2, Music2, TrendingUp, MapPin, Disc3 } from "lucide-react";
+import { Loader2, Music2, TrendingUp, MapPin, Disc3, FileDown } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 
 const ACCENT = "#C8FF3E";
