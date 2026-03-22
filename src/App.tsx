@@ -34,6 +34,7 @@ const PresalePage = lazy(() => import("@/pages/PresalePage"));
 const ReviewPage = lazy(() => import("@/pages/ReviewPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const Welcome = lazy(() => import("@/pages/Welcome"));
+const Settings = lazy(() => import("@/pages/Settings"));
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,7 @@ const App = () => (
                 <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
                 <Route path="/presale/:bookingId" element={<PresalePage />} />
                 <Route path="/review/:bookingId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
