@@ -20,11 +20,11 @@ const LANGS = [
 ];
 
 const NAV_LINKS = [
-  { label: "Browse", to: "/directory", pro: true },
-  { label: "Directory", to: "/directory", pro: false },
-  { label: "Pricing", to: "/pricing", pro: false },
-  { label: "For Artists", to: "/auth?tab=signup&role=artist", pro: false },
-  { label: "For Promoters", to: "/auth?tab=signup&role=promoter", pro: false },
+  { label: "browse", to: "/directory", pro: true },
+  { label: "directory", to: "/directory", pro: false },
+  { label: "pricing", to: "/pricing", pro: false },
+  { label: "for artists", to: "/auth?tab=signup&role=artist", pro: false },
+  { label: "for promoters", to: "/auth?tab=signup&role=promoter", pro: false },
 ];
 
 export default function Navbar() {
