@@ -434,7 +434,9 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                                 {getClaimButton(v)}
                               </div>
                               {v.capacity && (
-                                <p className="text-[11px] text-muted-foreground font-body mb-2">Capacity: {v.capacity.toLocaleString()}</p>
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium text-primary border border-primary/20 mt-2" style={{ background: "rgba(200,255,62,0.08)" }}>
+                                  {v.capacity.toLocaleString()} cap
+                                </span>
                               )}
                               {venueAvailability[v.id]?.length > 0 && (
                                 <div className="mb-2">
