@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Bell, Globe, Lock } from "lucide-react";
+import { Menu, X, Bell, Globe, Lock, ShieldCheck } from "lucide-react";
 import logoBlack from "@/assets/logo-black.png";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,12 +25,13 @@ export default function Navbar() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { t, i18n } = useTranslation();
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setIsAdmin(false); return; }
     const fetchUnread = async () => {
       const { count } = await supabase
         .from("notifications")
@@ -39,7 +40,12 @@ export default function Navbar() {
         .eq("read", false);
       setUnreadCount(count ?? 0);
     };
+    const checkAdmin = async () => {
+      const { data } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
+      setIsAdmin(!!data);
+    };
     fetchUnread();
+    checkAdmin();
     const channel = supabase
       .channel("notifications")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => fetchUnread())
@@ -89,6 +95,8 @@ export default function Navbar() {
                 {profile?.role === "promoter" && <NavItem to="/pipeline">{t("nav.pipeline")}</NavItem>}
                 {profile?.role === "artist" && <NavItem to="/tax">{t("nav.tax")}</NavItem>}
                 <NavItem to="/insights">insights</NavItem>
+                <NavItem to="/tours">{t("nav.tours")}</NavItem>
+                {isAdmin && <NavItem to="/admin/claims"><ShieldCheck className="w-3 h-3 mr-1" />admin</NavItem>}
                 <NavItem to="/tours">{t("nav.tours")}</NavItem>
                 <button onClick={() => navigate("/notifications")} className="relative text-primary-foreground/70 hover:text-primary-foreground transition-colors">
                   <Bell className="w-4 h-4" />
@@ -156,6 +164,7 @@ export default function Navbar() {
                 {profile?.role === "artist" && <MobileLink to="/tax" onClick={closeMenu}>{t("nav.tax")}</MobileLink>}
                 <MobileLink to="/insights" onClick={closeMenu}>insights</MobileLink>
                 <MobileLink to="/tours" onClick={closeMenu}>{t("nav.tours")}</MobileLink>
+                {isAdmin && <MobileLink to="/admin/claims" onClick={closeMenu}>admin</MobileLink>}
                 <div className="border-t border-border my-4" />
                 <div className="px-3 py-2">
                   <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
