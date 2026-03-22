@@ -73,6 +73,7 @@ const App = () => (
               <Route path="/p/:slug" element={<ProfilePage />} />
               <Route path="/admin/claims" element={<ProtectedRoute><AdminClaims /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/presale/:bookingId" element={<PresalePage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
