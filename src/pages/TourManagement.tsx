@@ -94,6 +94,7 @@ export default function TourManagement() {
     const { data, error } = await supabase.from("tour_stops").insert({ tour_id: selectedTour.id, venue_name: "New Venue", date: new Date().toISOString().split("T")[0], sort_order: stops.length }).select().single();
     if (error) { toast.error(error.message); return; }
     setStops([...stops, data as TourStop]);
+    toast.success("Stop added.");
   };
 
   const updateStop = async (id: string, updates: Partial<TourStop>) => {
