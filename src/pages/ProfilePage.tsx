@@ -240,7 +240,7 @@ export default function ProfilePage() {
 
       if (similarRes?.data) setSimilarArtists((similarRes.data as unknown as SimilarArtist[]) ?? []);
 
-      await Promise.all(promises);
+      
       setLoading(false);
     };
     load();
