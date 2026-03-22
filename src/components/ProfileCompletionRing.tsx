@@ -1,15 +1,13 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect } from "react";
 
 type CheckItem = {
   label: string;
   key: string;
   weight: number;
   complete: boolean;
-  section?: string;
 };
 
 const ACCENT = "#C8FF3E";
@@ -17,19 +15,38 @@ const ACCENT = "#C8FF3E";
 export default function ProfileCompletionRing() {
   const { profile, user } = useAuth();
   const navigate = useNavigate();
+  const [animated, setAnimated] = useState(false);
+  const [hasAvailability, setHasAvailability] = useState(false);
+
+  // Check if user has set any availability dates
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("artist_availability")
+      .select("id", { count: "exact", head: true })
+      .eq("artist_id", user.id)
+      .then(({ count }) => setHasAvailability((count ?? 0) > 0));
+  }, [user]);
+
+  // Trigger animation after mount
+  useEffect(() => {
+    const t = setTimeout(() => setAnimated(true), 100);
+    return () => clearTimeout(t);
+  }, []);
 
   const items: CheckItem[] = useMemo(() => {
     if (!profile) return [];
     return [
-      { label: "Profile photo", key: "avatar", weight: 15, complete: !!profile.avatar_url, section: "profile" },
-      { label: "Bio", key: "bio", weight: 15, complete: !!profile.bio && profile.bio.length > 10, section: "profile" },
-      { label: "Genre", key: "genre", weight: 15, complete: !!profile.genre, section: "profile" },
-      { label: "Fee range", key: "fee", weight: 15, complete: (profile.rate_min ?? 0) > 0 || (profile.rate_max ?? 0) > 0, section: "profile" },
-      { label: "Location", key: "location", weight: 10, complete: !!profile.city && !!profile.state, section: "profile" },
-      { label: "Instagram", key: "instagram", weight: 10, complete: !!(profile as any).instagram, section: "profile" },
-      { label: "Spotify", key: "spotify", weight: 10, complete: !!(profile as any).spotify, section: "profile" },
+      { label: "Profile photo", key: "avatar", weight: 20, complete: !!profile.avatar_url },
+      { label: "Bio", key: "bio", weight: 15, complete: !!profile.bio && profile.bio.length > 10 },
+      { label: "Genre", key: "genre", weight: 15, complete: !!profile.genre },
+      { label: "Fee range", key: "fee", weight: 15, complete: (profile.rate_min ?? 0) > 0 || (profile.rate_max ?? 0) > 0 },
+      { label: "Location", key: "location", weight: 10, complete: !!profile.city && !!profile.state },
+      { label: "Spotify link", key: "spotify", weight: 10, complete: !!(profile as any).spotify },
+      { label: "Instagram", key: "instagram", weight: 10, complete: !!(profile as any).instagram },
+      { label: "Availability", key: "availability", weight: 5, complete: hasAvailability },
     ];
-  }, [profile]);
+  }, [profile, hasAvailability]);
 
   const score = useMemo(() => items.reduce((sum, i) => sum + (i.complete ? i.weight : 0), 0), [items]);
   const incomplete = items.filter((i) => !i.complete);
@@ -46,7 +63,7 @@ export default function ProfileCompletionRing() {
 
   const radius = 38;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (score / 100) * circumference;
+  const offset = animated ? circumference - (score / 100) * circumference : circumference;
 
   return (
     <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-5">
@@ -63,7 +80,7 @@ export default function ProfileCompletionRing() {
               strokeLinecap="round"
               strokeDasharray={circumference}
               strokeDashoffset={offset}
-              className="transition-all duration-700 ease-out"
+              style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1)" }}
             />
           </svg>
           {/* Avatar in center */}
@@ -92,11 +109,11 @@ export default function ProfileCompletionRing() {
           <p className="text-[11px] text-muted-foreground mb-3">Complete your profile to get more offers</p>
 
           {incomplete.length > 0 && (
-            <div className="space-y-1">
+            <div className="space-y-1 mb-3">
               {incomplete.map((item) => (
                 <button
                   key={item.key}
-                  onClick={() => navigate("/setup")}
+                  onClick={() => item.key === "availability" ? navigate("/artist-dashboard") : navigate("/profile-setup")}
                   className="flex items-center gap-2 text-[11px] text-muted-foreground hover:text-foreground transition-colors group w-full text-left"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-[#C8FF3E]/50 transition-colors shrink-0" />
@@ -106,6 +123,14 @@ export default function ProfileCompletionRing() {
               ))}
             </div>
           )}
+
+          <button
+            onClick={() => navigate("/profile-setup")}
+            className="inline-flex items-center h-7 px-3 rounded-md text-[11px] font-medium transition-all duration-200 active:scale-[0.97]"
+            style={{ backgroundColor: ACCENT, color: "#080C14" }}
+          >
+            Update Profile
+          </button>
         </div>
       </div>
     </div>
