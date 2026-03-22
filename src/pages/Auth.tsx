@@ -31,10 +31,10 @@ export default function Auth() {
   const [resetEmail, setResetEmail] = useState("");
   const [resetSent, setResetSent] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => { if (user) navigate("/welcome"); }, [user, navigate]);
+  useEffect(() => { if (user) navigate(isAdmin ? "/admin" : "/welcome"); }, [user, isAdmin, navigate]);
   useEffect(() => { if (presetRole) { setSelectedRole(presetRole); setIsSignUp(true); } }, [presetRole]);
 
   const activeRoleInfo = ROLES.find((r) => r.value === selectedRole);

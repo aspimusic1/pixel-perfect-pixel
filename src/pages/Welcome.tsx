@@ -70,6 +70,8 @@ export default function Welcome() {
         .eq("user_id", user.id);
       await refreshProfile();
     }
+    // Route admin to admin panel
+    if (isAdmin) { navigate("/admin"); return; }
     // Route to role-specific dashboard
     const dashMap: Record<string, string> = {
       artist: "/artist-dashboard",
