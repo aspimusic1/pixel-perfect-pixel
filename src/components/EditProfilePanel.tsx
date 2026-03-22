@@ -103,6 +103,9 @@ export default function EditProfilePanel() {
         if (data) {
           const d = data as any;
           setBannerUrl(d.banner_url ?? "");
+          if (d.email_preferences) {
+            setEmailPrefs(prev => ({ ...prev, ...(d.email_preferences as any) }));
+          }
           setSocialLinks({
             instagram: d.instagram ?? "",
             facebook: d.facebook ?? "",
