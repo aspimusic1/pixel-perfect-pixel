@@ -368,6 +368,14 @@ export default function ArtistDashboard() {
                 </>
               )}
 
+              {/* ─── Events ─── */}
+              {activeView === "events" && (
+                <>
+                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">events</h2>
+                  <EventsTab bookings={bookings} loading={loading} />
+                </>
+              )}
+
               {/* ─── Calendar ─── */}
               {activeView === "calendar" && (
                 <>
@@ -393,7 +401,12 @@ export default function ArtistDashboard() {
               )}
 
               {/* ─── Profile ─── */}
-              {activeView === "profile" && <EditProfilePanel />}
+              {activeView === "profile" && (
+                <>
+                  <EditProfilePanel />
+                  <StreamingStatsEditor />
+                </>
+              )}
             </div>
           </main>
         </div>
