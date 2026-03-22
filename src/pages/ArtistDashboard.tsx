@@ -204,14 +204,14 @@ export default function ArtistDashboard() {
 
         {/* Actions */}
         {offer.status === "pending" && (
-          <div className="flex gap-1.5 px-4 pb-3 pt-2 border-t border-white/[0.04] mt-2">
-            <Button size="sm" disabled={actionLoading === offer.id} onClick={() => setReviewOffer(offer)} className="h-7 text-[11px] bg-green-600 hover:bg-green-700 text-white active:scale-[0.97] transition-transform px-2.5">
+          <div className="flex flex-col sm:flex-row gap-1.5 px-4 pb-3 pt-2 border-t border-white/[0.04] mt-2">
+            <Button size="sm" disabled={actionLoading === offer.id} onClick={() => setReviewOffer(offer)} className="h-9 sm:h-7 text-[11px] bg-green-600 hover:bg-green-700 text-white active:scale-[0.97] transition-transform px-2.5 w-full sm:w-auto">
               {actionLoading === offer.id ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Shield className="w-3 h-3 mr-1" />} review
             </Button>
-            <Button size="sm" variant="ghost" disabled={actionLoading === offer.id} onClick={() => setCounterDialogOffer(offer)} className="h-7 text-[11px] text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 active:scale-[0.97] px-2.5">
+            <Button size="sm" variant="ghost" disabled={actionLoading === offer.id} onClick={() => setCounterDialogOffer(offer)} className="h-9 sm:h-7 text-[11px] text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 active:scale-[0.97] px-2.5 w-full sm:w-auto">
               <ArrowRightLeft className="w-3 h-3 mr-1" /> counter
             </Button>
-            <Button size="sm" variant="ghost" disabled={actionLoading === offer.id} onClick={() => handleRespond(offer.id, "declined")} className="h-7 text-[11px] text-muted-foreground hover:text-red-400 hover:bg-red-500/10 active:scale-[0.97] px-2.5">
+            <Button size="sm" variant="ghost" disabled={actionLoading === offer.id} onClick={() => handleRespond(offer.id, "declined")} className="h-9 sm:h-7 text-[11px] text-muted-foreground hover:text-red-400 hover:bg-red-500/10 active:scale-[0.97] px-2.5 w-full sm:w-auto">
               <XCircle className="w-3 h-3 mr-1" /> decline
             </Button>
           </div>
