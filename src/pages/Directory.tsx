@@ -585,7 +585,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
 
 function EmptyState() {
   return (
-    <div className="rounded-xl bg-card border border-border p-8 text-center">
+    <div className="rounded-2xl border border-white/[0.07] backdrop-blur-[12px] p-8 text-center" style={{ background: "rgba(14, 20, 32, 0.6)" }}>
       <p className="text-muted-foreground font-body">No profiles found. Try adjusting your search.</p>
     </div>
   );
