@@ -64,8 +64,8 @@ export default function HeroSection() {
 
         {/* Headline */}
         <h1
-          className="animate-reveal-up font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase"
-          style={{ animationDelay: "80ms", fontSize: "clamp(36px, 6vw, 64px)", lineHeight: "1.05" }}
+          className="animate-reveal-up font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase text-3xl sm:text-5xl md:text-6xl"
+          style={{ animationDelay: "80ms", lineHeight: "1.05" }}
         >
           book shows. get paid.
           <br />
