@@ -28,6 +28,7 @@ const TaxDashboard = lazy(() => import("@/pages/TaxDashboard"));
 const Trending = lazy(() => import("@/pages/Trending"));
 const Insights = lazy(() => import("@/pages/Insights"));
 const AdminClaims = lazy(() => import("@/pages/AdminClaims"));
+const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ const App = () => (
               <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
               <Route path="/p/:slug" element={<ProfilePage />} />
               <Route path="/admin/claims" element={<ProtectedRoute><AdminClaims /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

@@ -863,6 +863,7 @@ export type Database = {
           spotify: string | null
           state: string | null
           subscription_plan: string
+          suspended: boolean
           timezone: string | null
           updated_at: string
           user_id: string
@@ -887,6 +888,7 @@ export type Database = {
           spotify?: string | null
           state?: string | null
           subscription_plan?: string
+          suspended?: boolean
           timezone?: string | null
           updated_at?: string
           user_id: string
@@ -911,6 +913,7 @@ export type Database = {
           spotify?: string | null
           state?: string | null
           subscription_plan?: string
+          suspended?: boolean
           timezone?: string | null
           updated_at?: string
           user_id?: string
