@@ -169,6 +169,7 @@ export default function EditProfilePanel() {
       rate_max: rateMax ? parseFloat(rateMax) : null,
       ...Object.fromEntries(SOCIAL_LINKS.map(l => [l.key, socialLinks[l.key] || null])),
       ...Object.fromEntries(MUSIC_LINKS.map(l => [l.key, musicLinks[l.key] || null])),
+      email_preferences: emailPrefs,
     };
     const { error } = await supabase.from("profiles").update(updates).eq("user_id", user.id);
     if (error) { toast.error(error.message); } else {
