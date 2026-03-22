@@ -196,6 +196,7 @@ async function fetchFlashBids() {
 
 export default function Directory({ initialRole = "" }: { initialRole?: string }) {
   const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
+  const [claimArtist, setClaimArtist] = useState<ArtistListing | null>(null);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState(initialRole);
