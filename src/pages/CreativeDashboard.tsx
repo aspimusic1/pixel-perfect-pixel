@@ -3,9 +3,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
-import { Camera, CheckCircle, DollarSign, FolderOpen, Star, Calendar } from "lucide-react";
+import { Camera, CheckCircle, DollarSign, FolderOpen, Star, Calendar, UserCog } from "lucide-react";
+import EditProfilePanel from "@/components/EditProfilePanel";
 
-type CreativeView = "overview" | "portfolio" | "bookings" | "calendar" | "reviews";
+type CreativeView = "overview" | "portfolio" | "bookings" | "calendar" | "reviews" | "profile";
 
 const ACCENT = "#3EC8FF";
 
@@ -15,6 +16,7 @@ const navItems: NavItem<CreativeView>[] = [
   { title: "bookings", value: "bookings", icon: Camera },
   { title: "calendar", value: "calendar", icon: Calendar },
   { title: "reviews", value: "reviews", icon: Star },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function CreativeDashboard() {
@@ -95,6 +97,8 @@ export default function CreativeDashboard() {
                   </div>
                 </>
               )}
+
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>

@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote, TrendingUp, Music2, Bot } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote, TrendingUp, Music2, Bot, UserCog } from "lucide-react";
 import { toast } from "sonner";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
@@ -20,8 +20,9 @@ import AdvanceRequestDialog from "@/components/AdvanceRequestDialog";
 import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
+import EditProfilePanel from "@/components/EditProfilePanel";
 
-type ArtistView = "overview" | "offers" | "calendar" | "bookkeeping" | "agent";
+type ArtistView = "overview" | "offers" | "calendar" | "bookkeeping" | "agent" | "profile";
 
 type Offer = {
   id: string;
@@ -66,6 +67,7 @@ const navItems: NavItem<ArtistView>[] = [
   { title: "calendar", value: "calendar", icon: Calendar },
   { title: "bookkeeping", value: "bookkeeping", icon: BarChart3 },
   { title: "ai agent", value: "agent", icon: Bot },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function ArtistDashboard() {
@@ -384,6 +386,9 @@ export default function ArtistDashboard() {
                   <BookingAgentPanel />
                 </>
               )}
+
+              {/* ─── Profile ─── */}
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>

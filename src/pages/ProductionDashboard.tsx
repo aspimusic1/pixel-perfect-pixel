@@ -3,9 +3,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
-import { Wrench, CheckCircle, DollarSign, Users, Calendar, FileText } from "lucide-react";
+import { Wrench, CheckCircle, DollarSign, Users, Calendar, FileText, UserCog } from "lucide-react";
+import EditProfilePanel from "@/components/EditProfilePanel";
 
-type ProductionView = "overview" | "gigs" | "crew" | "calendar" | "documents";
+type ProductionView = "overview" | "gigs" | "crew" | "calendar" | "documents" | "profile";
 
 const ACCENT = "#7B5CF0";
 
@@ -15,6 +16,7 @@ const navItems: NavItem<ProductionView>[] = [
   { title: "crew", value: "crew", icon: Users },
   { title: "calendar", value: "calendar", icon: Calendar },
   { title: "documents", value: "documents", icon: FileText },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function ProductionDashboard() {
@@ -95,6 +97,8 @@ export default function ProductionDashboard() {
                   </div>
                 </>
               )}
+
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>

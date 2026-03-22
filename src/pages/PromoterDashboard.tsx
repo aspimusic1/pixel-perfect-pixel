@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, ChevronRight, DollarSign, TrendingUp, Megaphone, Loader2 } from "lucide-react";
+import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, ChevronRight, DollarSign, TrendingUp, Megaphone, Loader2, UserCog } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import SignContractDialog from "@/components/SignContractDialog";
@@ -15,8 +15,9 @@ import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import FinancingOption from "@/components/FinancingOption";
 import { openSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
+import EditProfilePanel from "@/components/EditProfilePanel";
 
-type PromoterView = "overview" | "offers" | "discover";
+type PromoterView = "overview" | "offers" | "discover" | "profile";
 type Offer = { id: string; venue_name: string; event_date: string; event_time: string | null; guarantee: number; door_split: number | null; merch_split: number | null; status: string; recipient_id: string; sender_id: string; created_at: string };
 type Booking = { id: string; offer_id: string; contract_url: string | null; status: string; artist_id: string; promoter_id: string; venue_name: string; event_date: string; guarantee: number };
 
@@ -27,6 +28,7 @@ const navItems: NavItem<PromoterView>[] = [
   { title: "overview", value: "overview", icon: Megaphone },
   { title: "offers", value: "offers", icon: Send },
   { title: "discover", value: "discover", icon: Users },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function PromoterDashboard() {
@@ -227,6 +229,8 @@ export default function PromoterDashboard() {
                   <RecommendedArtists />
                 </>
               )}
+
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>

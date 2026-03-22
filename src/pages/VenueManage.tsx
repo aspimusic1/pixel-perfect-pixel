@@ -9,13 +9,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { MapPin, Save, Upload, Trash2, CalendarIcon, Plus, Image as ImageIcon, Building2, Clock, CheckCircle } from "lucide-react";
+import { MapPin, Save, Upload, Trash2, CalendarIcon, Plus, Image as ImageIcon, Building2, Clock, CheckCircle, UserCog } from "lucide-react";
+import EditProfilePanel from "@/components/EditProfilePanel";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 
-type VenueView = "overview" | "details" | "photos" | "availability";
+type VenueView = "overview" | "details" | "photos" | "availability" | "profile";
 type VenueListing = { id: string; name: string; city: string | null; state: string | null; address: string | null; phone: string | null; email: string | null; website: string | null; description: string | null; capacity: number | null; amenities: string[] | null; claim_status: string };
 type VenuePhoto = { id: string; file_path: string; caption: string | null; sort_order: number };
 type AvailableDate = { id: string; available_date: string; notes: string | null };
@@ -28,6 +29,7 @@ const navItems: NavItem<VenueView>[] = [
   { title: "details", value: "details", icon: MapPin },
   { title: "photos", value: "photos", icon: ImageIcon },
   { title: "availability", value: "availability", icon: CalendarIcon },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function VenueManage() {
@@ -281,6 +283,8 @@ export default function VenueManage() {
                   </div>
                 </>
               )}
+
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>
