@@ -853,6 +853,7 @@ export type Database = {
           beatport: string | null
           bio: string | null
           city: string | null
+          completion_score: number | null
           created_at: string
           display_name: string | null
           facebook: string | null
@@ -870,6 +871,7 @@ export type Database = {
           soundcloud: string | null
           spotify: string | null
           state: string | null
+          streaming_stats: Json | null
           subscription_plan: string
           suspended: boolean
           threads: string | null
@@ -890,6 +892,7 @@ export type Database = {
           beatport?: string | null
           bio?: string | null
           city?: string | null
+          completion_score?: number | null
           created_at?: string
           display_name?: string | null
           facebook?: string | null
@@ -907,6 +910,7 @@ export type Database = {
           soundcloud?: string | null
           spotify?: string | null
           state?: string | null
+          streaming_stats?: Json | null
           subscription_plan?: string
           suspended?: boolean
           threads?: string | null
@@ -927,6 +931,7 @@ export type Database = {
           beatport?: string | null
           bio?: string | null
           city?: string | null
+          completion_score?: number | null
           created_at?: string
           display_name?: string | null
           facebook?: string | null
@@ -944,6 +949,7 @@ export type Database = {
           soundcloud?: string | null
           spotify?: string | null
           state?: string | null
+          streaming_stats?: Json | null
           subscription_plan?: string
           suspended?: boolean
           threads?: string | null
@@ -1600,6 +1606,7 @@ export type Database = {
           soundcloud: string | null
           spotify: string | null
           state: string | null
+          streaming_stats: Json | null
           threads: string | null
           tiktok: string | null
           twitter: string | null
@@ -1629,6 +1636,7 @@ export type Database = {
           soundcloud?: string | null
           spotify?: string | null
           state?: string | null
+          streaming_stats?: Json | null
           threads?: string | null
           tiktok?: string | null
           twitter?: string | null
@@ -1658,6 +1666,7 @@ export type Database = {
           soundcloud?: string | null
           spotify?: string | null
           state?: string | null
+          streaming_stats?: Json | null
           threads?: string | null
           tiktok?: string | null
           twitter?: string | null
