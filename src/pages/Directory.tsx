@@ -379,7 +379,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
             <div className="flex flex-wrap gap-1.5 mt-4">
               <button
                 onClick={() => setGenreFilter(null)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
+                className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
                   !genreFilter
                     ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
                     : "bg-secondary text-muted-foreground hover:text-foreground"
