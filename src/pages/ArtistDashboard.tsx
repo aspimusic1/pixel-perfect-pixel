@@ -96,6 +96,7 @@ export default function ArtistDashboard() {
   const [attendanceReported, setAttendanceReported] = useState<Set<string>>(new Set());
   const [advanceBooking, setAdvanceBooking] = useState<Booking | null>(null);
   const [advanceRequested, setAdvanceRequested] = useState<Set<string>>(new Set());
+  const [availability, setAvailability] = useState<{ date: string; is_available: boolean; notes: string | null }[]>([]);
 
   const fetchSignatures = async (bookingIds: string[]) => {
     if (bookingIds.length === 0) return;
@@ -114,15 +115,18 @@ export default function ArtistDashboard() {
   useEffect(() => {
     if (!user) return;
     const fetchData = async () => {
-      const [offersRes, bookingsRes] = await Promise.all([
+      const today = new Date().toISOString().split("T")[0];
+      const [offersRes, bookingsRes, availRes] = await Promise.all([
         supabase.from("offers").select("*").eq("recipient_id", user.id).order("created_at", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1),
         supabase.from("bookings").select("id, offer_id, contract_url, status, artist_id, promoter_id, venue_name, event_date, guarantee").eq("artist_id", user.id),
+        supabase.from("artist_availability").select("date, is_available, notes").eq("artist_id", user.id).gte("date", today).order("date", { ascending: true }).limit(8),
       ]);
       const fetchedOffers = (offersRes.data as Offer[]) ?? [];
       setHasMore(fetchedOffers.length === PAGE_SIZE);
       setOffers(fetchedOffers);
       const bks = (bookingsRes.data as Booking[]) ?? [];
       setBookings(bks);
+      setAvailability((availRes.data as any[]) ?? []);
       await fetchSignatures(bks.map((b) => b.id));
       setLoading(false);
     };
@@ -321,6 +325,43 @@ export default function ArtistDashboard() {
                       </div>
                     ))}
                   </div>
+
+                  {/* Availability strip */}
+                  {availability.length > 0 && (
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">upcoming availability</h2>
+                        <button onClick={() => setActiveView("calendar")} className="text-[11px] text-muted-foreground hover:text-foreground transition-colors lowercase">manage →</button>
+                      </div>
+                      <div className="flex gap-2 overflow-x-auto pb-1">
+                        {availability.map((a) => {
+                          const d = new Date(a.date + "T12:00:00");
+                          return (
+                            <div
+                              key={a.date}
+                              title={a.notes || undefined}
+                              className={`shrink-0 w-16 rounded-lg border text-center py-2.5 px-1 transition-colors ${
+                                a.is_available
+                                  ? "border-green-500/30 bg-green-500/10"
+                                  : "border-red-500/20 bg-red-500/5"
+                              }`}
+                            >
+                              <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-body">
+                                {d.toLocaleDateString("en-US", { weekday: "short" })}
+                              </p>
+                              <p className="font-display text-sm font-bold tabular-nums mt-0.5">
+                                {d.getDate()}
+                              </p>
+                              <p className="text-[9px] text-muted-foreground font-body">
+                                {d.toLocaleDateString("en-US", { month: "short" })}
+                              </p>
+                              <span className={`inline-block w-1.5 h-1.5 rounded-full mt-1 ${a.is_available ? "bg-green-400" : "bg-red-400"}`} />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Recent offers */}
                   <div>
