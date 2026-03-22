@@ -417,12 +417,8 @@ export default function ArtistDashboard() {
                 </>
               )}
 
-              {activeView === "calendar" && (
-                <>
-                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">availability</h2>
-                  <AvailabilityCalendar />
-                </>
-              )}
+
+
 
               {/* ─── Bookkeeping ─── */}
               {activeView === "bookkeeping" && (
