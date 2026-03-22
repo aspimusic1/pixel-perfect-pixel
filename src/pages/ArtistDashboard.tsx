@@ -96,6 +96,7 @@ export default function ArtistDashboard() {
   const [attendanceReported, setAttendanceReported] = useState<Set<string>>(new Set());
   const [advanceBooking, setAdvanceBooking] = useState<Booking | null>(null);
   const [advanceRequested, setAdvanceRequested] = useState<Set<string>>(new Set());
+  const [availability, setAvailability] = useState<{ date: string; is_available: boolean; notes: string | null }[]>([]);
 
   const fetchSignatures = async (bookingIds: string[]) => {
     if (bookingIds.length === 0) return;
