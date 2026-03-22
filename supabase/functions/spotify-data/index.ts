@@ -32,7 +32,83 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Auth check
+    // Check for cron refresh
+    const cronSecret = req.headers.get("x-cron-secret");
+    const body = await req.json();
+    
+    if (body.cron_refresh && cronSecret === Deno.env.get("CRON_SECRET")) {
+      // Batch refresh all users with Spotify connected (updated > 7 days ago)
+      const adminClient = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      );
+      
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const { data: staleProfiles } = await adminClient
+        .from("profiles")
+        .select("user_id, spotify, streaming_stats")
+        .not("spotify", "is", null)
+        .not("streaming_stats", "is", null);
+      
+      const clientId = Deno.env.get("SPOTIFY_CLIENT_ID");
+      const clientSecret = Deno.env.get("SPOTIFY_CLIENT_SECRET");
+      if (!clientId || !clientSecret) {
+        return new Response(JSON.stringify({ error: "Spotify credentials missing" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const spotifyToken = await getSpotifyToken(clientId, clientSecret);
+      let refreshed = 0;
+
+      for (const p of (staleProfiles ?? [])) {
+        const stats = p.streaming_stats as any;
+        if (!stats?.updated_at || new Date(stats.updated_at).toISOString() > sevenDaysAgo) continue;
+        
+        const artistId = stats?.spotify_artist_id;
+        if (!artistId) continue;
+
+        try {
+          const headers = { Authorization: `Bearer ${spotifyToken}` };
+          const [artistRes, tracksRes] = await Promise.all([
+            fetch(`https://api.spotify.com/v1/artists/${artistId}`, { headers }),
+            fetch(`https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=US`, { headers }),
+          ]);
+          if (!artistRes.ok) continue;
+          const artist = await artistRes.json();
+          const tracksData = tracksRes.ok ? await tracksRes.json() : { tracks: [] };
+          const topTracks = (tracksData.tracks || []).slice(0, 5).map((t: any) => ({
+            name: t.name, album: t.album?.name,
+            album_art: t.album?.images?.[1]?.url || t.album?.images?.[0]?.url,
+            popularity: t.popularity, preview_url: t.preview_url,
+            spotify_url: t.external_urls?.spotify, uri: t.uri,
+          }));
+          const updatedStats = {
+            ...stats,
+            followers: artist.followers?.total || 0,
+            monthly_listeners: artist.followers?.total || 0,
+            genres: artist.genres || [],
+            popularity: artist.popularity,
+            top_tracks: topTracks,
+            artist_image: artist.images?.[0]?.url,
+            updated_at: new Date().toISOString(),
+          };
+          await adminClient.from("profiles").update({ streaming_stats: updatedStats }).eq("user_id", p.user_id);
+          const today = new Date().toISOString().split("T")[0];
+          await adminClient.from("artist_stats").upsert(
+            { user_id: p.user_id, monthly_listeners: updatedStats.followers, followers: updatedStats.followers, snapshot_date: today },
+            { onConflict: "user_id,snapshot_date" }
+          );
+          refreshed++;
+        } catch (e) { console.error(`Failed to refresh ${p.user_id}:`, e); }
+      }
+
+      return new Response(JSON.stringify({ success: true, refreshed }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Auth check for regular requests
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -57,7 +133,7 @@ Deno.serve(async (req) => {
     }
     const userId = claimsData.claims.sub;
 
-    const { spotify_url } = await req.json();
+    const { spotify_url } = body;
     if (!spotify_url) {
       return new Response(JSON.stringify({ error: "spotify_url required" }), {
         status: 400,

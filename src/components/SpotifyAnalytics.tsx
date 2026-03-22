@@ -61,6 +61,24 @@ export default function SpotifyAnalytics() {
     }
   };
 
+  const refreshSpotifyData = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("spotify-callback", {
+        body: { action: "refresh" },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success("Spotify data refreshed!");
+      await refreshProfile();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to refresh Spotify data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const loadSnapshots = async () => {
     if (!user || snapshotsLoaded) return;
     const { data } = await supabase
@@ -109,9 +127,20 @@ export default function SpotifyAnalytics() {
           </Button>
         </div>
         {stats.updated_at && (
-          <p className="text-[10px] text-muted-foreground mt-2">
-            Last synced: {new Date(stats.updated_at).toLocaleDateString()}
-          </p>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-[10px] text-muted-foreground">
+              Last synced: {new Date(stats.updated_at).toLocaleDateString()}
+            </p>
+            {isConnected && (
+              <button
+                onClick={refreshSpotifyData}
+                disabled={loading}
+                className="text-[10px] text-[#1DB954] hover:text-[#1DB954]/80 font-medium transition-colors disabled:opacity-50"
+              >
+                {loading ? "Refreshing..." : "Refresh data"}
+              </button>
+            )}
+          </div>
         )}
       </div>
 
