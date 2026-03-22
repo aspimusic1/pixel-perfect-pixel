@@ -20,6 +20,7 @@ import AdvanceRequestDialog from "@/components/AdvanceRequestDialog";
 import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
+import EditProfilePanel from "@/components/EditProfilePanel";
 
 type ArtistView = "overview" | "offers" | "calendar" | "bookkeeping" | "agent";
 
