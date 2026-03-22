@@ -13,9 +13,12 @@ type Props = {
 };
 
 export default function DemandMap({ cities }: Props) {
-  if (!cities || cities.length === 0) return null;
+  const maxListeners = useMemo(() => {
+    if (!cities || cities.length === 0) return 0;
+    return Math.max(...cities.map((c) => c.listeners));
+  }, [cities]);
 
-  const maxListeners = useMemo(() => Math.max(...cities.map((c) => c.listeners)), [cities]);
+  if (!cities || cities.length === 0) return null;
 
   return (
     <div className="rounded-xl bg-card border border-white/[0.06] p-5 mb-4">
