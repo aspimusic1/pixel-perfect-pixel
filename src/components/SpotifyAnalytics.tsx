@@ -61,6 +61,24 @@ export default function SpotifyAnalytics() {
     }
   };
 
+  const refreshSpotifyData = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("spotify-callback", {
+        body: { action: "refresh" },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success("Spotify data refreshed!");
+      await refreshProfile();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to refresh Spotify data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const loadSnapshots = async () => {
     if (!user || snapshotsLoaded) return;
     const { data } = await supabase
