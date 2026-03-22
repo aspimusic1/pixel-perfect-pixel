@@ -9,6 +9,15 @@ const corsHeaders = {
 
 const APP_URL = "https://getbookedlive.lovable.app";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function buildWelcomeHtml(displayName: string, role: string): string {
   const firstName = displayName?.split(" ")[0] || "there";
   const roleTips: Record<string, string> = {
