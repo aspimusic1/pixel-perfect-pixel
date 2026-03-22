@@ -53,6 +53,7 @@ export default function Landing() {
       <TestimonialsSection />
       <PricingTeaser />
       <FAQSection />
+      <BlogSection />
       <FinalCTA />
       <Footer />
     </div>
