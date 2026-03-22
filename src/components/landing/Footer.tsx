@@ -9,7 +9,6 @@ export default function Footer() {
           <img src={logoBlack} alt="GetBooked.Live" className="h-5 opacity-90" />
         </Link>
         <div className="flex gap-8">
-          <Link to="/directory" className="hover:text-primary-foreground transition-colors font-display text-xs lowercase">directory</Link>
           <Link to="/pricing" className="hover:text-primary-foreground transition-colors font-display text-xs lowercase">pricing</Link>
           <Link to="/auth" className="hover:text-primary-foreground transition-colors font-display text-xs lowercase">sign in</Link>
         </div>

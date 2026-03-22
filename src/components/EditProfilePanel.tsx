@@ -1,0 +1,198 @@
+import { useState, useRef, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Camera, Loader2, Save, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
+
+export default function EditProfilePanel() {
+  const { user, profile, refreshProfile } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const [displayName, setDisplayName] = useState("");
+  const [bio, setBio] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [genre, setGenre] = useState("");
+  const [website, setWebsite] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [spotify, setSpotify] = useState("");
+  const [rateMin, setRateMin] = useState("");
+  const [rateMax, setRateMax] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
+
+  useEffect(() => {
+    if (!profile) return;
+    setDisplayName(profile.display_name ?? "");
+    setBio(profile.bio ?? "");
+    setCity(profile.city ?? "");
+    setState(profile.state ?? "");
+    setGenre(profile.genre ?? "");
+    setAvatarUrl(profile.avatar_url ?? "");
+    setRateMin(profile.rate_min?.toString() ?? "");
+    setRateMax(profile.rate_max?.toString() ?? "");
+  }, [profile]);
+
+  // Fetch extended fields from DB (website, instagram, spotify aren't on AuthContext profile)
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("website, instagram, spotify").eq("user_id", user.id).single().then(({ data }) => {
+      if (data) {
+        setWebsite((data as any).website ?? "");
+        setInstagram((data as any).instagram ?? "");
+        setSpotify((data as any).spotify ?? "");
+      }
+    });
+  }, [user]);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}/avatar.${ext}`;
+    const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+    if (error) { toast.error(error.message); setUploading(false); return; }
+    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+    setAvatarUrl(urlData.publicUrl + "?t=" + Date.now());
+    setUploading(false);
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+    setSaving(true);
+    const updates: Record<string, any> = {
+      display_name: displayName || null,
+      bio: bio || null,
+      city: city || null,
+      state: state || null,
+      genre: genre || null,
+      website: website || null,
+      instagram: instagram || null,
+      spotify: spotify || null,
+      avatar_url: avatarUrl || null,
+      rate_min: rateMin ? parseFloat(rateMin) : null,
+      rate_max: rateMax ? parseFloat(rateMax) : null,
+    };
+    const { error } = await supabase.from("profiles").update(updates).eq("user_id", user.id);
+    if (error) { toast.error(error.message); } else {
+      toast.success("Profile updated!");
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      await refreshProfile();
+    }
+    setSaving(false);
+  };
+
+  const role = profile?.role;
+
+  return (
+    <div className="space-y-5">
+      <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">edit profile</h2>
+
+      {/* Avatar */}
+      <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="relative w-16 h-16 rounded-xl bg-white/[0.04] border border-white/[0.06] overflow-hidden flex items-center justify-center hover:border-white/[0.12] transition-colors active:scale-[0.97] shrink-0"
+          >
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <Camera className="w-5 h-5 text-muted-foreground" />
+            )}
+            {uploading && (
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+              </div>
+            )}
+          </button>
+          <div>
+            <p className="text-sm font-medium">{displayName || "Your name"}</p>
+            <p className="text-[11px] text-muted-foreground">{role ?? "member"} · click photo to change</p>
+          </div>
+        </div>
+        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
+      </div>
+
+      {/* Basic info */}
+      <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4 space-y-3">
+        <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">basic info</h3>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">display name</Label>
+            <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
+          </div>
+          <div>
+            <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">city</Label>
+            <Input value={city} onChange={(e) => setCity(e.target.value)} className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
+          </div>
+          <div>
+            <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">state</Label>
+            <Input value={state} onChange={(e) => setState(e.target.value)} className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
+          </div>
+          {(role === "artist" || role === "production" || role === "photo_video") && (
+            <div>
+              <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">genre / specialty</Label>
+              <Input value={genre} onChange={(e) => setGenre(e.target.value)} className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
+            </div>
+          )}
+        </div>
+        <div>
+          <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">bio</Label>
+          <Textarea value={bio} onChange={(e) => setBio(e.target.value)} className="mt-1 text-xs bg-[#080C14] border-white/[0.06] min-h-[60px]" maxLength={500} />
+        </div>
+      </div>
+
+      {/* Links */}
+      <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4 space-y-3">
+        <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">links & socials</h3>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">website</Label>
+            <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://" className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
+          </div>
+          <div>
+            <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">instagram</Label>
+            <Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@handle" className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
+          </div>
+          {(role === "artist") && (
+            <div>
+              <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">spotify</Label>
+              <Input value={spotify} onChange={(e) => setSpotify(e.target.value)} placeholder="https://open.spotify.com/..." className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Rate range (artists, production, photo_video) */}
+      {(role === "artist" || role === "production" || role === "photo_video") && (
+        <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4 space-y-3">
+          <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">rate range</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">minimum ($)</Label>
+              <Input type="number" value={rateMin} onChange={(e) => setRateMin(e.target.value)} className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
+            </div>
+            <div>
+              <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">maximum ($)</Label>
+              <Input type="number" value={rateMax} onChange={(e) => setRateMax(e.target.value)} className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Button onClick={handleSave} disabled={saving} size="sm" className="w-full h-9 text-[11px] lowercase active:scale-[0.97] bg-[#C8FF3E] text-[#080C14] hover:bg-[#C8FF3E]/90">
+        {saving ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : saved ? <CheckCircle className="w-3 h-3 mr-1" /> : <Save className="w-3 h-3 mr-1" />}
+        {saving ? "saving..." : saved ? "saved!" : "save changes"}
+      </Button>
+    </div>
+  );
+}
