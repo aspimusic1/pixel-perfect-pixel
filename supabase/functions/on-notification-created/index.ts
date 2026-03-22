@@ -129,10 +129,11 @@ function buildOfferAcceptedEmail(meta: NotificationMeta) {
 }
 
 function buildOfferDeclinedEmail(meta: NotificationMeta) {
+  const eventName = escapeHtml(meta.event_name || "this event");
   const subject = `Offer update — ${meta.event_name || "Your Event"}`;
   const html = wrapEmail(subject, `
     <h1>Offer update</h1>
-    <p>Unfortunately, the artist has decided not to move forward with your offer for <strong>${meta.event_name || "this event"}</strong>.</p>
+    <p>Unfortunately, the artist has decided not to move forward with your offer for <strong>${eventName}</strong>.</p>
     <p>This happens — artists receive many offers and can't accept them all. We encourage you to explore other talented artists on the platform.</p>
     <a href="${APP_URL}/directory" class="btn">Browse Artists →</a>
   `);
