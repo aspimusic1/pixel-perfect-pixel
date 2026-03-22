@@ -51,7 +51,7 @@ export default function Auth() {
         if (newUser) {
           await supabase.from("profiles").update({ role: selectedRole as any, display_name: displayName }).eq("user_id", newUser.id);
         }
-        toast.success("Account created! Check your email to confirm.");
+        toast.success("Account created!");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;

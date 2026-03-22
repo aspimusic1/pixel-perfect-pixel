@@ -170,7 +170,7 @@ export default function ArtistDashboard() {
         }
       } catch { toast.error("Contract generation failed — you can retry later."); }
       finally { setGeneratingContract(null); }
-    } else { toast.success("Offer declined"); }
+    } else { toast("Offer declined."); }
     setActionLoading(null);
   };
 

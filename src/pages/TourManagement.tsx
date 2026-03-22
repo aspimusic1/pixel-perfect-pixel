@@ -113,6 +113,7 @@ export default function TourManagement() {
     const { data, error } = await supabase.from("crew_members").insert({ tour_id: selectedTour.id, name: "", role: "" }).select().single();
     if (error) { toast.error(error.message); return; }
     setCrew([...crew, data as CrewMember]);
+    toast.success("Crew member added.");
   };
 
   const updateCrew = async (id: string, updates: Partial<CrewMember>) => {
