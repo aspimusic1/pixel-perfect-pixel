@@ -8,14 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, Mic2, Megaphone, Building2, Wrench, Camera } from "lucide-react";
 import { toast } from "sonner";
-import logoWhite from "@/assets/logo-white.svg";
+import logoBlack from "@/assets/logo-black.png";
 
 const ROLES = [
-  { value: "artist", label: "Artist", icon: Mic2, accent: "text-primary border-primary/40 bg-primary/10", tagline: "Get booked. Get paid. Tour smarter." },
-  { value: "promoter", label: "Promoter", icon: Megaphone, accent: "text-role-promoter border-role-promoter/40 bg-role-promoter/10", tagline: "Find talent. Fill rooms. Build your brand." },
-  { value: "venue", label: "Venue", icon: Building2, accent: "text-role-venue border-role-venue/40 bg-role-venue/10", tagline: "List your space. Book artists. Sell out shows." },
-  { value: "production", label: "Production", icon: Wrench, accent: "text-role-production border-role-production/40 bg-role-production/10", tagline: "Crew up. Get hired. Run the show." },
-  { value: "photo_video", label: "Photo/Video", icon: Camera, accent: "text-role-photo border-role-photo/40 bg-role-photo/10", tagline: "Capture moments. Build your reel. Get booked." },
+  { value: "artist", label: "Artist", icon: Mic2, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "Get booked. Get paid. Tour smarter." },
+  { value: "promoter", label: "Promoter", icon: Megaphone, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "Find talent. Fill rooms. Build your brand." },
+  { value: "venue", label: "Venue", icon: Building2, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "List your space. Book artists. Sell out shows." },
+  { value: "production", label: "Production", icon: Wrench, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "Crew up. Get hired. Run the show." },
+  { value: "photo_video", label: "Photo/Video", icon: Camera, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "Capture moments. Build your reel. Get booked." },
 ];
 
 export default function Auth() {
@@ -71,42 +71,42 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-12">
+    <div className="min-h-screen bg-primary flex items-center justify-center px-4 pt-20 pb-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           {isSignUp && activeRoleInfo && ActiveIcon ? (
             <>
-              <div className={`w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center ${activeRoleInfo.accent.split(" ").slice(2).join(" ")}`}>
-                <ActiveIcon className={`w-6 h-6 ${activeRoleInfo.accent.split(" ")[0]}`} />
+              <div className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center bg-primary-foreground/10">
+                <ActiveIcon className="w-6 h-6 text-primary-foreground" />
               </div>
-              <h1 className="font-display font-bold text-xl mb-1.5 lowercase">
-                sign up as <span className={activeRoleInfo.accent.split(" ")[0]}>{activeRoleInfo.label.toLowerCase()}</span>
+              <h1 className="font-display font-bold text-xl mb-1.5 lowercase text-primary-foreground">
+                sign up as <span className="text-primary-foreground">{activeRoleInfo.label.toLowerCase()}</span>
               </h1>
-              <p className="text-muted-foreground text-sm font-body">{activeRoleInfo.tagline}</p>
+              <p className="text-primary-foreground/60 text-sm font-body">{activeRoleInfo.tagline}</p>
             </>
           ) : (
             <>
-              <img src={logoWhite} alt="GetBooked.Live" className="h-5 mx-auto mb-4 opacity-90" />
-              <h1 className="font-display font-bold text-xl mb-1 lowercase">
+              <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" />
+              <h1 className="font-display font-bold text-xl mb-1 lowercase text-primary-foreground">
                 {isSignUp ? "create your account" : "welcome back"}
               </h1>
-              <p className="text-muted-foreground text-sm font-body">
+              <p className="text-primary-foreground/60 text-sm font-body">
                 {isSignUp ? "join the live music operating system" : "sign in to your account"}
               </p>
             </>
           )}
         </div>
 
-        <div className="rounded-2xl bg-card/60 border border-border p-7">
+        <div className="rounded-2xl bg-primary-foreground/[0.08] border border-primary-foreground/[0.12] p-7 backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
               <>
                 <div>
-                  <Label htmlFor="name" className="text-sm font-display font-medium lowercase">display name</Label>
-                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required className="mt-2" />
+                  <Label htmlFor="name" className="text-sm font-display font-medium lowercase text-primary-foreground/80">display name</Label>
+                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required className="mt-2 bg-primary-foreground/[0.06] border-primary-foreground/[0.12] text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30" />
                 </div>
                 <div>
-                  <Label className="text-sm font-display font-medium lowercase mb-2.5 block">I am a...</Label>
+                  <Label className="text-sm font-display font-medium lowercase mb-2.5 block text-primary-foreground/80">I am a...</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {ROLES.map((role) => {
                       const Icon = role.icon;
@@ -118,8 +118,8 @@ export default function Auth() {
                           onClick={() => setSelectedRole(role.value)}
                           className={`px-3 py-2.5 rounded-lg border text-sm font-display font-medium transition-all active:scale-[0.96] flex items-center gap-2 lowercase ${
                             selected
-                              ? role.accent
-                              : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground"
+                              ? "border-primary-foreground/40 bg-primary-foreground/15 text-primary-foreground"
+                              : "border-primary-foreground/[0.1] text-primary-foreground/50 hover:text-primary-foreground/70 hover:border-primary-foreground/20"
                           }`}
                         >
                           <Icon className="w-3.5 h-3.5 shrink-0" />
@@ -132,12 +132,12 @@ export default function Auth() {
               </>
             )}
             <div>
-              <Label htmlFor="email" className="text-sm font-display font-medium lowercase">email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-2" />
+              <Label htmlFor="email" className="text-sm font-display font-medium lowercase text-primary-foreground/80">email</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-2 bg-primary-foreground/[0.06] border-primary-foreground/[0.12] text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30" />
             </div>
             <div>
-              <Label htmlFor="password" className="text-sm font-display font-medium lowercase">password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-2" />
+              <Label htmlFor="password" className="text-sm font-display font-medium lowercase text-primary-foreground/80">password</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-2 bg-primary-foreground/[0.06] border-primary-foreground/[0.12] text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30" />
               {!isSignUp && (
                 <button
                   type="button"
@@ -149,28 +149,28 @@ export default function Auth() {
                     if (error) toast.error(error.message);
                     else toast.success("Check your email for a reset link");
                   }}
-                  className="text-xs text-primary hover:text-primary/80 transition-colors mt-2 float-right font-display"
+                  className="text-xs text-primary-foreground/60 hover:text-primary-foreground/80 transition-colors mt-2 float-right font-display"
                 >
                   forgot password?
                 </button>
               )}
             </div>
-            <Button type="submit" disabled={loading} className="w-full font-display font-semibold h-11 lowercase">
+            <Button type="submit" disabled={loading} className="w-full font-display font-semibold h-11 lowercase bg-primary-foreground text-primary hover:bg-primary-foreground/90">
               {loading ? "loading..." : isSignUp ? "create account" : "sign in"}
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </form>
 
           <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
-            <div className="relative flex justify-center text-xs"><span className="bg-card px-3 text-muted-foreground font-body">or continue with</span></div>
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-primary-foreground/[0.1]" /></div>
+            <div className="relative flex justify-center text-xs"><span className="bg-transparent px-3 text-primary-foreground/50 font-body">or continue with</span></div>
           </div>
 
           <div className="flex gap-2">
             <Button
               type="button"
               variant="outline"
-              className="flex-1 h-11 font-display font-medium lowercase"
+              className="flex-1 h-11 font-display font-medium lowercase border-primary-foreground/[0.12] text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10"
               onClick={async () => {
                 const { error } = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
                 if (error) toast.error(error.message ?? "Google sign-in failed");
@@ -182,7 +182,7 @@ export default function Auth() {
             <Button
               type="button"
               variant="outline"
-              className="flex-1 h-11 font-display font-medium lowercase"
+              className="flex-1 h-11 font-display font-medium lowercase border-primary-foreground/[0.12] text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10"
               onClick={async () => {
                 const { error } = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin });
                 if (error) toast.error(error.message ?? "Apple sign-in failed");
@@ -194,7 +194,7 @@ export default function Auth() {
           </div>
 
           <div className="mt-5 text-center">
-            <button onClick={() => setIsSignUp(!isSignUp)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-body">
+            <button onClick={() => setIsSignUp(!isSignUp)} className="text-sm text-primary-foreground/50 hover:text-primary-foreground/70 transition-colors font-body">
               {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
             </button>
           </div>

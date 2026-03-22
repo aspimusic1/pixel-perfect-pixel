@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Bell, Globe, Lock } from "lucide-react";
-import logoWhite from "@/assets/logo-white.svg";
+import logoBlack from "@/assets/logo-black.png";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
@@ -69,17 +69,17 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 glass">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-primary">
         <div className="container mx-auto flex items-center justify-between h-14 px-4">
           <Link to="/" className="flex items-center" onClick={closeMenu}>
-            <img src={logoWhite} alt="GetBooked.Live" className="h-[18px]" />
+            <img src={logoBlack} alt="GetBooked.Live" className="h-[22px]" />
           </Link>
 
           {/* Desktop */}
           <div className="hidden md:flex items-center gap-7">
             <NavItem to={directoryHref}>
               {t("nav.browse")}
-              {isFree && <Lock className="w-3 h-3 text-role-venue ml-1" />}
+              {isFree && <Lock className="w-3 h-3 ml-1 opacity-60" />}
             </NavItem>
             <NavItem to="/trending">{t("nav.trending")}</NavItem>
             <NavItem to="/pricing">{t("nav.pricing")}</NavItem>
@@ -90,20 +90,20 @@ export default function Navbar() {
                 {profile?.role === "artist" && <NavItem to="/tax">{t("nav.tax")}</NavItem>}
                 <NavItem to="/insights">insights</NavItem>
                 <NavItem to="/tours">{t("nav.tours")}</NavItem>
-                <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors">
+                <button onClick={() => navigate("/notifications")} className="relative text-primary-foreground/70 hover:text-primary-foreground transition-colors">
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
+                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-background text-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
                   )}
                 </button>
                 <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
-                <Button size="sm" variant="ghost" onClick={signOut} className="text-xs font-display lowercase">{t("nav.signOut")}</Button>
+                <Button size="sm" variant="ghost" onClick={signOut} className="text-xs font-display lowercase text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">{t("nav.signOut")}</Button>
               </>
             ) : (
               <>
                 <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
-                <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs font-display lowercase">{t("nav.signIn")}</Button></Link>
-                <Link to="/auth?tab=signup"><Button size="sm" className="text-xs font-display font-semibold lowercase">{t("nav.startFree")}</Button></Link>
+                <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs font-display lowercase text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">{t("nav.signIn")}</Button></Link>
+                <Link to="/auth?tab=signup"><Button size="sm" className="text-xs font-display font-semibold lowercase bg-primary-foreground text-primary hover:bg-primary-foreground/90">{t("nav.startFree")}</Button></Link>
               </>
             )}
           </div>
@@ -111,15 +111,15 @@ export default function Navbar() {
           {/* Mobile toggle */}
           <div className="flex md:hidden items-center gap-2">
             {user && (
-              <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors p-2 -mr-1">
+              <button onClick={() => navigate("/notifications")} className="relative text-primary-foreground/70 hover:text-primary-foreground transition-colors p-2 -mr-1">
                 <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
+                  <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-background text-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
                 )}
               </button>
             )}
             <button
-              className="text-foreground p-2 -mr-2 active:scale-[0.95] transition-transform"
+              className="text-primary-foreground p-2 -mr-2 active:scale-[0.95] transition-transform"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
             >
@@ -194,7 +194,7 @@ export default function Navbar() {
 
 function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
   return (
-    <Link to={to} className="text-xs text-muted-foreground hover:text-foreground transition-colors font-display lowercase flex items-center">
+    <Link to={to} className="text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase flex items-center">
       {children}
     </Link>
   );
@@ -217,7 +217,7 @@ function LanguageSelector({ currentLang, onChange }: { currentLang: string; onCh
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors active:scale-[0.97]">
+        <button className="flex items-center gap-1.5 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors active:scale-[0.97]">
           <Globe className="w-3.5 h-3.5" />
           <span>{current.flag}</span>
         </button>
