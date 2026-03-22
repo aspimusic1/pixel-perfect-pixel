@@ -101,20 +101,17 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Desktop: floating pill navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none md:top-4">
-        <div
-          className="pointer-events-auto flex items-center justify-between h-14 px-6 w-full md:max-w-[900px] md:rounded-full bg-[rgba(14,20,32,0.7)] backdrop-blur-[20px] md:border md:border-white/[0.08] md:shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_8px_32px_rgba(0,0,0,0.3)]"
-        >
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-primary">
+        <div className="container mx-auto flex items-center justify-between h-14 px-4">
           <Link to="/" className="flex items-center" onClick={closeMenu}>
-            <img src={logoBlack} alt="GetBooked.Live" className="h-[22px] brightness-0 invert" />
+            <img src={logoBlack} alt="GetBooked.Live" className="h-[22px]" />
           </Link>
 
           {/* Desktop */}
           <div className="hidden md:flex items-center gap-5">
             {/* Discover dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-xs text-foreground/70 hover:text-foreground transition-colors font-display lowercase outline-none">
+              <DropdownMenuTrigger className="flex items-center gap-1 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase outline-none">
                 <Compass className="w-3.5 h-3.5" />
                 discover
                 <ChevronDown className="w-3 h-3 opacity-60" />
@@ -134,7 +131,7 @@ export default function Navbar() {
               <>
                 {/* My Stuff dropdown */}
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1 text-xs text-foreground/70 hover:text-foreground transition-colors font-display lowercase outline-none">
+                  <DropdownMenuTrigger className="flex items-center gap-1 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase outline-none">
                     <Briefcase className="w-3.5 h-3.5" />
                     my stuff
                     <ChevronDown className="w-3 h-3 opacity-60" />
@@ -155,17 +152,17 @@ export default function Navbar() {
 
                 {/* Admin */}
                 {isAdmin && (
-                  <Link to="/admin" className="flex items-center gap-1.5 text-xs text-foreground/70 hover:text-foreground transition-colors font-display lowercase">
+                  <Link to="/admin" className="flex items-center gap-1.5 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    <span className="bg-primary/15 text-primary px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">admin</span>
+                    <span className="bg-[#C8FF3E]/15 text-[#C8FF3E] px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">admin</span>
                   </Link>
                 )}
 
                 {/* Notifications */}
-                <button onClick={() => navigate("/notifications")} className="relative text-foreground/70 hover:text-foreground transition-colors">
+                <button onClick={() => navigate("/notifications")} className="relative text-primary-foreground/70 hover:text-primary-foreground transition-colors">
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
+                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-background text-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
                   )}
                 </button>
                 <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
@@ -179,14 +176,14 @@ export default function Navbar() {
                   )}
                 </button>
 
-                <Button size="sm" variant="ghost" onClick={signOut} className="text-xs font-display lowercase text-foreground/80 hover:text-foreground hover:bg-white/5">{t("nav.signOut")}</Button>
+                <Button size="sm" variant="ghost" onClick={signOut} className="text-xs font-display lowercase text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">{t("nav.signOut")}</Button>
               </>
             )}
             {!user && (
               <>
                 <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
-                <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs font-display lowercase text-foreground/80 hover:text-foreground hover:bg-white/5">{t("nav.signIn")}</Button></Link>
-                <Link to="/auth?tab=signup"><Button size="sm" className="text-xs font-display font-semibold lowercase bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_24px_rgba(200,255,62,0.25)]">{t("nav.startFree")}</Button></Link>
+                <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs font-display lowercase text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">{t("nav.signIn")}</Button></Link>
+                <Link to="/auth?tab=signup"><Button size="sm" className="text-xs font-display font-semibold lowercase bg-primary-foreground text-primary hover:bg-primary-foreground/90">{t("nav.startFree")}</Button></Link>
               </>
             )}
           </div>
@@ -194,15 +191,15 @@ export default function Navbar() {
           {/* Mobile toggle */}
           <div className="flex md:hidden items-center gap-2">
             {user && (
-              <button onClick={() => navigate("/notifications")} className="relative text-foreground/70 hover:text-foreground transition-colors p-2 -mr-1">
+              <button onClick={() => navigate("/notifications")} className="relative text-primary-foreground/70 hover:text-primary-foreground transition-colors p-2 -mr-1">
                 <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
+                  <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-background text-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
                 )}
               </button>
             )}
             <button
-              className="text-foreground p-2 -mr-2 active:scale-[0.95] transition-transform"
+              className="text-primary-foreground p-2 -mr-2 active:scale-[0.95] transition-transform"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
             >
@@ -312,7 +309,7 @@ function LanguageSelector({ currentLang, onChange }: { currentLang: string; onCh
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1.5 text-xs text-foreground/70 hover:text-foreground transition-colors active:scale-[0.97]">
+        <button className="flex items-center gap-1.5 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors active:scale-[0.97]">
           <Globe className="w-3.5 h-3.5" />
           <span>{current.flag}</span>
         </button>

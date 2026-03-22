@@ -320,12 +320,12 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
     <div ref={ref} className="min-h-screen pt-20 px-4 pb-12">
       <div className="container mx-auto max-w-5xl">
         {/* CTA Banner */}
-        <div className="mb-8 rounded-2xl border border-white/[0.07] backdrop-blur-[12px] px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3" style={{ background: "rgba(14, 20, 32, 0.6)" }}>
+        <div className="mb-8 rounded-xl bg-primary/5 border border-primary/10 px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground font-body">
             <span className="text-foreground font-medium">make your profile today</span> — get discovered by promoters, venues, and production teams
           </p>
           <Link to="/auth?tab=signup">
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase h-8 active:scale-[0.97] transition-transform whitespace-nowrap shadow-[0_0_24px_rgba(200,255,62,0.25)]">
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase h-8 active:scale-[0.97] transition-transform whitespace-nowrap">
               get started free <ArrowRight className="ml-1.5 w-3 h-3" />
             </Button>
           </Link>
@@ -418,7 +418,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                         <h3 data-reveal className="fade-in-section font-display text-sm font-semibold mb-2 text-role-venue/80 lowercase">{region}</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {venueList.map((v) => (
-                            <div key={v.id} data-reveal className="fade-in-section rounded-2xl border border-white/[0.07] backdrop-blur-[12px] p-4 transition-all duration-300 hover:border-primary/20 hover:shadow-[0_0_20px_rgba(200,255,62,0.06)]" style={{ background: "rgba(14, 20, 32, 0.6)", boxShadow: "0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
+                            <div key={v.id} data-reveal className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-role-venue/20 transition-all duration-300">
                               <div className="flex items-start justify-between gap-2 mb-2">
                                 <div className="flex items-start gap-3 min-w-0">
                                   <div className="w-9 h-9 rounded-lg bg-role-venue/10 flex items-center justify-center shrink-0">
@@ -434,9 +434,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                                 {getClaimButton(v)}
                               </div>
                               {v.capacity && (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium text-primary border border-primary/20 mt-2" style={{ background: "rgba(200,255,62,0.08)" }}>
-                                  {v.capacity.toLocaleString()} cap
-                                </span>
+                                <p className="text-[11px] text-muted-foreground font-body mb-2">Capacity: {v.capacity.toLocaleString()}</p>
                               )}
                               {venueAvailability[v.id]?.length > 0 && (
                                 <div className="mb-2">
@@ -497,7 +495,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                         </h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {artistListings.map((a) => (
-                            <div key={a.id} data-reveal className="fade-in-section rounded-2xl border border-white/[0.07] backdrop-blur-[12px] p-4 transition-all duration-300 hover:border-primary/20 hover:shadow-[0_0_20px_rgba(200,255,62,0.06)]" style={{ background: "rgba(14, 20, 32, 0.6)", boxShadow: "0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
+                            <div key={a.id} data-reveal className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-primary/20 transition-all duration-300">
                               <div className="flex items-start justify-between gap-2 mb-2">
                                 <div className="flex items-start gap-3 min-w-0">
                                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -585,7 +583,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
 
 function EmptyState() {
   return (
-    <div className="rounded-2xl border border-white/[0.07] backdrop-blur-[12px] p-8 text-center" style={{ background: "rgba(14, 20, 32, 0.6)" }}>
+    <div className="rounded-xl bg-card border border-border p-8 text-center">
       <p className="text-muted-foreground font-body">No profiles found. Try adjusting your search.</p>
     </div>
   );
@@ -598,7 +596,7 @@ function ProfileCard({ p, flashBids, hasPaidPlan, onUpgrade }: {
   onUpgrade: () => void;
 }) {
   return (
-    <div data-reveal className="fade-in-section rounded-2xl border border-white/[0.07] backdrop-blur-[12px] p-5 transition-all duration-300 hover:border-primary/20 hover:shadow-[0_0_20px_rgba(200,255,62,0.06)]" style={{ background: "rgba(14, 20, 32, 0.6)", boxShadow: "0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
+    <div data-reveal className="fade-in-section rounded-xl bg-card border border-border p-5 hover:border-primary/20 transition-all duration-300">
       <div className="flex items-start gap-3 mb-3">
         <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-display font-bold text-sm text-foreground shrink-0">
           {p.avatar_url ? (

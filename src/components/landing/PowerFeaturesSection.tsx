@@ -5,7 +5,6 @@ import {
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import SectionLabel from "@/components/landing/SectionLabel";
 
 const FEATURES = [
   {
@@ -14,7 +13,7 @@ const FEATURES = [
     desc: "describe what you need — genre, budget, market — and our AI finds the best-fit artists, estimates fair rates, and drafts the offer for you.",
     color: "text-primary",
     bgColor: "bg-primary/10",
-    badge: "AI-powered",
+    borderHover: "hover:border-primary/30",
   },
   {
     icon: Zap,
@@ -22,7 +21,7 @@ const FEATURES = [
     desc: "artists mark open dates. promoters bid in real time. highest bid wins when the clock runs out. fill last-minute slots instantly.",
     color: "text-role-venue",
     bgColor: "bg-role-venue/10",
-    badge: "real-time",
+    borderHover: "hover:border-role-venue/30",
   },
   {
     icon: Shield,
@@ -30,7 +29,7 @@ const FEATURES = [
     desc: "every confirmed booking gets a private workspace — milestones, contracts, chat, and logistics in one place.",
     color: "text-role-photo",
     bgColor: "bg-role-photo/10",
-    badge: "all-in-one",
+    borderHover: "hover:border-role-photo/30",
   },
   {
     icon: DollarSign,
@@ -38,7 +37,7 @@ const FEATURES = [
     desc: "convert lumpy show income into predictable monthly payments. we hold guarantees in escrow and pay you the same amount every month.",
     color: "text-emerald-400",
     bgColor: "bg-emerald-400/10",
-    badge: "2% fee",
+    borderHover: "hover:border-emerald-400/30",
   },
   {
     icon: BarChart3,
@@ -46,7 +45,7 @@ const FEATURES = [
     desc: "track actual draw per artist and per venue. see 'average draw: 800–1,400' on profiles — real data, not guesswork.",
     color: "text-role-promoter",
     bgColor: "bg-role-promoter/10",
-    badge: "data-driven",
+    borderHover: "hover:border-role-promoter/30",
   },
   {
     icon: TrendingUp,
@@ -54,7 +53,7 @@ const FEATURES = [
     desc: "need cash before the show? request up to 70% of your net guarantee. approved in minutes if the booking checks out.",
     color: "text-role-venue",
     bgColor: "bg-role-venue/10",
-    badge: "up to 70%",
+    borderHover: "hover:border-role-venue/30",
   },
   {
     icon: Globe,
@@ -62,7 +61,7 @@ const FEATURES = [
     desc: "all times stored in UTC, displayed in each user's local zone. deal rooms show both: '4:00 PM EST / 9:00 PM GMT.'",
     color: "text-role-photo",
     bgColor: "bg-role-photo/10",
-    badge: "auto-sync",
+    borderHover: "hover:border-role-photo/30",
   },
   {
     icon: Truck,
@@ -70,7 +69,7 @@ const FEATURES = [
     desc: "book SUVs, vans, and sprinters for each tour stop. drivers list their vehicles, rates, and cities served. book directly on platform.",
     color: "text-primary",
     bgColor: "bg-primary/10",
-    badge: "door-to-door",
+    borderHover: "hover:border-primary/30",
   },
   {
     icon: Receipt,
@@ -78,7 +77,7 @@ const FEATURES = [
     desc: "auto-populated income, manual expense entry per tour stop, IRS categories, monthly P&L, and exportable quarterly summaries.",
     color: "text-emerald-400",
     bgColor: "bg-emerald-400/10",
-    badge: "IRS-ready",
+    borderHover: "hover:border-emerald-400/30",
   },
   {
     icon: Umbrella,
@@ -86,7 +85,7 @@ const FEATURES = [
     desc: "protect every booking. artist coverage for full guarantee + travel. promoter coverage for deposit protection. from $89.",
     color: "text-role-promoter",
     bgColor: "bg-role-promoter/10",
-    badge: "from $89",
+    borderHover: "hover:border-role-promoter/30",
   },
 ];
 
@@ -96,22 +95,21 @@ export default function PowerFeaturesSection() {
   return (
     <section className="fade-in-section py-28 px-4">
       <div className="container mx-auto max-w-5xl">
-        <div className="text-center mb-16">
-          <SectionLabel>new on the platform</SectionLabel>
-          <h2 className="font-display text-2xl sm:text-4xl font-bold mb-3 lowercase tracking-tight">
-            tools that actually move the needle
-          </h2>
-          <p className="text-muted-foreground text-sm max-w-lg mx-auto font-body">
-            AI-powered booking, real-time bidding, financial tools, and logistics — built for how the industry actually works.
-          </p>
-        </div>
+        <p className="text-[11px] tracking-[0.2em] uppercase text-primary text-center mb-3 font-display font-medium">
+          new on the platform
+        </p>
+        <h2 className="font-display text-2xl sm:text-4xl font-bold text-center mb-3 lowercase tracking-tight">
+          tools that actually move the needle
+        </h2>
+        <p className="text-muted-foreground text-center text-sm mb-16 max-w-lg mx-auto font-body">
+          AI-powered booking, real-time bidding, financial tools, and logistics — built for how the industry actually works.
+        </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {FEATURES.map((f, i) => (
             <div
               key={f.title}
-              className="group relative rounded-2xl p-5 border border-white/[0.07] backdrop-blur-[12px] transition-all duration-300 cursor-default hover:border-primary/20 hover:shadow-[0_0_20px_rgba(200,255,62,0.06)]"
-              style={{ background: "rgba(14, 20, 32, 0.6)", boxShadow: "0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)" }}
+              className={`group rounded-xl p-5 bg-card/60 border border-border ${f.borderHover} transition-all duration-300 cursor-default`}
               onMouseEnter={() => setHoveredIdx(i)}
               onMouseLeave={() => setHoveredIdx(null)}
             >
@@ -119,17 +117,14 @@ export default function PowerFeaturesSection() {
                 <f.icon className={`w-[18px] h-[18px] ${f.color}`} />
               </div>
               <h3 className="font-display font-semibold text-[15px] mb-2 lowercase text-foreground">{f.title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-body mb-4">{f.desc}</p>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium text-primary border border-primary/20" style={{ background: "rgba(200,255,62,0.08)" }}>
-                {f.badge}
-              </span>
+              <p className="text-xs text-muted-foreground leading-relaxed font-body">{f.desc}</p>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-12">
           <Link to="/auth?tab=signup">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold text-sm px-8 h-12 active:scale-[0.96] transition-transform lowercase shadow-[0_0_24px_rgba(200,255,62,0.25)]">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold text-sm px-8 h-12 active:scale-[0.96] transition-transform lowercase">
               try it free <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>
