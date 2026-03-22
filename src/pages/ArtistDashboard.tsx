@@ -67,6 +67,7 @@ const navItems: NavItem<ArtistView>[] = [
   { title: "calendar", value: "calendar", icon: Calendar },
   { title: "bookkeeping", value: "bookkeeping", icon: BarChart3 },
   { title: "ai agent", value: "agent", icon: Bot },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function ArtistDashboard() {
