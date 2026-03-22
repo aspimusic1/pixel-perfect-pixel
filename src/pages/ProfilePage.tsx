@@ -435,7 +435,30 @@ export default function ProfilePage() {
           <ReelDisplay userId={profile.user_id} />
         )}
 
-        {/* Show Night Mode — auto-activates on booking day */}
+        {/* Top Tracks */}
+        {profile?.role === "artist" && (
+          <TopTracksSection
+            tracks={(profile.streaming_stats as any)?.top_tracks ?? []}
+            spotifyUrl={profile.spotify}
+          />
+        )}
+
+        {/* Demand Map */}
+        {profile?.role === "artist" && (profile.streaming_stats as any)?.top_cities && (
+          <DemandMap cities={(profile.streaming_stats as any).top_cities} />
+        )}
+
+        {/* Download EPK */}
+        {profile?.role === "artist" && (profile as any)?.pitch_card_url && (
+          <div className="mb-4">
+            <a href={(profile as any).pitch_card_url} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="sm" className="h-8 text-xs border-white/[0.06] hover:bg-white/5 active:scale-[0.97]">
+                <Download className="w-3 h-3 mr-1.5" /> Download EPK
+              </Button>
+            </a>
+          </div>
+        )}
+
         {profile?.role === "artist" && profile?.user_id && (
           <ShowNightMode
             artistUserId={profile.user_id}
