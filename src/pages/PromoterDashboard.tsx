@@ -152,6 +152,7 @@ export default function PromoterDashboard() {
 
               {activeView === "overview" && (
                 <>
+                  <GettingStartedChecklist variant="promoter" />
                   <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] divide-x divide-white/[0.06] grid grid-cols-2 lg:grid-cols-4">
                     {[
                       { label: "sent", value: loading ? "—" : sentCount, color: ACCENT },
