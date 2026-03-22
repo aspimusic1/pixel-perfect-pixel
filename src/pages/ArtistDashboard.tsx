@@ -4,9 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote, TrendingUp, Music2 } from "lucide-react";
 import { toast } from "sonner";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import ArtistSidebar, { type ArtistView } from "@/components/ArtistSidebar";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
 import BookingAgentPanel from "@/components/BookingAgentPanel";
 import SignContractDialog from "@/components/SignContractDialog";
@@ -58,6 +59,7 @@ const statusColors: Record<string, string> = {
 
 export default function ArtistDashboard() {
   const { user, profile } = useAuth();
+  const [activeView, setActiveView] = useState<ArtistView>("overview");
   const [offers, setOffers] = useState<Offer[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -119,13 +121,11 @@ export default function ArtistDashboard() {
       const offer = offers.find((o) => o.id === offerId);
       if (!offer) return;
 
-      // Build notes with any AI-suggested clauses
       let notes = offer.notes || "";
       if (addedClauses && addedClauses.length > 0) {
         notes = (notes ? notes + "\n\n" : "") + "AI-Suggested Clauses:\n" + addedClauses.join("\n");
       }
 
-      // Create booking
       const { data: booking, error: bookingErr } = await supabase
         .from("bookings")
         .insert({
@@ -149,12 +149,11 @@ export default function ArtistDashboard() {
       setBookings((prev) => [...prev, newBooking]);
       toast.success("Offer accepted! Generating contract...");
 
-      // Notify promoter that offer was accepted
       try {
         await supabase.functions.invoke("send-transactional-email", {
           body: {
             templateName: "offer-accepted",
-            recipientEmail: offer.sender_id, // Edge function resolves user_id → email
+            recipientEmail: offer.sender_id,
             idempotencyKey: `offer-accepted-${newBooking.id}`,
             templateData: {
               venueName: offer.venue_name,
@@ -167,7 +166,6 @@ export default function ArtistDashboard() {
         // Email is best-effort
       }
 
-      // Generate contract PDF
       setGeneratingContract(newBooking.id);
       try {
         const { data, error: fnErr } = await supabase.functions.invoke("generate-contract", {
@@ -194,299 +192,344 @@ export default function ArtistDashboard() {
   const getBookingForOffer = (offerId: string) => bookings.find((b) => b.offer_id === offerId);
 
   const pendingCount = offers.filter((o) => o.status === "pending").length;
+  const acceptedCount = offers.filter((o) => o.status === "accepted").length;
   const totalGuarantee = offers.filter((o) => o.status === "accepted").reduce((s, o) => s + o.guarantee, 0);
+  const nextShow = bookings
+    .filter((b) => new Date(b.event_date) >= new Date())
+    .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime())[0];
+
+  const renderOfferCard = (offer: Offer) => {
+    const booking = getBookingForOffer(offer.id);
+    const isGenerating = generatingContract === booking?.id;
+
+    return (
+      <div key={offer.id} className="rounded-2xl bg-card border border-border p-5 sm:p-6 flex flex-col gap-4 transition-all hover:border-muted-foreground/20">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
+              <span className="font-display font-bold text-base lowercase truncate">{offer.venue_name}</span>
+              <Badge variant="outline" className={`text-[10px] uppercase tracking-wider ${statusColors[offer.status] ?? ""}`}>{offer.status}</Badge>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {new Date(offer.event_date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
+            </p>
+          </div>
+          <div className="text-right shrink-0">
+            <p className="font-display font-bold text-lg text-primary tabular-nums">${offer.guarantee.toLocaleString()}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">guarantee</p>
+          </div>
+        </div>
+
+        {offer.status === "pending" && (
+          <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-border">
+            <Button
+              size="sm"
+              disabled={actionLoading === offer.id}
+              onClick={() => setReviewOffer(offer)}
+              className="bg-green-600 hover:bg-green-700 text-foreground active:scale-[0.97] transition-transform h-9"
+            >
+              {actionLoading === offer.id ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Shield className="w-3.5 h-3.5 mr-1.5" />} review & accept
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={actionLoading === offer.id}
+              onClick={() => setCounterDialogOffer(offer)}
+              className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10 active:scale-[0.97] transition-transform h-9"
+            >
+              <ArrowRightLeft className="w-3.5 h-3.5 mr-1.5" /> counter
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={actionLoading === offer.id}
+              onClick={() => handleRespond(offer.id, "declined")}
+              className="border-border hover:bg-destructive/10 active:scale-[0.97] transition-transform h-9"
+            >
+              <XCircle className="w-3.5 h-3.5 mr-1.5" /> decline
+            </Button>
+          </div>
+        )}
+
+        {offer.status === "negotiating" && (
+          <NegotiationThread
+            offerId={offer.id}
+            offer={offer}
+            onOfferUpdated={(newStatus, updatedTerms) => {
+              setOffers((prev) => prev.map((o) =>
+                o.id === offer.id
+                  ? { ...o, status: newStatus, ...(updatedTerms ?? {}) }
+                  : o
+              ));
+            }}
+          />
+        )}
+
+        {offer.status === "accepted" && booking && (
+          <div className="flex flex-col sm:flex-row gap-2 pt-3 border-t border-border flex-wrap">
+            {isGenerating ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground py-1">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                generating contract...
+              </div>
+            ) : booking.contract_url ? (
+              <>
+                <Button size="sm" variant="outline" onClick={() => openSignedContract(booking.contract_url!)} className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform h-9">
+                  <FileText className="w-3.5 h-3.5 mr-1.5" /> view contract
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => downloadSignedContract(booking.contract_url!)} className="border-border text-muted-foreground hover:text-foreground active:scale-[0.97] transition-transform h-9">
+                  <Download className="w-3.5 h-3.5 mr-1.5" /> download
+                </Button>
+                {user && signatures[booking.id]?.includes(user.id) ? (
+                  <div className="flex items-center gap-1.5 text-xs text-primary font-medium px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20 h-9 justify-center">
+                    <CheckCircle className="w-3.5 h-3.5" /> signed
+                  </div>
+                ) : (
+                  <Button
+                    size="sm"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform h-9"
+                    onClick={() => setSignDialogBooking({
+                      id: booking.id,
+                      venueName: offer.venue_name,
+                      eventDate: offer.event_date,
+                      guarantee: offer.guarantee,
+                    })}
+                  >
+                    <PenLine className="w-3.5 h-3.5 mr-1.5" /> sign contract
+                  </Button>
+                )}
+              </>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-border text-muted-foreground h-9"
+                onClick={async () => {
+                  setGeneratingContract(booking.id);
+                  try {
+                    const { data } = await supabase.functions.invoke("generate-contract", {
+                      body: { booking_id: booking.id },
+                    });
+                    if (data?.contract_url) {
+                      setBookings((prev) =>
+                        prev.map((b) => (b.id === booking.id ? { ...b, contract_url: data.contract_url } : b))
+                      );
+                      toast.success("Contract generated!");
+                    }
+                  } catch {
+                    toast.error("Generation failed");
+                  } finally {
+                    setGeneratingContract(null);
+                  }
+                }}
+              >
+                <FileText className="w-3.5 h-3.5 mr-1.5" /> generate contract
+              </Button>
+            )}
+            {new Date(offer.event_date) < new Date() && !attendanceReported.has(booking.id) && (
+              <Button size="sm" variant="outline" onClick={() => setAttendanceBooking(booking)} className="border-[#FFB83E]/30 text-[#FFB83E] hover:bg-[#FFB83E]/10 active:scale-[0.97] transition-transform h-9">
+                <Users className="w-3.5 h-3.5 mr-1.5" /> report attendance
+              </Button>
+            )}
+            {attendanceReported.has(booking.id) && (
+              <div className="flex items-center gap-1.5 text-xs text-[#3EFFBE] font-medium px-3 py-1.5 rounded-lg bg-[#3EFFBE]/10 border border-[#3EFFBE]/20 h-9 justify-center">
+                <CheckCircle className="w-3.5 h-3.5" /> attendance reported
+              </div>
+            )}
+            {booking.status === "confirmed" && new Date(offer.event_date) > new Date() && !advanceRequested.has(booking.id) && (
+              <Button size="sm" variant="outline" onClick={() => setAdvanceBooking(booking)} className="border-[#3EC8FF]/30 text-[#3EC8FF] hover:bg-[#3EC8FF]/10 active:scale-[0.97] transition-transform h-9">
+                <Banknote className="w-3.5 h-3.5 mr-1.5" /> request advance
+              </Button>
+            )}
+            {advanceRequested.has(booking.id) && (
+              <div className="flex items-center gap-1.5 text-xs text-[#3EC8FF] font-medium px-3 py-1.5 rounded-lg bg-[#3EC8FF]/10 border border-[#3EC8FF]/20 h-9 justify-center">
+                <CheckCircle className="w-3.5 h-3.5" /> advance requested
+              </div>
+            )}
+            {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
+              <div className="w-full mt-1">
+                <InsuranceOfferCard bookingId={booking.id} guarantee={offer.guarantee} userRole="artist" />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <div className="min-h-screen pt-20 px-4 pb-12">
-      <div className="container mx-auto max-w-4xl">
-        <h1 className="font-display text-xl sm:text-2xl font-bold mb-1">Welcome back, {profile?.display_name ?? "Artist"}</h1>
-        <p className="text-muted-foreground text-sm mb-6 sm:mb-8">Here's your booking overview.</p>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <ArtistSidebar activeView={activeView} onViewChange={setActiveView} />
 
-        <OnboardingChecklist />
-
-        <Tabs defaultValue="offers" className="mb-6">
-          <div className="overflow-x-auto -mx-4 px-4 pb-2 scrollbar-hide">
-            <TabsList className="bg-secondary border border-border mb-4 w-max min-w-full sm:w-auto">
-              <TabsTrigger value="offers" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Inbox className="w-3.5 h-3.5 mr-1" />Offers</TabsTrigger>
-              <TabsTrigger value="bookkeeping" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><BarChart3 className="w-3.5 h-3.5 mr-1" />Bookkeeping</TabsTrigger>
-            </TabsList>
-          </div>
-
-          <TabsContent value="offers">
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div className="rounded-xl bg-card border border-border p-4 sm:p-5">
-            <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-2"><Inbox className="w-3.5 h-3.5" /> Pending Offers</div>
-            <p className="font-display text-xl sm:text-2xl font-bold">{pendingCount}</p>
-          </div>
-          <div className="rounded-xl bg-card border border-border p-4 sm:p-5">
-            <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-2"><DollarSign className="w-3.5 h-3.5" /> Confirmed Revenue</div>
-            <p className="font-display text-xl sm:text-2xl font-bold">${totalGuarantee.toLocaleString()}</p>
-          </div>
-          <div className="rounded-xl bg-card border border-border p-4 sm:p-5 sm:col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-2"><Calendar className="w-3.5 h-3.5" /> Total Offers</div>
-            <p className="font-display text-xl sm:text-2xl font-bold">{offers.length}</p>
-          </div>
-        </div>
-
-        {/* Availability Calendar */}
-        <div className="mb-6 sm:mb-8">
-          <AvailabilityCalendar />
-        </div>
-
-        {/* AI Booking Agent */}
-        <div className="mb-6 sm:mb-8">
-          <BookingAgentPanel />
-        </div>
-
-        {/* Offers */}
-        <FreeOfferBanner mode="received" />
-        <h2 className="font-display text-lg font-semibold mb-4">Your Offers</h2>
-        {loading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-xl bg-card border border-border p-4 sm:p-5 space-y-3">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2 flex-1">
-                    <div className="flex items-center gap-2">
-                      <Skeleton className="h-5 w-40" />
-                      <Skeleton className="h-5 w-16 rounded-full" />
-                    </div>
-                    <Skeleton className="h-3 w-56" />
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Skeleton className="h-9 w-32 rounded-md" />
-                  <Skeleton className="h-9 w-24 rounded-md" />
-                </div>
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Header */}
+          <header className="h-14 flex items-center gap-3 border-b border-border px-4 sm:px-6 pt-16">
+            <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <Music2 className="w-4 h-4 text-primary" />
               </div>
-            ))}
-          </div>
-        ) : offers.length === 0 ? (
-          <div className="rounded-xl bg-card border border-border p-6 sm:p-8 text-center">
-            <p className="text-muted-foreground mb-2">No offers yet</p>
-            <p className="text-sm text-muted-foreground">When promoters send you offers, they'll appear here.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {offers.map((offer) => {
-              const booking = getBookingForOffer(offer.id);
-              const isGenerating = generatingContract === booking?.id;
+              <div>
+                <h1 className="font-display text-sm font-bold lowercase leading-tight">{profile?.display_name ?? "artist"}</h1>
+                <p className="text-[10px] text-muted-foreground lowercase">artist dashboard</p>
+              </div>
+            </div>
+          </header>
 
-              return (
-                <div key={offer.id} className="rounded-xl bg-card border border-border p-4 sm:p-5 flex flex-col gap-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="font-display font-semibold text-sm sm:text-base truncate">{offer.venue_name}</span>
-                        <Badge variant="outline" className={statusColors[offer.status] ?? ""}>{offer.status}</Badge>
+          {/* Content */}
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <div className="max-w-5xl mx-auto space-y-6">
+
+              {/* Overview View */}
+              {activeView === "overview" && (
+                <>
+                  <OnboardingChecklist />
+
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div className="rounded-2xl bg-card border border-border p-5 space-y-2">
+                      <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <Inbox className="w-4 h-4 text-primary" />
                       </div>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        {new Date(offer.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                        {" · "}${offer.guarantee.toLocaleString()} guarantee
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest">pending</p>
+                      <p className="font-display text-2xl font-bold tabular-nums">{loading ? "—" : pendingCount}</p>
+                    </div>
+                    <div className="rounded-2xl bg-card border border-border p-5 space-y-2">
+                      <div className="w-9 h-9 rounded-xl bg-green-500/10 flex items-center justify-center">
+                        <CheckCircle className="w-4 h-4 text-green-400" />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest">confirmed</p>
+                      <p className="font-display text-2xl font-bold tabular-nums">{loading ? "—" : acceptedCount}</p>
+                    </div>
+                    <div className="rounded-2xl bg-card border border-border p-5 space-y-2">
+                      <div className="w-9 h-9 rounded-xl bg-[#C8FF3E]/10 flex items-center justify-center">
+                        <DollarSign className="w-4 h-4 text-[#C8FF3E]" />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest">revenue</p>
+                      <p className="font-display text-2xl font-bold tabular-nums">{loading ? "—" : `$${totalGuarantee.toLocaleString()}`}</p>
+                    </div>
+                    <div className="rounded-2xl bg-card border border-border p-5 space-y-2">
+                      <div className="w-9 h-9 rounded-xl bg-[#FFB83E]/10 flex items-center justify-center">
+                        <TrendingUp className="w-4 h-4 text-[#FFB83E]" />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest">next show</p>
+                      <p className="font-display text-sm font-bold truncate">
+                        {loading ? "—" : nextShow ? (
+                          <span className="lowercase">{nextShow.venue_name} · {new Date(nextShow.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+                        ) : "none scheduled"}
                       </p>
                     </div>
                   </div>
 
-                  {/* Pending: Accept/Decline/Counter */}
-                  {offer.status === "pending" && (
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Button
-                        size="sm"
-                        disabled={actionLoading === offer.id}
-                        onClick={() => setReviewOffer(offer)}
-                        className="bg-green-600 hover:bg-green-700 text-foreground active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
-                      >
-                        {actionLoading === offer.id ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Shield className="w-3.5 h-3.5 mr-1" />} Review & Accept
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={actionLoading === offer.id}
-                        onClick={() => setCounterDialogOffer(offer)}
-                        className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
-                      >
-                        <ArrowRightLeft className="w-3.5 h-3.5 mr-1" /> Counter
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={actionLoading === offer.id}
-                        onClick={() => handleRespond(offer.id, "declined")}
-                        className="border-border hover:bg-destructive/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
-                      >
-                        <XCircle className="w-3.5 h-3.5 mr-1" /> Decline
+                  {/* Recent offers preview */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="font-display text-base font-bold lowercase">recent offers</h2>
+                      <Button variant="ghost" size="sm" onClick={() => setActiveView("offers")} className="text-xs text-muted-foreground hover:text-foreground lowercase h-8">
+                        view all →
                       </Button>
                     </div>
-                  )}
+                    {loading ? (
+                      <div className="space-y-3">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="rounded-2xl bg-card border border-border p-5 space-y-3">
+                            <Skeleton className="h-5 w-48" />
+                            <Skeleton className="h-3 w-32" />
+                          </div>
+                        ))}
+                      </div>
+                    ) : offers.length === 0 ? (
+                      <div className="rounded-2xl bg-card border border-border p-8 text-center">
+                        <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-3">
+                          <Inbox className="w-5 h-5 text-muted-foreground" />
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-1">no offers yet</p>
+                        <p className="text-xs text-muted-foreground">when promoters send you offers, they'll appear here.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {offers.slice(0, 3).map(renderOfferCard)}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
 
-                  {/* Negotiating: show thread */}
-                  {offer.status === "negotiating" && (
-                    <NegotiationThread
-                      offerId={offer.id}
-                      offer={offer}
-                      onOfferUpdated={(newStatus, updatedTerms) => {
-                        setOffers((prev) => prev.map((o) =>
-                          o.id === offer.id
-                            ? { ...o, status: newStatus, ...(updatedTerms ?? {}) }
-                            : o
-                        ));
-                      }}
-                    />
-                  )}
-
-                  {/* Accepted: Contract button */}
-                  {offer.status === "accepted" && booking && (
-                    <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-border flex-wrap">
-                      {isGenerating ? (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground py-1">
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          Generating contract...
+              {/* Offers View */}
+              {activeView === "offers" && (
+                <>
+                  <div className="flex items-center justify-between">
+                    <h2 className="font-display text-lg font-bold lowercase">all offers</h2>
+                    <span className="text-xs text-muted-foreground tabular-nums">{offers.length} total</span>
+                  </div>
+                  <FreeOfferBanner mode="received" />
+                  {loading ? (
+                    <div className="space-y-3">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="rounded-2xl bg-card border border-border p-5 space-y-3">
+                          <Skeleton className="h-5 w-48" />
+                          <Skeleton className="h-3 w-32" />
                         </div>
-                      ) : booking.contract_url ? (
-                        <>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => openSignedContract(booking.contract_url!)}
-                            className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
-                          >
-                            <FileText className="w-3.5 h-3.5 mr-1" /> View Contract
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => downloadSignedContract(booking.contract_url!)}
-                            className="border-border text-muted-foreground hover:text-foreground active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
-                          >
-                            <Download className="w-3.5 h-3.5 mr-1" /> Download
-                          </Button>
-                          {user && signatures[booking.id]?.includes(user.id) ? (
-                            <div className="flex items-center gap-1.5 text-xs text-[hsl(var(--primary))] font-medium px-3 py-1.5 rounded-md bg-[hsl(var(--primary))]/10 border border-[hsl(var(--primary))]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
-                              <CheckCircle className="w-3.5 h-3.5" /> Signed
-                            </div>
-                          ) : (
-                            <Button
-                              size="sm"
-                              className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
-                              onClick={() => setSignDialogBooking({
-                                id: booking.id,
-                                venueName: offer.venue_name,
-                                eventDate: offer.event_date,
-                                guarantee: offer.guarantee,
-                              })}
-                            >
-                              <PenLine className="w-3.5 h-3.5 mr-1" /> Sign Contract
-                            </Button>
-                          )}
-                        </>
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-border text-muted-foreground w-full sm:w-auto h-10 sm:h-9"
-                          onClick={async () => {
-                            setGeneratingContract(booking.id);
-                            try {
-                              const { data } = await supabase.functions.invoke("generate-contract", {
-                                body: { booking_id: booking.id },
-                              });
-                              if (data?.contract_url) {
-                                setBookings((prev) =>
-                                  prev.map((b) => (b.id === booking.id ? { ...b, contract_url: data.contract_url } : b))
-                                );
-                                toast.success("Contract generated!");
-                              }
-                            } catch {
-                              toast.error("Generation failed");
-                            } finally {
-                              setGeneratingContract(null);
-                            }
-                          }}
-                        >
-                          <FileText className="w-3.5 h-3.5 mr-1" /> Generate Contract
-                        </Button>
-                      )}
-                      {/* Report attendance for past shows */}
-                      {new Date(offer.event_date) < new Date() && !attendanceReported.has(booking.id) && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setAttendanceBooking(booking)}
-                          className="border-[#FFB83E]/30 text-[#FFB83E] hover:bg-[#FFB83E]/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
-                        >
-                          <Users className="w-3.5 h-3.5 mr-1" /> Report Attendance
-                        </Button>
-                      )}
-                      {attendanceReported.has(booking.id) && (
-                        <div className="flex items-center gap-1.5 text-xs text-[#3EFFBE] font-medium px-3 py-1.5 rounded-md bg-[#3EFFBE]/10 border border-[#3EFFBE]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
-                          <CheckCircle className="w-3.5 h-3.5" /> Attendance Reported
-                        </div>
-                      )}
-                      {/* Request advance */}
-                      {booking.status === "confirmed" && new Date(offer.event_date) > new Date() && !advanceRequested.has(booking.id) && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setAdvanceBooking(booking)}
-                          className="border-[#3EC8FF]/30 text-[#3EC8FF] hover:bg-[#3EC8FF]/10 active:scale-[0.97] transition-transform w-full sm:w-auto h-10 sm:h-9"
-                        >
-                          <Banknote className="w-3.5 h-3.5 mr-1" /> Request Advance
-                        </Button>
-                      )}
-                      {advanceRequested.has(booking.id) && (
-                        <div className="flex items-center gap-1.5 text-xs text-[#3EC8FF] font-medium px-3 py-1.5 rounded-md bg-[#3EC8FF]/10 border border-[#3EC8FF]/20 w-full sm:w-auto h-10 sm:h-9 justify-center">
-                          <CheckCircle className="w-3.5 h-3.5" /> Advance Requested
-                        </div>
-                      )}
-                      {/* Insurance offer - show after both parties signed */}
-                      {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
-                        <div className="w-full mt-1">
-                          <InsuranceOfferCard bookingId={booking.id} guarantee={offer.guarantee} userRole="artist" />
-                        </div>
-                      )}
+                      ))}
                     </div>
+                  ) : offers.length === 0 ? (
+                    <div className="rounded-2xl bg-card border border-border p-8 text-center">
+                      <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-3">
+                        <Inbox className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                      <p className="text-sm text-muted-foreground">no offers yet</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="space-y-3">
+                        {offers.map(renderOfferCard)}
+                      </div>
+                      {offers.length > 0 && (
+                        <div className="flex items-center justify-center gap-3 pt-4">
+                          <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage((p) => p - 1)} className="border-border active:scale-[0.97] transition-transform h-9">
+                            <ChevronLeft className="w-4 h-4 mr-1" /> previous
+                          </Button>
+                          <span className="text-xs text-muted-foreground tabular-nums">page {page + 1}</span>
+                          <Button size="sm" variant="outline" disabled={!hasMore} onClick={() => setPage((p) => p + 1)} className="border-border active:scale-[0.97] transition-transform h-9">
+                            next <ChevronRight className="w-4 h-4 ml-1" />
+                          </Button>
+                        </div>
+                      )}
+                    </>
                   )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+                </>
+              )}
 
-        {/* Pagination */}
-        {offers.length > 0 && (
-          <div className="flex items-center justify-center gap-3 mt-6">
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page === 0}
-              onClick={() => setPage((p) => p - 1)}
-              className="border-border active:scale-[0.97] transition-transform h-9"
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" /> Previous
-            </Button>
-            <span className="text-xs text-muted-foreground">Page {page + 1}</span>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={!hasMore}
-              onClick={() => setPage((p) => p + 1)}
-              className="border-border active:scale-[0.97] transition-transform h-9"
-            >
-              Next <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
-        )}
-          </TabsContent>
+              {/* Calendar View */}
+              {activeView === "calendar" && (
+                <>
+                  <h2 className="font-display text-lg font-bold lowercase">availability calendar</h2>
+                  <AvailabilityCalendar />
+                </>
+              )}
 
-          <TabsContent value="bookkeeping">
-            <BookkeepingSection />
-          </TabsContent>
-        </Tabs>
+              {/* Bookkeeping View */}
+              {activeView === "bookkeeping" && (
+                <>
+                  <h2 className="font-display text-lg font-bold lowercase">bookkeeping</h2>
+                  <BookkeepingSection />
+                </>
+              )}
+
+              {/* AI Agent View */}
+              {activeView === "agent" && (
+                <>
+                  <h2 className="font-display text-lg font-bold lowercase">ai booking agent</h2>
+                  <BookingAgentPanel />
+                </>
+              )}
+            </div>
+          </main>
+        </div>
       </div>
 
-      {/* Attendance Report Dialog */}
+      {/* Dialogs */}
       {attendanceBooking && (
         <AttendanceReportDialog
           open={!!attendanceBooking}
@@ -498,7 +541,6 @@ export default function ArtistDashboard() {
         />
       )}
 
-      {/* Sign Contract Dialog */}
       {signDialogBooking && (
         <SignContractDialog
           open={!!signDialogBooking}
@@ -518,7 +560,6 @@ export default function ArtistDashboard() {
         />
       )}
 
-      {/* Counter Offer Dialog */}
       {counterDialogOffer && (
         <CounterOfferDialog
           open={!!counterDialogOffer}
@@ -540,7 +581,6 @@ export default function ArtistDashboard() {
         />
       )}
 
-      {/* Contract Review Dialog */}
       {reviewOffer && (
         <ContractReviewDialog
           open={!!reviewOffer}
@@ -553,7 +593,6 @@ export default function ArtistDashboard() {
         />
       )}
 
-      {/* Advance Request Dialog */}
       {advanceBooking && (
         <AdvanceRequestDialog
           open={!!advanceBooking}
@@ -570,6 +609,6 @@ export default function ArtistDashboard() {
           }}
         />
       )}
-    </div>
+    </SidebarProvider>
   );
 }

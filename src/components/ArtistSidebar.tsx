@@ -1,5 +1,4 @@
-import { Inbox, BarChart3, Calendar, Bot, LayoutDashboard, Settings } from "lucide-react";
-import { NavLink } from "@/components/NavLink";
+import { Inbox, BarChart3, Calendar, Bot, LayoutDashboard } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -11,15 +10,22 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const navItems = [
-  { title: "overview", url: "/dashboard", icon: LayoutDashboard },
-  { title: "offers", url: "/dashboard/offers", icon: Inbox },
-  { title: "calendar", url: "/dashboard/calendar", icon: Calendar },
-  { title: "bookkeeping", url: "/dashboard/bookkeeping", icon: BarChart3 },
-  { title: "ai agent", url: "/dashboard/agent", icon: Bot },
+export type ArtistView = "overview" | "offers" | "calendar" | "bookkeeping" | "agent";
+
+const navItems: { title: string; value: ArtistView; icon: typeof Inbox }[] = [
+  { title: "overview", value: "overview", icon: LayoutDashboard },
+  { title: "offers", value: "offers", icon: Inbox },
+  { title: "calendar", value: "calendar", icon: Calendar },
+  { title: "bookkeeping", value: "bookkeeping", icon: BarChart3 },
+  { title: "ai agent", value: "agent", icon: Bot },
 ];
 
-export default function ArtistSidebar() {
+interface Props {
+  activeView: ArtistView;
+  onViewChange: (view: ArtistView) => void;
+}
+
+export default function ArtistSidebar({ activeView, onViewChange }: Props) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
@@ -30,17 +36,14 @@ export default function ArtistSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors text-sm"
-                      activeClassName="bg-accent text-foreground font-medium"
-                    >
-                      <item.icon className="w-4 h-4 shrink-0" />
-                      {!collapsed && <span className="lowercase">{item.title}</span>}
-                    </NavLink>
+                <SidebarMenuItem key={item.value}>
+                  <SidebarMenuButton
+                    onClick={() => onViewChange(item.value)}
+                    isActive={activeView === item.value}
+                    className="cursor-pointer"
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    {!collapsed && <span className="lowercase">{item.title}</span>}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
