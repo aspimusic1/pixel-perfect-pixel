@@ -162,8 +162,8 @@ export default function Auth() {
           </form>
 
           <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-primary-foreground/[0.1]" /></div>
-            <div className="relative flex justify-center text-xs"><span className="bg-transparent px-3 text-primary-foreground/50 font-body">or continue with</span></div>
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/[0.06]" /></div>
+            <div className="relative flex justify-center text-xs"><span className="bg-transparent px-3 text-muted-foreground font-body">or continue with</span></div>
           </div>
 
           <div className="flex gap-2">
