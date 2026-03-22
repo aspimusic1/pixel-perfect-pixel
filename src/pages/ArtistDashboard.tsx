@@ -21,6 +21,9 @@ import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
 import EditProfilePanel from "@/components/EditProfilePanel";
+import ProfileCompletionRing from "@/components/ProfileCompletionRing";
+import StreamingStatsEditor from "@/components/StreamingStatsEditor";
+import EventsTab from "@/components/EventsTab";
 
 type ArtistView = "overview" | "offers" | "calendar" | "bookkeeping" | "agent" | "profile";
 
