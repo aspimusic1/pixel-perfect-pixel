@@ -90,6 +90,8 @@ export default function AdminDashboard() {
         {activeView === "bookings" && <AdminBookings />}
         {activeView === "tours" && <AdminTours />}
         {activeView === "revenue" && <AdminRevenue />}
+        {activeView === "billing" && <AdminBilling />}
+        {activeView === "growth" && <AdminGrowth />}
         {activeView === "moderation" && <AdminModeration />}
         {activeView === "settings" && <AdminSettings />}
       </main>
