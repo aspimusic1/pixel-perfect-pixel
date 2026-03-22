@@ -7,7 +7,7 @@ import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, D
 import toast from "react-hot-toast";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
-import OnboardingChecklist from "@/components/OnboardingChecklist";
+import GettingStartedChecklist from "@/components/GettingStartedChecklist";
 import BookingAgentPanel from "@/components/BookingAgentPanel";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
