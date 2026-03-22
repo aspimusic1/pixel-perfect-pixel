@@ -72,7 +72,6 @@ const navItems: NavItem<ArtistView>[] = [
   { title: "offers", value: "offers", icon: Inbox },
   { title: "events", value: "events", icon: CalendarDays },
   { title: "analytics", value: "analytics", icon: Disc3 },
-  { title: "calendar", value: "calendar", icon: Calendar },
   { title: "bookkeeping", value: "bookkeeping", icon: BarChart3 },
   { title: "ai agent", value: "agent", icon: Bot },
   { title: "edit profile", value: "profile", icon: UserCog },
