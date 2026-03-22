@@ -50,7 +50,7 @@ export default function ResetPassword() {
           <p className="text-muted-foreground text-sm">Enter your new password below.</p>
         </div>
 
-        <div className="rounded-xl bg-card border border-border p-6">
+        <div className="rounded-xl bg-white/[0.04] border border-white/[0.08] p-6">
           {done ? (
             <div className="text-center py-4">
               <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-3" />
