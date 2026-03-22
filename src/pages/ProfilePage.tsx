@@ -58,8 +58,11 @@ type ProfileData = {
     followers?: number;
     top_city?: string;
     top_track?: string;
+    top_tracks?: { name: string; album: string; album_art: string; popularity: number; spotify_url: string; uri: string }[];
+    top_cities?: { city: string; listeners: number }[];
     source?: string;
   } | null;
+  pitch_card_url: string | null;
 };
 
 type AvailDate = { date: string; is_available: boolean };
