@@ -182,7 +182,52 @@ export default function SpotifyAnalytics() {
               </div>
             </div>
           )}
+
+          {/* Generate Pitch Card */}
+          <PitchCardButton />
         </>
+      )}
+    </div>
+  );
+}
+
+function PitchCardButton() {
+  const [generating, setGenerating] = useState(false);
+  const { profile } = useAuth();
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-pitch-card");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data?.url) {
+        toast.success("Pitch card generated!");
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to generate pitch card");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  return (
+    <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h4 className="text-xs font-display font-semibold">Pitch Card / EPK</h4>
+          <p className="text-[10px] text-muted-foreground mt-0.5">Auto-generated PDF with your stats, tracks, and booking info</p>
+        </div>
+        <Button onClick={handleGenerate} disabled={generating} size="sm" className="h-8 text-xs active:scale-[0.97]" style={{ backgroundColor: "#C8FF3E", color: "#080C14" }}>
+          {generating ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <FileDown className="w-3 h-3 mr-1" />}
+          {generating ? "Generating..." : "Generate"}
+        </Button>
+      </div>
+      {(profile as any)?.pitch_card_url && (
+        <a href={(profile as any).pitch_card_url} target="_blank" rel="noopener noreferrer" className="text-[10px] mt-2 inline-block" style={{ color: "#C8FF3E" }}>
+          View current pitch card ↗
+        </a>
       )}
     </div>
   );
