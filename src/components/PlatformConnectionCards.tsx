@@ -13,32 +13,8 @@ export default function PlatformConnectionCards() {
   const spotifyConnected = !!stats?.source || !!stats?.monthly_listeners;
   const youtubeConnected = !!stats?.youtube_subscribers;
 
-  const [manualListeners, setManualListeners] = useState(stats?.monthly_listeners?.toString() ?? "");
-  const [manualSubs, setManualSubs] = useState(stats?.youtube_subscribers?.toString() ?? "");
-  const [manualViews, setManualViews] = useState(stats?.youtube_views?.toString() ?? "");
-  const [saving, setSaving] = useState(false);
-
-  const saveManualStats = async (updates: Record<string, any>) => {
-    if (!user) return;
-    setSaving(true);
-    try {
-      const merged = { ...stats, ...updates };
-      const { error } = await supabase
-        .from("profiles")
-        .update({ streaming_stats: merged } as any)
-        .eq("user_id", user.id);
-      if (error) throw error;
-      await refreshProfile();
-      toast.success("Stats updated");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to save");
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const comingSoon = (platform: string) => {
-    toast(`${platform} connection coming soon — add your stats manually below.`, { icon: "🔗" });
+    toast(`${platform} connection coming soon.`, { icon: "🔗" });
   };
 
   return (
@@ -71,27 +47,6 @@ export default function PlatformConnectionCards() {
               <Music className="w-3.5 h-3.5 mr-1.5" /> Connect Spotify
             </Button>
           )}
-          <div className="space-y-1.5">
-            <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Monthly listeners</label>
-            <div className="flex gap-1.5">
-              <Input
-                type="number"
-                value={manualListeners}
-                onChange={(e) => setManualListeners(e.target.value)}
-                placeholder="e.g. 45000"
-                className="h-7 text-xs bg-background border-white/[0.06]"
-              />
-              <Button
-                size="sm"
-                variant="ghost"
-                disabled={saving}
-                onClick={() => saveManualStats({ monthly_listeners: parseInt(manualListeners) || 0 })}
-                className="h-7 text-[10px] text-primary hover:bg-primary/10 shrink-0 px-2"
-              >
-                save
-              </Button>
-            </div>
-          </div>
         </div>
 
         {/* YouTube */}
@@ -118,48 +73,6 @@ export default function PlatformConnectionCards() {
               <Youtube className="w-3.5 h-3.5 mr-1.5" /> Connect YouTube
             </Button>
           )}
-          <div className="space-y-1.5">
-            <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Subscribers</label>
-            <div className="flex gap-1.5">
-              <Input
-                type="number"
-                value={manualSubs}
-                onChange={(e) => setManualSubs(e.target.value)}
-                placeholder="e.g. 12000"
-                className="h-7 text-xs bg-background border-white/[0.06]"
-              />
-              <Button
-                size="sm"
-                variant="ghost"
-                disabled={saving}
-                onClick={() => saveManualStats({ youtube_subscribers: parseInt(manualSubs) || 0 })}
-                className="h-7 text-[10px] text-primary hover:bg-primary/10 shrink-0 px-2"
-              >
-                save
-              </Button>
-            </div>
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Total views</label>
-            <div className="flex gap-1.5">
-              <Input
-                type="number"
-                value={manualViews}
-                onChange={(e) => setManualViews(e.target.value)}
-                placeholder="e.g. 500000"
-                className="h-7 text-xs bg-background border-white/[0.06]"
-              />
-              <Button
-                size="sm"
-                variant="ghost"
-                disabled={saving}
-                onClick={() => saveManualStats({ youtube_views: parseInt(manualViews) || 0 })}
-                className="h-7 text-[10px] text-primary hover:bg-primary/10 shrink-0 px-2"
-              >
-                save
-              </Button>
-            </div>
-          </div>
         </div>
 
         {/* Apple Music + SoundCloud */}

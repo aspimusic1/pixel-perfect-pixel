@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
-import BookingAgentPanel from "@/components/BookingAgentPanel";
+import AIAgentPanel, { AgentActiveBanner } from "@/components/AIAgentPanel";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
 import NegotiationThread from "@/components/NegotiationThread";
@@ -22,13 +22,13 @@ import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
 import EditProfilePanel from "@/components/EditProfilePanel";
 import ProfileCompletionRing from "@/components/ProfileCompletionRing";
-import StreamingStatsEditor from "@/components/StreamingStatsEditor";
+import StreamingStatsPills from "@/components/StreamingStatsPills";
 import EventsTab from "@/components/EventsTab";
 import SpotifyAnalytics from "@/components/SpotifyAnalytics";
 import PresaleSection from "@/components/PresaleSection";
 import PlatformConnectionCards from "@/components/PlatformConnectionCards";
 
-type ArtistView = "overview" | "offers" | "events" | "analytics" | "calendar" | "bookkeeping" | "agent" | "profile";
+type ArtistView = "overview" | "offers" | "events" | "analytics" | "bookkeeping" | "agent" | "profile";
 
 type Offer = {
   id: string;
@@ -72,7 +72,6 @@ const navItems: NavItem<ArtistView>[] = [
   { title: "offers", value: "offers", icon: Inbox },
   { title: "events", value: "events", icon: CalendarDays },
   { title: "analytics", value: "analytics", icon: Disc3 },
-  { title: "calendar", value: "calendar", icon: Calendar },
   { title: "bookkeeping", value: "bookkeeping", icon: BarChart3 },
   { title: "ai agent", value: "agent", icon: Bot },
   { title: "edit profile", value: "profile", icon: UserCog },
@@ -335,43 +334,8 @@ export default function ArtistDashboard() {
                       </div>
                     ))}
                   </div>
-
-                  {/* Availability strip */}
-                  {availability.length > 0 && (
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">upcoming availability</h2>
-                        <button onClick={() => setActiveView("calendar")} className="text-[11px] text-muted-foreground hover:text-foreground transition-colors lowercase">manage →</button>
-                      </div>
-                      <div className="flex gap-2 overflow-x-auto pb-1">
-                        {availability.map((a) => {
-                          const d = new Date(a.date + "T12:00:00");
-                          return (
-                            <div
-                              key={a.date}
-                              title={a.notes || undefined}
-                              className={`shrink-0 w-16 rounded-lg border text-center py-2.5 px-1 transition-colors ${
-                                a.is_available
-                                  ? "border-green-500/30 bg-green-500/10"
-                                  : "border-red-500/20 bg-red-500/5"
-                              }`}
-                            >
-                              <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-body">
-                                {d.toLocaleDateString("en-US", { weekday: "short" })}
-                              </p>
-                              <p className="font-display text-sm font-bold tabular-nums mt-0.5">
-                                {d.getDate()}
-                              </p>
-                              <p className="text-[9px] text-muted-foreground font-body">
-                                {d.toLocaleDateString("en-US", { month: "short" })}
-                              </p>
-                              <span className={`inline-block w-1.5 h-1.5 rounded-full mt-1 ${a.is_available ? "bg-green-400" : "bg-red-400"}`} />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                  {/* Streaming Stats Pills */}
+                  <StreamingStatsPills onNavigateToAnalytics={() => setActiveView("analytics")} />
 
                   {/* Recent offers */}
                   <div>
@@ -400,6 +364,7 @@ export default function ArtistDashboard() {
               {/* ─── Offers ─── */}
               {activeView === "offers" && (
                 <>
+                  <AgentActiveBanner />
                   <div className="flex items-center justify-between">
                     <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">all offers</h2>
                     <span className="text-[11px] text-muted-foreground tabular-nums">{offers.length} total</span>
@@ -434,8 +399,12 @@ export default function ArtistDashboard() {
               {/* ─── Events ─── */}
               {activeView === "events" && (
                 <>
-                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">events</h2>
+                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">events & availability</h2>
                   <EventsTab bookings={bookings} loading={loading} />
+                  <div className="mt-6">
+                    <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-3">availability calendar</h2>
+                    <AvailabilityCalendar />
+                  </div>
                 </>
               )}
 
@@ -448,12 +417,8 @@ export default function ArtistDashboard() {
                 </>
               )}
 
-              {activeView === "calendar" && (
-                <>
-                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">availability</h2>
-                  <AvailabilityCalendar />
-                </>
-              )}
+
+
 
               {/* ─── Bookkeeping ─── */}
               {activeView === "bookkeeping" && (
@@ -467,7 +432,7 @@ export default function ArtistDashboard() {
               {activeView === "agent" && (
                 <>
                   <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">ai booking agent</h2>
-                  <BookingAgentPanel />
+                  <AIAgentPanel />
                 </>
               )}
 
@@ -475,7 +440,6 @@ export default function ArtistDashboard() {
               {activeView === "profile" && (
                 <>
                   <EditProfilePanel />
-                  <StreamingStatsEditor />
                 </>
               )}
             </div>
