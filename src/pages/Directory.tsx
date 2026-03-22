@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { SkeletonGrid } from "@/components/SkeletonCard";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, MapPin, Send, ArrowRight, Mic2, Calendar, Globe, Shield, CheckCircle, Clock, CalendarDays, Building2, Music, Camera, Wrench, Users } from "lucide-react";
+import { Search, MapPin, Send, ArrowRight, ArrowLeft, Mic2, Calendar, Globe, Shield, CheckCircle, Clock, CalendarDays, Building2, Music, Camera, Wrench, Users, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 import { format, parseISO, startOfToday } from "date-fns";
 import VenueClaimDialog from "@/components/VenueClaimDialog";
 import ArtistClaimDialog from "@/components/ArtistClaimDialog";
@@ -66,6 +66,17 @@ const ROLE_TABS = [
   { value: "photo_video", label: "Creative", icon: Camera },
 ];
 
+const GENRES = [
+  "House", "Techno", "Hip-Hop", "R&B", "Afrobeats", "Electronic", "Pop", "Latin",
+  "Reggaeton", "Jazz", "Rock", "Country", "EDM", "Trap", "Drill",
+];
+
+const SORT_OPTIONS = [
+  { value: "newest", label: "Newest" },
+  { value: "name_asc", label: "A–Z" },
+  { value: "name_desc", label: "Z–A" },
+];
+
 const roleColorMap: Record<string, string> = {
   artist: "bg-role-artist/10 text-role-artist",
   promoter: "bg-role-promoter/10 text-role-promoter",
@@ -74,39 +85,43 @@ const roleColorMap: Record<string, string> = {
   photo_video: "bg-role-photo/10 text-role-photo",
 };
 
+const PAGE_SIZE = 50;
+
 // Query functions
-async function fetchProfiles(roleFilter: string, search: string, city: string | null, genre: string | null) {
-  if (roleFilter === "venue") return [];
-  let query = supabase.from("public_profiles" as any).select("*") as any;
+async function fetchProfiles(roleFilter: string, search: string, city: string | null, genre: string | null, sort: string, verifiedOnly: boolean, page: number) {
+  if (roleFilter === "venue") return { data: [] as Profile[], count: 0 };
+  let query = supabase.from("public_profiles" as any).select("*", { count: "exact" }) as any;
   if (roleFilter) query = query.eq("role", roleFilter);
   if (search) query = query.ilike("display_name", `%${search}%`);
   if (city) query = query.eq("city", city);
   if (genre) query = query.ilike("genre", `%${genre}%`);
-  const { data } = await query.order("created_at", { ascending: false });
-  return (data as Profile[]) ?? [];
+  if (verifiedOnly) query = query.eq("is_verified", true);
+
+  switch (sort) {
+    case "name_asc": query = query.order("display_name", { ascending: true }); break;
+    case "name_desc": query = query.order("display_name", { ascending: false }); break;
+    default: query = query.order("updated_at", { ascending: false }); break;
+  }
+
+  query = query.range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+  const { data, count } = await query;
+  return { data: (data as Profile[]) ?? [], count: count ?? 0 };
 }
 
-async function fetchArtistListings(search: string, genre: string | null) {
-  let query = supabase.from("artist_listings").select("*");
+async function fetchArtistListings(search: string, genre: string | null, page: number) {
+  let query = supabase.from("artist_listings").select("*", { count: "exact" });
   if (search) query = query.ilike("name", `%${search}%`);
   if (genre) query = query.ilike("genre", `%${genre}%`);
-  const { data } = await query.order("name", { ascending: true }).limit(200);
-  return (data as ArtistListing[]) ?? [];
+  const { data, count } = await query.order("name", { ascending: true }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+  return { data: (data as ArtistListing[]) ?? [], count: count ?? 0 };
 }
 
-async function fetchArtistGenres() {
-  const { data } = await supabase.from("artist_listings").select("genre");
-  const genres = new Set<string>();
-  (data ?? []).forEach((a: any) => { if (a.genre) genres.add(a.genre); });
-  return Array.from(genres).sort();
-}
-
-async function fetchVenueListings(search: string, city: string | null) {
-  let query = supabase.from("venue_listings_public" as any).select("*");
+async function fetchVenueListings(search: string, city: string | null, page: number) {
+  let query = supabase.from("venue_listings_public" as any).select("*", { count: "exact" });
   if (search) query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,region.ilike.%${search}%`);
   if (city) query = query.eq("city", city);
-  const { data } = await query.order("name", { ascending: true });
-  return (data as unknown as VenueListing[]) ?? [];
+  const { data, count } = await query.order("name", { ascending: true }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+  return { data: (data as unknown as VenueListing[]) ?? [], count: count ?? 0 };
 }
 
 async function fetchAllCities() {
@@ -178,13 +193,20 @@ async function fetchFlashBids() {
 }
 
 export default function Directory({ initialRole = "artist" }: { initialRole?: string }) {
+  const [searchParams] = useSearchParams();
+  const urlRole = searchParams.get("role");
+  const urlCity = searchParams.get("city");
+
   const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
   const [claimArtist, setClaimArtist] = useState<ArtistListing | null>(null);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [activeTab, setActiveTab] = useState(initialRole || "artist");
+  const [activeTab, setActiveTab] = useState(urlRole || initialRole || "artist");
   const [genreFilter, setGenreFilter] = useState<string | null>(null);
-  const [cityFilter, setCityFilter] = useState<string | null>(null);
+  const [cityFilter, setCityFilter] = useState<string | null>(urlCity);
+  const [sortBy, setSortBy] = useState("newest");
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [page, setPage] = useState(0);
   const [upgradeModal, setUpgradeModal] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { user, profile: authProfile } = useAuth();
@@ -195,30 +217,32 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
     return () => clearTimeout(t);
   }, [search]);
 
+  // Reset page on filter change
+  useEffect(() => { setPage(0); }, [activeTab, debouncedSearch, genreFilter, cityFilter, sortBy, verifiedOnly]);
+
   const isArtistTab = activeTab === "artist";
   const isVenueTab = activeTab === "venue";
   const isProfileTab = !isVenueTab;
 
-  const { data: profiles = [], isLoading: profilesLoading } = useQuery<Profile[]>({
-    queryKey: ["directory-profiles", activeTab, debouncedSearch, cityFilter, isArtistTab ? genreFilter : null],
-    queryFn: () => fetchProfiles(activeTab, debouncedSearch, cityFilter, isArtistTab ? genreFilter : null),
+  const { data: profileResult = { data: [], count: 0 }, isLoading: profilesLoading } = useQuery({
+    queryKey: ["directory-profiles", activeTab, debouncedSearch, cityFilter, isArtistTab ? genreFilter : null, sortBy, verifiedOnly, page],
+    queryFn: () => fetchProfiles(activeTab, debouncedSearch, cityFilter, isArtistTab ? genreFilter : null, sortBy, verifiedOnly, page),
     enabled: isProfileTab,
     staleTime: 30_000,
   });
 
-  const { data: artistListings = [], isLoading: artistsLoading } = useQuery<ArtistListing[]>({
-    queryKey: ["directory-artists", debouncedSearch, genreFilter],
-    queryFn: () => fetchArtistListings(debouncedSearch, genreFilter),
+  const profiles = profileResult.data;
+  const profileCount = profileResult.count;
+
+  const { data: artistResult = { data: [], count: 0 }, isLoading: artistsLoading } = useQuery({
+    queryKey: ["directory-artists", debouncedSearch, genreFilter, page],
+    queryFn: () => fetchArtistListings(debouncedSearch, genreFilter, page),
     enabled: isArtistTab,
     staleTime: 30_000,
   });
 
-  const { data: artistGenres = [] } = useQuery<string[]>({
-    queryKey: ["directory-artist-genres"],
-    queryFn: fetchArtistGenres,
-    enabled: isArtistTab,
-    staleTime: 120_000,
-  });
+  const artistListings = artistResult.data;
+  const artistCount = artistResult.count;
 
   const { data: allCities = [] } = useQuery<string[]>({
     queryKey: ["directory-all-cities"],
@@ -226,12 +250,15 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
     staleTime: 120_000,
   });
 
-  const { data: venueListings = [], isLoading: venuesLoading } = useQuery<VenueListing[]>({
-    queryKey: ["directory-venues", debouncedSearch, cityFilter],
-    queryFn: () => fetchVenueListings(debouncedSearch, cityFilter),
+  const { data: venueResult = { data: [], count: 0 }, isLoading: venuesLoading } = useQuery({
+    queryKey: ["directory-venues", debouncedSearch, cityFilter, page],
+    queryFn: () => fetchVenueListings(debouncedSearch, cityFilter, page),
     enabled: isVenueTab,
     staleTime: 30_000,
   });
+
+  const venueListings = venueResult.data;
+  const venueCount = venueResult.count;
 
   const { data: venueAvailability = {} } = useQuery({
     queryKey: ["directory-venue-availability"],
@@ -255,6 +282,9 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
   });
 
   const loading = (isProfileTab && profilesLoading) || (isArtistTab && artistsLoading) || (isVenueTab && venuesLoading);
+
+  const totalCount = isVenueTab ? venueCount : isArtistTab ? (profileCount + artistCount) : profileCount;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
   useEffect(() => {
     const el = ref.current;
@@ -308,13 +338,9 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
     return <UpgradeWall />;
   }
 
-  const tabCounts: Record<string, number> = {
-    artist: profiles.length + artistListings.length,
-    venue: venueListings.length,
-    promoter: activeTab === "promoter" ? profiles.length : 0,
-    production: activeTab === "production" ? profiles.length : 0,
-    photo_video: activeTab === "photo_video" ? profiles.length : 0,
-  };
+  const rangeStart = page * PAGE_SIZE + 1;
+  const rangeEnd = Math.min((page + 1) * PAGE_SIZE, totalCount);
+  const tabLabel = ROLE_TABS.find((t) => t.value === activeTab)?.label.toLowerCase() ?? "";
 
   return (
     <div ref={ref} className="min-h-screen pt-20 px-4 pb-12">
@@ -334,8 +360,8 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
         <h1 className="font-display text-3xl font-bold mb-2">Directory</h1>
         <p className="text-muted-foreground text-sm mb-6 font-body">Discover artists, venues, crew, and more.</p>
 
-        {/* Search + city filter */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        {/* Search + Genre dropdown + City filter */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -345,11 +371,23 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
               className="pl-9 bg-card border-border font-body"
             />
           </div>
+          {isArtistTab && (
+            <select
+              value={genreFilter ?? ""}
+              onChange={(e) => setGenreFilter(e.target.value || null)}
+              className="h-11 rounded-lg border border-border bg-card px-3 text-xs text-foreground font-body min-w-[150px] shrink-0"
+            >
+              <option value="">All genres</option>
+              {GENRES.map((g) => (
+                <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
+          )}
           {allCities.length > 0 && (
             <select
               value={cityFilter ?? ""}
               onChange={(e) => setCityFilter(e.target.value || null)}
-              className="h-10 rounded-lg border border-border bg-card px-3 text-xs text-foreground font-body min-w-[140px] shrink-0"
+              className="h-11 rounded-lg border border-border bg-card px-3 text-xs text-foreground font-body min-w-[140px] shrink-0"
             >
               <option value="">All cities</option>
               {allCities.map((c) => (
@@ -359,8 +397,35 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
           )}
         </div>
 
+        {/* Sort + filter bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          <div className="flex items-center gap-1.5">
+            <SlidersHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="h-8 rounded-lg border border-border bg-card px-2 text-[11px] text-foreground font-body min-w-[100px]"
+            >
+              {SORT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            onClick={() => setVerifiedOnly(!verifiedOnly)}
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all active:scale-[0.97] ${
+              verifiedOnly
+                ? "bg-primary/15 text-primary border border-primary/30"
+                : "bg-secondary text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <CheckCircle className="w-3 h-3 inline mr-1" />
+            Verified only
+          </button>
+        </div>
+
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setGenreFilter(null); }} className="w-full">
+        <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setGenreFilter(null); setPage(0); }} className="w-full">
           <TabsList className="bg-card border border-border w-full justify-start gap-0 h-auto p-1 grid grid-cols-2 md:grid-cols-5">
             {ROLE_TABS.map((tab) => (
               <TabsTrigger
@@ -374,45 +439,21 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
             ))}
           </TabsList>
 
-          {/* Genre filter (artists only) */}
-          {isArtistTab && artistGenres.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-4">
-              <button
-                onClick={() => setGenreFilter(null)}
-                className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
-                  !genreFilter
-                    ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                All genres
-              </button>
-              {artistGenres.map((g) => (
-                <button
-                  key={g}
-                  onClick={() => setGenreFilter(genreFilter === g ? null : g)}
-                  className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
-                    genreFilter === g
-                      ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
-                      : "bg-secondary text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {g}
-                </button>
-              ))}
-            </div>
+          {/* Results count */}
+          {!loading && totalCount > 0 && (
+            <p className="text-[11px] text-muted-foreground font-body mt-4 tabular-nums">
+              Showing {rangeStart}–{rangeEnd} of {totalCount} {tabLabel}
+            </p>
           )}
 
           {/* Tab content */}
           {ROLE_TABS.map((tab) => (
-            <TabsContent key={tab.value} value={tab.value} className="mt-6">
+            <TabsContent key={tab.value} value={tab.value} className="mt-4">
               {loading ? (
                 <SkeletonGrid count={6} cardHeight="h-44" />
               ) : tab.value === "venue" ? (
-                /* Venue tab */
                 Object.keys(groupedVenues).length > 0 ? (
                   <div className="space-y-6">
-                    <p className="text-xs text-muted-foreground font-body">{venueListings.length} venues</p>
                     {Object.entries(groupedVenues).map(([region, venueList]) => (
                       <div key={region}>
                         <h3 data-reveal className="fade-in-section font-display text-sm font-semibold mb-2 text-role-venue/80 lowercase">{region}</h3>
@@ -472,15 +513,13 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                     ))}
                   </div>
                 ) : (
-                  <EmptyState />
+                  <EmptyState role="venue" />
                 )
               ) : tab.value === "artist" ? (
-                /* Artist tab — profiles + listings */
                 (profiles.length > 0 || artistListings.length > 0) ? (
                   <div className="space-y-8">
                     {profiles.length > 0 && (
                       <div>
-                        <p className="text-xs text-muted-foreground font-body mb-3">{profiles.length} registered artists</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                           {profiles.map((p) => (
                             <ProfileCard key={p.id} p={p} flashBids={flashBids} hasPaidPlan={hasPaidPlan} onUpgrade={() => setUpgradeModal(true)} />
@@ -491,7 +530,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                     {artistListings.length > 0 && (
                       <div>
                         <h2 data-reveal className="fade-in-section font-display text-lg font-bold mb-3 text-foreground/80 lowercase">
-                          artist directory — {artistListings.length} artists
+                          artist directory
                         </h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {artistListings.map((a) => (
@@ -528,13 +567,11 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                     )}
                   </div>
                 ) : (
-                  <EmptyState />
+                  <EmptyState role="artist" />
                 )
               ) : (
-                /* Other role tabs (promoter, production, photo_video) */
                 profiles.length > 0 ? (
                   <div>
-                    <p className="text-xs text-muted-foreground font-body mb-3">{profiles.length} {tab.label.toLowerCase()}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {profiles.map((p) => (
                         <ProfileCard key={p.id} p={p} flashBids={flashBids} hasPaidPlan={hasPaidPlan} onUpgrade={() => setUpgradeModal(true)} />
@@ -542,12 +579,25 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                     </div>
                   </div>
                 ) : (
-                  <EmptyState />
+                  <EmptyState role={tab.value} />
                 )
               )}
             </TabsContent>
           ))}
         </Tabs>
+
+        {/* Pagination */}
+        {totalCount > PAGE_SIZE && (
+          <div className="flex items-center justify-center gap-3 pt-6">
+            <Button size="sm" variant="ghost" disabled={page === 0} onClick={() => setPage((p) => p - 1)} className="h-8 text-xs text-muted-foreground hover:text-foreground active:scale-[0.97]">
+              <ChevronLeft className="w-3.5 h-3.5 mr-1" /> Previous
+            </Button>
+            <span className="text-xs text-muted-foreground tabular-nums">Page {page + 1} of {totalPages}</span>
+            <Button size="sm" variant="ghost" disabled={page >= totalPages - 1} onClick={() => setPage((p) => p + 1)} className="h-8 text-xs text-muted-foreground hover:text-foreground active:scale-[0.97]">
+              Next <ChevronRight className="w-3.5 h-3.5 ml-1" />
+            </Button>
+          </div>
+        )}
 
         <UpgradeOfferModal open={upgradeModal} onClose={() => setUpgradeModal(false)} />
       </div>
@@ -581,10 +631,23 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
   );
 }
 
-function EmptyState() {
+function EmptyState({ role }: { role: string }) {
+  const roleMessages: Record<string, { text: string; cta: string; link: string }> = {
+    artist: { text: "No artists found. Try adjusting your filters.", cta: "List yourself as an artist", link: "/auth?tab=signup&role=artist" },
+    venue: { text: "No venues listed yet — be the first to list yours.", cta: "List your venue", link: "/auth?tab=signup&role=venue" },
+    promoter: { text: "No promoters found. Try adjusting your search.", cta: "Sign up as a promoter", link: "/auth?tab=signup&role=promoter" },
+    production: { text: "No production profiles found.", cta: "Sign up as production", link: "/auth?tab=signup&role=production" },
+    photo_video: { text: "No creative profiles found.", cta: "Sign up as creative", link: "/auth?tab=signup&role=photo_video" },
+  };
+  const msg = roleMessages[role] ?? roleMessages.artist;
   return (
     <div className="rounded-xl bg-card border border-border p-8 text-center">
-      <p className="text-muted-foreground font-body">No profiles found. Try adjusting your search.</p>
+      <p className="text-muted-foreground font-body mb-3">{msg.text}</p>
+      <Link to={msg.link}>
+        <Button size="sm" variant="outline" className="text-xs h-8">
+          {msg.cta} <ArrowRight className="w-3 h-3 ml-1" />
+        </Button>
+      </Link>
     </div>
   );
 }
@@ -633,7 +696,7 @@ function ProfileCard({ p, flashBids, hasPaidPlan, onUpgrade }: {
       )}
       {p.role === "artist" && p.streaming_stats?.source === "spotify_api" && !p.streaming_stats?.followers && (
         <div className="mb-2">
-          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border border-white/[0.06]" style={{ color: "#1DB954" }}>
+          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border border-border" style={{ color: "#1DB954" }}>
             ✓ Spotify verified
           </span>
         </div>

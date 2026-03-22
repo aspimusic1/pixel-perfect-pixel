@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy } from "react";
+import { Link } from "react-router-dom";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Users, DollarSign, FileText, Plus, Trash2, ArrowLeft, MapPin, Clock, Sparkles, Loader2 as SpinnerIcon, Car } from "lucide-react";
+import { Calendar, Users, DollarSign, FileText, Plus, Trash2, ArrowLeft, MapPin, Clock, Sparkles, Loader2 as SpinnerIcon, Car, ArrowRight } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -345,7 +346,15 @@ export default function TourManagement() {
               </div>
             )}
             {stops.length === 0 ? (
-              <div className="rounded-xl bg-card border border-border p-8 text-center text-muted-foreground text-sm">No stops added yet.</div>
+              <div className="rounded-xl bg-card border border-border p-8 text-center">
+                <MapPin className="w-5 h-5 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground mb-3">No stops added yet.</p>
+                <Link to="/directory?role=venue">
+                  <Button size="sm" variant="outline" className="text-xs h-8">
+                    Browse venues in directory <ArrowRight className="w-3 h-3 ml-1" />
+                  </Button>
+                </Link>
+              </div>
             ) : (
               <div className="space-y-3">
                 {stops.map((stop, i) => (
@@ -388,10 +397,25 @@ export default function TourManagement() {
           <TabsContent value="crew">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-display font-semibold">Crew Manifest</h2>
-              <Button size="sm" onClick={addCrew} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform"><Plus className="w-3.5 h-3.5 mr-1" /> Add Member</Button>
+              <div className="flex gap-2">
+                <Link to="/directory?role=production">
+                  <Button size="sm" variant="outline" className="border-border text-xs active:scale-[0.97]">
+                    Find in directory →
+                  </Button>
+                </Link>
+                <Button size="sm" onClick={addCrew} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform"><Plus className="w-3.5 h-3.5 mr-1" /> Add Member</Button>
+              </div>
             </div>
             {crew.length === 0 ? (
-              <div className="rounded-xl bg-card border border-border p-8 text-center text-muted-foreground text-sm">No crew members added yet.</div>
+              <div className="rounded-xl bg-card border border-border p-8 text-center">
+                <Users className="w-5 h-5 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground mb-3">No crew members added yet.</p>
+                <Link to="/directory?role=production">
+                  <Button size="sm" variant="outline" className="text-xs h-8">
+                    Browse production in directory <ArrowRight className="w-3 h-3 ml-1" />
+                  </Button>
+                </Link>
+              </div>
             ) : (
               <div className="space-y-3">
                 {crew.map((member) => (

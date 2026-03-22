@@ -15,8 +15,7 @@ const Auth = lazy(() => import("@/pages/Auth"));
 const ProfileSetup = lazy(() => import("@/pages/ProfileSetup"));
 const ArtistDashboard = lazy(() => import("@/pages/ArtistDashboard"));
 const PromoterDashboard = lazy(() => import("@/pages/PromoterDashboard"));
-const ProductionDashboard = lazy(() => import("@/pages/ProductionDashboard"));
-const CreativeDashboard = lazy(() => import("@/pages/CreativeDashboard"));
+const CrewDashboard = lazy(() => import("@/pages/CrewDashboard"));
 const Directory = lazy(() => import("@/pages/Directory"));
 const Pricing = lazy(() => import("@/pages/Pricing"));
 const OfferFlow = lazy(() => import("@/pages/OfferFlow"));
@@ -62,8 +61,8 @@ const App = () => (
               <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
               <Route path="/artist-dashboard" element={<ProtectedRoute><ArtistDashboard /></ProtectedRoute>} />
               <Route path="/promoter-dashboard" element={<ProtectedRoute><PromoterDashboard /></ProtectedRoute>} />
-              <Route path="/production-dashboard" element={<ProtectedRoute><ProductionDashboard /></ProtectedRoute>} />
-              <Route path="/creative-dashboard" element={<ProtectedRoute><CreativeDashboard /></ProtectedRoute>} />
+              <Route path="/production-dashboard" element={<ProtectedRoute><CrewDashboard /></ProtectedRoute>} />
+              <Route path="/creative-dashboard" element={<ProtectedRoute><CrewDashboard /></ProtectedRoute>} />
               <Route path="/directory" element={<Directory />} />
               <Route path="/venues" element={<Directory initialRole="venue" />} />
               <Route path="/pricing" element={<Pricing />} />
