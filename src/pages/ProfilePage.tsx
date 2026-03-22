@@ -50,6 +50,13 @@ type ProfileData = {
   threads: string | null;
   is_verified: boolean | null;
   slug: string | null;
+  streaming_stats: {
+    monthly_listeners?: number;
+    followers?: number;
+    top_city?: string;
+    top_track?: string;
+    source?: string;
+  } | null;
 };
 
 type AvailDate = { date: string; is_available: boolean };
