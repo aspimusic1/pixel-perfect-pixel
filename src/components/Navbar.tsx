@@ -141,7 +141,7 @@ export default function Navbar() {
                 className="text-sm font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                Admin
+                admin
               </Link>
             )}
           </div>
