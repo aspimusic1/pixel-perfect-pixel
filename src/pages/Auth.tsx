@@ -132,12 +132,12 @@ export default function Auth() {
               </>
             )}
             <div>
-              <Label htmlFor="email" className="text-sm font-display font-medium lowercase text-primary-foreground/80">email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-2 bg-primary-foreground/[0.06] border-primary-foreground/[0.12] text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30" />
+              <Label htmlFor="email" className="text-sm font-display font-medium lowercase text-muted-foreground">email</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
             </div>
             <div>
-              <Label htmlFor="password" className="text-sm font-display font-medium lowercase text-primary-foreground/80">password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-2 bg-primary-foreground/[0.06] border-primary-foreground/[0.12] text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30" />
+              <Label htmlFor="password" className="text-sm font-display font-medium lowercase text-muted-foreground">password</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
               {!isSignUp && (
                 <button
                   type="button"
