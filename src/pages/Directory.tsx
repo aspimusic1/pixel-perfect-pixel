@@ -667,6 +667,19 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
           }}
         />
       )}
+
+      {claimArtist && (
+        <ArtistClaimDialog
+          artistListingId={claimArtist.id}
+          artistName={claimArtist.name}
+          open={!!claimArtist}
+          onOpenChange={(open) => { if (!open) setClaimArtist(null); }}
+          onClaimed={() => {
+            queryClient.invalidateQueries({ queryKey: ["directory-artists"] });
+            setClaimArtist(null);
+          }}
+        />
+      )}
     </div>
   );
 }
