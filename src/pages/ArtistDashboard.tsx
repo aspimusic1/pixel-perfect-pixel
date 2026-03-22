@@ -154,7 +154,7 @@ export default function ArtistDashboard() {
       if (bookingErr) { toast.error("Offer accepted but booking creation failed: " + bookingErr.message); return; }
       const newBooking = booking as unknown as Booking;
       setBookings((prev) => [...prev, newBooking]);
-      toast.success("Offer accepted! Generating contract...");
+      toast.success("Offer accepted! Deal Room is now open.");
       try {
         await supabase.functions.invoke("send-transactional-email", {
           body: { templateName: "offer-accepted", recipientEmail: offer.sender_id, idempotencyKey: `offer-accepted-${newBooking.id}`, templateData: { venueName: offer.venue_name, eventDate: offer.event_date, guarantee: offer.guarantee } },
