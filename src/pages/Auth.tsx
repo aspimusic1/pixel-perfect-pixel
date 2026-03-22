@@ -102,11 +102,11 @@ export default function Auth() {
             {isSignUp && (
               <>
                 <div>
-                  <Label htmlFor="name" className="text-sm font-display font-medium lowercase text-primary-foreground/80">display name</Label>
-                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required className="mt-2 bg-primary-foreground/[0.06] border-primary-foreground/[0.12] text-primary-foreground placeholder:text-primary-foreground/40 focus-visible:ring-primary-foreground/30" />
+                  <Label htmlFor="name" className="text-sm font-display font-medium lowercase text-muted-foreground">display name</Label>
+                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
                 </div>
                 <div>
-                  <Label className="text-sm font-display font-medium lowercase mb-2.5 block text-primary-foreground/80">I am a...</Label>
+                  <Label className="text-sm font-display font-medium lowercase mb-2.5 block text-muted-foreground">I am a...</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {ROLES.map((role) => {
                       const Icon = role.icon;
