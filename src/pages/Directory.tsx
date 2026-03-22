@@ -426,6 +426,22 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
             <CheckCircle className="w-3 h-3 inline mr-1" />
             Verified only
           </button>
+          {(debouncedSearch || genreFilter || cityFilter || sortBy !== "newest" || verifiedOnly) && (
+            <button
+              onClick={() => {
+                setSearch("");
+                setDebouncedSearch("");
+                setGenreFilter(null);
+                setCityFilter(null);
+                setSortBy("newest");
+                setVerifiedOnly(false);
+                setPage(0);
+              }}
+              className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-destructive hover:text-destructive/80 transition-colors active:scale-[0.97]"
+            >
+              Clear all filters
+            </button>
+          )}
         </div>
 
         {/* Tabs */}

@@ -170,7 +170,7 @@ export default function ProfileSetup() {
             { onConflict: "claimed_by" }
           );
         if (venueError) {
-          toast.error("Profile saved, but venue listing failed: " + venueError.message);
+          toast.error("Could not save venue profile — please try again.");
         }
       }
       await refreshProfile();
