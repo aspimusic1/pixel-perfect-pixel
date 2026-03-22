@@ -6,7 +6,7 @@ import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import { Wrench, CheckCircle, DollarSign, Users, Calendar, FileText, UserCog } from "lucide-react";
 import EditProfilePanel from "@/components/EditProfilePanel";
 
-type ProductionView = "overview" | "gigs" | "crew" | "calendar" | "documents";
+type ProductionView = "overview" | "gigs" | "crew" | "calendar" | "documents" | "profile";
 
 const ACCENT = "#7B5CF0";
 
