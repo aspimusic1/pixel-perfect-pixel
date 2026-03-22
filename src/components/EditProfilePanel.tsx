@@ -28,6 +28,7 @@ export default function EditProfilePanel() {
   const [uploading, setUploading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
 
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
