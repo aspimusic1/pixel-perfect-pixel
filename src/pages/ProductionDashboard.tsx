@@ -3,7 +3,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
-import { Wrench, CheckCircle, DollarSign, Users, Calendar, FileText } from "lucide-react";
+import { Wrench, CheckCircle, DollarSign, Users, Calendar, FileText, UserCog } from "lucide-react";
+import EditProfilePanel from "@/components/EditProfilePanel";
 
 type ProductionView = "overview" | "gigs" | "crew" | "calendar" | "documents";
 
