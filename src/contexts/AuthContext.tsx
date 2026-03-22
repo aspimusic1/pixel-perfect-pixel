@@ -58,6 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(data as Profile | null);
   };
 
+  const checkAdminRole = async (userId: string) => {
+    const { data } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    setIsAdmin(!!data);
+  };
+
   const checkSubscription = useCallback(async () => {
     try {
       const { data, error } = await supabase.functions.invoke("check-subscription");
