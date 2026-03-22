@@ -277,6 +277,7 @@ export default function Navbar() {
                 <MobileLink to="/insights" onClick={closeMenu}>insights</MobileLink>
                 <MobileLink to="/tours" onClick={closeMenu}>tours</MobileLink>
                 {isAdmin && <MobileLink to="/admin" onClick={closeMenu}>admin</MobileLink>}
+                <MobileLink to="/settings" onClick={closeMenu}>settings</MobileLink>
 
                 <div className="border-t border-white/[0.06] my-3" />
                 <div className="px-3 py-2">
