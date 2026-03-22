@@ -503,6 +503,68 @@ export default function Directory({ initialRole = "" }: { initialRole?: string }
               </div>
             )}
 
+            {/* Artist Listings (Bandsintown directory) */}
+            {artistListings.length > 0 && (
+              <div>
+                <h2 data-reveal className="fade-in-section font-display text-lg font-bold mb-3 text-foreground/80 lowercase">
+                  artist directory — {artistListings.length} artists
+                </h2>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {artistListings.map((a) => (
+                    <div
+                      key={a.id}
+                      data-reveal
+                      className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-primary/20 transition-all duration-300"
+                    >
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                            <Music className="w-4 h-4 text-primary" />
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="font-display font-semibold text-sm truncate">{a.name}</h3>
+                            {a.genre && (
+                              <p className="text-[11px] text-muted-foreground font-body truncate">{a.genre}</p>
+                            )}
+                          </div>
+                        </div>
+                        {a.claim_status === "approved" ? (
+                          <span className="flex items-center gap-1 text-[10px] text-green-400 font-medium shrink-0">
+                            <CheckCircle className="w-3 h-3" /> claimed
+                          </span>
+                        ) : a.claim_status === "pending" ? (
+                          <span className="flex items-center gap-1 text-[10px] text-amber-400 font-medium shrink-0">
+                            <Clock className="w-3 h-3" /> pending
+                          </span>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-[10px] h-7 px-2 border-primary/20 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform shrink-0"
+                            onClick={() => {
+                              setClaimArtist(a);
+                            }}
+                          >
+                            <Shield className="w-3 h-3 mr-1" /> claim
+                          </Button>
+                        )}
+                      </div>
+                      {a.bandsintown_url && (
+                        <a
+                          href={a.bandsintown_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-muted-foreground hover:text-primary transition-colors font-body"
+                        >
+                          bandsintown ↗
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
 
             {/* Venue listings */}
             {Object.keys(groupedVenues).length > 0 && (
