@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy } from "react";
+import { Link } from "react-router-dom";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
