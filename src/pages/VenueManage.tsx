@@ -29,6 +29,7 @@ const navItems: NavItem<VenueView>[] = [
   { title: "details", value: "details", icon: MapPin },
   { title: "photos", value: "photos", icon: ImageIcon },
   { title: "availability", value: "availability", icon: CalendarIcon },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function VenueManage() {
