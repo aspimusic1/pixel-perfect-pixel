@@ -58,6 +58,15 @@ export default function Pricing() {
   const { user, profile, subscription, checkSubscription } = useAuth();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check admin status
+  useEffect(() => {
+    if (!user) return;
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
+      if (data) setIsAdmin(true);
+    });
+  }, [user]);
 
   // Check for success/cancel URL params
   useEffect(() => {
