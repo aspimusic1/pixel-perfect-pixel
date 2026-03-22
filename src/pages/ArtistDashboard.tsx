@@ -298,6 +298,7 @@ export default function ArtistDashboard() {
               {/* ─── Overview ─── */}
               {activeView === "overview" && (
                 <>
+                  <ProfileCompletionRing />
                   <OnboardingChecklist />
 
                   {/* Compact stats strip */}
