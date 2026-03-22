@@ -5,15 +5,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Loader2, Save, CheckCircle } from "lucide-react";
+import { Camera, Loader2, Save, CheckCircle, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useNavigate } from "react-router-dom";
 
 export default function EditProfilePanel() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile, signOut } = useAuth();
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
@@ -39,7 +53,6 @@ export default function EditProfilePanel() {
     setRateMax(profile.rate_max?.toString() ?? "");
   }, [profile]);
 
-  // Fetch extended fields from DB (website, instagram, spotify aren't on AuthContext profile)
   useEffect(() => {
     if (!user) return;
     supabase.from("profiles").select("website, instagram, spotify").eq("user_id", user.id).single().then(({ data }) => {
@@ -88,6 +101,25 @@ export default function EditProfilePanel() {
       await refreshProfile();
     }
     setSaving(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    setDeleting(true);
+    try {
+      // Delete the profile row (cascading cleanup handled by DB)
+      const { error } = await supabase.from("profiles").delete().eq("user_id", user.id);
+      if (error) throw error;
+
+      // Sign out and redirect
+      await signOut();
+      toast.success("Your account has been deleted.");
+      navigate("/");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete account.");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const role = profile?.role;
@@ -193,6 +225,39 @@ export default function EditProfilePanel() {
         {saving ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : saved ? <CheckCircle className="w-3 h-3 mr-1" /> : <Save className="w-3 h-3 mr-1" />}
         {saving ? "saving..." : saved ? "saved!" : "save changes"}
       </Button>
+
+      {/* Danger zone — Delete account */}
+      <div className="rounded-lg border border-red-500/20 bg-red-500/[0.04] p-4 space-y-3 mt-8">
+        <h3 className="text-[10px] text-red-400 uppercase tracking-widest font-medium">danger zone</h3>
+        <p className="text-[11px] text-muted-foreground">permanently delete your account and all associated data. this action cannot be undone.</p>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" size="sm" className="h-8 text-[11px] lowercase border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300 active:scale-[0.97]">
+              <Trash2 className="w-3 h-3 mr-1" />
+              delete account
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-[#0e1420] border-white/[0.06]">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="font-syne text-red-400">delete account?</AlertDialogTitle>
+              <AlertDialogDescription className="text-muted-foreground text-xs">
+                this will permanently remove your profile, bookings, offers, and all associated data. you will be signed out immediately. this cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="h-8 text-[11px] lowercase bg-transparent border-white/[0.06] hover:bg-white/[0.04]">cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+                className="h-8 text-[11px] lowercase bg-red-600 hover:bg-red-700 text-white border-0"
+              >
+                {deleting ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Trash2 className="w-3 h-3 mr-1" />}
+                {deleting ? "deleting..." : "yes, delete my account"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 }
