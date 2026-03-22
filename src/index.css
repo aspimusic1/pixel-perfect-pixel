@@ -97,6 +97,27 @@
   .glass {
     @apply bg-background/80 backdrop-blur-xl border-b border-border/60;
   }
+
+  /* ── Clario-style section typography ── */
+  .section-label {
+    @apply inline-block text-[11px] font-semibold uppercase tracking-[0.1em] font-display;
+    color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.08);
+    border: 0.5px solid hsl(var(--primary) / 0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin-bottom: 14px;
+  }
+
+  .section-heading {
+    @apply font-display text-foreground font-extrabold leading-[1.1] mb-3.5;
+    font-size: clamp(28px, 4vw, 44px);
+  }
+
+  .section-subtext {
+    @apply font-body text-muted-foreground leading-[1.7] max-w-[520px];
+    font-size: 15px;
+  }
 }
 
 /* Scroll reveal animation */
