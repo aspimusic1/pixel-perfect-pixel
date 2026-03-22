@@ -149,7 +149,7 @@ export default function Auth() {
                     if (error) toast.error(error.message);
                     else toast.success("Check your email for a reset link");
                   }}
-                  className="text-xs text-primary-foreground/60 hover:text-primary-foreground/80 transition-colors mt-2 float-right font-display"
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors mt-2 float-right font-display"
                 >
                   forgot password?
                 </button>
