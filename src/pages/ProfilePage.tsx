@@ -13,6 +13,9 @@ import { cn } from "@/lib/utils";
 import ShowNightMode from "@/components/ShowNightMode";
 import TranslateButton from "@/components/TranslateButton";
 import ReelDisplay from "@/components/ReelDisplay";
+import TopTracksSection from "@/components/TopTracksSection";
+import DemandMap from "@/components/DemandMap";
+import { Download, Loader2 } from "lucide-react";
 
 type Review = {
   id: string;
