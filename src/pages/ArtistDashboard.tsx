@@ -432,7 +432,7 @@ export default function ArtistDashboard() {
               {activeView === "agent" && (
                 <>
                   <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">ai booking agent</h2>
-                  <BookingAgentPanel />
+                  <AIAgentPanel />
                 </>
               )}
 
