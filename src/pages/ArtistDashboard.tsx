@@ -25,6 +25,7 @@ import ProfileCompletionRing from "@/components/ProfileCompletionRing";
 import StreamingStatsEditor from "@/components/StreamingStatsEditor";
 import EventsTab from "@/components/EventsTab";
 import SpotifyAnalytics from "@/components/SpotifyAnalytics";
+import PresaleSection from "@/components/PresaleSection";
 
 type ArtistView = "overview" | "offers" | "events" | "analytics" | "calendar" | "bookkeeping" | "agent" | "profile";
 
