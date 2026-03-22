@@ -29,6 +29,7 @@ const Trending = lazy(() => import("@/pages/Trending"));
 const Insights = lazy(() => import("@/pages/Insights"));
 const AdminClaims = lazy(() => import("@/pages/AdminClaims"));
 const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
+const PresalePage = lazy(() => import("@/pages/PresalePage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient();
