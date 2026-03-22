@@ -632,6 +632,13 @@ function ProfileCard({ p, flashBids, hasPaidPlan, onUpgrade }: {
           <FlashBidBadge deadline={flashBids.get(p.id)!.flash_bid_deadline} bidCount={flashBids.get(p.id)!.bid_count} />
         </div>
       )}
+      {p.role === "artist" && p.streaming_stats?.source === "spotify_api" && (
+        <div className="mb-2">
+          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border border-white/[0.06]" style={{ color: "#1DB954" }}>
+            ✓ Spotify verified
+          </span>
+        </div>
+      )}
       {p.bio && <p className="text-xs text-muted-foreground line-clamp-2 mb-2 font-body">{p.bio}</p>}
       <div className="flex items-center justify-between mt-3">
         <div className="flex items-center gap-3 text-xs text-muted-foreground font-body">
