@@ -14,6 +14,7 @@ const ROLE_COLORS: Record<string, string> = {
   venue: "#FFB83E",
   production: "#7B5CF0",
   photo_video: "#3EC8FF",
+  admin: "#FF5C5C",
 };
 
 export default function AdminUsers() {
