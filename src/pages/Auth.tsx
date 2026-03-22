@@ -27,6 +27,10 @@ export default function Auth() {
   const [displayName, setDisplayName] = useState("");
   const [selectedRole, setSelectedRole] = useState(presetRole);
   const [loading, setLoading] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetSent, setResetSent] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -69,6 +73,82 @@ export default function Auth() {
       }
     } finally { setLoading(false); }
   };
+
+  const handleResetSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail) { toast.error("Enter your email"); return; }
+    setResetLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: window.location.origin + "/reset-password",
+      });
+      if (error) throw error;
+      setResetSent(true);
+    } catch (err: any) {
+      toast.error(err.message ?? "Something went wrong");
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  // Forgot password mode
+  if (forgotMode) {
+    return (
+      <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 pt-20 pb-12">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" />
+            <h1 className="font-display font-bold text-xl mb-1 lowercase text-foreground">reset your password</h1>
+            <p className="text-muted-foreground text-sm font-body">we'll send you a link to get back in</p>
+          </div>
+
+          <div className="rounded-2xl bg-white/[0.04] border border-white/[0.08] p-7">
+            {resetSent ? (
+              <div className="rounded-lg bg-[#3EFFBE]/10 border border-[#3EFFBE]/20 p-4 text-center">
+                <p className="text-sm text-[#3EFFBE] font-medium">
+                  Check your inbox — we sent a reset link to <span className="font-semibold">{resetEmail}</span>.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleResetSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="reset-email" className="text-sm font-display font-medium lowercase text-muted-foreground">
+                    enter your account email
+                  </Label>
+                  <Input
+                    id="reset-email"
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  disabled={resetLoading}
+                  className="w-full font-display font-semibold h-11 lowercase bg-[#C8FF3E] text-[#080C14] hover:bg-[#C8FF3E]/90"
+                >
+                  {resetLoading ? "sending..." : "send reset link"}
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </form>
+            )}
+
+            <div className="mt-5 text-center">
+              <button
+                onClick={() => { setForgotMode(false); setResetSent(false); setResetEmail(""); }}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors font-body"
+              >
+                ← Back to sign in
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 pt-20 pb-12">
@@ -141,14 +221,7 @@ export default function Auth() {
               {!isSignUp && (
                 <button
                   type="button"
-                  onClick={async () => {
-                    if (!email) { toast.error("Enter your email first"); return; }
-                    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                      redirectTo: window.location.origin + "/reset-password",
-                    });
-                    if (error) toast.error(error.message);
-                    else toast.success("Check your email for a reset link");
-                  }}
+                  onClick={() => setForgotMode(true)}
                   className="text-xs text-muted-foreground hover:text-foreground transition-colors mt-2 float-right font-display"
                 >
                   forgot password?

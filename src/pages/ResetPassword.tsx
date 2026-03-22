@@ -31,7 +31,7 @@ export default function ResetPassword() {
       if (error) throw error;
       setDone(true);
       toast.success("Password updated!");
-      setTimeout(() => navigate("/auth"), 2000);
+      setTimeout(() => navigate("/artist-dashboard"), 2000);
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -53,9 +53,9 @@ export default function ResetPassword() {
         <div className="rounded-xl bg-white/[0.04] border border-white/[0.08] p-6">
           {done ? (
             <div className="text-center py-4">
-              <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-3" />
-              <p className="text-sm text-foreground font-medium">Password updated successfully</p>
-              <p className="text-xs text-muted-foreground mt-1">Redirecting to sign in...</p>
+              <CheckCircle className="w-8 h-8 text-[#3EFFBE] mx-auto mb-3" />
+              <p className="text-sm text-foreground font-medium">Password updated!</p>
+              <p className="text-xs text-muted-foreground mt-1">Signing you in...</p>
             </div>
           ) : (
             <form onSubmit={handleReset} className="space-y-4">
