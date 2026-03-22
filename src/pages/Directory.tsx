@@ -75,12 +75,13 @@ const roleColorMap: Record<string, string> = {
 };
 
 // Query functions
-async function fetchProfiles(roleFilter: string, search: string, city: string | null) {
+async function fetchProfiles(roleFilter: string, search: string, city: string | null, genre: string | null) {
   if (roleFilter === "venue") return [];
   let query = supabase.from("public_profiles" as any).select("*") as any;
   if (roleFilter) query = query.eq("role", roleFilter);
   if (search) query = query.ilike("display_name", `%${search}%`);
   if (city) query = query.eq("city", city);
+  if (genre) query = query.ilike("genre", `%${genre}%`);
   const { data } = await query.order("created_at", { ascending: false });
   return (data as Profile[]) ?? [];
 }
