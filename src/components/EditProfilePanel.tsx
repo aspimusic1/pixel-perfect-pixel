@@ -244,12 +244,21 @@ export default function EditProfilePanel() {
                 this will permanently remove your profile, bookings, offers, and all associated data. you will be signed out immediately. this cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
+            <div className="py-2">
+              <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">type DELETE to confirm</Label>
+              <Input
+                value={deleteConfirm}
+                onChange={(e) => setDeleteConfirm(e.target.value)}
+                placeholder="DELETE"
+                className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06] font-mono"
+              />
+            </div>
             <AlertDialogFooter>
-              <AlertDialogCancel className="h-8 text-[11px] lowercase bg-transparent border-white/[0.06] hover:bg-white/[0.04]">cancel</AlertDialogCancel>
+              <AlertDialogCancel onClick={() => setDeleteConfirm("")} className="h-8 text-[11px] lowercase bg-transparent border-white/[0.06] hover:bg-white/[0.04]">cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleDeleteAccount}
-                disabled={deleting}
-                className="h-8 text-[11px] lowercase bg-red-600 hover:bg-red-700 text-white border-0"
+                disabled={deleting || deleteConfirm !== "DELETE"}
+                className="h-8 text-[11px] lowercase bg-red-600 hover:bg-red-700 text-white border-0 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {deleting ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Trash2 className="w-3 h-3 mr-1" />}
                 {deleting ? "deleting..." : "yes, delete my account"}
