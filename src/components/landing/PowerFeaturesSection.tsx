@@ -1,132 +1,71 @@
 import {
-  Zap, Shield, DollarSign, BarChart3, Bot, TrendingUp,
-  Globe, Truck, Receipt, Umbrella, ArrowRight
+  Bot, Zap, Shield, DollarSign, BarChart3, Truck, ArrowRight
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 const FEATURES = [
   {
     icon: Bot,
     title: "AI booking agent",
-    desc: "describe what you need — genre, budget, market — and our AI finds the best-fit artists, estimates fair rates, and drafts the offer for you.",
-    color: "text-primary",
-    bgColor: "bg-primary/10",
-    borderHover: "hover:border-primary/30",
+    desc: "describe what you need — genre, budget, market — and our AI finds the best-fit artists and drafts the offer.",
   },
   {
     icon: Zap,
     title: "flash bids",
-    desc: "artists mark open dates. promoters bid in real time. highest bid wins when the clock runs out. fill last-minute slots instantly.",
-    color: "text-role-venue",
-    bgColor: "bg-role-venue/10",
-    borderHover: "hover:border-role-venue/30",
+    desc: "artists mark open dates. promoters bid in real time. highest bid wins when the clock runs out.",
   },
   {
     icon: Shield,
     title: "deal rooms",
     desc: "every confirmed booking gets a private workspace — milestones, contracts, chat, and logistics in one place.",
-    color: "text-role-photo",
-    bgColor: "bg-role-photo/10",
-    borderHover: "hover:border-role-photo/30",
   },
   {
     icon: DollarSign,
     title: "income smoothing",
-    desc: "convert lumpy show income into predictable monthly payments. we hold guarantees in escrow and pay you the same amount every month.",
-    color: "text-emerald-400",
-    bgColor: "bg-emerald-400/10",
-    borderHover: "hover:border-emerald-400/30",
+    desc: "convert lumpy show income into predictable monthly payments. we hold guarantees and pay you evenly.",
   },
   {
     icon: BarChart3,
     title: "attendance analytics",
-    desc: "track actual draw per artist and per venue. see 'average draw: 800–1,400' on profiles — real data, not guesswork.",
-    color: "text-role-promoter",
-    bgColor: "bg-role-promoter/10",
-    borderHover: "hover:border-role-promoter/30",
-  },
-  {
-    icon: TrendingUp,
-    title: "advance requests",
-    desc: "need cash before the show? request up to 70% of your net guarantee. approved in minutes if the booking checks out.",
-    color: "text-role-venue",
-    bgColor: "bg-role-venue/10",
-    borderHover: "hover:border-role-venue/30",
-  },
-  {
-    icon: Globe,
-    title: "timezone intelligence",
-    desc: "all times stored in UTC, displayed in each user's local zone. deal rooms show both: '4:00 PM EST / 9:00 PM GMT.'",
-    color: "text-role-photo",
-    bgColor: "bg-role-photo/10",
-    borderHover: "hover:border-role-photo/30",
+    desc: "track actual draw per artist and venue. real data on profiles — not guesswork.",
   },
   {
     icon: Truck,
     title: "ground transport",
-    desc: "book SUVs, vans, and sprinters for each tour stop. drivers list their vehicles, rates, and cities served. book directly on platform.",
-    color: "text-primary",
-    bgColor: "bg-primary/10",
-    borderHover: "hover:border-primary/30",
-  },
-  {
-    icon: Receipt,
-    title: "bookkeeping & tax prep",
-    desc: "auto-populated income, manual expense entry per tour stop, IRS categories, monthly P&L, and exportable quarterly summaries.",
-    color: "text-emerald-400",
-    bgColor: "bg-emerald-400/10",
-    borderHover: "hover:border-emerald-400/30",
-  },
-  {
-    icon: Umbrella,
-    title: "cancellation insurance",
-    desc: "protect every booking. artist coverage for full guarantee + travel. promoter coverage for deposit protection. from $89.",
-    color: "text-role-promoter",
-    bgColor: "bg-role-promoter/10",
-    borderHover: "hover:border-role-promoter/30",
+    desc: "book SUVs, vans, and sprinters for each tour stop. drivers list vehicles, rates, and cities served.",
   },
 ];
 
 export default function PowerFeaturesSection() {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-
   return (
-    <section className="fade-in-section py-28 px-4">
+    <section className="fade-in-section py-24 sm:py-32 px-4">
       <div className="container mx-auto max-w-5xl">
-        <p className="text-[11px] tracking-[0.2em] uppercase text-primary text-center mb-3 font-display font-medium">
-          new on the platform
-        </p>
-        <h2 className="font-display text-2xl sm:text-4xl font-bold text-center mb-3 lowercase tracking-tight">
-          tools that actually move the needle
-        </h2>
-        <p className="text-muted-foreground text-center text-sm mb-16 max-w-lg mx-auto font-body">
-          AI-powered booking, real-time bidding, financial tools, and logistics — built for how the industry actually works.
-        </p>
+        <div className="text-center mb-14">
+          <span className="section-label">features</span>
+          <h2 className="section-heading">everything the live music industry needs</h2>
+          <p className="section-subtext mx-auto">AI-powered booking, real-time bidding, financial tools, and logistics — built for how the industry actually works.</p>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {FEATURES.map((f, i) => (
+          {FEATURES.map((f) => (
             <div
               key={f.title}
-              className={`group rounded-xl p-5 bg-card/60 border border-border ${f.borderHover} transition-all duration-300 cursor-default`}
-              onMouseEnter={() => setHoveredIdx(i)}
-              onMouseLeave={() => setHoveredIdx(null)}
+              className="group rounded-[14px] p-6 bg-card/80 border border-white/[0.06] hover:border-primary/20 transition-all duration-300 hover:-translate-y-0.5 cursor-default"
             >
-              <div className={`w-10 h-10 rounded-lg ${f.bgColor} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                <f.icon className={`w-[18px] h-[18px] ${f.color}`} />
+              <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                <f.icon className="w-[15px] h-[15px] text-primary" />
               </div>
-              <h3 className="font-display font-semibold text-[15px] mb-2 lowercase text-foreground">{f.title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-body">{f.desc}</p>
+              <h3 className="font-display font-bold text-sm text-foreground mb-2 lowercase">{f.title}</h3>
+              <p className="text-xs text-muted-foreground leading-[1.6] font-body">{f.desc}</p>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-12">
           <Link to="/auth?tab=signup">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold text-sm px-8 h-12 active:scale-[0.96] transition-transform lowercase">
-              try it free <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
+            <button className="bg-primary text-primary-foreground font-display font-bold text-sm rounded-[10px] px-8 h-12 hover:bg-primary/90 active:scale-[0.96] transition-all inline-flex items-center gap-2 lowercase">
+              try it free <ArrowRight className="w-4 h-4" />
+            </button>
           </Link>
         </div>
       </div>

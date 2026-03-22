@@ -4,6 +4,7 @@ import ProfileMarquee from "@/components/landing/ProfileMarquee";
 import PowerFeaturesSection from "@/components/landing/PowerFeaturesSection";
 import RoleSwitcherSection from "@/components/landing/RoleSwitcherSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
+import ComparisonSection from "@/components/landing/ComparisonSection";
 import PricingTeaser from "@/components/landing/PricingTeaser";
 import FinalCTA from "@/components/landing/FinalCTA";
 import Footer from "@/components/landing/Footer";
@@ -45,6 +46,7 @@ export default function Landing() {
       <PowerFeaturesSection />
       <RoleSwitcherSection />
       <HowItWorksSection />
+      <ComparisonSection />
       <PricingTeaser />
       <FinalCTA />
       <Footer />
