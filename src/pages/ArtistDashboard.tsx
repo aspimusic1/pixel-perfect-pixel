@@ -378,7 +378,12 @@ export default function ArtistDashboard() {
                   ) : offers.length === 0 ? (
                     <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-8 text-center">
                       <Inbox className="w-5 h-5 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground">no offers yet</p>
+                      <p className="text-xs text-muted-foreground mb-3">no offers yet — get discovered by promoters</p>
+                      <Link to="/directory?role=promoter">
+                        <Button size="sm" variant="outline" className="text-[11px] h-7 border-border">
+                          browse promoters <ArrowRight className="w-3 h-3 ml-1" />
+                        </Button>
+                      </Link>
                     </div>
                   ) : (
                     <>

@@ -346,7 +346,15 @@ export default function TourManagement() {
               </div>
             )}
             {stops.length === 0 ? (
-              <div className="rounded-xl bg-card border border-border p-8 text-center text-muted-foreground text-sm">No stops added yet.</div>
+              <div className="rounded-xl bg-card border border-border p-8 text-center">
+                <MapPin className="w-5 h-5 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground mb-3">No stops added yet.</p>
+                <Link to="/directory?role=venue">
+                  <Button size="sm" variant="outline" className="text-xs h-8">
+                    Browse venues in directory <ArrowRight className="w-3 h-3 ml-1" />
+                  </Button>
+                </Link>
+              </div>
             ) : (
               <div className="space-y-3">
                 {stops.map((stop, i) => (
