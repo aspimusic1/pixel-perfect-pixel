@@ -31,7 +31,7 @@ export default function Navbar() {
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setIsAdmin(false); return; }
     const fetchUnread = async () => {
       const { count } = await supabase
         .from("notifications")
@@ -40,7 +40,12 @@ export default function Navbar() {
         .eq("read", false);
       setUnreadCount(count ?? 0);
     };
+    const checkAdmin = async () => {
+      const { data } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
+      setIsAdmin(!!data);
+    };
     fetchUnread();
+    checkAdmin();
     const channel = supabase
       .channel("notifications")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => fetchUnread())
