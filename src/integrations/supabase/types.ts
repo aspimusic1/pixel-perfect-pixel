@@ -505,6 +505,33 @@ export type Database = {
           },
         ]
       }
+      crew_availability: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          is_available: boolean
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          is_available?: boolean
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          is_available?: boolean
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       crew_members: {
         Row: {
           created_at: string

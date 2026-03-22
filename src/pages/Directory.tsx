@@ -75,6 +75,8 @@ const SORT_OPTIONS = [
   { value: "newest", label: "Newest" },
   { value: "name_asc", label: "A–Z" },
   { value: "name_desc", label: "Z–A" },
+  { value: "fee_low", label: "Fee: Low to High" },
+  { value: "fee_high", label: "Fee: High to Low" },
 ];
 
 const roleColorMap: Record<string, string> = {
@@ -100,6 +102,8 @@ async function fetchProfiles(roleFilter: string, search: string, city: string | 
   switch (sort) {
     case "name_asc": query = query.order("display_name", { ascending: true }); break;
     case "name_desc": query = query.order("display_name", { ascending: false }); break;
+    case "fee_low": query = query.order("updated_at", { ascending: true }); break;
+    case "fee_high": query = query.order("updated_at", { ascending: false }); break;
     default: query = query.order("updated_at", { ascending: false }); break;
   }
 
@@ -404,7 +408,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="h-8 rounded-lg border border-border bg-card px-2 text-[11px] text-foreground font-body min-w-[100px]"
+              className="h-8 rounded-lg border border-border bg-card px-2 text-[11px] text-foreground font-body min-w-[130px]"
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -475,7 +479,10 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                                 {getClaimButton(v)}
                               </div>
                               {v.capacity && (
-                                <p className="text-[11px] text-muted-foreground font-body mb-2">Capacity: {v.capacity.toLocaleString()}</p>
+                                <p className="text-[11px] text-muted-foreground font-body mb-1">Capacity: {v.capacity.toLocaleString()}</p>
+                              )}
+                              {v.description && (
+                                <p className="text-[10px] text-muted-foreground/70 font-body line-clamp-2 mb-2">{v.description}</p>
                               )}
                               {venueAvailability[v.id]?.length > 0 && (
                                 <div className="mb-2">
@@ -499,13 +506,20 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                                   </div>
                                 </div>
                               )}
-                              {v.website && (
-                                <div className="mt-3">
+                              <div className="flex items-center gap-2 mt-3">
+                                {v.website && (
                                   <a href={v.website.startsWith("http") ? v.website : `https://${v.website}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-foreground hover:bg-secondary/80 transition-colors font-body">
                                     <Globe className="w-3 h-3 text-role-venue" /> Website
                                   </a>
-                                </div>
-                              )}
+                                )}
+                                {v.claim_status === "approved" && v.claimed_by && (
+                                  <Link to={`/offer?venue=${v.claimed_by}`}>
+                                    <Button size="sm" variant="outline" className="h-7 text-[10px] border-role-venue/20 text-role-venue hover:bg-role-venue/10 active:scale-[0.97]">
+                                      Book Venue
+                                    </Button>
+                                  </Link>
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>

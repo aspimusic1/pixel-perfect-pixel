@@ -5,11 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import EditProfilePanel from "@/components/EditProfilePanel";
-import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Wrench, Camera, Calendar, FileText, UserCog, Briefcase, ChevronLeft, ChevronRight, MapPin, Clock, Users, ArrowRight } from "lucide-react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameDay, parseISO, isAfter, isBefore, startOfToday } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameDay, parseISO, isAfter, isBefore, startOfToday, isWithinInterval, startOfWeek, endOfWeek } from "date-fns";
+import toast from "react-hot-toast";
 
 type CrewView = "overview" | "bookings" | "calendar" | "profile";
 
@@ -35,6 +35,7 @@ export default function CrewDashboard() {
   const [assignments, setAssignments] = useState<CrewAssignment[]>([]);
   const [loading, setLoading] = useState(true);
   const [calMonth, setCalMonth] = useState(new Date());
+  const [unavailableDays, setUnavailableDays] = useState<Set<string>>(new Set());
 
   const navItems: NavItem<CrewView>[] = [
     { title: "overview", value: "overview", icon: RoleIcon },
@@ -46,15 +47,22 @@ export default function CrewDashboard() {
   useEffect(() => {
     if (!user) return;
     const load = async () => {
-      // Match crew_members by the user's email from auth
       const { data: authUser } = await supabase.auth.getUser();
       const email = authUser?.user?.email;
       if (!email) { setLoading(false); return; }
 
-      const { data: members } = await supabase
-        .from("crew_members")
-        .select("id, tour_id, name, role, day_rate, email")
-        .ilike("email", email);
+      const [membersRes, availRes] = await Promise.all([
+        supabase.from("crew_members").select("id, tour_id, name, role, day_rate, email").ilike("email", email),
+        supabase.from("crew_availability" as any).select("date, is_available").eq("user_id", user.id),
+      ]);
+
+      const members = membersRes.data;
+      // Build unavailable days set
+      const unavail = new Set<string>();
+      ((availRes.data as any[]) ?? []).forEach((a: any) => {
+        if (!a.is_available) unavail.add(a.date);
+      });
+      setUnavailableDays(unavail);
 
       if (!members || members.length === 0) { setLoading(false); return; }
 
@@ -82,15 +90,24 @@ export default function CrewDashboard() {
   }, [user]);
 
   const today = startOfToday();
+  const thisMonthStart = startOfMonth(today);
+  const thisMonthEnd = endOfMonth(today);
 
-  // Group assignments by timeline
   const allStops = useMemo(() => {
     return assignments.flatMap((a) =>
       a.stops.map((s) => ({ ...s, assignmentRole: a.role, tourName: a.tour_name, dayRate: a.day_rate }))
     );
   }, [assignments]);
 
-  const upcoming = allStops.filter((s) => isAfter(parseISO(s.date), today) || isSameDay(parseISO(s.date), today));
+  // Group: upcoming (future, not this month), this month, past
+  const thisMonthStops = allStops.filter((s) => {
+    const d = parseISO(s.date);
+    return isWithinInterval(d, { start: thisMonthStart, end: thisMonthEnd }) && (isAfter(d, today) || isSameDay(d, today));
+  });
+  const upcoming = allStops.filter((s) => {
+    const d = parseISO(s.date);
+    return isAfter(d, thisMonthEnd);
+  });
   const past = allStops.filter((s) => isBefore(parseISO(s.date), today));
 
   // Calendar data
@@ -111,14 +128,48 @@ export default function CrewDashboard() {
 
   // This week strip
   const thisWeek = useMemo(() => {
-    const days: Date[] = [];
+    const d: Date[] = [];
     for (let i = 0; i < 7; i++) {
-      const d = new Date(today);
-      d.setDate(d.getDate() + i);
-      days.push(d);
+      const day = new Date(today);
+      day.setDate(day.getDate() + i);
+      d.push(day);
     }
-    return days;
+    return d;
   }, []);
+
+  const toggleUnavailable = async (dateStr: string) => {
+    if (!user) return;
+    const isCurrentlyUnavailable = unavailableDays.has(dateStr);
+    if (isCurrentlyUnavailable) {
+      // Remove unavailability
+      await (supabase.from("crew_availability" as any) as any).delete().eq("user_id", user.id).eq("date", dateStr);
+      setUnavailableDays((prev) => { const next = new Set(prev); next.delete(dateStr); return next; });
+      toast.success("Marked as available");
+    } else {
+      // Mark unavailable
+      await (supabase.from("crew_availability" as any) as any).upsert({ user_id: user.id, date: dateStr, is_available: false } as any, { onConflict: "user_id,date" });
+      setUnavailableDays((prev) => new Set([...prev, dateStr]));
+      toast.success("Marked as unavailable");
+    }
+  };
+
+  const renderStopCard = (s: typeof allStops[0], i: number, muted = false) => (
+    <div key={`${s.date}-${i}`} className={`rounded-lg border border-border bg-card p-3 flex items-center gap-3 ${muted ? "opacity-60" : ""}`}>
+      <div className="w-12 text-center shrink-0">
+        <p className="font-display text-lg font-bold tabular-nums" style={{ color: muted ? undefined : ACCENT }}>{format(parseISO(s.date), "dd")}</p>
+        <p className="text-[10px] text-muted-foreground uppercase">{format(parseISO(s.date), "MMM")}</p>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-display text-sm font-semibold truncate">{s.venue_name}</p>
+        <p className="text-[11px] text-muted-foreground">{[s.city, s.state].filter(Boolean).join(", ")} · {s.tourName}</p>
+      </div>
+      <div className="text-right shrink-0">
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{s.assignmentRole}</span>
+        {s.dayRate && <p className="text-[10px] text-muted-foreground mt-0.5">${s.dayRate}/day</p>}
+        {s.show_time && <p className="text-[10px] text-muted-foreground">{s.show_time}</p>}
+      </div>
+    </div>
+  );
 
   return (
     <SidebarProvider>
@@ -139,7 +190,7 @@ export default function CrewDashboard() {
                 <>
                   <div className="rounded-lg border border-border bg-card divide-x divide-border grid grid-cols-2 lg:grid-cols-4">
                     {[
-                      { label: "upcoming gigs", value: upcoming.length, color: ACCENT },
+                      { label: "upcoming gigs", value: upcoming.length + thisMonthStops.length, color: ACCENT },
                       { label: "completed", value: past.length, color: "hsl(var(--success))" },
                       { label: "total tours", value: assignments.length, color: "hsl(var(--primary))" },
                       { label: "avg rate", value: assignments.length > 0 ? `$${Math.round(assignments.reduce((s, a) => s + (a.day_rate ?? 0), 0) / assignments.length)}` : "—", color: "hsl(var(--warning))" },
@@ -159,20 +210,21 @@ export default function CrewDashboard() {
                         const key = format(day, "yyyy-MM-dd");
                         const dayStops = stopsByDate.get(key) ?? [];
                         const hasGig = dayStops.length > 0;
+                        const isUnavail = unavailableDays.has(key);
                         return (
                           <div
                             key={key}
                             className={`shrink-0 w-20 rounded-lg border text-center py-2.5 px-1 transition-colors ${
-                              hasGig ? "border-primary/30 bg-primary/5" : "border-border bg-card"
+                              hasGig ? "border-primary/30 bg-primary/5" : isUnavail ? "border-destructive/20 bg-destructive/5" : "border-border bg-card"
                             }`}
                           >
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-body">
-                              {format(day, "EEE")}
-                            </p>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-body">{format(day, "EEE")}</p>
                             <p className="font-display text-sm font-bold tabular-nums mt-0.5">{format(day, "d")}</p>
                             <p className="text-[9px] text-muted-foreground font-body">{format(day, "MMM")}</p>
                             {hasGig ? (
                               <span className="inline-block w-1.5 h-1.5 rounded-full mt-1" style={{ backgroundColor: ACCENT }} />
+                            ) : isUnavail ? (
+                              <span className="text-[8px] text-destructive/60 mt-1 block">off</span>
                             ) : (
                               <span className="text-[8px] text-muted-foreground/40 mt-1 block">free</span>
                             )}
@@ -213,26 +265,19 @@ export default function CrewDashboard() {
                     </div>
                   ) : (
                     <div className="space-y-3">
+                      {thisMonthStops.length > 0 && (
+                        <div>
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">this month</p>
+                          <div className="space-y-1.5">
+                            {thisMonthStops.map((s, i) => renderStopCard(s, i))}
+                          </div>
+                        </div>
+                      )}
                       {upcoming.length > 0 && (
                         <div>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">upcoming</p>
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 mt-4">upcoming</p>
                           <div className="space-y-1.5">
-                            {upcoming.map((s, i) => (
-                              <div key={`up-${i}`} className="rounded-lg border border-border bg-card p-3 flex items-center gap-3">
-                                <div className="w-12 text-center shrink-0">
-                                  <p className="font-display text-lg font-bold tabular-nums" style={{ color: ACCENT }}>{format(parseISO(s.date), "dd")}</p>
-                                  <p className="text-[10px] text-muted-foreground uppercase">{format(parseISO(s.date), "MMM")}</p>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-display text-sm font-semibold truncate">{s.venue_name}</p>
-                                  <p className="text-[11px] text-muted-foreground">{[s.city, s.state].filter(Boolean).join(", ")} · {s.tourName}</p>
-                                </div>
-                                <div className="text-right shrink-0">
-                                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{s.assignmentRole}</span>
-                                  {s.show_time && <p className="text-[10px] text-muted-foreground mt-0.5">{s.show_time}</p>}
-                                </div>
-                              </div>
-                            ))}
+                            {upcoming.map((s, i) => renderStopCard(s, i))}
                           </div>
                         </div>
                       )}
@@ -240,19 +285,7 @@ export default function CrewDashboard() {
                         <div>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 mt-4">past</p>
                           <div className="space-y-1.5">
-                            {past.slice(0, 10).map((s, i) => (
-                              <div key={`past-${i}`} className="rounded-lg border border-border bg-card p-3 flex items-center gap-3 opacity-60">
-                                <div className="w-12 text-center shrink-0">
-                                  <p className="font-display text-lg font-bold tabular-nums">{format(parseISO(s.date), "dd")}</p>
-                                  <p className="text-[10px] text-muted-foreground uppercase">{format(parseISO(s.date), "MMM")}</p>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-display text-sm font-semibold truncate">{s.venue_name}</p>
-                                  <p className="text-[11px] text-muted-foreground">{[s.city, s.state].filter(Boolean).join(", ")}</p>
-                                </div>
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{s.assignmentRole}</span>
-                              </div>
-                            ))}
+                            {past.slice(0, 10).map((s, i) => renderStopCard(s, i, true))}
                           </div>
                         </div>
                       )}
@@ -286,18 +319,29 @@ export default function CrewDashboard() {
                         const dayStops = stopsByDate.get(key) ?? [];
                         const hasGig = dayStops.length > 0;
                         const isToday = isSameDay(day, today);
+                        const isUnavail = unavailableDays.has(key);
+                        const isPast = isBefore(day, today);
+
+                        const statusColor = hasGig ? ACCENT : isUnavail ? "hsl(var(--destructive))" : undefined;
 
                         const cell = (
-                          <div className={`h-20 border-b border-r border-border p-1.5 transition-colors ${hasGig ? "bg-primary/5" : "hover:bg-secondary/50"}`}>
+                          <div
+                            className={`h-20 border-b border-r border-border p-1.5 transition-colors cursor-pointer ${
+                              hasGig ? "bg-primary/5" : isUnavail ? "bg-destructive/5" : "hover:bg-secondary/50"
+                            }`}
+                            onClick={!hasGig && !isPast ? () => toggleUnavailable(key) : undefined}
+                          >
                             <p className={`text-[11px] font-display font-semibold tabular-nums ${isToday ? "text-primary" : "text-foreground/70"}`}>{format(day, "d")}</p>
                             {hasGig ? (
                               <div className="mt-0.5">
                                 <span className="inline-block w-1.5 h-1.5 rounded-full mr-1" style={{ backgroundColor: ACCENT }} />
                                 <span className="text-[9px] text-foreground/80 truncate">{dayStops[0].venue_name.slice(0, 12)}</span>
                               </div>
-                            ) : (
+                            ) : isUnavail ? (
+                              <span className="text-[8px] text-destructive/50 block mt-1">unavailable</span>
+                            ) : !isPast ? (
                               <span className="text-[8px] text-muted-foreground/30 block mt-1">available</span>
-                            )}
+                            ) : null}
                           </div>
                         );
 
@@ -327,6 +371,7 @@ export default function CrewDashboard() {
                   <div className="flex items-center gap-4 text-[10px] text-muted-foreground mt-2">
                     <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: ACCENT }} /> booked</span>
                     <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-muted" /> available</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-destructive/50" /> unavailable</span>
                   </div>
                 </>
               )}
