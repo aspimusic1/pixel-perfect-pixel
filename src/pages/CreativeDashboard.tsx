@@ -6,7 +6,7 @@ import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import { Camera, CheckCircle, DollarSign, FolderOpen, Star, Calendar, UserCog } from "lucide-react";
 import EditProfilePanel from "@/components/EditProfilePanel";
 
-type CreativeView = "overview" | "portfolio" | "bookings" | "calendar" | "reviews";
+type CreativeView = "overview" | "portfolio" | "bookings" | "calendar" | "reviews" | "profile";
 
 const ACCENT = "#3EC8FF";
 
