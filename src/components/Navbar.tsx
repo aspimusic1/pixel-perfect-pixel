@@ -95,7 +95,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-full px-6 md:px-8 max-w-[1400px] mx-auto">
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0" onClick={closeMenu}>
-            <img src={logoColor} alt="GetBooked.Live" className="h-[22px]" />
+            <img src={logoColor} alt="GetBooked.Live" className="h-[22px]" width={140} height={22} />
           </Link>
 
           {/* Center nav links — desktop */}
@@ -178,7 +178,7 @@ export default function Navbar() {
                   className="w-8 h-8 rounded-full overflow-hidden border border-white/10 hover:border-white/20 transition-colors flex items-center justify-center bg-secondary active:scale-[0.96]"
                 >
                   {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+                    <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" loading="lazy" width={32} height={32} />
                   ) : (
                     <span className="text-xs font-display font-bold text-foreground">
                       {(profile?.display_name ?? "?")[0].toUpperCase()}
