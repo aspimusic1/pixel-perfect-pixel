@@ -107,11 +107,10 @@ export default function EditProfilePanel() {
     if (!user) return;
     setDeleting(true);
     try {
-      // Delete the profile row (cascading cleanup handled by DB)
-      const { error } = await supabase.from("profiles").delete().eq("user_id", user.id);
+      const { data, error } = await supabase.functions.invoke("delete-account");
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
-      // Sign out and redirect
       await signOut();
       toast.success("Your account has been deleted.");
       navigate("/");
