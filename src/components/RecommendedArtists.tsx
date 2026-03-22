@@ -54,7 +54,7 @@ export default function RecommendedArtists() {
             <Link
               key={rec.user_id}
               to={rec.slug ? `/p/${rec.slug}` : "/directory"}
-              className="shrink-0 w-52 rounded-xl bg-card border border-border p-4 hover:border-primary/30 transition-colors group"
+              className="rounded-xl bg-card border border-border p-4 hover:border-primary/30 transition-colors group"
             >
               <div className="flex items-center gap-2 mb-2">
                 {rec.avatar_url ? (
