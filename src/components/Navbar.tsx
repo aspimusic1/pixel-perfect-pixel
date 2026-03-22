@@ -80,9 +80,18 @@ export default function Navbar() {
     }
   })();
 
+  // Close menu on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && menuOpen) setMenuOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [menuOpen]);
+
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] bg-background/95 backdrop-blur-2xl border-b border-white/[0.06]">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] bg-background/95 backdrop-blur-2xl border-b border-white/[0.06]" aria-label="Main navigation">
         <div className="flex items-center justify-between h-full px-6 md:px-8 max-w-[1400px] mx-auto">
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0" onClick={closeMenu}>
