@@ -92,7 +92,7 @@ export default function Pricing() {
     return () => observer.disconnect();
   }, []);
 
-  const currentPlan = profile?.subscription_plan || "free";
+  const currentPlan = isAdmin ? "admin" : (profile?.subscription_plan || "free");
 
   const handleCheckout = async (tier: "pro" | "business") => {
     if (!user) {
