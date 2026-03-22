@@ -16,7 +16,7 @@ import { format } from "date-fns";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 
-type VenueView = "overview" | "details" | "photos" | "availability";
+type VenueView = "overview" | "details" | "photos" | "availability" | "profile";
 type VenueListing = { id: string; name: string; city: string | null; state: string | null; address: string | null; phone: string | null; email: string | null; website: string | null; description: string | null; capacity: number | null; amenities: string[] | null; claim_status: string };
 type VenuePhoto = { id: string; file_path: string; caption: string | null; sort_order: number };
 type AvailableDate = { id: string; available_date: string; notes: string | null };
