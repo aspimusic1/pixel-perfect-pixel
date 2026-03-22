@@ -320,12 +320,12 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
     <div ref={ref} className="min-h-screen pt-20 px-4 pb-12">
       <div className="container mx-auto max-w-5xl">
         {/* CTA Banner */}
-        <div className="mb-8 rounded-xl bg-primary/5 border border-primary/10 px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="mb-8 rounded-2xl border border-white/[0.07] backdrop-blur-[12px] px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3" style={{ background: "rgba(14, 20, 32, 0.6)" }}>
           <p className="text-xs text-muted-foreground font-body">
             <span className="text-foreground font-medium">make your profile today</span> — get discovered by promoters, venues, and production teams
           </p>
           <Link to="/auth?tab=signup">
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase h-8 active:scale-[0.97] transition-transform whitespace-nowrap">
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium lowercase h-8 active:scale-[0.97] transition-transform whitespace-nowrap shadow-[0_0_24px_rgba(200,255,62,0.25)]">
               get started free <ArrowRight className="ml-1.5 w-3 h-3" />
             </Button>
           </Link>
