@@ -261,12 +261,12 @@ export default function TourManagement() {
 
         <Tabs defaultValue="itinerary" className="mt-4">
           <div className="overflow-x-auto -mx-4 px-4 pb-2 scrollbar-hide">
-            <TabsList className="bg-secondary border border-border mb-6 w-max min-w-full sm:w-auto">
-              <TabsTrigger value="itinerary" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><MapPin className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Itinerary</span></TabsTrigger>
-              <TabsTrigger value="crew" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Users className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Crew</span></TabsTrigger>
-              <TabsTrigger value="budget" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><DollarSign className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Budget</span></TabsTrigger>
-              <TabsTrigger value="documents" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><FileText className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Docs</span></TabsTrigger>
-              <TabsTrigger value="transport" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-3 sm:px-4"><Car className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Transport</span></TabsTrigger>
+            <TabsList className="bg-secondary border border-border mb-6 inline-flex w-max whitespace-nowrap">
+              <TabsTrigger value="itinerary" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs px-3"><MapPin className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Itinerary</span></TabsTrigger>
+              <TabsTrigger value="crew" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs px-3"><Users className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Crew</span></TabsTrigger>
+              <TabsTrigger value="budget" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs px-3"><DollarSign className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Budget</span></TabsTrigger>
+              <TabsTrigger value="documents" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs px-3"><FileText className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Docs</span></TabsTrigger>
+              <TabsTrigger value="transport" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs px-3"><Car className="w-3.5 h-3.5 mr-1 shrink-0" /><span className="whitespace-nowrap">Transport</span></TabsTrigger>
             </TabsList>
           </div>
 
