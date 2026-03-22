@@ -67,6 +67,7 @@ const STATUS_DOT: Record<string, string> = {
 const navItems: NavItem<ArtistView>[] = [
   { title: "overview", value: "overview", icon: Inbox },
   { title: "offers", value: "offers", icon: Inbox },
+  { title: "events", value: "events", icon: CalendarDays },
   { title: "calendar", value: "calendar", icon: Calendar },
   { title: "bookkeeping", value: "bookkeeping", icon: BarChart3 },
   { title: "ai agent", value: "agent", icon: Bot },
