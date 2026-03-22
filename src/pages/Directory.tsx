@@ -619,7 +619,19 @@ function ProfileCard({ p, flashBids, hasPaidPlan, onUpgrade }: {
           <FlashBidBadge deadline={flashBids.get(p.id)!.flash_bid_deadline} bidCount={flashBids.get(p.id)!.bid_count} />
         </div>
       )}
-      {p.role === "artist" && p.streaming_stats?.source === "spotify_api" && (
+      {p.role === "artist" && p.streaming_stats?.followers && p.streaming_stats.followers > 0 && (
+        <div className="mb-2">
+          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-[#1DB954]/10 border border-[#1DB954]/20 font-semibold" style={{ color: "#1DB954" }}>
+            <Music className="w-3 h-3" />
+            {p.streaming_stats.followers >= 1_000_000
+              ? `${(p.streaming_stats.followers / 1_000_000).toFixed(1)}M listeners`
+              : p.streaming_stats.followers >= 1_000
+              ? `${(p.streaming_stats.followers / 1_000).toFixed(1)}K listeners`
+              : `${p.streaming_stats.followers} listeners`}
+          </span>
+        </div>
+      )}
+      {p.role === "artist" && p.streaming_stats?.source === "spotify_api" && !p.streaming_stats?.followers && (
         <div className="mb-2">
           <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border border-white/[0.06]" style={{ color: "#1DB954" }}>
             ✓ Spotify verified

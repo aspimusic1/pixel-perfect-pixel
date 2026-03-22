@@ -287,7 +287,22 @@ export default function ProfileSetup() {
                 </div>
                 <div>
                   <Label className="text-sm">Spotify</Label>
-                  <Input value={spotify} onChange={(e) => setSpotify(e.target.value)} placeholder="https://open.spotify.com/artist/..." className="mt-1.5 bg-background border-border" />
+                  {spotifyConnected ? (
+                    <div className="mt-1.5 flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1DB954]/10 border border-[#1DB954]/20">
+                      <Music className="w-4 h-4 text-[#1DB954]" />
+                      <span className="text-xs text-[#1DB954] font-medium">Spotify connected</span>
+                    </div>
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={handleSpotifyConnect}
+                      disabled={spotifyConnecting}
+                      className="mt-1.5 w-full h-10 bg-[#1DB954] text-[#080C14] hover:bg-[#1DB954]/90 font-medium text-sm active:scale-[0.97] transition-transform"
+                    >
+                      {spotifyConnecting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Music className="w-4 h-4 mr-2" />}
+                      {spotifyConnecting ? "Connecting..." : "Connect Spotify"}
+                    </Button>
+                  )}
                 </div>
               </>
             )}
