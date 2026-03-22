@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Loader2, Save, CheckCircle, Trash2 } from "lucide-react";
+import { Camera, Loader2, Save, CheckCircle, Trash2, Music, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -19,6 +19,20 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
+
+const MUSIC_LINKS = [
+  { key: "spotify", label: "Spotify", placeholder: "https://open.spotify.com/artist/...", icon: "🟢" },
+  { key: "apple_music", label: "Apple Music", placeholder: "https://music.apple.com/artist/...", icon: "🍎" },
+  { key: "soundcloud", label: "SoundCloud", placeholder: "https://soundcloud.com/...", icon: "🟠" },
+  { key: "youtube", label: "YouTube", placeholder: "https://youtube.com/@...", icon: "🔴" },
+  { key: "tiktok", label: "TikTok", placeholder: "https://tiktok.com/@...", icon: "🎵" },
+  { key: "bandcamp", label: "Bandcamp", placeholder: "https://yourname.bandcamp.com", icon: "🔵" },
+  { key: "beatport", label: "Beatport", placeholder: "https://beatport.com/artist/...", icon: "💚" },
+  { key: "bandsintown", label: "Bandsintown", placeholder: "https://bandsintown.com/...", icon: "🎤" },
+  { key: "songkick", label: "Songkick", placeholder: "https://songkick.com/artists/...", icon: "🎪" },
+] as const;
+
+type MusicLinkKey = typeof MUSIC_LINKS[number]["key"];
 
 export default function EditProfilePanel() {
   const { user, profile, refreshProfile, signOut } = useAuth();
@@ -37,10 +51,13 @@ export default function EditProfilePanel() {
   const [genre, setGenre] = useState("");
   const [website, setWebsite] = useState("");
   const [instagram, setInstagram] = useState("");
-  const [spotify, setSpotify] = useState("");
   const [rateMin, setRateMin] = useState("");
   const [rateMax, setRateMax] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
+
+  const [musicLinks, setMusicLinks] = useState<Record<MusicLinkKey, string>>(
+    Object.fromEntries(MUSIC_LINKS.map(l => [l.key, ""])) as Record<MusicLinkKey, string>
+  );
 
   useEffect(() => {
     if (!profile) return;
@@ -56,14 +73,34 @@ export default function EditProfilePanel() {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("website, instagram, spotify").eq("user_id", user.id).single().then(({ data }) => {
-      if (data) {
-        setWebsite((data as any).website ?? "");
-        setInstagram((data as any).instagram ?? "");
-        setSpotify((data as any).spotify ?? "");
-      }
-    });
+    supabase
+      .from("profiles")
+      .select("website, instagram, spotify, apple_music, soundcloud, youtube, tiktok, bandcamp, beatport, bandsintown, songkick")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          const d = data as any;
+          setWebsite(d.website ?? "");
+          setInstagram(d.instagram ?? "");
+          setMusicLinks({
+            spotify: d.spotify ?? "",
+            apple_music: d.apple_music ?? "",
+            soundcloud: d.soundcloud ?? "",
+            youtube: d.youtube ?? "",
+            tiktok: d.tiktok ?? "",
+            bandcamp: d.bandcamp ?? "",
+            beatport: d.beatport ?? "",
+            bandsintown: d.bandsintown ?? "",
+            songkick: d.songkick ?? "",
+          });
+        }
+      });
   }, [user]);
+
+  const updateMusicLink = (key: MusicLinkKey, value: string) => {
+    setMusicLinks(prev => ({ ...prev, [key]: value }));
+  };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -89,10 +126,12 @@ export default function EditProfilePanel() {
       genre: genre || null,
       website: website || null,
       instagram: instagram || null,
-      spotify: spotify || null,
       avatar_url: avatarUrl || null,
       rate_min: rateMin ? parseFloat(rateMin) : null,
       rate_max: rateMax ? parseFloat(rateMax) : null,
+      ...Object.fromEntries(
+        MUSIC_LINKS.map(l => [l.key, musicLinks[l.key] || null])
+      ),
     };
     const { error } = await supabase.from("profiles").update(updates).eq("user_id", user.id);
     if (error) { toast.error(error.message); } else {
@@ -111,7 +150,6 @@ export default function EditProfilePanel() {
       const { data, error } = await supabase.functions.invoke("delete-account");
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-
       await signOut();
       toast.success("Your account has been deleted.");
       navigate("/");
@@ -123,6 +161,7 @@ export default function EditProfilePanel() {
   };
 
   const role = profile?.role;
+  const showMusicLinks = role === "artist" || role === "production" || role === "photo_video";
 
   return (
     <div className="space-y-5">
@@ -183,7 +222,7 @@ export default function EditProfilePanel() {
         </div>
       </div>
 
-      {/* Links */}
+      {/* Links & socials */}
       <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4 space-y-3">
         <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">links & socials</h3>
         <div className="grid sm:grid-cols-2 gap-3">
@@ -195,14 +234,33 @@ export default function EditProfilePanel() {
             <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">instagram</Label>
             <Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@handle" className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
           </div>
-          {(role === "artist") && (
-            <div>
-              <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">spotify</Label>
-              <Input value={spotify} onChange={(e) => setSpotify(e.target.value)} placeholder="https://open.spotify.com/..." className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Music & streaming links */}
+      {showMusicLinks && (
+        <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4 space-y-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Music className="w-3.5 h-3.5 text-primary" />
+            <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest">music & streaming</h3>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {MUSIC_LINKS.map((link) => (
+              <div key={link.key}>
+                <Label className="text-[10px] text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                  <span>{link.icon}</span> {link.label}
+                </Label>
+                <Input
+                  value={musicLinks[link.key]}
+                  onChange={(e) => updateMusicLink(link.key, e.target.value)}
+                  placeholder={link.placeholder}
+                  className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Rate range (artists, production, photo_video) */}
       {(role === "artist" || role === "production" || role === "photo_video") && (
@@ -226,7 +284,7 @@ export default function EditProfilePanel() {
         {saving ? "saving..." : saved ? "saved!" : "save changes"}
       </Button>
 
-      {/* Danger zone — Delete account */}
+      {/* Danger zone */}
       <div className="rounded-lg border border-red-500/20 bg-red-500/[0.04] p-4 space-y-3 mt-8">
         <h3 className="text-[10px] text-red-400 uppercase tracking-widest font-medium">danger zone</h3>
         <p className="text-[11px] text-muted-foreground">permanently delete your account and all associated data. this action cannot be undone.</p>

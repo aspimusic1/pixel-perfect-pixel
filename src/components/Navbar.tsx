@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Bell, Globe, Lock, ShieldCheck } from "lucide-react";
+import { Menu, X, Bell, Globe, Lock, ShieldCheck, ChevronDown, Compass, BarChart3, Briefcase, Music, MapPin, TrendingUp, DollarSign, Route, PieChart, LayoutDashboard, Users, Zap } from "lucide-react";
 import logoBlack from "@/assets/logo-black.png";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 
 const LANGS = [
@@ -61,8 +63,12 @@ export default function Navbar() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
+  const role = profile?.role;
+  const isFree = !profile || profile.subscription_plan === "free";
+  const directoryHref = isFree ? "/pricing" : "/directory";
+
   const dashboardRoute = (() => {
-    switch (profile?.role) {
+    switch (role) {
       case "promoter": return "/promoter-dashboard";
       case "venue": return "/venue-manage";
       case "production": return "/production-dashboard";
@@ -70,8 +76,28 @@ export default function Navbar() {
       default: return "/artist-dashboard";
     }
   })();
-  const isFree = !profile || profile.subscription_plan === "free";
-  const directoryHref = isFree ? "/pricing" : "/directory";
+
+  // Build role-aware menu groups
+  const discoverItems = [
+    { label: "browse directory", to: directoryHref, icon: Users, locked: isFree },
+    { label: "trending", to: "/trending", icon: TrendingUp },
+    { label: "pricing", to: "/pricing", icon: DollarSign },
+  ];
+
+  const getMyStuffItems = () => {
+    const items = [
+      { label: "dashboard", to: dashboardRoute, icon: LayoutDashboard },
+    ];
+    if (role === "promoter") {
+      items.push({ label: "pipeline", to: "/pipeline", icon: Briefcase });
+    }
+    if (role === "artist") {
+      items.push({ label: "tax center", to: "/tax", icon: PieChart });
+    }
+    items.push({ label: "insights", to: "/insights", icon: BarChart3 });
+    items.push({ label: "tours", to: "/tours", icon: Route });
+    return items;
+  };
 
   return (
     <>
@@ -82,22 +108,57 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop */}
-          <div className="hidden md:flex items-center gap-7">
-            <NavItem to={directoryHref}>
-              {t("nav.browse")}
-              {isFree && <Lock className="w-3 h-3 ml-1 opacity-60" />}
-            </NavItem>
-            <NavItem to="/trending">{t("nav.trending")}</NavItem>
-            <NavItem to="/pricing">{t("nav.pricing")}</NavItem>
-            {user ? (
+          <div className="hidden md:flex items-center gap-5">
+            {/* Discover dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase outline-none">
+                <Compass className="w-3.5 h-3.5" />
+                discover
+                <ChevronDown className="w-3 h-3 opacity-60" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="min-w-[180px]">
+                {discoverItems.map(item => (
+                  <DropdownMenuItem key={item.to} onClick={() => navigate(item.to)} className="text-xs lowercase font-display cursor-pointer">
+                    <item.icon className="w-3.5 h-3.5 mr-2 opacity-60" />
+                    {item.label}
+                    {item.locked && <Lock className="w-3 h-3 ml-auto opacity-40" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {user && (
               <>
-                <NavItem to={dashboardRoute}>{t("nav.dashboard")}</NavItem>
-                {profile?.role === "promoter" && <NavItem to="/pipeline">{t("nav.pipeline")}</NavItem>}
-                {profile?.role === "artist" && <NavItem to="/tax">{t("nav.tax")}</NavItem>}
-                <NavItem to="/insights">insights</NavItem>
-                <NavItem to="/tours">{t("nav.tours")}</NavItem>
-                {isAdmin && <NavItem to="/admin"><ShieldCheck className="w-3 h-3 mr-1" /><span className="bg-[#C8FF3E]/15 text-[#C8FF3E] px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">admin</span></NavItem>}
-                <NavItem to="/tours">{t("nav.tours")}</NavItem>
+                {/* My Stuff dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center gap-1 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase outline-none">
+                    <Briefcase className="w-3.5 h-3.5" />
+                    my stuff
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="min-w-[180px]">
+                    <DropdownMenuLabel className="text-[10px] text-muted-foreground uppercase tracking-wider font-normal">
+                      {role === "photo_video" ? "photo/video" : role ?? "member"}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {getMyStuffItems().map(item => (
+                      <DropdownMenuItem key={item.to} onClick={() => navigate(item.to)} className="text-xs lowercase font-display cursor-pointer">
+                        <item.icon className="w-3.5 h-3.5 mr-2 opacity-60" />
+                        {item.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Admin */}
+                {isAdmin && (
+                  <Link to="/admin" className="flex items-center gap-1.5 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span className="bg-[#C8FF3E]/15 text-[#C8FF3E] px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">admin</span>
+                  </Link>
+                )}
+
+                {/* Notifications */}
                 <button onClick={() => navigate("/notifications")} className="relative text-primary-foreground/70 hover:text-primary-foreground transition-colors">
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
@@ -107,7 +168,8 @@ export default function Navbar() {
                 <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
                 <Button size="sm" variant="ghost" onClick={signOut} className="text-xs font-display lowercase text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">{t("nav.signOut")}</Button>
               </>
-            ) : (
+            )}
+            {!user && (
               <>
                 <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
                 <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs font-display lowercase text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">{t("nav.signIn")}</Button></Link>
@@ -152,20 +214,39 @@ export default function Navbar() {
       >
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-0.5">
-            <MobileLink to={directoryHref} onClick={closeMenu}>
-              <span className="flex items-center gap-1">{t("nav.browse")}{isFree && <Lock className="w-3 h-3 text-role-venue" />}</span>
-            </MobileLink>
-            <MobileLink to="/trending" onClick={closeMenu}>{t("nav.trending")}</MobileLink>
-            <MobileLink to="/pricing" onClick={closeMenu}>{t("nav.pricing")}</MobileLink>
+            {/* Discover section */}
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest px-3 mb-1 mt-1">discover</p>
+            {discoverItems.map(item => (
+              <MobileLink key={item.to} to={item.to} onClick={closeMenu}>
+                <item.icon className="w-3.5 h-3.5 mr-2 opacity-60 inline" />
+                {item.label}
+                {item.locked && <Lock className="w-3 h-3 ml-1 text-role-venue inline" />}
+              </MobileLink>
+            ))}
+
             {user ? (
               <>
-                <MobileLink to={dashboardRoute} onClick={closeMenu}>{t("nav.dashboard")}</MobileLink>
-                {profile?.role === "promoter" && <MobileLink to="/pipeline" onClick={closeMenu}>{t("nav.pipeline")}</MobileLink>}
-                {profile?.role === "artist" && <MobileLink to="/tax" onClick={closeMenu}>{t("nav.tax")}</MobileLink>}
-                <MobileLink to="/insights" onClick={closeMenu}>insights</MobileLink>
-                <MobileLink to="/tours" onClick={closeMenu}>{t("nav.tours")}</MobileLink>
-                {isAdmin && <MobileLink to="/admin" onClick={closeMenu}><ShieldCheck className="w-3 h-3 mr-1 inline" /> admin</MobileLink>}
-                <div className="border-t border-border my-4" />
+                <div className="border-t border-border my-3" />
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest px-3 mb-1">
+                  my stuff · {role === "photo_video" ? "photo/video" : role ?? "member"}
+                </p>
+                {getMyStuffItems().map(item => (
+                  <MobileLink key={item.to} to={item.to} onClick={closeMenu}>
+                    <item.icon className="w-3.5 h-3.5 mr-2 opacity-60 inline" />
+                    {item.label}
+                  </MobileLink>
+                ))}
+
+                {isAdmin && (
+                  <>
+                    <div className="border-t border-border my-3" />
+                    <MobileLink to="/admin" onClick={closeMenu}>
+                      <ShieldCheck className="w-3.5 h-3.5 mr-2 inline" /> admin
+                    </MobileLink>
+                  </>
+                )}
+
+                <div className="border-t border-border my-3" />
                 <div className="px-3 py-2">
                   <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
                 </div>
@@ -198,14 +279,6 @@ export default function Navbar() {
         </div>
       </div>
     </>
-  );
-}
-
-function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
-  return (
-    <Link to={to} className="text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase flex items-center">
-      {children}
-    </Link>
   );
 }
 
