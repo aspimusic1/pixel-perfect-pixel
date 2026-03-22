@@ -38,7 +38,7 @@ export default function Navbar() {
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
   useEffect(() => {
-    if (!user) { setIsAdmin(false); return; }
+    if (!user) { return; }
     const fetchUnread = async () => {
       const { count } = await supabase
         .from("notifications")
