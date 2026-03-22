@@ -312,7 +312,7 @@ function LanguageSelector({ currentLang, onChange }: { currentLang: string; onCh
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1.5 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors active:scale-[0.97]">
+        <button className="flex items-center gap-1.5 text-xs text-foreground/70 hover:text-foreground transition-colors active:scale-[0.97]">
           <Globe className="w-3.5 h-3.5" />
           <span>{current.flag}</span>
         </button>
