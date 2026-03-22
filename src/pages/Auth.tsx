@@ -87,10 +87,10 @@ export default function Auth() {
           ) : (
             <>
               <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" />
-              <h1 className="font-display font-bold text-xl mb-1 lowercase text-primary-foreground">
+              <h1 className="font-display font-bold text-xl mb-1 lowercase text-foreground">
                 {isSignUp ? "create your account" : "welcome back"}
               </h1>
-              <p className="text-primary-foreground/60 text-sm font-body">
+              <p className="text-muted-foreground text-sm font-body">
                 {isSignUp ? "join the live music operating system" : "sign in to your account"}
               </p>
             </>
