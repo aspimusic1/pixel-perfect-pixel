@@ -74,7 +74,7 @@ export default function RoleSwitcherSection() {
   const details = ROLE_DETAILS[activeRole];
 
   return (
-    <section className="fade-in-section py-28 px-4">
+    <section className="fade-in-section py-16 sm:py-28 px-4">
       <div className="container mx-auto max-w-4xl">
         <h2 className="font-display text-2xl sm:text-4xl font-bold text-center mb-3 lowercase tracking-tight">
           built for every role in live music
@@ -83,7 +83,7 @@ export default function RoleSwitcherSection() {
           one platform, five roles. everyone gets the tools they need.
         </p>
 
-        <div className="grid grid-cols-2 sm:flex sm:justify-center gap-2 mb-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mb-10">
           {ROLE_TABS.map((tab) => {
             const active = activeRole === tab.key;
             return (

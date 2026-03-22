@@ -123,7 +123,7 @@ function StepMockup({ type }: { type: string }) {
 
 export default function HowItWorksSection() {
   return (
-    <section className="fade-in-section py-24 sm:py-32 px-4">
+    <section className="fade-in-section py-16 sm:py-32 px-4">
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-16">
           <span className="section-label">how it works</span>

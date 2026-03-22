@@ -55,7 +55,7 @@ export default function PricingTeaser() {
   const [yearly, setYearly] = useState(false);
 
   return (
-    <section className="fade-in-section py-24 sm:py-32 px-4">
+    <section className="fade-in-section py-16 sm:py-32 px-4">
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-10">
           <span className="section-label">pricing</span>
@@ -86,7 +86,7 @@ export default function PricingTeaser() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PLANS.map((plan) => {
             const price = yearly ? plan.yearlyPrice : plan.monthlyPrice;
             return (

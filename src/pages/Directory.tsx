@@ -446,7 +446,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setGenreFilter(null); setPage(0); }} className="w-full">
-          <TabsList className="bg-card border border-border w-full justify-start gap-0 h-auto p-1 grid grid-cols-2 md:grid-cols-5">
+          <TabsList className="bg-card border border-border w-full justify-start gap-0 h-auto p-1 grid grid-cols-3 sm:grid-cols-5">
             {ROLE_TABS.map((tab) => (
               <TabsTrigger
                 key={tab.value}

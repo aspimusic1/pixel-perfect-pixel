@@ -38,7 +38,7 @@ const FEATURES = [
 
 export default function PowerFeaturesSection() {
   return (
-    <section className="fade-in-section py-24 sm:py-32 px-4">
+    <section className="fade-in-section py-16 sm:py-32 px-4">
       <div className="container mx-auto max-w-5xl">
         <div className="text-center mb-14">
           <span className="section-label">features</span>

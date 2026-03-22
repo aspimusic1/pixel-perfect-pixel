@@ -52,7 +52,7 @@ function MockupWindow() {
 
 export default function HeroSection() {
   return (
-    <section className="relative pt-32 sm:pt-40 pb-20 sm:pb-28 px-4 overflow-hidden">
+    <section className="relative pt-24 sm:pt-40 pb-16 sm:pb-28 px-4 overflow-hidden">
       {/* Subtle ambient glow */}
       <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-primary/[0.04] blur-[120px] pointer-events-none" />
 
@@ -64,8 +64,8 @@ export default function HeroSection() {
 
         {/* Headline */}
         <h1
-          className="animate-reveal-up font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase"
-          style={{ animationDelay: "80ms", fontSize: "clamp(36px, 6vw, 64px)", lineHeight: "1.05" }}
+          className="animate-reveal-up font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase text-3xl sm:text-5xl md:text-6xl"
+          style={{ animationDelay: "80ms", lineHeight: "1.05" }}
         >
           book shows. get paid.
           <br />
@@ -104,7 +104,7 @@ export default function HeroSection() {
 
         {/* Social proof */}
         <div
-          className="animate-reveal-up mt-14 grid grid-cols-3 gap-4 sm:flex sm:justify-center sm:gap-14"
+          className="animate-reveal-up mt-14 grid grid-cols-2 sm:grid-cols-3 gap-4 sm:flex sm:justify-center sm:gap-14"
           style={{ animationDelay: "440ms" }}
         >
           {[

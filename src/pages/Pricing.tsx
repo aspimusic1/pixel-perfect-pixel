@@ -188,7 +188,7 @@ export default function Pricing() {
           </div>
         )}
 
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {PLANS.map((plan, i) => {
             const isCurrentPlan = currentPlan === plan.tier;
             const isLoading = loadingTier === plan.tier;
