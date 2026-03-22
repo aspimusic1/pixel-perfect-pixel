@@ -266,7 +266,10 @@ export default function ArtistDashboard() {
               <span className="inline-flex items-center gap-1 text-[11px] text-[#3EC8FF] font-medium px-2.5 py-1"><CheckCircle className="w-3 h-3" /> advance requested</span>
             )}
             {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
-              <div className="w-full mt-1"><InsuranceOfferCard bookingId={booking.id} guarantee={offer.guarantee} userRole="artist" /></div>
+              <div className="w-full mt-1 space-y-1.5">
+                <InsuranceOfferCard bookingId={booking.id} guarantee={offer.guarantee} userRole="artist" />
+                <PresaleSection bookingId={booking.id} isArtist={true} isPro={profile?.subscription_plan === "pro" || profile?.subscription_plan === "agency"} />
+              </div>
             )}
           </div>
         )}
