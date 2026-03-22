@@ -418,7 +418,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                         <h3 data-reveal className="fade-in-section font-display text-sm font-semibold mb-2 text-role-venue/80 lowercase">{region}</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {venueList.map((v) => (
-                            <div key={v.id} data-reveal className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-role-venue/20 transition-all duration-300">
+                            <div key={v.id} data-reveal className="fade-in-section rounded-2xl border border-white/[0.07] backdrop-blur-[12px] p-4 transition-all duration-300 hover:border-primary/20 hover:shadow-[0_0_20px_rgba(200,255,62,0.06)]" style={{ background: "rgba(14, 20, 32, 0.6)", boxShadow: "0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
                               <div className="flex items-start justify-between gap-2 mb-2">
                                 <div className="flex items-start gap-3 min-w-0">
                                   <div className="w-9 h-9 rounded-lg bg-role-venue/10 flex items-center justify-center shrink-0">
