@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonCard } from "@/components/SkeletonCard";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
