@@ -440,7 +440,6 @@ export default function ArtistDashboard() {
               {activeView === "profile" && (
                 <>
                   <EditProfilePanel />
-                  <StreamingStatsEditor />
                 </>
               )}
             </div>
