@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logoBlack from "@/assets/logo-black.png";
+import logoColor from "@/assets/logo-color.png";
 import { useTranslation } from "react-i18next";
 
 const QUICK_MENU = [
@@ -34,7 +34,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between gap-10 mb-12">
           {/* Logo + tagline */}
           <div>
-            <img src={logoBlack} alt="GetBooked.Live" className="h-5 opacity-80 mb-2" />
+            <img src={logoColor} alt="GetBooked.Live" className="h-5 opacity-80 mb-2" />
             <p className="text-[13px] text-muted-foreground font-body">the operating system for live music.</p>
           </div>
 

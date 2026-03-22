@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Bell, Globe, ShieldCheck, ChevronDown } from "lucide-react";
-import logoBlack from "@/assets/logo-black.png";
+import logoColor from "@/assets/logo-color.png";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
@@ -20,9 +20,11 @@ const LANGS = [
 ];
 
 const NAV_LINKS = [
-  { label: "directory", to: "/directory" },
-  { label: "trending", to: "/trending" },
-  { label: "pricing", to: "/pricing" },
+  { label: "Browse", to: "/" },
+  { label: "Directory", to: "/directory" },
+  { label: "Pricing", to: "/pricing" },
+  { label: "For Artists", to: "/auth?tab=signup" },
+  { label: "For Promoters", to: "/auth?tab=signup" },
 ];
 
 export default function Navbar() {
@@ -84,7 +86,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-full px-6 md:px-8 max-w-[1400px] mx-auto">
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0" onClick={closeMenu}>
-            <img src={logoBlack} alt="GetBooked.Live" className="h-[20px]" />
+            <img src={logoColor} alt="GetBooked.Live" className="h-[22px]" />
           </Link>
 
           {/* Center nav links — desktop */}
@@ -110,13 +112,21 @@ export default function Navbar() {
                 dashboard
               </Link>
             )}
+            {!user && (
+              <Link
+                to="/auth?admin=true"
+                className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+              >
+                Admin Login
+              </Link>
+            )}
             {user && isAdmin && (
               <Link
                 to="/admin"
                 className="text-sm font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                admin
+                Admin
               </Link>
             )}
           </div>

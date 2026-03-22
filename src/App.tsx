@@ -72,7 +72,7 @@ const App = () => (
               <Route path="/venue-manage" element={<ProtectedRoute><VenueManage /></ProtectedRoute>} />
               <Route path="/pipeline" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
               <Route path="/tax" element={<ProtectedRoute><TaxDashboard /></ProtectedRoute>} />
-              <Route path="/trending" element={<Trending />} />
+              {/* Trending route removed */}
               <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
               <Route path="/p/:slug" element={<ProfilePage />} />
               <Route path="/admin/claims" element={<ProtectedRoute><AdminClaims /></ProtectedRoute>} />
