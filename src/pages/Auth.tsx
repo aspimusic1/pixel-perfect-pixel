@@ -189,7 +189,7 @@ export default function Auth() {
                 </div>
                 <div>
                   <Label className="text-sm font-display font-medium lowercase mb-2.5 block text-muted-foreground" id="role-label">I am a...</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-labelledby="role-label">
                     {ROLES.map((role) => {
                       const Icon = role.icon;
                       const selected = selectedRole === role.value;
