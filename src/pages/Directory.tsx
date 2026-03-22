@@ -598,7 +598,7 @@ function ProfileCard({ p, flashBids, hasPaidPlan, onUpgrade }: {
   onUpgrade: () => void;
 }) {
   return (
-    <div data-reveal className="fade-in-section rounded-xl bg-card border border-border p-5 hover:border-primary/20 transition-all duration-300">
+    <div data-reveal className="fade-in-section rounded-2xl border border-white/[0.07] backdrop-blur-[12px] p-5 transition-all duration-300 hover:border-primary/20 hover:shadow-[0_0_20px_rgba(200,255,62,0.06)]" style={{ background: "rgba(14, 20, 32, 0.6)", boxShadow: "0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
       <div className="flex items-start gap-3 mb-3">
         <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-display font-bold text-sm text-foreground shrink-0">
           {p.avatar_url ? (
