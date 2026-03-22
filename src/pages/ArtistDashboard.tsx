@@ -317,8 +317,8 @@ export default function ArtistDashboard() {
                     </div>
                   ) : (
                     <>
-                  <ProfileCompletionRing />
-                  <OnboardingChecklist />
+                   <ProfileCompletionRing />
+                   <GettingStartedChecklist variant="artist" />
 
                   {/* Compact stats strip */}
                   <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] divide-x divide-white/[0.06] grid grid-cols-2 lg:grid-cols-4">

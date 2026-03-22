@@ -34,7 +34,7 @@ export default function Auth() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => { if (user) navigate("/profile-setup"); }, [user, navigate]);
+  useEffect(() => { if (user) navigate("/welcome"); }, [user, navigate]);
   useEffect(() => { if (presetRole) { setSelectedRole(presetRole); setIsSignUp(true); } }, [presetRole]);
 
   const activeRoleInfo = ROLES.find((r) => r.value === selectedRole);
