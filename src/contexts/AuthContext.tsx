@@ -33,6 +33,7 @@ type AuthContextType = {
   profile: Profile | null;
   loading: boolean;
   subscription: SubscriptionInfo | null;
+  isAdmin: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   checkSubscription: () => Promise<void>;
@@ -46,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchProfile = async (userId: string) => {
     const { data } = await supabase
@@ -54,6 +56,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .eq("user_id", userId)
       .single();
     setProfile(data as Profile | null);
+  };
+
+  const checkAdminRole = async (userId: string) => {
+    const { data } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    setIsAdmin(!!data);
   };
 
   const checkSubscription = useCallback(async () => {
@@ -81,10 +88,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          setTimeout(() => fetchProfile(session.user.id), 0);
+          setTimeout(() => {
+            fetchProfile(session.user.id);
+            checkAdminRole(session.user.id);
+          }, 0);
         } else {
           setProfile(null);
           setSubscription(null);
+          setIsAdmin(false);
         }
         setLoading(false);
       }
@@ -93,7 +104,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session?.user) fetchProfile(session.user.id);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+        checkAdminRole(session.user.id);
+      }
       setLoading(false);
     });
 
@@ -114,10 +128,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null);
     setProfile(null);
     setSubscription(null);
+    setIsAdmin(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, subscription, signOut, refreshProfile, checkSubscription }}>
+    <AuthContext.Provider value={{ user, session, profile, loading, subscription, isAdmin, signOut, refreshProfile, checkSubscription }}>
       {children}
     </AuthContext.Provider>
   );

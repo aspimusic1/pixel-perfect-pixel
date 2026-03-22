@@ -28,18 +28,17 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isAdmin, setIsAdmin] = useState(false);
   const { t, i18n } = useTranslation();
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
   useEffect(() => {
-    if (!user) { setIsAdmin(false); return; }
+    if (!user) { return; }
     const fetchUnread = async () => {
       const { count } = await supabase
         .from("notifications")
@@ -48,12 +47,7 @@ export default function Navbar() {
         .eq("read", false);
       setUnreadCount(count ?? 0);
     };
-    const checkAdmin = async () => {
-      const { data } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
-      setIsAdmin(!!data);
-    };
     fetchUnread();
-    checkAdmin();
     const channel = supabase
       .channel("notifications")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => fetchUnread())
@@ -71,6 +65,7 @@ export default function Navbar() {
 
   const role = profile?.role;
   const dashboardRoute = (() => {
+    if (isAdmin) return "/admin";
     switch (role) {
       case "promoter": return "/promoter-dashboard";
       case "venue": return "/venue-manage";

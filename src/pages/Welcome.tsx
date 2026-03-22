@@ -36,7 +36,7 @@ const ROLE_ICON: Record<string, React.ElementType> = {
 };
 
 export default function Welcome() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   // If already seen welcome, redirect
@@ -70,6 +70,8 @@ export default function Welcome() {
         .eq("user_id", user.id);
       await refreshProfile();
     }
+    // Route admin to admin panel
+    if (isAdmin) { navigate("/admin"); return; }
     // Route to role-specific dashboard
     const dashMap: Record<string, string> = {
       artist: "/artist-dashboard",
