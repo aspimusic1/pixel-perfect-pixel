@@ -507,7 +507,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                         <h2 data-reveal className="fade-in-section font-display text-lg font-bold mb-3 text-foreground/80 lowercase">
                           artist directory — {artistListings.length} artists
                         </h2>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {artistListings.map((a) => (
                             <div key={a.id} data-reveal className="fade-in-section rounded-xl bg-card border border-border p-4 hover:border-primary/20 transition-all duration-300">
                               <div className="flex items-start justify-between gap-2 mb-2">
