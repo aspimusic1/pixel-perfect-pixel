@@ -691,9 +691,9 @@ function ProfileCard({ p, flashBids, hasPaidPlan, onUpgrade }: {
   return (
     <div data-reveal className="fade-in-section rounded-xl bg-card border border-border p-5 hover:border-primary/20 transition-all duration-300">
       <div className="flex items-start gap-3 mb-3">
-        <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-display font-bold text-sm text-foreground shrink-0">
+        <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-display font-bold text-sm text-foreground shrink-0 overflow-hidden" style={{ aspectRatio: '1' }}>
           {p.avatar_url ? (
-            <img src={p.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+            <img src={p.avatar_url} alt="" className="w-full h-full rounded-full object-cover" loading="lazy" width={40} height={40} />
           ) : (
             (p.display_name ?? "?")[0].toUpperCase()
           )}
