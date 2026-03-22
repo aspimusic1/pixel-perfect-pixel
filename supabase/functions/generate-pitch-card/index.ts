@@ -216,13 +216,16 @@ Deno.serve(async (req) => {
       upsert: true,
     });
 
-    const { data: urlData } = adminClient.storage.from("contracts").getPublicUrl(fileName);
-    const pdfUrl = urlData.publicUrl + `?t=${Date.now()}`;
+    // Use signed URL instead of public URL to keep the contracts bucket private
+    const { data: signedData } = await adminClient.storage
+      .from("contracts")
+      .createSignedUrl(fileName, 3600);
+    const pdfUrl = signedData?.signedUrl ?? fileName;
 
-    // Save URL to profile
+    // Save file path (not URL) to profile for future signed URL generation
     await adminClient
       .from("profiles")
-      .update({ pitch_card_url: pdfUrl })
+      .update({ pitch_card_url: fileName })
       .eq("user_id", userId);
 
     return new Response(JSON.stringify({ success: true, url: pdfUrl }), {
