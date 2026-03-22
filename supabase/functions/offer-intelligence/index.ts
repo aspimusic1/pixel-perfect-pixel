@@ -32,14 +32,14 @@ serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claims, error: claimsError } = await userClient.auth.getClaims(token);
-    if (claimsError || !claims?.claims) {
+    const { data: { user }, error: userError } = await userClient.auth.getUser();
+    if (userError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    const userId = user.id;
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -49,6 +49,22 @@ serve(async (req) => {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Authorization: only the artist themselves or users with an offer relationship can query
+    if (artist_id !== userId) {
+      const { data: rel } = await supabase
+        .from("offers")
+        .select("id")
+        .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`)
+        .or(`sender_id.eq.${artist_id},recipient_id.eq.${artist_id}`)
+        .limit(1);
+      if (!rel?.length) {
+        return new Response(JSON.stringify({ error: "Forbidden" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
     // 1. Fetch artist's accepted offer history
