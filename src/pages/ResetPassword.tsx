@@ -46,7 +46,7 @@ export default function ResetPassword() {
           <div className="flex items-center justify-center gap-2 mb-2">
             <KeyRound className="w-5 h-5 text-[#C8FF3E]" />
           </div>
-          <h1 className="font-display font-bold text-xl mb-1">Set new password</h1>
+          <h1 className="font-display font-bold text-xl mb-1 text-foreground">Set new password</h1>
           <p className="text-muted-foreground text-sm">Enter your new password below.</p>
         </div>
 
