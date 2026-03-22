@@ -399,8 +399,12 @@ export default function ArtistDashboard() {
               {/* ─── Events ─── */}
               {activeView === "events" && (
                 <>
-                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">events</h2>
+                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">events & availability</h2>
                   <EventsTab bookings={bookings} loading={loading} />
+                  <div className="mt-6">
+                    <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-3">availability calendar</h2>
+                    <AvailabilityCalendar />
+                  </div>
                 </>
               )}
 
