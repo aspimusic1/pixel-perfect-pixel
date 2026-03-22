@@ -358,6 +358,35 @@ export default function EditProfilePanel() {
         {saving ? "saving..." : saved ? "saved!" : "save changes"}
       </Button>
 
+      {/* Email Preferences */}
+      <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4 space-y-4">
+        <div className="flex items-center gap-2">
+          <Bell className="w-3.5 h-3.5 text-[#C8FF3E]" />
+          <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">email notifications</h3>
+        </div>
+        {[
+          { key: "offer_received" as const, label: "Email me when I receive an offer", desc: "Get notified immediately about new booking offers" },
+          { key: "offer_accepted" as const, label: "Email me when an offer is accepted", desc: "Know right away when an artist accepts your offer" },
+          { key: "offer_declined" as const, label: "Email me when an offer is declined", desc: "Stay informed about offer status changes" },
+          { key: "booking_confirmed" as const, label: "Email me when a booking is confirmed", desc: "Get booking confirmation details" },
+          { key: "new_message" as const, label: "Email me for new messages", desc: "Digest mode — off by default to reduce noise" },
+        ].map(item => (
+          <div key={item.key} className="flex items-center justify-between gap-3 py-2">
+            <div className="flex-1 min-w-0">
+              <p className="text-[12px] text-[#F0F2F7]">{item.label}</p>
+              <p className="text-[10px] text-[#5A6478] mt-0.5">{item.desc}</p>
+            </div>
+            <Switch
+              checked={emailPrefs[item.key]}
+              onCheckedChange={(checked) =>
+                setEmailPrefs(prev => ({ ...prev, [item.key]: checked }))
+              }
+              className="data-[state=checked]:bg-[#C8FF3E] shrink-0"
+            />
+          </div>
+        ))}
+      </div>
+
       {/* Danger zone */}
       <div className="rounded-lg border border-red-500/20 bg-red-500/[0.04] p-4 space-y-3 mt-8">
         <h3 className="text-[10px] text-red-400 uppercase tracking-widest font-medium">danger zone</h3>
