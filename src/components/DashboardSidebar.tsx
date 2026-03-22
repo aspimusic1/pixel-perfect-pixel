@@ -36,7 +36,7 @@ export default function DashboardSidebar<T extends string>({
   roleLabel,
   roleIcon: RoleIcon,
   displayName,
-}: Props<T>) {
+}: Props<T>): JSX.Element {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
