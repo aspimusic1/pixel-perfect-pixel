@@ -62,8 +62,8 @@ export default function Pricing() {
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [yearly, setYearly] = useState(false);
 
-  // Check admin status
   useEffect(() => {
     if (!user) return;
     supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
@@ -71,7 +71,6 @@ export default function Pricing() {
     });
   }, [user]);
 
-  // Check for success/cancel URL params
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("success") === "true") {
@@ -137,17 +136,39 @@ export default function Pricing() {
   return (
     <div ref={ref} className="min-h-screen pt-24 px-4 pb-16">
       <div className="container mx-auto max-w-5xl">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <h1 data-reveal className="opacity-0 font-display text-4xl sm:text-5xl font-bold mb-4">Simple, transparent pricing</h1>
           <p data-reveal className="opacity-0 text-muted-foreground text-lg max-w-md mx-auto" style={{ animationDelay: "80ms" }}>
-            Lower commissions as you grow. No hidden fees, ever.
+            Straightforward pricing with no hidden costs.
           </p>
+        </div>
+
+        {/* Yearly/Monthly toggle */}
+        <div className="flex justify-center mb-12">
+          <div className="inline-flex rounded-full border border-white/[0.08] p-1 bg-secondary/40">
+            <button
+              onClick={() => setYearly(false)}
+              className={`text-xs font-display font-bold px-5 py-2 rounded-full transition-all ${
+                !yearly ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              monthly
+            </button>
+            <button
+              onClick={() => setYearly(true)}
+              className={`text-xs font-display font-bold px-5 py-2 rounded-full transition-all ${
+                yearly ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              yearly
+            </button>
+          </div>
         </div>
 
         {isAdmin && (
           <div data-reveal className="opacity-0 mb-8 flex justify-center">
-            <div className="px-5 py-3 rounded-xl bg-[#C8FF3E]/10 border border-[#C8FF3E]/20 text-center">
-              <p className="text-[#C8FF3E] font-syne font-bold text-sm">🛡️ admin — all access</p>
+            <div className="px-5 py-3 rounded-xl bg-primary/10 border border-primary/20 text-center">
+              <p className="text-primary font-syne font-bold text-sm">🛡️ admin — all access</p>
               <p className="text-[10px] text-muted-foreground mt-1">you have full platform access as an administrator</p>
             </div>
           </div>
@@ -171,70 +192,73 @@ export default function Pricing() {
           {PLANS.map((plan, i) => {
             const isCurrentPlan = currentPlan === plan.tier;
             const isLoading = loadingTier === plan.tier;
+            const price = yearly ? plan.yearlyPrice : plan.monthlyPrice;
 
             return (
               <div
                 key={plan.name}
                 data-reveal
-                className={`opacity-0 rounded-2xl p-6 border transition-all duration-300 ${
+                className={`relative opacity-0 rounded-2xl p-7 border transition-all duration-300 ${
                   plan.highlight
-                    ? "bg-card border-primary/40 glow-primary scale-[1.02]"
+                    ? "bg-primary/[0.04] border-primary/[0.35]"
                     : "bg-card border-border hover:border-border/80"
                 } ${isCurrentPlan ? "ring-2 ring-primary/50" : ""}`}
                 style={{ animationDelay: `${i * 100}ms` }}
               >
                 {isCurrentPlan && (
-                  <span className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#3EFFBE] text-[#080C14] mb-4">Your Plan</span>
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#3EFFBE] text-[#080C14] text-[10px] font-display font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full">Your Plan</span>
                 )}
                 {plan.highlight && !isCurrentPlan && (
-                  <span className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-primary text-primary-foreground mb-4">Most popular</span>
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-display font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full">popular</span>
                 )}
-                <h3 className="font-display text-xl font-bold mb-1">{plan.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{plan.desc}</p>
-                <div className="mb-1">
-                  <span className="font-display text-4xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground text-sm">{plan.period}</span>
+
+                <p className="text-xs text-muted-foreground font-display uppercase tracking-wider mb-3">{plan.name}</p>
+                <div className="flex items-baseline gap-1 mb-1">
+                  <span className={`font-display font-black text-[42px] leading-none ${plan.highlight ? "text-primary" : "text-foreground"}`}>
+                    ${price}
+                  </span>
+                  <span className="text-[13px] text-muted-foreground font-body">{plan.unit}</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-6">
                   Commission: <span className="text-primary font-semibold">{plan.commission}</span>
                 </p>
 
+                <div className="border-t border-white/[0.06] my-5" />
+
                 {plan.tier === "free" ? (
                   <Link to={user ? "#" : "/auth?tab=signup"}>
-                    <Button
+                    <button
                       disabled={isCurrentPlan}
-                      className="w-full mb-6 font-medium h-10 active:scale-[0.97] transition-transform bg-secondary text-foreground hover:bg-secondary/80"
+                      className={`w-full h-11 rounded-[10px] text-sm font-display font-bold transition-all active:scale-[0.96] mb-7 border border-white/[0.1] text-foreground hover:bg-secondary ${isCurrentPlan ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
-                      {isCurrentPlan ? "Current plan" : plan.cta} {!isCurrentPlan && <ArrowRight className="ml-2 w-3.5 h-3.5" />}
-                    </Button>
+                      {isCurrentPlan ? "Current plan" : plan.cta}
+                    </button>
                   </Link>
                 ) : (
-                  <Button
+                  <button
                     disabled={isCurrentPlan || isLoading}
                     onClick={() => handleCheckout(plan.tier)}
-                    className={`w-full mb-6 font-medium h-10 active:scale-[0.97] transition-transform ${
+                    className={`w-full h-11 rounded-[10px] text-sm font-display font-bold transition-all active:scale-[0.96] mb-7 ${
                       plan.highlight
                         ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                        : "bg-secondary text-foreground hover:bg-secondary/80"
-                    }`}
+                        : "border border-white/[0.1] text-foreground hover:bg-secondary"
+                    } ${isCurrentPlan || isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     {isLoading ? (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      <Loader2 className="w-4 h-4 mx-auto animate-spin" />
                     ) : isCurrentPlan ? (
                       "Current plan"
                     ) : (
-                      <>
-                        {plan.cta} <ArrowRight className="ml-2 w-3.5 h-3.5" />
-                      </>
+                      plan.cta
                     )}
-                  </Button>
+                  </button>
                 )}
 
-                <ul className="space-y-2.5">
+                <ul className="space-y-3">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      {f}
+                    <li key={f} className="flex items-start gap-2.5">
+                      <Check className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-[13px] text-foreground/80 font-body">{f}</span>
                     </li>
                   ))}
                 </ul>
