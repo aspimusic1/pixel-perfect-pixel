@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonGrid } from "@/components/SkeletonCard";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -407,21 +407,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
           {ROLE_TABS.map((tab) => (
             <TabsContent key={tab.value} value={tab.value} className="mt-6">
               {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div key={i} className="rounded-xl bg-card border border-border p-5 space-y-3">
-                      <div className="flex items-start gap-3">
-                        <Skeleton className="w-10 h-10 rounded-full" />
-                        <div className="space-y-2 flex-1">
-                          <Skeleton className="h-4 w-3/4" />
-                          <Skeleton className="h-3 w-1/3" />
-                        </div>
-                      </div>
-                      <Skeleton className="h-3 w-full" />
-                      <Skeleton className="h-3 w-2/3" />
-                    </div>
-                  ))}
-                </div>
+                <SkeletonGrid count={6} cardHeight="h-44" />
               ) : tab.value === "venue" ? (
                 /* Venue tab */
                 Object.keys(groupedVenues).length > 0 ? (
