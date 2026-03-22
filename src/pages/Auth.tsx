@@ -79,10 +79,10 @@ export default function Auth() {
               <div className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center bg-white/[0.06]">
                 <ActiveIcon className="w-6 h-6 text-[#C8FF3E]" />
               </div>
-              <h1 className="font-display font-bold text-xl mb-1.5 lowercase text-primary-foreground">
-                sign up as <span className="text-primary-foreground">{activeRoleInfo.label.toLowerCase()}</span>
+              <h1 className="font-display font-bold text-xl mb-1.5 lowercase text-foreground">
+                sign up as <span className="text-[#C8FF3E]">{activeRoleInfo.label.toLowerCase()}</span>
               </h1>
-              <p className="text-primary-foreground/60 text-sm font-body">{activeRoleInfo.tagline}</p>
+              <p className="text-muted-foreground text-sm font-body">{activeRoleInfo.tagline}</p>
             </>
           ) : (
             <>
