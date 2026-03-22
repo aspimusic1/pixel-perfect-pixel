@@ -163,8 +163,8 @@ export default function Navbar() {
                     </span>
                   )}
                 </button>
-                <button
-                  onClick={() => navigate("/setup")}
+                <Link
+                  to={dashboardRoute}
                   className="w-8 h-8 rounded-full overflow-hidden border border-white/10 hover:border-white/20 transition-colors flex items-center justify-center bg-secondary active:scale-[0.96]"
                 >
                   {profile?.avatar_url ? (
@@ -174,7 +174,7 @@ export default function Navbar() {
                       {(profile?.display_name ?? "?")[0].toUpperCase()}
                     </span>
                   )}
-                </button>
+                </Link>
                 <button
                   onClick={signOut}
                   className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors"
