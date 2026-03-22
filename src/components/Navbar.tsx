@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Bell, Globe, ShieldCheck, ChevronDown } from "lucide-react";
-import logoColor from "@/assets/logo-color.png";
+const logoColor = "/logo-color.png";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
@@ -95,7 +95,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-full px-6 md:px-8 max-w-[1400px] mx-auto">
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0" onClick={closeMenu}>
-            <img src={logoColor} alt="GetBooked.Live" className="h-[22px]" width={140} height={22} />
+            <img src={logoColor} alt="GetBooked.Live" className="h-[22px]" width={140} height={22} fetchPriority="high" />
           </Link>
 
           {/* Center nav links — desktop */}
