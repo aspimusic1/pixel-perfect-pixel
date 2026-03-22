@@ -237,6 +237,33 @@ export type Database = {
         }
         Relationships: []
       }
+      artist_stats: {
+        Row: {
+          created_at: string
+          followers: number | null
+          id: string
+          monthly_listeners: number | null
+          snapshot_date: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          followers?: number | null
+          id?: string
+          monthly_listeners?: number | null
+          snapshot_date?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          followers?: number | null
+          id?: string
+          monthly_listeners?: number | null
+          snapshot_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       booking_financing: {
         Row: {
           booking_id: string
@@ -862,6 +889,7 @@ export type Database = {
           instagram: string | null
           is_verified: boolean | null
           onboarding_steps: Json | null
+          pitch_card_url: string | null
           profile_complete: boolean | null
           rate_max: number | null
           rate_min: number | null
@@ -901,6 +929,7 @@ export type Database = {
           instagram?: string | null
           is_verified?: boolean | null
           onboarding_steps?: Json | null
+          pitch_card_url?: string | null
           profile_complete?: boolean | null
           rate_max?: number | null
           rate_min?: number | null
@@ -940,6 +969,7 @@ export type Database = {
           instagram?: string | null
           is_verified?: boolean | null
           onboarding_steps?: Json | null
+          pitch_card_url?: string | null
           profile_complete?: boolean | null
           rate_max?: number | null
           rate_min?: number | null
@@ -1600,6 +1630,7 @@ export type Database = {
           id: string | null
           instagram: string | null
           is_verified: boolean | null
+          pitch_card_url: string | null
           role: Database["public"]["Enums"]["app_role"] | null
           slug: string | null
           songkick: string | null
@@ -1630,6 +1661,7 @@ export type Database = {
           id?: string | null
           instagram?: string | null
           is_verified?: boolean | null
+          pitch_card_url?: string | null
           role?: Database["public"]["Enums"]["app_role"] | null
           slug?: string | null
           songkick?: string | null
@@ -1660,6 +1692,7 @@ export type Database = {
           id?: string | null
           instagram?: string | null
           is_verified?: boolean | null
+          pitch_card_url?: string | null
           role?: Database["public"]["Enums"]["app_role"] | null
           slug?: string | null
           songkick?: string | null
