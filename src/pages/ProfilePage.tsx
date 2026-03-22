@@ -36,6 +36,14 @@ type ProfileData = {
   website: string | null;
   instagram: string | null;
   spotify: string | null;
+  apple_music: string | null;
+  soundcloud: string | null;
+  youtube: string | null;
+  tiktok: string | null;
+  bandcamp: string | null;
+  beatport: string | null;
+  bandsintown: string | null;
+  songkick: string | null;
   is_verified: boolean | null;
   slug: string | null;
 };
@@ -272,8 +280,8 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {/* Social links */}
-          <div className="flex items-center gap-2 mb-2">
+          {/* Social & music links */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
             {profile?.website && (
               <a href={profile.website} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
@@ -290,6 +298,54 @@ export default function ProfilePage() {
               <a href={profile.spotify} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
                 Spotify
+              </a>
+            )}
+            {profile?.apple_music && (
+              <a href={profile.apple_music} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                Apple Music
+              </a>
+            )}
+            {profile?.soundcloud && (
+              <a href={profile.soundcloud} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                SoundCloud
+              </a>
+            )}
+            {profile?.youtube && (
+              <a href={profile.youtube} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                YouTube
+              </a>
+            )}
+            {profile?.tiktok && (
+              <a href={profile.tiktok.startsWith("http") ? profile.tiktok : `https://tiktok.com/@${profile.tiktok.replace("@", "")}`} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                TikTok
+              </a>
+            )}
+            {profile?.bandcamp && (
+              <a href={profile.bandcamp} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                Bandcamp
+              </a>
+            )}
+            {profile?.beatport && (
+              <a href={profile.beatport} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                Beatport
+              </a>
+            )}
+            {profile?.bandsintown && (
+              <a href={profile.bandsintown} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                Bandsintown
+              </a>
+            )}
+            {profile?.songkick && (
+              <a href={profile.songkick} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                Songkick
               </a>
             )}
             <button onClick={handleShare}
