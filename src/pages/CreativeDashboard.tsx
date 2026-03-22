@@ -16,6 +16,7 @@ const navItems: NavItem<CreativeView>[] = [
   { title: "bookings", value: "bookings", icon: Camera },
   { title: "calendar", value: "calendar", icon: Calendar },
   { title: "reviews", value: "reviews", icon: Star },
+  { title: "edit profile", value: "profile", icon: UserCog },
 ];
 
 export default function CreativeDashboard() {
