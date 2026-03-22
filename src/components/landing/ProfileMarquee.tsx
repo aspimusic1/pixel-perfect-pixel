@@ -26,7 +26,7 @@ const roleLabel: Record<string, string> = {
   promoter: "promoter",
   venue: "venue",
   production: "production",
-  photo_video: "photo/video",
+  photo_video: "creative",
 };
 
 const roleBg: Record<string, string> = {

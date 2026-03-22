@@ -38,7 +38,7 @@ const ROLES = [
   },
   {
     value: "photo_video",
-    label: "Photographer / Videographer",
+    label: "Creative",
     desc: "Capture and create event content",
     icon: Camera,
     color: "border-role-photo/40 hover:border-role-photo text-role-photo bg-role-photo/5 hover:bg-role-photo/10",

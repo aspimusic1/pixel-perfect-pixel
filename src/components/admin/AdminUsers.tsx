@@ -256,7 +256,7 @@ export default function AdminUsers() {
             <SelectItem value="promoter">promoter</SelectItem>
             <SelectItem value="venue">venue</SelectItem>
             <SelectItem value="production">production</SelectItem>
-            <SelectItem value="photo_video">photo/video</SelectItem>
+            <SelectItem value="photo_video">creative</SelectItem>
           </SelectContent>
         </Select>
         <Select value={planFilter} onValueChange={setPlanFilter}>
