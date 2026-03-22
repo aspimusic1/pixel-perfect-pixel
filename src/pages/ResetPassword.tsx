@@ -88,7 +88,7 @@ export default function ResetPassword() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium h-11 active:scale-[0.97] transition-transform"
+                className="w-full bg-[#C8FF3E] text-[#080C14] hover:bg-[#C8FF3E]/90 font-medium h-11 active:scale-[0.97] transition-transform"
               >
                 {loading ? "Updating..." : "Update password"}
                 <ArrowRight className="ml-2 w-4 h-4" />

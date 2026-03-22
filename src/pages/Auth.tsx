@@ -194,7 +194,7 @@ export default function Auth() {
           </div>
 
           <div className="mt-5 text-center">
-            <button onClick={() => setIsSignUp(!isSignUp)} className="text-sm text-primary-foreground/50 hover:text-primary-foreground/70 transition-colors font-body">
+            <button onClick={() => setIsSignUp(!isSignUp)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-body">
               {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
             </button>
           </div>
