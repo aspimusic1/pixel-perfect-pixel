@@ -391,7 +391,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                 <button
                   key={g}
                   onClick={() => setGenreFilter(genreFilter === g ? null : g)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
+                  className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
                     genreFilter === g
                       ? "bg-role-artist/15 text-role-artist border border-role-artist/30"
                       : "bg-secondary text-muted-foreground hover:text-foreground"
