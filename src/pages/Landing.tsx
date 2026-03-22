@@ -46,6 +46,7 @@ export default function Landing() {
       <PowerFeaturesSection />
       <RoleSwitcherSection />
       <HowItWorksSection />
+      <ComparisonSection />
       <PricingTeaser />
       <FinalCTA />
       <Footer />
