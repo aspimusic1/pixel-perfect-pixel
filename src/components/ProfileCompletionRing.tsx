@@ -5,48 +5,50 @@ import { supabase } from "@/integrations/supabase/client";
 
 type CheckItem = {
   label: string;
+  cta: string;
   key: string;
   weight: number;
   complete: boolean;
 };
 
 const ACCENT = "#C8FF3E";
+const RING_SIZE = 160;
+const RADIUS = 68;
+const STROKE = 5;
 
 export default function ProfileCompletionRing() {
   const { profile, user } = useAuth();
   const navigate = useNavigate();
   const [animated, setAnimated] = useState(false);
-  const [hasAvailability, setHasAvailability] = useState(false);
+  const [availabilityCount, setAvailabilityCount] = useState(0);
 
-  // Check if user has set any availability dates
   useEffect(() => {
     if (!user) return;
     supabase
       .from("artist_availability")
       .select("id", { count: "exact", head: true })
       .eq("artist_id", user.id)
-      .then(({ count }) => setHasAvailability((count ?? 0) > 0));
+      .then(({ count }) => setAvailabilityCount(count ?? 0));
   }, [user]);
 
-  // Trigger animation after mount
   useEffect(() => {
-    const t = setTimeout(() => setAnimated(true), 100);
+    const t = setTimeout(() => setAnimated(true), 120);
     return () => clearTimeout(t);
   }, []);
 
   const items: CheckItem[] = useMemo(() => {
     if (!profile) return [];
     return [
-      { label: "Profile photo", key: "avatar", weight: 20, complete: !!profile.avatar_url },
-      { label: "Bio", key: "bio", weight: 15, complete: !!profile.bio && profile.bio.length > 10 },
-      { label: "Genre", key: "genre", weight: 15, complete: !!profile.genre },
-      { label: "Fee range", key: "fee", weight: 15, complete: (profile.rate_min ?? 0) > 0 || (profile.rate_max ?? 0) > 0 },
-      { label: "Location", key: "location", weight: 10, complete: !!profile.city && !!profile.state },
-      { label: "Spotify link", key: "spotify", weight: 10, complete: !!(profile as any).spotify },
-      { label: "Instagram", key: "instagram", weight: 10, complete: !!(profile as any).instagram },
-      { label: "Availability", key: "availability", weight: 5, complete: hasAvailability },
+      { label: "Profile photo", cta: "Add a photo →", key: "avatar", weight: 20, complete: !!profile.avatar_url },
+      { label: "Bio", cta: "Write your bio →", key: "bio", weight: 15, complete: !!profile.bio && profile.bio.length > 50 },
+      { label: "Genre", cta: "Pick your genres →", key: "genre", weight: 15, complete: !!profile.genre },
+      { label: "Fee range", cta: "Set your rates →", key: "fee", weight: 15, complete: (profile.rate_min ?? 0) > 0 && (profile.rate_max ?? 0) > 0 },
+      { label: "Location", cta: "Add your location →", key: "location", weight: 10, complete: !!profile.city && !!profile.state },
+      { label: "Instagram", cta: "Link Instagram →", key: "instagram", weight: 10, complete: !!(profile as any).instagram },
+      { label: "Spotify", cta: "Link Spotify →", key: "spotify", weight: 10, complete: !!(profile as any).spotify },
+      { label: "Availability", cta: "Mark your dates →", key: "availability", weight: 5, complete: availabilityCount >= 2 },
     ];
-  }, [profile, hasAvailability]);
+  }, [profile, availabilityCount]);
 
   const score = useMemo(() => items.reduce((sum, i) => sum + (i.complete ? i.weight : 0), 0), [items]);
   const incomplete = items.filter((i) => !i.complete);
@@ -61,78 +63,68 @@ export default function ProfileCompletionRing() {
 
   if (!profile || score === 100) return null;
 
-  const radius = 38;
-  const circumference = 2 * Math.PI * radius;
+  const circumference = 2 * Math.PI * RADIUS;
   const offset = animated ? circumference - (score / 100) * circumference : circumference;
 
   return (
-    <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-5">
-      <div className="flex items-start gap-5">
-        {/* SVG Ring */}
-        <div className="relative shrink-0 w-[96px] h-[96px]">
-          <svg width="96" height="96" viewBox="0 0 96 96" className="transform -rotate-90">
-            <circle cx="48" cy="48" r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
+    <div className="rounded-xl border border-white/[0.06] bg-[#0e1420] p-6">
+      {/* Ring + avatar */}
+      <div className="flex flex-col items-center mb-4">
+        <div className="relative" style={{ width: RING_SIZE, height: RING_SIZE }}>
+          <svg width={RING_SIZE} height={RING_SIZE} viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`} className="transform -rotate-90">
             <circle
-              cx="48" cy="48" r={radius}
-              fill="none"
-              stroke={ACCENT}
-              strokeWidth="4"
+              cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RADIUS}
+              fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={STROKE}
+            />
+            <circle
+              cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RADIUS}
+              fill="none" stroke={ACCENT} strokeWidth={STROKE}
               strokeLinecap="round"
               strokeDasharray={circumference}
               strokeDashoffset={offset}
               style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1)" }}
             />
           </svg>
-          {/* Avatar in center */}
           <div className="absolute inset-0 flex items-center justify-center">
             {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="w-14 h-14 rounded-full object-cover" />
+              <img src={profile.avatar_url} alt="" className="w-24 h-24 rounded-full object-cover" />
             ) : (
-              <div className="w-14 h-14 rounded-full bg-[#1C2535] flex items-center justify-center">
-                <span className="font-display font-bold text-lg text-foreground">
+              <div className="w-24 h-24 rounded-full bg-[#1C2535] flex items-center justify-center">
+                <span className="font-syne font-bold text-2xl text-foreground">
                   {(profile.display_name ?? "?")[0].toUpperCase()}
                 </span>
               </div>
             )}
           </div>
-          {/* Score label */}
-          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[10px] font-bold tabular-nums" style={{ backgroundColor: ACCENT, color: "#080C14" }}>
-            {score}%
-          </div>
         </div>
 
-        {/* Text */}
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-foreground mb-0.5">
-            Your profile is <span className="font-display font-bold" style={{ color: ACCENT }}>{score}%</span> complete
-          </p>
-          <p className="text-[11px] text-muted-foreground mb-3">Complete your profile to get more offers</p>
-
-          {incomplete.length > 0 && (
-            <div className="space-y-1 mb-3">
-              {incomplete.map((item) => (
-                <button
-                  key={item.key}
-                  onClick={() => item.key === "availability" ? navigate("/artist-dashboard") : navigate("/profile-setup")}
-                  className="flex items-center gap-2 text-[11px] text-muted-foreground hover:text-foreground transition-colors group w-full text-left"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-[#C8FF3E]/50 transition-colors shrink-0" />
-                  <span>Add {item.label.toLowerCase()}</span>
-                  <span className="ml-auto text-[10px] tabular-nums opacity-50">+{item.weight}%</span>
-                </button>
-              ))}
-            </div>
-          )}
-
-          <button
-            onClick={() => navigate("/profile-setup")}
-            className="inline-flex items-center h-7 px-3 rounded-md text-[11px] font-medium transition-all duration-200 active:scale-[0.97]"
-            style={{ backgroundColor: ACCENT, color: "#080C14" }}
-          >
-            Update Profile
-          </button>
-        </div>
+        <p className="font-syne font-bold text-base text-foreground mt-3 text-center">
+          Your profile is <span style={{ color: ACCENT }} className="tabular-nums">{score}%</span> complete
+        </p>
       </div>
+
+      {/* Incomplete pills */}
+      {incomplete.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {incomplete.map((item) => (
+            <button
+              key={item.key}
+              onClick={() => item.key === "availability" ? navigate("/artist-dashboard") : navigate("/setup")}
+              className="inline-flex items-center h-8 px-3 rounded-full text-[11px] font-medium border border-white/[0.06] bg-white/[0.03] text-muted-foreground hover:text-foreground hover:border-white/10 transition-colors active:scale-[0.97]"
+            >
+              {item.cta}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <button
+        onClick={() => navigate("/setup")}
+        className="w-full inline-flex items-center justify-center h-10 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-[0.97]"
+        style={{ backgroundColor: ACCENT, color: "#080C14" }}
+      >
+        Update Profile
+      </button>
     </div>
   );
 }
