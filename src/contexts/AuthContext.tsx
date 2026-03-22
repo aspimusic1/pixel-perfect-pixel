@@ -128,6 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null);
     setProfile(null);
     setSubscription(null);
+    setIsAdmin(false);
   };
 
   return (
