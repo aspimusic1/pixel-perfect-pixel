@@ -21,9 +21,58 @@ const ROLE_META: Record<string, { icon: any; label: string; accent: string; step
 export default function ProfileSetup() {
   const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const role = profile?.role ?? "artist";
   const meta = ROLE_META[role] ?? ROLE_META.artist;
   const RoleIcon = meta.icon;
+  const [spotifyConnecting, setSpotifyConnecting] = useState(false);
+  const [spotifyConnected, setSpotifyConnected] = useState(!!(profile as any)?.streaming_stats?.source);
+
+  // Handle Spotify OAuth callback
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code && !spotifyConnected) {
+      handleSpotifyCallback(code);
+    }
+  }, [searchParams]);
+
+  const handleSpotifyConnect = async () => {
+    setSpotifyConnecting(true);
+    try {
+      const redirectUri = `${window.location.origin}/profile-setup`;
+      const { data, error } = await supabase.functions.invoke("spotify-callback", {
+        body: { action: "get_auth_url", redirect_uri: redirectUri },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to connect Spotify");
+      setSpotifyConnecting(false);
+    }
+  };
+
+  const handleSpotifyCallback = async (code: string) => {
+    setSpotifyConnecting(true);
+    try {
+      const redirectUri = `${window.location.origin}/profile-setup`;
+      const { data, error } = await supabase.functions.invoke("spotify-callback", {
+        body: { action: "exchange_code", code, redirect_uri: redirectUri },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success("Spotify connected!");
+      setSpotifyConnected(true);
+      await refreshProfile();
+      // Clean up URL params
+      window.history.replaceState({}, "", "/profile-setup");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to connect Spotify");
+    } finally {
+      setSpotifyConnecting(false);
+    }
+  };
 
   // Shared fields
   const [bio, setBio] = useState(profile?.bio ?? "");
