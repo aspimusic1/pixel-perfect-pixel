@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote, TrendingUp, Music2, Bot, UserCog, CalendarDays } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote, TrendingUp, Music2, Bot, UserCog, CalendarDays, Disc3 } from "lucide-react";
 import { toast } from "sonner";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
@@ -24,8 +24,9 @@ import EditProfilePanel from "@/components/EditProfilePanel";
 import ProfileCompletionRing from "@/components/ProfileCompletionRing";
 import StreamingStatsEditor from "@/components/StreamingStatsEditor";
 import EventsTab from "@/components/EventsTab";
+import SpotifyAnalytics from "@/components/SpotifyAnalytics";
 
-type ArtistView = "overview" | "offers" | "events" | "calendar" | "bookkeeping" | "agent" | "profile";
+type ArtistView = "overview" | "offers" | "events" | "analytics" | "calendar" | "bookkeeping" | "agent" | "profile";
 
 type Offer = {
   id: string;
@@ -68,6 +69,7 @@ const navItems: NavItem<ArtistView>[] = [
   { title: "overview", value: "overview", icon: Inbox },
   { title: "offers", value: "offers", icon: Inbox },
   { title: "events", value: "events", icon: CalendarDays },
+  { title: "analytics", value: "analytics", icon: Disc3 },
   { title: "calendar", value: "calendar", icon: Calendar },
   { title: "bookkeeping", value: "bookkeeping", icon: BarChart3 },
   { title: "ai agent", value: "agent", icon: Bot },
@@ -376,7 +378,14 @@ export default function ArtistDashboard() {
                 </>
               )}
 
-              {/* ─── Calendar ─── */}
+              {/* ─── Analytics ─── */}
+              {activeView === "analytics" && (
+                <>
+                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">spotify analytics</h2>
+                  <SpotifyAnalytics />
+                </>
+              )}
+
               {activeView === "calendar" && (
                 <>
                   <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">availability</h2>
