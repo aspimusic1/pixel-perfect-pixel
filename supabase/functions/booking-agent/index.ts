@@ -56,6 +56,13 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Ensure the caller is the offer recipient
+    if (offer.recipient_id !== userId) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const guarantee = Number(offer.guarantee);
     const rules = agent_rules;
 
