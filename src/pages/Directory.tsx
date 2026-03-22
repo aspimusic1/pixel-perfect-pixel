@@ -200,8 +200,8 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
   const isProfileTab = !isVenueTab;
 
   const { data: profiles = [], isLoading: profilesLoading } = useQuery<Profile[]>({
-    queryKey: ["directory-profiles", activeTab, debouncedSearch, cityFilter],
-    queryFn: () => fetchProfiles(activeTab, debouncedSearch, cityFilter),
+    queryKey: ["directory-profiles", activeTab, debouncedSearch, cityFilter, isArtistTab ? genreFilter : null],
+    queryFn: () => fetchProfiles(activeTab, debouncedSearch, cityFilter, isArtistTab ? genreFilter : null),
     enabled: isProfileTab,
     staleTime: 30_000,
   });
