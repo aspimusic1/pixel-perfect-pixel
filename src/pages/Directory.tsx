@@ -407,7 +407,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
           {ROLE_TABS.map((tab) => (
             <TabsContent key={tab.value} value={tab.value} className="mt-6">
               {loading ? (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div key={i} className="rounded-xl bg-card border border-border p-5 space-y-3">
                       <div className="flex items-start gap-3">
