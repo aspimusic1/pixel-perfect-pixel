@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Loader2, Save, CheckCircle, Trash2, Music, ExternalLink, ImageIcon } from "lucide-react";
+import { Camera, Loader2, Save, CheckCircle, Trash2, Music, ExternalLink, ImageIcon, Bell } from "lucide-react";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 import {
   AlertDialog,
   AlertDialogAction,
