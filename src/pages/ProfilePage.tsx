@@ -223,16 +223,23 @@ export default function ProfilePage() {
       </Helmet>
 
       <div className="container mx-auto max-w-2xl">
+        {/* Banner */}
+        {profile?.banner_url && (
+          <div className="w-full h-40 sm:h-52 rounded-2xl overflow-hidden border border-white/[0.06] mb-6 -mt-4">
+            <img src={profile.banner_url} alt={`${name} banner`} className="w-full h-full object-cover" />
+          </div>
+        )}
+
         {/* Hero section */}
         <div className="flex flex-col items-center mb-8">
           {profile?.avatar_url ? (
             <img
               src={profile.avatar_url}
               alt={`${name} profile photo`}
-              className="w-28 h-28 rounded-full object-cover border-2 border-white/[0.06] mb-4"
+              className={cn("w-28 h-28 rounded-full object-cover border-2 border-white/[0.06] mb-4", profile?.banner_url && "-mt-20 ring-4 ring-background")}
             />
           ) : (
-            <div className="w-28 h-28 rounded-full bg-card border border-white/[0.06] flex items-center justify-center text-3xl font-syne font-bold text-muted-foreground mb-4">
+            <div className={cn("w-28 h-28 rounded-full bg-card border border-white/[0.06] flex items-center justify-center text-3xl font-syne font-bold text-muted-foreground mb-4", profile?.banner_url && "-mt-20 ring-4 ring-background")}>
               {name.charAt(0).toUpperCase()}
             </div>
           )}
