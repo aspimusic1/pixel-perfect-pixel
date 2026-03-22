@@ -26,6 +26,11 @@ type Profile = {
   avatar_url: string | null;
   slug: string | null;
   is_verified: boolean | null;
+  streaming_stats: {
+    followers?: number;
+    source?: string;
+    spotify_artist_id?: string;
+  } | null;
 };
 
 type ArtistListing = {
@@ -625,6 +630,13 @@ function ProfileCard({ p, flashBids, hasPaidPlan, onUpgrade }: {
       {p.role === "artist" && p.id && flashBids.has(p.id) && (
         <div className="mb-2">
           <FlashBidBadge deadline={flashBids.get(p.id)!.flash_bid_deadline} bidCount={flashBids.get(p.id)!.bid_count} />
+        </div>
+      )}
+      {p.role === "artist" && p.streaming_stats?.source === "spotify_api" && (
+        <div className="mb-2">
+          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border border-white/[0.06]" style={{ color: "#1DB954" }}>
+            ✓ Spotify verified
+          </span>
         </div>
       )}
       {p.bio && <p className="text-xs text-muted-foreground line-clamp-2 mb-2 font-body">{p.bio}</p>}
