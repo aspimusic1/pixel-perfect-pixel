@@ -97,7 +97,7 @@ export default function Auth() {
           )}
         </div>
 
-        <div className="rounded-2xl bg-primary-foreground/[0.08] border border-primary-foreground/[0.12] p-7 backdrop-blur-sm">
+        <div className="rounded-2xl bg-white/[0.04] border border-white/[0.08] p-7">
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
               <>
