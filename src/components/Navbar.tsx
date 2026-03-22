@@ -91,17 +91,31 @@ export default function Navbar() {
 
           {/* Center nav links — desktop */}
           <div className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map(link => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`text-sm font-body transition-colors ${
-                  location.pathname === link.to ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map(link => {
+              if (link.pro && !user) {
+                return (
+                  <Link
+                    key={link.label}
+                    to="/pricing"
+                    className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+                  >
+                    {link.label}
+                    <span className="text-[9px] font-display font-bold bg-primary/20 text-primary px-1.5 py-0.5 rounded-full leading-none">PRO</span>
+                  </Link>
+                );
+              }
+              return (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className={`text-sm font-body transition-colors ${
+                    location.pathname === link.to ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             {user && (
               <Link
                 to={dashboardRoute}
