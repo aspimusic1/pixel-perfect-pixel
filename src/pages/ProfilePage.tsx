@@ -400,7 +400,34 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Performance Reel */}
+        {/* Streaming Stats */}
+        {profile?.streaming_stats && (profile.streaming_stats.monthly_listeners || profile.streaming_stats.top_track) && (
+          <div className="rounded-xl bg-card border border-white/[0.06] p-4 mb-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+              {profile.streaming_stats.monthly_listeners && (
+                <span className="text-foreground font-display font-semibold tabular-nums">
+                  {profile.streaming_stats.monthly_listeners >= 1_000_000
+                    ? `${(profile.streaming_stats.monthly_listeners / 1_000_000).toFixed(1)}M`
+                    : profile.streaming_stats.monthly_listeners >= 1_000
+                    ? `${(profile.streaming_stats.monthly_listeners / 1_000).toFixed(0)}K`
+                    : profile.streaming_stats.monthly_listeners} monthly listeners
+                </span>
+              )}
+              {profile.streaming_stats.top_city && (
+                <span className="text-muted-foreground">Top city: <span className="text-foreground">{profile.streaming_stats.top_city}</span></span>
+              )}
+              {profile.streaming_stats.top_track && (
+                <span className="text-muted-foreground">#1 track: <span className="text-foreground font-medium">{profile.streaming_stats.top_track}</span></span>
+              )}
+              {profile.streaming_stats.source === "spotify_api" && (
+                <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border border-white/[0.06]" style={{ color: "#1DB954" }}>
+                  ✓ Spotify verified
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
         {profile?.role === "artist" && profile?.user_id && (
           <ReelDisplay userId={profile.user_id} />
         )}
