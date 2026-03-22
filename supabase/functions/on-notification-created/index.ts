@@ -173,6 +173,7 @@ const PREF_MAP: Record<string, string> = {
   offer_declined: "offer_declined",
   booking_confirmed: "booking_confirmed",
   new_message: "new_message",
+  review_request: "offer_received", // always send review requests
 };
 
 serve(async (req) => {
