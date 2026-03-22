@@ -197,6 +197,8 @@ export default function Auth() {
                         <button
                           key={role.value}
                           type="button"
+                          role="radio"
+                          aria-checked={selected}
                           onClick={() => setSelectedRole(role.value)}
                           className={`px-3 py-2.5 rounded-lg border text-sm font-display font-medium transition-all active:scale-[0.96] flex items-center gap-2 lowercase ${
                             selected
@@ -204,7 +206,7 @@ export default function Auth() {
                               : "border-white/[0.08] text-muted-foreground hover:text-foreground hover:border-white/[0.15]"
                           }`}
                         >
-                          <Icon className="w-3.5 h-3.5 shrink-0" />
+                          <Icon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                           {role.label.toLowerCase()}
                         </button>
                       );
