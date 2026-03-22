@@ -271,7 +271,7 @@ export default function ArtistDashboard() {
         <DashboardSidebar
           items={navWithCounts}
           activeView={activeView}
-          onViewChange={setActiveView}
+          onViewChange={setActiveView as (view: string) => void}
           accentColor={ACCENT}
           roleLabel="artist"
           roleIcon={Music2}
