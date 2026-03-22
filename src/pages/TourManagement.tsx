@@ -272,12 +272,12 @@ export default function TourManagement() {
 
           {/* ITINERARY */}
           <TabsContent value="itinerary">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h2 className="font-display font-semibold">Itinerary</h2>
                 <p className="text-xs text-muted-foreground">{stops.length} stop{stops.length !== 1 ? "s" : ""} · ${totalGuarantees.toLocaleString()} total guarantees</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {stops.length >= 2 && (
                   <Button
                     size="sm"
@@ -298,13 +298,13 @@ export default function TourManagement() {
                         setOptimizing(false);
                       }
                     }}
-                    className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform"
+                    className="border-primary/30 text-primary hover:bg-primary/10 active:scale-[0.97] transition-transform text-xs"
                   >
                     {optimizing ? <SpinnerIcon className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 mr-1" />}
-                    Optimise Tour
+                    Optimise
                   </Button>
                 )}
-                <Button size="sm" onClick={addStop} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform"><Plus className="w-3.5 h-3.5 mr-1" /> Add Stop</Button>
+                <Button size="sm" onClick={addStop} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform text-xs"><Plus className="w-3.5 h-3.5 mr-1" /> Add Stop</Button>
               </div>
             </div>
 
