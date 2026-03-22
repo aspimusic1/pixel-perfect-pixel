@@ -75,12 +75,13 @@ const roleColorMap: Record<string, string> = {
 };
 
 // Query functions
-async function fetchProfiles(roleFilter: string, search: string, city: string | null) {
+async function fetchProfiles(roleFilter: string, search: string, city: string | null, genre: string | null) {
   if (roleFilter === "venue") return [];
   let query = supabase.from("public_profiles" as any).select("*") as any;
   if (roleFilter) query = query.eq("role", roleFilter);
   if (search) query = query.ilike("display_name", `%${search}%`);
   if (city) query = query.eq("city", city);
+  if (genre) query = query.ilike("genre", `%${genre}%`);
   const { data } = await query.order("created_at", { ascending: false });
   return (data as Profile[]) ?? [];
 }
@@ -199,8 +200,8 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
   const isProfileTab = !isVenueTab;
 
   const { data: profiles = [], isLoading: profilesLoading } = useQuery<Profile[]>({
-    queryKey: ["directory-profiles", activeTab, debouncedSearch, cityFilter],
-    queryFn: () => fetchProfiles(activeTab, debouncedSearch, cityFilter),
+    queryKey: ["directory-profiles", activeTab, debouncedSearch, cityFilter, isArtistTab ? genreFilter : null],
+    queryFn: () => fetchProfiles(activeTab, debouncedSearch, cityFilter, isArtistTab ? genreFilter : null),
     enabled: isProfileTab,
     staleTime: 30_000,
   });
