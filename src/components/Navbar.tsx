@@ -250,7 +250,7 @@ export default function Navbar() {
             })}
             {!user && (
               <MobileLink to="/auth" onClick={closeMenu}>
-                Admin Login
+                admin login
               </MobileLink>
             )}
 
