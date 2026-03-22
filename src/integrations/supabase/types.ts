@@ -849,11 +849,13 @@ export type Database = {
           avatar_url: string | null
           bandcamp: string | null
           bandsintown: string | null
+          banner_url: string | null
           beatport: string | null
           bio: string | null
           city: string | null
           created_at: string
           display_name: string | null
+          facebook: string | null
           genre: string | null
           id: string
           instagram: string | null
@@ -870,8 +872,10 @@ export type Database = {
           state: string | null
           subscription_plan: string
           suspended: boolean
+          threads: string | null
           tiktok: string | null
           timezone: string | null
+          twitter: string | null
           updated_at: string
           user_id: string
           website: string | null
@@ -882,11 +886,13 @@ export type Database = {
           avatar_url?: string | null
           bandcamp?: string | null
           bandsintown?: string | null
+          banner_url?: string | null
           beatport?: string | null
           bio?: string | null
           city?: string | null
           created_at?: string
           display_name?: string | null
+          facebook?: string | null
           genre?: string | null
           id?: string
           instagram?: string | null
@@ -903,8 +909,10 @@ export type Database = {
           state?: string | null
           subscription_plan?: string
           suspended?: boolean
+          threads?: string | null
           tiktok?: string | null
           timezone?: string | null
+          twitter?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -915,11 +923,13 @@ export type Database = {
           avatar_url?: string | null
           bandcamp?: string | null
           bandsintown?: string | null
+          banner_url?: string | null
           beatport?: string | null
           bio?: string | null
           city?: string | null
           created_at?: string
           display_name?: string | null
+          facebook?: string | null
           genre?: string | null
           id?: string
           instagram?: string | null
@@ -936,8 +946,10 @@ export type Database = {
           state?: string | null
           subscription_plan?: string
           suspended?: boolean
+          threads?: string | null
           tiktok?: string | null
           timezone?: string | null
+          twitter?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null
@@ -1572,10 +1584,12 @@ export type Database = {
           avatar_url: string | null
           bandcamp: string | null
           bandsintown: string | null
+          banner_url: string | null
           beatport: string | null
           bio: string | null
           city: string | null
           display_name: string | null
+          facebook: string | null
           genre: string | null
           id: string | null
           instagram: string | null
@@ -1586,7 +1600,9 @@ export type Database = {
           soundcloud: string | null
           spotify: string | null
           state: string | null
+          threads: string | null
           tiktok: string | null
+          twitter: string | null
           updated_at: string | null
           user_id: string | null
           website: string | null
@@ -1597,10 +1613,12 @@ export type Database = {
           avatar_url?: string | null
           bandcamp?: string | null
           bandsintown?: string | null
+          banner_url?: string | null
           beatport?: string | null
           bio?: string | null
           city?: string | null
           display_name?: string | null
+          facebook?: string | null
           genre?: string | null
           id?: string | null
           instagram?: string | null
@@ -1611,7 +1629,9 @@ export type Database = {
           soundcloud?: string | null
           spotify?: string | null
           state?: string | null
+          threads?: string | null
           tiktok?: string | null
+          twitter?: string | null
           updated_at?: string | null
           user_id?: string | null
           website?: string | null
@@ -1622,10 +1642,12 @@ export type Database = {
           avatar_url?: string | null
           bandcamp?: string | null
           bandsintown?: string | null
+          banner_url?: string | null
           beatport?: string | null
           bio?: string | null
           city?: string | null
           display_name?: string | null
+          facebook?: string | null
           genre?: string | null
           id?: string | null
           instagram?: string | null
@@ -1636,7 +1658,9 @@ export type Database = {
           soundcloud?: string | null
           spotify?: string | null
           state?: string | null
+          threads?: string | null
           tiktok?: string | null
+          twitter?: string | null
           updated_at?: string | null
           user_id?: string | null
           website?: string | null
