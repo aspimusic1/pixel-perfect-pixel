@@ -32,6 +32,7 @@ const AdminClaims = lazy(() => import("@/pages/AdminClaims"));
 const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
 const PresalePage = lazy(() => import("@/pages/PresalePage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
+const Welcome = lazy(() => import("@/pages/Welcome"));
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => (
               <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
               <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
               <Route path="/artist-dashboard" element={<ProtectedRoute><ArtistDashboard /></ProtectedRoute>} />
               <Route path="/promoter-dashboard" element={<ProtectedRoute><PromoterDashboard /></ProtectedRoute>} />

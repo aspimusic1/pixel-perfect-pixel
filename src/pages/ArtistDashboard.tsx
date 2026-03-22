@@ -7,7 +7,7 @@ import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, D
 import toast from "react-hot-toast";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
-import OnboardingChecklist from "@/components/OnboardingChecklist";
+import GettingStartedChecklist from "@/components/GettingStartedChecklist";
 import BookingAgentPanel from "@/components/BookingAgentPanel";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
@@ -317,8 +317,8 @@ export default function ArtistDashboard() {
                     </div>
                   ) : (
                     <>
-                  <ProfileCompletionRing />
-                  <OnboardingChecklist />
+                   <ProfileCompletionRing />
+                   <GettingStartedChecklist variant="artist" />
 
                   {/* Compact stats strip */}
                   <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] divide-x divide-white/[0.06] grid grid-cols-2 lg:grid-cols-4">

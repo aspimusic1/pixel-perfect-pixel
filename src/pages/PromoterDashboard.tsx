@@ -16,6 +16,7 @@ import FinancingOption from "@/components/FinancingOption";
 import { openSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
 import EditProfilePanel from "@/components/EditProfilePanel";
+import GettingStartedChecklist from "@/components/GettingStartedChecklist";
 
 type PromoterView = "overview" | "offers" | "discover" | "profile";
 type Offer = { id: string; venue_name: string; event_date: string; event_time: string | null; guarantee: number; door_split: number | null; merch_split: number | null; status: string; recipient_id: string; sender_id: string; created_at: string };
@@ -151,6 +152,7 @@ export default function PromoterDashboard() {
 
               {activeView === "overview" && (
                 <>
+                  <GettingStartedChecklist variant="promoter" />
                   <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] divide-x divide-white/[0.06] grid grid-cols-2 lg:grid-cols-4">
                     {[
                       { label: "sent", value: loading ? "—" : sentCount, color: ACCENT },
