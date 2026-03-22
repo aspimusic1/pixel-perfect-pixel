@@ -69,6 +69,7 @@ const App = () => (
               <Route path="/trending" element={<Trending />} />
               <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
               <Route path="/p/:slug" element={<ProfilePage />} />
+              <Route path="/admin/claims" element={<ProtectedRoute><AdminClaims /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
