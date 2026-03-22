@@ -191,14 +191,13 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen pt-24 px-4">
-        <div className="container mx-auto max-w-2xl flex flex-col items-center">
-          <Skeleton className="w-28 h-28 rounded-full mb-6" />
-          <Skeleton className="h-7 w-48 mb-3" />
-          <Skeleton className="h-4 w-64 mb-2" />
-          <div className="flex gap-2 mt-4">
-            <Skeleton className="h-8 w-20 rounded-full" />
-            <Skeleton className="h-8 w-20 rounded-full" />
-            <Skeleton className="h-8 w-20 rounded-full" />
+        <div className="container mx-auto max-w-2xl space-y-4">
+          <SkeletonCard height="h-32" />
+          <SkeletonCard height="h-20" />
+          <div className="grid grid-cols-3 gap-3">
+            <SkeletonCard height="h-16" />
+            <SkeletonCard height="h-16" />
+            <SkeletonCard height="h-16" />
           </div>
         </div>
       </div>

@@ -394,7 +394,9 @@ export default function ArtistDashboard() {
                   </div>
                   <FreeOfferBanner mode="received" />
                   {loading ? (
-                    <div className="space-y-2">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 rounded-lg bg-[#0e1420]" />)}</div>
+                    <div className="space-y-2">
+                      {[1, 2, 3].map((i) => <SkeletonCard key={i} height="h-40" />)}
+                    </div>
                   ) : offers.length === 0 ? (
                     <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-8 text-center">
                       <Inbox className="w-5 h-5 text-muted-foreground mx-auto mb-2" />
