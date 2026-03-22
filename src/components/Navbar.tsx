@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Bell, Globe, ShieldCheck, ChevronDown } from "lucide-react";
-import logoBlack from "@/assets/logo-black.png";
+import logoColor from "@/assets/logo-color.png";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
@@ -20,9 +20,11 @@ const LANGS = [
 ];
 
 const NAV_LINKS = [
-  { label: "directory", to: "/directory" },
-  { label: "trending", to: "/trending" },
-  { label: "pricing", to: "/pricing" },
+  { label: "Browse", to: "/" },
+  { label: "Directory", to: "/directory" },
+  { label: "Pricing", to: "/pricing" },
+  { label: "For Artists", to: "/auth?tab=signup" },
+  { label: "For Promoters", to: "/auth?tab=signup" },
 ];
 
 export default function Navbar() {
