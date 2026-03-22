@@ -60,6 +60,18 @@ export default function AdminUsers() {
     queryClient.invalidateQueries({ queryKey: ["admin-users"] });
   };
 
+  const toggleAdmin = async (userId: string) => {
+    // Check if user already has admin role
+    const { data: existing } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    // We need to use edge function since only service_role can insert/delete user_roles
+    const { error } = await supabase.functions.invoke("admin-claim-action", {
+      body: { action: existing ? "remove_admin" : "grant_admin", user_id: userId },
+    });
+    if (error) { toast.error("Failed to update admin role"); return; }
+    toast.success(existing ? "Admin role removed" : "Admin role granted");
+    queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+  };
+
   const toggleSuspend = async (userId: string, current: boolean) => {
     const { error } = await supabase.from("profiles").update({ suspended: !current } as any).eq("user_id", userId);
     if (error) { toast.error("Failed to update"); return; }
