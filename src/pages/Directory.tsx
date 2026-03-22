@@ -376,7 +376,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
 
           {/* Genre filter (artists only) */}
           {isArtistTab && artistGenres.length > 0 && (
-            <div className="flex gap-1.5 overflow-x-auto pb-1 mt-4">
+            <div className="flex flex-wrap gap-1.5 mt-4">
               <button
                 onClick={() => setGenreFilter(null)}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all active:scale-[0.97] ${
