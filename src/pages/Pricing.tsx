@@ -171,7 +171,7 @@ export default function Pricing() {
           </div>
         )}
 
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-3 gap-5 items-start">
           {PLANS.map((plan, i) => {
             const isCurrentPlan = currentPlan === plan.tier;
             const isLoading = loadingTier === plan.tier;
@@ -180,23 +180,41 @@ export default function Pricing() {
               <div
                 key={plan.name}
                 data-reveal
-                className={`opacity-0 rounded-2xl p-6 border transition-all duration-300 ${
-                  plan.highlight
-                    ? "bg-card border-primary/40 glow-primary scale-[1.02]"
-                    : "bg-card border-border hover:border-border/80"
-                } ${isCurrentPlan ? "ring-2 ring-primary/50" : ""}`}
-                style={{ animationDelay: `${i * 100}ms` }}
+                className="opacity-0 relative rounded-2xl p-6 border backdrop-blur-[12px] transition-all duration-300"
+                style={{
+                  animationDelay: `${i * 100}ms`,
+                  background: plan.highlight ? "rgba(200,255,62,0.04)" : "rgba(14, 20, 32, 0.6)",
+                  border: plan.highlight ? "1px solid rgba(200,255,62,0.4)" : "0.5px solid rgba(255,255,255,0.07)",
+                  boxShadow: plan.highlight
+                    ? "0 0 60px rgba(200,255,62,0.08), 0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)"
+                    : "0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)",
+                }}
               >
+                {plan.highlight && !isCurrentPlan && (
+                  <span
+                    className="absolute font-display text-[11px] font-bold uppercase tracking-wider rounded-full bg-primary text-primary-foreground"
+                    style={{ top: -14, left: "50%", transform: "translateX(-50%)", padding: "4px 16px" }}
+                  >
+                    Popular
+                  </span>
+                )}
                 {isCurrentPlan && (
                   <span className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-[#3EFFBE] text-[#080C14] mb-4">Your Plan</span>
-                )}
-                {plan.highlight && !isCurrentPlan && (
-                  <span className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-primary text-primary-foreground mb-4">Most popular</span>
                 )}
                 <h3 className="font-display text-xl font-bold mb-1">{plan.name}</h3>
                 <p className="text-sm text-muted-foreground mb-4">{plan.desc}</p>
                 <div className="mb-1">
-                  <span className="font-display text-4xl font-bold">{plan.price}</span>
+                  <span
+                    className="font-display text-4xl font-bold bg-clip-text"
+                    style={{
+                      background: "linear-gradient(135deg, #FFFFFF, hsl(82 100% 62%))",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    {plan.price}
+                  </span>
                   <span className="text-muted-foreground text-sm">{plan.period}</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-6">
