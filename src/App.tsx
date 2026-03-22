@@ -31,6 +31,7 @@ const Insights = lazy(() => import("@/pages/Insights"));
 const AdminClaims = lazy(() => import("@/pages/AdminClaims"));
 const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
 const PresalePage = lazy(() => import("@/pages/PresalePage"));
+const ReviewPage = lazy(() => import("@/pages/ReviewPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const Welcome = lazy(() => import("@/pages/Welcome"));
 
@@ -77,6 +78,7 @@ const App = () => (
               <Route path="/admin/claims" element={<ProtectedRoute><AdminClaims /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/presale/:bookingId" element={<PresalePage />} />
+              <Route path="/review/:bookingId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

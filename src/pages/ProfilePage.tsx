@@ -654,49 +654,62 @@ export default function ProfilePage() {
         {reviews.length > 0 && (
           <div className="rounded-xl bg-[#0E1420] border border-white/[0.06] p-5 mb-4">
             <div className="flex items-center gap-2 mb-4">
-              <Star className="w-4 h-4 text-[#C8FF3E] fill-[#C8FF3E]" />
+              <Star className="w-4 h-4 text-primary fill-primary" />
               <h2 className="font-syne text-sm font-semibold text-muted-foreground uppercase tracking-wider">Reviews</h2>
               <span className="text-xs text-muted-foreground ml-auto">
                 <span className="font-semibold text-foreground">{avgRating} ★</span> ({reviews.length} review{reviews.length !== 1 ? "s" : ""})
               </span>
             </div>
             <div className="space-y-4">
-              {reviews.map((r) => (
-                <div key={r.id} className="flex gap-3">
-                  {r.reviewer_avatar ? (
-                    <img src={r.reviewer_avatar} alt="" className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
-                  ) : (
-                    <div className="w-9 h-9 rounded-full bg-[#141B28] flex items-center justify-center text-xs font-syne font-bold text-muted-foreground flex-shrink-0">
-                      {(r.reviewer_name ?? "A").charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                      <span className="text-sm font-medium">{r.reviewer_name}</span>
-                      <div className="flex gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={cn(
-                              "w-3 h-3",
-                              i < r.rating ? "text-[#C8FF3E] fill-[#C8FF3E]" : "text-white/10"
-                            )}
-                          />
-                        ))}
+              {reviews.map((r) => {
+                // Format reviewer name as "First L."
+                const parts = (r.reviewer_name ?? "Anonymous").split(" ");
+                const displayReviewerName = parts.length > 1
+                  ? `${parts[0]} ${parts[parts.length - 1].charAt(0)}.`
+                  : parts[0];
+
+                return (
+                  <div key={r.id} className="flex gap-3">
+                    {r.reviewer_avatar ? (
+                      <img src={r.reviewer_avatar} alt="" className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-[#141B28] flex items-center justify-center text-xs font-syne font-bold text-muted-foreground flex-shrink-0">
+                        {(r.reviewer_name ?? "A").charAt(0).toUpperCase()}
                       </div>
-                      {r.booking_venue && (
-                        <span className="text-[10px] text-[#5A6478]">at {r.booking_venue}</span>
-                      )}
-                      <span className="text-[10px] text-[#5A6478] ml-auto flex-shrink-0">
-                        {format(new Date(r.created_at), "MMM d, yyyy")}
-                      </span>
-                    </div>
-                    {r.comment && (
-                      <p className="text-sm text-[#8892A4] leading-relaxed">{r.comment}</p>
                     )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <span className="text-sm font-medium">{displayReviewerName}</span>
+                        <div className="flex gap-0.5">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <Star
+                              key={i}
+                              className={cn(
+                                "w-3 h-3",
+                                i < r.rating ? "text-primary fill-primary" : "text-white/10"
+                              )}
+                            />
+                          ))}
+                        </div>
+                        <Badge className="bg-[#3EFFBE]/10 text-[#3EFFBE] border-[#3EFFBE]/20 text-[9px] px-1.5 py-0">
+                          ✓ Verified booking
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2 mb-1">
+                        {r.booking_venue && (
+                          <span className="text-[10px] text-muted-foreground">at {r.booking_venue}</span>
+                        )}
+                        <span className="text-[10px] text-muted-foreground ml-auto flex-shrink-0">
+                          {format(new Date(r.created_at), "MMM d, yyyy")}
+                        </span>
+                      </div>
+                      {r.comment && (
+                        <p className="text-sm text-muted-foreground leading-relaxed">{r.comment}</p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

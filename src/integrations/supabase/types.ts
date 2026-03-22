@@ -920,6 +920,7 @@ export type Database = {
           banner_url: string | null
           beatport: string | null
           bio: string | null
+          bookscore: number | null
           city: string | null
           completion_score: number | null
           created_at: string
@@ -962,6 +963,7 @@ export type Database = {
           banner_url?: string | null
           beatport?: string | null
           bio?: string | null
+          bookscore?: number | null
           city?: string | null
           completion_score?: number | null
           created_at?: string
@@ -1004,6 +1006,7 @@ export type Database = {
           banner_url?: string | null
           beatport?: string | null
           bio?: string | null
+          bookscore?: number | null
           city?: string | null
           completion_score?: number | null
           created_at?: string
@@ -1070,6 +1073,7 @@ export type Database = {
       reviews: {
         Row: {
           booking_id: string
+          category_ratings: Json | null
           comment: string | null
           created_at: string
           id: string
@@ -1079,6 +1083,7 @@ export type Database = {
         }
         Insert: {
           booking_id: string
+          category_ratings?: Json | null
           comment?: string | null
           created_at?: string
           id?: string
@@ -1088,6 +1093,7 @@ export type Database = {
         }
         Update: {
           booking_id?: string
+          category_ratings?: Json | null
           comment?: string | null
           created_at?: string
           id?: string
