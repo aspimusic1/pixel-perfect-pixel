@@ -274,6 +274,9 @@ export default function ArtistDashboard() {
               <div className="w-full mt-1 space-y-1.5">
                 <InsuranceOfferCard bookingId={booking.id} guarantee={offer.guarantee} userRole="artist" />
                 <PresaleSection bookingId={booking.id} isArtist={true} isPro={profile?.subscription_plan === "pro" || profile?.subscription_plan === "agency"} />
+                <Link to="/directory?role=photo_video" className="flex items-center gap-1.5 text-[11px] text-[#3EC8FF] hover:text-[#3EC8FF]/80 transition-colors mt-1">
+                  <Camera className="w-3 h-3" /> book a photographer for this show →
+                </Link>
               </div>
             )}
           </div>
