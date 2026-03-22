@@ -32,6 +32,10 @@ type ArtistListing = {
   name: string;
   genre: string | null;
   upcoming_concerts: number;
+  bandsintown_url: string | null;
+  claim_status: string;
+  claimed_by: string | null;
+  origin: string | null;
 };
 
 type VenueListing = {
