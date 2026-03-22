@@ -74,7 +74,7 @@ export default function RoleSwitcherSection() {
   const details = ROLE_DETAILS[activeRole];
 
   return (
-    <section className="fade-in-section py-28 px-4">
+    <section className="fade-in-section py-16 sm:py-28 px-4">
       <div className="container mx-auto max-w-4xl">
         <h2 className="font-display text-2xl sm:text-4xl font-bold text-center mb-3 lowercase tracking-tight">
           built for every role in live music
