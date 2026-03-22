@@ -49,7 +49,7 @@ export default function RecommendedArtists() {
           <Loader2 className="w-4 h-4 animate-spin" /> Finding artists for you…
         </div>
       ) : (
-        <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {recs.map((rec) => (
             <Link
               key={rec.user_id}
