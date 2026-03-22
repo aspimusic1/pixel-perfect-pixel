@@ -20,7 +20,7 @@ export default function HeroSection() {
         </div>
 
         <h1
-          className="animate-reveal-up font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-[-0.03em] mb-7 lowercase"
+          className="animate-reveal-up font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.03em] mb-7 lowercase"
           style={{ animationDelay: "80ms", lineHeight: "0.92" }}
         >
           book shows.{" "}
