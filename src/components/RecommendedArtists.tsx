@@ -49,12 +49,12 @@ export default function RecommendedArtists() {
           <Loader2 className="w-4 h-4 animate-spin" /> Finding artists for you…
         </div>
       ) : (
-        <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {recs.map((rec) => (
             <Link
               key={rec.user_id}
               to={rec.slug ? `/p/${rec.slug}` : "/directory"}
-              className="shrink-0 w-52 rounded-xl bg-card border border-border p-4 hover:border-primary/30 transition-colors group"
+              className="rounded-xl bg-card border border-border p-4 hover:border-primary/30 transition-colors group"
             >
               <div className="flex items-center gap-2 mb-2">
                 {rec.avatar_url ? (
