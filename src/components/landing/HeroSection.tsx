@@ -1,58 +1,111 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, Check, X } from "lucide-react";
+
+function MockupWindow() {
+  return (
+    <div className="rounded-2xl overflow-hidden border border-white/[0.08] bg-card shadow-[0_32px_80px_hsl(var(--primary)/0.1),0_0_0_1px_hsl(var(--primary)/0.05)]">
+      {/* macOS chrome bar */}
+      <div className="h-8 bg-secondary flex items-center px-3 gap-2 border-b border-white/[0.06]">
+        <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+        <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
+        <span className="w-3 h-3 rounded-full bg-[#28C840]" />
+        <span className="ml-3 text-[11px] text-muted-foreground font-body">getbooked.live/dashboard</span>
+      </div>
+
+      {/* Mini dashboard UI */}
+      <div className="p-5 sm:p-6 space-y-4">
+        {/* Metric cards row */}
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { label: "offers", value: "8", color: "text-primary" },
+            { label: "bookings", value: "3", color: "text-role-venue" },
+            { label: "earnings", value: "$4.2k", color: "text-foreground" },
+          ].map((m) => (
+            <div key={m.label} className="rounded-xl bg-secondary/60 border border-white/[0.06] p-3 sm:p-4">
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-body uppercase tracking-wider">{m.label}</p>
+              <p className={`text-lg sm:text-2xl font-display font-bold ${m.color} mt-1 tabular-nums`}>{m.value}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Offer card */}
+        <div className="rounded-xl bg-secondary/40 border border-white/[0.06] p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground font-body">new offer · house of blues, chicago</p>
+              <p className="text-sm font-display font-bold text-foreground mt-1">$2,500 guarantee · dec 14</p>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <button className="h-8 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-display font-bold flex items-center gap-1">
+                <Check className="w-3 h-3" /> accept
+              </button>
+              <button className="h-8 px-3 rounded-lg border border-white/[0.1] text-muted-foreground text-xs font-display flex items-center gap-1">
+                <X className="w-3 h-3" /> decline
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function HeroSection() {
   return (
-    <section className="relative pt-36 pb-28 px-4 overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full bg-primary/[0.06] blur-[150px] pointer-events-none" />
-      <div className="absolute top-[100px] right-[10%] w-[300px] h-[300px] rounded-full bg-role-promoter/[0.04] blur-[120px] pointer-events-none" />
+    <section className="relative pt-32 sm:pt-40 pb-20 sm:pb-28 px-4 overflow-hidden">
+      {/* Subtle ambient glow */}
+      <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-primary/[0.04] blur-[120px] pointer-events-none" />
 
-      <div className="container mx-auto max-w-4xl text-center relative">
-        <div
-          className="animate-reveal-up inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/[0.06] mb-10"
-        >
-          <Zap className="w-3.5 h-3.5 text-primary" />
-          <span className="text-[11px] tracking-[0.15em] uppercase text-primary font-display font-medium">
-            the live music operating system
-          </span>
+      <div className="container mx-auto max-w-3xl text-center relative">
+        {/* Label tag */}
+        <div className="animate-reveal-up">
+          <span className="section-label">all-in-one music booking platform</span>
         </div>
 
+        {/* Headline */}
         <h1
-          className="animate-reveal-up font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.03em] mb-7 lowercase"
-          style={{ animationDelay: "80ms", lineHeight: "0.92" }}
+          className="animate-reveal-up font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase"
+          style={{ animationDelay: "80ms", fontSize: "clamp(36px, 6vw, 64px)", lineHeight: "1.05" }}
         >
-          book shows.{" "}
-          <span className="text-gradient-primary">get paid.</span>
+          book shows. get paid.
           <br />
           grow your career.
         </h1>
 
+        {/* Subtext */}
         <p
-          className="animate-reveal-up text-base sm:text-lg text-muted-foreground max-w-xl mx-auto mb-12 leading-relaxed font-body"
-          style={{ animationDelay: "160ms" }}
+          className="animate-reveal-up section-subtext mx-auto mb-10"
+          style={{ animationDelay: "140ms" }}
         >
           the all-in-one platform for artists, promoters, venues, and crew — from first offer to final payout.
         </p>
 
-        <div className="animate-reveal-up flex flex-col sm:flex-row gap-3 justify-center" style={{ animationDelay: "240ms" }}>
+        {/* CTA buttons */}
+        <div className="animate-reveal-up flex flex-col sm:flex-row gap-3 justify-center" style={{ animationDelay: "200ms" }}>
           <Link to="/auth?tab=signup">
-            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold text-sm px-10 h-13 active:scale-[0.96] transition-transform lowercase shadow-[0_0_40px_-8px_hsl(var(--primary)/0.4)]">
-              start free <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
+            <button className="bg-primary text-primary-foreground font-display font-bold text-sm rounded-[10px] px-8 h-12 hover:bg-primary/90 active:scale-[0.96] transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+              start free <ArrowRight className="w-4 h-4" />
+            </button>
           </Link>
           <Link to="/directory">
-            <Button size="lg" variant="outline" className="border-border hover:border-primary/30 text-foreground hover:bg-secondary font-display font-medium text-sm px-10 h-13 active:scale-[0.96] transition-transform lowercase">
+            <button className="border border-white/[0.1] text-foreground font-display font-medium text-sm rounded-[10px] px-8 h-12 hover:bg-secondary hover:border-white/[0.15] active:scale-[0.96] transition-all w-full sm:w-auto">
               browse directory
-            </Button>
+            </button>
           </Link>
+        </div>
+
+        {/* Product screenshot mockup */}
+        <div
+          className="animate-reveal-up mt-14 sm:mt-20 max-w-2xl mx-auto"
+          style={{ animationDelay: "320ms" }}
+        >
+          <MockupWindow />
         </div>
 
         {/* Social proof */}
         <div
-          className="animate-reveal-up mt-16 grid grid-cols-3 gap-6 sm:flex sm:justify-center sm:gap-16"
-          style={{ animationDelay: "360ms" }}
+          className="animate-reveal-up mt-14 grid grid-cols-3 gap-4 sm:flex sm:justify-center sm:gap-14"
+          style={{ animationDelay: "440ms" }}
         >
           {[
             { value: "2,400+", label: "artists" },
@@ -60,7 +113,7 @@ export default function HeroSection() {
             { value: "$4.2M", label: "paid out" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
-              <p className="font-display font-bold text-2xl sm:text-3xl text-foreground tabular-nums">{stat.value}</p>
+              <p className="font-display font-bold text-xl sm:text-2xl text-foreground tabular-nums">{stat.value}</p>
               <p className="text-[11px] text-muted-foreground font-body tracking-wide uppercase mt-1">{stat.label}</p>
             </div>
           ))}

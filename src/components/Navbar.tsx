@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Bell, Globe, Lock, ShieldCheck, ChevronDown, Compass, BarChart3, Briefcase, Music, MapPin, TrendingUp, DollarSign, Route, PieChart, LayoutDashboard, Users, Zap } from "lucide-react";
+import { Menu, X, Bell, Globe, ShieldCheck, ChevronDown } from "lucide-react";
 import logoBlack from "@/assets/logo-black.png";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,14 +11,18 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 
 const LANGS = [
   { code: "en", label: "English", flag: "🇺🇸" },
   { code: "es", label: "Español", flag: "🇪🇸" },
   { code: "pt", label: "Português", flag: "🇧🇷" },
+];
+
+const NAV_LINKS = [
+  { label: "directory", to: "/directory" },
+  { label: "trending", to: "/trending" },
+  { label: "pricing", to: "/pricing" },
 ];
 
 export default function Navbar() {
@@ -64,9 +68,6 @@ export default function Navbar() {
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const role = profile?.role;
-  const isFree = !profile || profile.subscription_plan === "free";
-  const directoryHref = isFree ? "/pricing" : "/directory";
-
   const dashboardRoute = (() => {
     switch (role) {
       case "promoter": return "/promoter-dashboard";
@@ -77,129 +78,113 @@ export default function Navbar() {
     }
   })();
 
-  // Build role-aware menu groups
-  const discoverItems = [
-    { label: "browse directory", to: directoryHref, icon: Users, locked: isFree },
-    { label: "trending", to: "/trending", icon: TrendingUp },
-    { label: "pricing", to: "/pricing", icon: DollarSign },
-  ];
-
-  const getMyStuffItems = () => {
-    const items = [
-      { label: "dashboard", to: dashboardRoute, icon: LayoutDashboard },
-    ];
-    if (role === "promoter") {
-      items.push({ label: "pipeline", to: "/pipeline", icon: Briefcase });
-    }
-    if (role === "artist") {
-      items.push({ label: "tax center", to: "/tax", icon: PieChart });
-    }
-    items.push({ label: "insights", to: "/insights", icon: BarChart3 });
-    items.push({ label: "tours", to: "/tours", icon: Route });
-    return items;
-  };
-
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-primary">
-        <div className="container mx-auto flex items-center justify-between h-14 px-4">
-          <Link to="/" className="flex items-center" onClick={closeMenu}>
-            <img src={logoBlack} alt="GetBooked.Live" className="h-[22px]" />
+      <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] bg-background/95 backdrop-blur-2xl border-b border-white/[0.06]">
+        <div className="flex items-center justify-between h-full px-6 md:px-8 max-w-[1400px] mx-auto">
+          {/* Logo */}
+          <Link to="/" className="flex items-center shrink-0" onClick={closeMenu}>
+            <img src={logoBlack} alt="GetBooked.Live" className="h-[20px]" />
           </Link>
 
-          {/* Desktop */}
-          <div className="hidden md:flex items-center gap-5">
-            {/* Discover dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase outline-none">
-                <Compass className="w-3.5 h-3.5" />
-                discover
-                <ChevronDown className="w-3 h-3 opacity-60" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="min-w-[180px]">
-                {discoverItems.map(item => (
-                  <DropdownMenuItem key={item.to} onClick={() => navigate(item.to)} className="text-xs lowercase font-display cursor-pointer">
-                    <item.icon className="w-3.5 h-3.5 mr-2 opacity-60" />
-                    {item.label}
-                    {item.locked && <Lock className="w-3 h-3 ml-auto opacity-40" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
+          {/* Center nav links — desktop */}
+          <div className="hidden md:flex items-center gap-8">
+            {NAV_LINKS.map(link => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`text-sm font-body transition-colors ${
+                  location.pathname === link.to ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
             {user && (
+              <Link
+                to={dashboardRoute}
+                className={`text-sm font-body transition-colors ${
+                  location.pathname === dashboardRoute ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                dashboard
+              </Link>
+            )}
+            {user && isAdmin && (
+              <Link
+                to="/admin"
+                className="text-sm font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                admin
+              </Link>
+            )}
+          </div>
+
+          {/* Right side — desktop */}
+          <div className="hidden md:flex items-center gap-3">
+            <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+
+            {user ? (
               <>
-                {/* My Stuff dropdown */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase outline-none">
-                    <Briefcase className="w-3.5 h-3.5" />
-                    my stuff
-                    <ChevronDown className="w-3 h-3 opacity-60" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="min-w-[180px]">
-                    <DropdownMenuLabel className="text-[10px] text-muted-foreground uppercase tracking-wider font-normal">
-                      {role === "photo_video" ? "photo/video" : role ?? "member"}
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {getMyStuffItems().map(item => (
-                      <DropdownMenuItem key={item.to} onClick={() => navigate(item.to)} className="text-xs lowercase font-display cursor-pointer">
-                        <item.icon className="w-3.5 h-3.5 mr-2 opacity-60" />
-                        {item.label}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Admin */}
-                {isAdmin && (
-                  <Link to="/admin" className="flex items-center gap-1.5 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors font-display lowercase">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    <span className="bg-[#C8FF3E]/15 text-[#C8FF3E] px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">admin</span>
-                  </Link>
-                )}
-
-                {/* Notifications */}
-                <button onClick={() => navigate("/notifications")} className="relative text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                <button
+                  onClick={() => navigate("/notifications")}
+                  className="relative text-muted-foreground hover:text-foreground transition-colors p-2"
+                >
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-background text-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
+                    <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
+                      {unreadCount}
+                    </span>
                   )}
                 </button>
-                <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
-
-                {/* User avatar */}
-                <button onClick={() => navigate("/setup")} className="w-8 h-8 rounded-full overflow-hidden border border-white/10 hover:border-white/25 transition-colors flex items-center justify-center bg-secondary active:scale-[0.95]">
+                <button
+                  onClick={() => navigate("/setup")}
+                  className="w-8 h-8 rounded-full overflow-hidden border border-white/10 hover:border-white/20 transition-colors flex items-center justify-center bg-secondary active:scale-[0.96]"
+                >
                   {profile?.avatar_url ? (
                     <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-xs font-display font-bold text-foreground">{(profile?.display_name ?? "?")[0].toUpperCase()}</span>
+                    <span className="text-xs font-display font-bold text-foreground">
+                      {(profile?.display_name ?? "?")[0].toUpperCase()}
+                    </span>
                   )}
                 </button>
-
-                <Button size="sm" variant="ghost" onClick={signOut} className="text-xs font-display lowercase text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">{t("nav.signOut")}</Button>
+                <button
+                  onClick={signOut}
+                  className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t("nav.signOut")}
+                </button>
               </>
-            )}
-            {!user && (
+            ) : (
               <>
-                <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
-                <Link to="/auth"><Button size="sm" variant="ghost" className="text-xs font-display lowercase text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10">{t("nav.signIn")}</Button></Link>
-                <Link to="/auth?tab=signup"><Button size="sm" className="text-xs font-display font-semibold lowercase bg-primary-foreground text-primary hover:bg-primary-foreground/90">{t("nav.startFree")}</Button></Link>
+                <Link to="/auth" className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
+                  {t("nav.signIn")}
+                </Link>
+                <Link to="/auth?tab=signup">
+                  <button className="bg-primary text-primary-foreground font-display font-bold text-[13px] rounded-[10px] px-5 py-2.5 hover:bg-primary/90 active:scale-[0.96] transition-all">
+                    {t("nav.startFree")}
+                  </button>
+                </Link>
               </>
             )}
           </div>
 
-          {/* Mobile toggle */}
-          <div className="flex md:hidden items-center gap-2">
+          {/* Mobile right */}
+          <div className="flex md:hidden items-center gap-1">
             {user && (
-              <button onClick={() => navigate("/notifications")} className="relative text-primary-foreground/70 hover:text-primary-foreground transition-colors p-2 -mr-1">
+              <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors p-2">
                 <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-background text-foreground text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>
+                  <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
+                    {unreadCount}
+                  </span>
                 )}
               </button>
             )}
             <button
-              className="text-primary-foreground p-2 -mr-2 active:scale-[0.95] transition-transform"
+              className="text-foreground p-2 active:scale-[0.95] transition-transform"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
             >
@@ -218,50 +203,32 @@ export default function Navbar() {
 
       {/* Mobile slide-out */}
       <div
-        className={`fixed top-14 right-0 bottom-0 z-50 w-72 bg-card border-l border-border transform transition-transform duration-200 ease-out md:hidden ${
+        className={`fixed top-[60px] right-0 bottom-0 z-50 w-72 bg-card border-l border-white/[0.06] transform transition-transform duration-200 ease-out md:hidden ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
-          <nav className="flex flex-col gap-0.5">
-            {/* Discover section */}
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest px-3 mb-1 mt-1">discover</p>
-            {discoverItems.map(item => (
-              <MobileLink key={item.to} to={item.to} onClick={closeMenu}>
-                <item.icon className="w-3.5 h-3.5 mr-2 opacity-60 inline" />
-                {item.label}
-                {item.locked && <Lock className="w-3 h-3 ml-1 text-role-venue inline" />}
+          <nav className="flex flex-col gap-1">
+            {NAV_LINKS.map(link => (
+              <MobileLink key={link.to} to={link.to} onClick={closeMenu}>
+                {link.label}
               </MobileLink>
             ))}
 
             {user ? (
               <>
-                <div className="border-t border-border my-3" />
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest px-3 mb-1">
-                  my stuff · {role === "photo_video" ? "photo/video" : role ?? "member"}
-                </p>
-                {getMyStuffItems().map(item => (
-                  <MobileLink key={item.to} to={item.to} onClick={closeMenu}>
-                    <item.icon className="w-3.5 h-3.5 mr-2 opacity-60 inline" />
-                    {item.label}
-                  </MobileLink>
-                ))}
+                <div className="border-t border-white/[0.06] my-3" />
+                <MobileLink to={dashboardRoute} onClick={closeMenu}>dashboard</MobileLink>
+                <MobileLink to="/insights" onClick={closeMenu}>insights</MobileLink>
+                <MobileLink to="/tours" onClick={closeMenu}>tours</MobileLink>
+                {isAdmin && <MobileLink to="/admin" onClick={closeMenu}>admin</MobileLink>}
 
-                {isAdmin && (
-                  <>
-                    <div className="border-t border-border my-3" />
-                    <MobileLink to="/admin" onClick={closeMenu}>
-                      <ShieldCheck className="w-3.5 h-3.5 mr-2 inline" /> admin
-                    </MobileLink>
-                  </>
-                )}
-
-                <div className="border-t border-border my-3" />
+                <div className="border-t border-white/[0.06] my-3" />
                 <div className="px-3 py-2">
                   <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
                 </div>
                 <button
-                  className="w-full text-left py-3 px-3 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors active:scale-[0.97] font-display lowercase"
+                  className="w-full text-left py-3 px-3 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors active:scale-[0.97] font-body"
                   onClick={() => { signOut(); closeMenu(); }}
                 >
                   {t("nav.signOut")}
@@ -269,19 +236,19 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <div className="border-t border-border my-4" />
+                <div className="border-t border-white/[0.06] my-4" />
                 <div className="px-3 py-2">
                   <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
                 </div>
                 <Link to="/auth" onClick={closeMenu}>
-                  <Button variant="outline" className="w-full text-sm h-11 font-display lowercase">
+                  <Button variant="outline" className="w-full text-sm h-11 font-body">
                     {t("nav.signIn")}
                   </Button>
                 </Link>
                 <Link to="/auth?tab=signup" onClick={closeMenu} className="mt-2">
-                  <Button className="w-full text-sm font-display font-semibold h-11 lowercase">
+                  <button className="w-full bg-primary text-primary-foreground font-display font-bold text-[13px] rounded-[10px] h-11 hover:bg-primary/90 active:scale-[0.96] transition-all">
                     {t("nav.startFree")}
-                  </Button>
+                  </button>
                 </Link>
               </>
             )}
@@ -297,7 +264,7 @@ function MobileLink({ to, onClick, children }: { to: string; onClick: () => void
     <Link
       to={to}
       onClick={onClick}
-      className="py-3 px-3 rounded-lg text-sm font-display font-medium text-foreground hover:bg-secondary transition-colors active:scale-[0.97] lowercase"
+      className="py-3 px-3 rounded-lg text-sm font-body font-medium text-foreground hover:bg-secondary transition-colors active:scale-[0.97]"
     >
       {children}
     </Link>
@@ -309,7 +276,7 @@ function LanguageSelector({ currentLang, onChange }: { currentLang: string; onCh
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1.5 text-xs text-primary-foreground/70 hover:text-primary-foreground transition-colors active:scale-[0.97]">
+        <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors active:scale-[0.97]">
           <Globe className="w-3.5 h-3.5" />
           <span>{current.flag}</span>
         </button>
