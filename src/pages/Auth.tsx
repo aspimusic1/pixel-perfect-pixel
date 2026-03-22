@@ -155,7 +155,7 @@ export default function Auth() {
                 </button>
               )}
             </div>
-            <Button type="submit" disabled={loading} className="w-full font-display font-semibold h-11 lowercase bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+            <Button type="submit" disabled={loading} className="w-full font-display font-semibold h-11 lowercase bg-[#C8FF3E] text-[#080C14] hover:bg-[#C8FF3E]/90">
               {loading ? "loading..." : isSignUp ? "create account" : "sign in"}
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
