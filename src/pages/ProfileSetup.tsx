@@ -15,7 +15,7 @@ const ROLE_META: Record<string, { icon: any; label: string; accent: string; step
   promoter: { icon: Megaphone, label: "Promoter", accent: "text-[hsl(var(--role-promoter))]", stepLabel: "Set up your promoter profile" },
   venue: { icon: Building2, label: "Venue", accent: "text-[hsl(var(--role-venue))]", stepLabel: "Set up your venue profile" },
   production: { icon: Wrench, label: "Production", accent: "text-[hsl(var(--role-production))]", stepLabel: "Set up your production profile" },
-  photo_video: { icon: CameraIcon, label: "Photo/Video", accent: "text-[hsl(var(--role-photo))]", stepLabel: "Set up your creative profile" },
+  photo_video: { icon: CameraIcon, label: "Creative", accent: "text-[hsl(var(--role-photo))]", stepLabel: "Set up your creative profile" },
 };
 
 export default function ProfileSetup() {

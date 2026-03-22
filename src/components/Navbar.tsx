@@ -20,11 +20,11 @@ const LANGS = [
 ];
 
 const NAV_LINKS = [
-  { label: "Browse", to: "/" },
-  { label: "Directory", to: "/directory" },
-  { label: "Pricing", to: "/pricing" },
-  { label: "For Artists", to: "/auth?tab=signup" },
-  { label: "For Promoters", to: "/auth?tab=signup" },
+  { label: "Browse", to: "/directory", pro: true },
+  { label: "Directory", to: "/directory", pro: false },
+  { label: "Pricing", to: "/pricing", pro: false },
+  { label: "For Artists", to: "/auth?tab=signup&role=artist", pro: false },
+  { label: "For Promoters", to: "/auth?tab=signup&role=promoter", pro: false },
 ];
 
 export default function Navbar() {
@@ -91,17 +91,31 @@ export default function Navbar() {
 
           {/* Center nav links — desktop */}
           <div className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map(link => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`text-sm font-body transition-colors ${
-                  location.pathname === link.to ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map(link => {
+              if (link.pro && !user) {
+                return (
+                  <Link
+                    key={link.label}
+                    to="/pricing"
+                    className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+                  >
+                    {link.label}
+                    <span className="text-[9px] font-display font-bold bg-primary/20 text-primary px-1.5 py-0.5 rounded-full leading-none">PRO</span>
+                  </Link>
+                );
+              }
+              return (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className={`text-sm font-body transition-colors ${
+                    location.pathname === link.to ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             {user && (
               <Link
                 to={dashboardRoute}
@@ -114,9 +128,10 @@ export default function Navbar() {
             )}
             {!user && (
               <Link
-                to="/auth?admin=true"
+                to="/auth"
                 className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
               >
+                <ShieldCheck className="w-3.5 h-3.5" />
                 Admin Login
               </Link>
             )}
@@ -219,11 +234,25 @@ export default function Navbar() {
       >
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-1">
-            {NAV_LINKS.map(link => (
-              <MobileLink key={link.to} to={link.to} onClick={closeMenu}>
-                {link.label}
+            {NAV_LINKS.map(link => {
+              if (link.pro && !user) {
+                return (
+                  <MobileLink key={link.label} to="/pricing" onClick={closeMenu}>
+                    {link.label} <span className="text-[9px] font-display font-bold bg-primary/20 text-primary px-1.5 py-0.5 rounded-full leading-none ml-1">PRO</span>
+                  </MobileLink>
+                );
+              }
+              return (
+                <MobileLink key={link.label} to={link.to} onClick={closeMenu}>
+                  {link.label}
+                </MobileLink>
+              );
+            })}
+            {!user && (
+              <MobileLink to="/auth" onClick={closeMenu}>
+                Admin Login
               </MobileLink>
-            ))}
+            )}
 
             {user ? (
               <>

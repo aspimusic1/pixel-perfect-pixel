@@ -15,7 +15,7 @@ const ROLES = [
   { value: "promoter", label: "Promoter", icon: Megaphone, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "Find talent. Fill rooms. Build your brand." },
   { value: "venue", label: "Venue", icon: Building2, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "List your space. Book artists. Sell out shows." },
   { value: "production", label: "Production", icon: Wrench, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "Crew up. Get hired. Run the show." },
-  { value: "photo_video", label: "Photo/Video", icon: Camera, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "Capture moments. Build your reel. Get booked." },
+  { value: "photo_video", label: "Creative", icon: Camera, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "Capture moments. Build your reel. Get booked." },
 ];
 
 export default function Auth() {

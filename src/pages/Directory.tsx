@@ -63,7 +63,7 @@ const ROLE_TABS = [
   { value: "venue", label: "Venues", icon: Building2 },
   { value: "promoter", label: "Promoters", icon: Users },
   { value: "production", label: "Production", icon: Wrench },
-  { value: "photo_video", label: "Photo/Video", icon: Camera },
+  { value: "photo_video", label: "Creative", icon: Camera },
 ];
 
 const roleColorMap: Record<string, string> = {
@@ -609,7 +609,7 @@ function ProfileCard({ p, flashBids, hasPaidPlan, onUpgrade }: {
           <h3 className="font-display font-semibold text-sm truncate">{p.display_name}</h3>
           {p.role && (
             <span className={`inline-block px-2 py-0.5 text-[10px] font-semibold rounded mt-1 ${roleColorMap[p.role] ?? ""}`}>
-              {p.role === "photo_video" ? "Photo/Video" : p.role.charAt(0).toUpperCase() + p.role.slice(1)}
+              {p.role === "photo_video" ? "Creative" : p.role.charAt(0).toUpperCase() + p.role.slice(1)}
             </span>
           )}
         </div>
