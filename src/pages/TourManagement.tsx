@@ -13,7 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import EditStopDialog from "@/components/EditStopDialog";
 import TransportSection from "@/components/TransportSection";
 
