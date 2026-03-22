@@ -122,7 +122,7 @@ export default function OfferFlow() {
     if (!recipientId) return;
     const fetchPlan = async () => {
       const { data } = await supabase
-        .from("public_profiles" as any)
+        .from("profiles")
         .select("subscription_plan")
         .eq("user_id", recipientId)
         .single();
