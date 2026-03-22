@@ -386,6 +386,9 @@ export default function ArtistDashboard() {
                   <BookingAgentPanel />
                 </>
               )}
+
+              {/* ─── Profile ─── */}
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>

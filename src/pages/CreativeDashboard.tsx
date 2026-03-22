@@ -97,6 +97,8 @@ export default function CreativeDashboard() {
                   </div>
                 </>
               )}
+
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>

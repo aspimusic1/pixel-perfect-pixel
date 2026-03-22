@@ -97,6 +97,8 @@ export default function ProductionDashboard() {
                   </div>
                 </>
               )}
+
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>

@@ -229,6 +229,8 @@ export default function PromoterDashboard() {
                   <RecommendedArtists />
                 </>
               )}
+
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>
