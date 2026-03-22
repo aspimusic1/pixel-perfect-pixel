@@ -62,7 +62,15 @@ export default function Navbar() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  const dashboardRoute = profile?.role === "promoter" ? "/promoter-dashboard" : "/artist-dashboard";
+  const dashboardRoute = (() => {
+    switch (profile?.role) {
+      case "promoter": return "/promoter-dashboard";
+      case "venue": return "/venue-manage";
+      case "production": return "/production-dashboard";
+      case "photo_video": return "/creative-dashboard";
+      default: return "/artist-dashboard";
+    }
+  })();
   const isFree = !profile || profile.subscription_plan === "free";
   const directoryHref = isFree ? "/pricing" : "/directory";
 
