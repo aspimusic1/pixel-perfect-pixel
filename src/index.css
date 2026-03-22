@@ -182,11 +182,37 @@
   display: none;
 }
 
-/* Smooth focus rings */
+/* Smooth focus rings — lime green for brand consistency */
 *:focus-visible {
-  outline: 2px solid hsl(var(--ring));
+  outline: 2px solid hsl(82 100% 62%);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+.skip-to-main:focus {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  width: auto;
+  height: auto;
+  padding: 12px 24px;
+  background: hsl(82 100% 62%);
+  color: hsl(220 20% 4%);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 8px;
+  z-index: 9999;
 }
 
 /* Mobile touch targets — enforce 44px minimum on interactive elements */

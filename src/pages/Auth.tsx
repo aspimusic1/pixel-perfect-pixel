@@ -122,6 +122,8 @@ export default function Auth() {
                     onChange={(e) => setResetEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
+                    aria-required="true"
+                    autoComplete="email"
                     className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30"
                   />
                 </div>
@@ -183,11 +185,11 @@ export default function Auth() {
               <>
                 <div>
                   <Label htmlFor="name" className="text-sm font-display font-medium lowercase text-muted-foreground">display name</Label>
-                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
+                  <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name or artist name" required aria-required="true" autoComplete="name" className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
                 </div>
                 <div>
-                  <Label className="text-sm font-display font-medium lowercase mb-2.5 block text-muted-foreground">I am a...</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <Label className="text-sm font-display font-medium lowercase mb-2.5 block text-muted-foreground" id="role-label">I am a...</Label>
+                  <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-labelledby="role-label">
                     {ROLES.map((role) => {
                       const Icon = role.icon;
                       const selected = selectedRole === role.value;
@@ -195,6 +197,8 @@ export default function Auth() {
                         <button
                           key={role.value}
                           type="button"
+                          role="radio"
+                          aria-checked={selected}
                           onClick={() => setSelectedRole(role.value)}
                           className={`px-3 py-2.5 rounded-lg border text-sm font-display font-medium transition-all active:scale-[0.96] flex items-center gap-2 lowercase ${
                             selected
@@ -202,7 +206,7 @@ export default function Auth() {
                               : "border-white/[0.08] text-muted-foreground hover:text-foreground hover:border-white/[0.15]"
                           }`}
                         >
-                          <Icon className="w-3.5 h-3.5 shrink-0" />
+                          <Icon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                           {role.label.toLowerCase()}
                         </button>
                       );
@@ -213,11 +217,11 @@ export default function Auth() {
             )}
             <div>
               <Label htmlFor="email" className="text-sm font-display font-medium lowercase text-muted-foreground">email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required aria-required="true" autoComplete="email" className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
             </div>
             <div>
               <Label htmlFor="password" className="text-sm font-display font-medium lowercase text-muted-foreground">password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required aria-required="true" minLength={6} autoComplete={isSignUp ? "new-password" : "current-password"} className="mt-2 bg-white/[0.04] border-white/[0.08] text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-[#C8FF3E]/30" />
               {!isSignUp && (
                 <button
                   type="button"

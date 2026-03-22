@@ -80,9 +80,18 @@ export default function Navbar() {
     }
   })();
 
+  // Close menu on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && menuOpen) setMenuOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [menuOpen]);
+
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] bg-background/95 backdrop-blur-2xl border-b border-white/[0.06]">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] bg-background/95 backdrop-blur-2xl border-b border-white/[0.06]" aria-label="Main navigation">
         <div className="flex items-center justify-between h-full px-6 md:px-8 max-w-[1400px] mx-auto">
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0" onClick={closeMenu}>
@@ -155,10 +164,11 @@ export default function Navbar() {
                 <button
                   onClick={() => navigate("/notifications")}
                   className="relative text-muted-foreground hover:text-foreground transition-colors p-2"
+                  aria-label={`View notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
                 >
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
+                    <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center" aria-hidden="true">
                       {unreadCount}
                     </span>
                   )}
@@ -199,10 +209,10 @@ export default function Navbar() {
           {/* Mobile right */}
           <div className="flex md:hidden items-center gap-1">
             {user && (
-              <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors p-2">
+              <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors p-2" aria-label={`View notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}>
                 <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
+                  <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center" aria-hidden="true">
                     {unreadCount}
                   </span>
                 )}
@@ -211,7 +221,9 @@ export default function Navbar() {
             <button
               className="text-foreground p-2 active:scale-[0.95] transition-transform"
               onClick={() => setMenuOpen(!menuOpen)}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav-menu"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -228,6 +240,10 @@ export default function Navbar() {
 
       {/* Mobile slide-out */}
       <div
+        id="mobile-nav-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
         className={`fixed top-[60px] right-0 bottom-0 z-50 w-72 bg-card border-l border-white/[0.06] transform transition-transform duration-200 ease-out md:hidden ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}

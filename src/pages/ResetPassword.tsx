@@ -68,6 +68,8 @@ export default function ResetPassword() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
+                  aria-required="true"
+                  autoComplete="new-password"
                   minLength={6}
                   className="mt-1.5 bg-white/[0.04] border-white/[0.08]"
                 />
@@ -81,6 +83,8 @@ export default function ResetPassword() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
                   required
+                  aria-required="true"
+                  autoComplete="new-password"
                   minLength={6}
                   className="mt-1.5 bg-white/[0.04] border-white/[0.08]"
                 />
