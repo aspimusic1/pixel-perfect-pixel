@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Camera, Loader2, Mic2, Megaphone, Building2, Wrench, Camera as CameraIcon } from "lucide-react";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import ReelUploader from "@/components/ReelUploader";
 
 const ROLE_META: Record<string, { icon: any; label: string; accent: string; stepLabel: string }> = {

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote, TrendingUp, Music2, Bot, UserCog, CalendarDays, Disc3 } from "lucide-react";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import OnboardingChecklist from "@/components/OnboardingChecklist";
@@ -154,7 +154,7 @@ export default function ArtistDashboard() {
       if (bookingErr) { toast.error("Offer accepted but booking creation failed: " + bookingErr.message); return; }
       const newBooking = booking as unknown as Booking;
       setBookings((prev) => [...prev, newBooking]);
-      toast.success("Offer accepted! Generating contract...");
+      toast.success("Offer accepted! Deal Room is now open.");
       try {
         await supabase.functions.invoke("send-transactional-email", {
           body: { templateName: "offer-accepted", recipientEmail: offer.sender_id, idempotencyKey: `offer-accepted-${newBooking.id}`, templateData: { venueName: offer.venue_name, eventDate: offer.event_date, guarantee: offer.guarantee } },
@@ -170,7 +170,7 @@ export default function ArtistDashboard() {
         }
       } catch { toast.error("Contract generation failed — you can retry later."); }
       finally { setGeneratingContract(null); }
-    } else { toast.success("Offer declined"); }
+    } else { toast("Offer declined."); }
     setActionLoading(null);
   };
 

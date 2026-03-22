@@ -13,7 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import EditStopDialog from "@/components/EditStopDialog";
 import TransportSection from "@/components/TransportSection";
 
@@ -94,6 +94,7 @@ export default function TourManagement() {
     const { data, error } = await supabase.from("tour_stops").insert({ tour_id: selectedTour.id, venue_name: "New Venue", date: new Date().toISOString().split("T")[0], sort_order: stops.length }).select().single();
     if (error) { toast.error(error.message); return; }
     setStops([...stops, data as TourStop]);
+    toast.success("Stop added.");
   };
 
   const updateStop = async (id: string, updates: Partial<TourStop>) => {
@@ -112,6 +113,7 @@ export default function TourManagement() {
     const { data, error } = await supabase.from("crew_members").insert({ tour_id: selectedTour.id, name: "", role: "" }).select().single();
     if (error) { toast.error(error.message); return; }
     setCrew([...crew, data as CrewMember]);
+    toast.success("Crew member added.");
   };
 
   const updateCrew = async (id: string, updates: Partial<CrewMember>) => {
