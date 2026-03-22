@@ -924,6 +924,7 @@ export type Database = {
           completion_score: number | null
           created_at: string
           display_name: string | null
+          email_preferences: Json
           facebook: string | null
           genre: string | null
           id: string
@@ -964,6 +965,7 @@ export type Database = {
           completion_score?: number | null
           created_at?: string
           display_name?: string | null
+          email_preferences?: Json
           facebook?: string | null
           genre?: string | null
           id?: string
@@ -1004,6 +1006,7 @@ export type Database = {
           completion_score?: number | null
           created_at?: string
           display_name?: string | null
+          email_preferences?: Json
           facebook?: string | null
           genre?: string | null
           id?: string
