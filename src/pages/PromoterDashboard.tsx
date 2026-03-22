@@ -17,7 +17,7 @@ import { openSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
 import EditProfilePanel from "@/components/EditProfilePanel";
 
-type PromoterView = "overview" | "offers" | "discover";
+type PromoterView = "overview" | "offers" | "discover" | "profile";
 type Offer = { id: string; venue_name: string; event_date: string; event_time: string | null; guarantee: number; door_split: number | null; merch_split: number | null; status: string; recipient_id: string; sender_id: string; created_at: string };
 type Booking = { id: string; offer_id: string; contract_url: string | null; status: string; artist_id: string; promoter_id: string; venue_name: string; event_date: string; guarantee: number };
 
