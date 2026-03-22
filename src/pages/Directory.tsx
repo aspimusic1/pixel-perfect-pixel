@@ -63,7 +63,7 @@ const ROLE_TABS = [
   { value: "venue", label: "Venues", icon: Building2 },
   { value: "promoter", label: "Promoters", icon: Users },
   { value: "production", label: "Production", icon: Wrench },
-  { value: "photo_video", label: "Photo/Video", icon: Camera },
+  { value: "photo_video", label: "Creative", icon: Camera },
 ];
 
 const roleColorMap: Record<string, string> = {
