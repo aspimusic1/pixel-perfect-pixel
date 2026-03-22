@@ -22,7 +22,7 @@ import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
 import EditProfilePanel from "@/components/EditProfilePanel";
 
-type ArtistView = "overview" | "offers" | "calendar" | "bookkeeping" | "agent";
+type ArtistView = "overview" | "offers" | "calendar" | "bookkeeping" | "agent" | "profile";
 
 type Offer = {
   id: string;
