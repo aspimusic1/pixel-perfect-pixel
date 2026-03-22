@@ -371,6 +371,8 @@ export type Database = {
           guarantee: number
           id: string
           offer_id: string
+          presale_open: boolean
+          presale_ticket_url: string | null
           promoter_id: string
           status: string
           updated_at: string
@@ -385,6 +387,8 @@ export type Database = {
           guarantee?: number
           id?: string
           offer_id: string
+          presale_open?: boolean
+          presale_ticket_url?: string | null
           promoter_id: string
           status?: string
           updated_at?: string
@@ -399,6 +403,8 @@ export type Database = {
           guarantee?: number
           id?: string
           offer_id?: string
+          presale_open?: boolean
+          presale_ticket_url?: string | null
           promoter_id?: string
           status?: string
           updated_at?: string
@@ -869,6 +875,41 @@ export type Database = {
           venue_name?: string
         }
         Relationships: []
+      }
+      presale_signups: {
+        Row: {
+          booking_id: string
+          city: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+        }
+        Insert: {
+          booking_id: string
+          city?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+        }
+        Update: {
+          booking_id?: string
+          city?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presale_signups_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
