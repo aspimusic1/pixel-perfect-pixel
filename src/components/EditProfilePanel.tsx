@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Loader2, Save, CheckCircle, Trash2, Music, ExternalLink } from "lucide-react";
+import { Camera, Loader2, Save, CheckCircle, Trash2, Music, ExternalLink, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -20,6 +20,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
 
+const SOCIAL_LINKS = [
+  { key: "instagram", label: "Instagram", placeholder: "@handle", icon: "📸" },
+  { key: "facebook", label: "Facebook", placeholder: "https://facebook.com/...", icon: "🔵" },
+  { key: "twitter", label: "X / Twitter", placeholder: "https://x.com/...", icon: "✖️" },
+  { key: "threads", label: "Threads", placeholder: "https://threads.net/@...", icon: "🧵" },
+  { key: "website", label: "Website", placeholder: "https://...", icon: "🌐" },
+] as const;
+
 const MUSIC_LINKS = [
   { key: "spotify", label: "Spotify", placeholder: "https://open.spotify.com/artist/...", icon: "🟢" },
   { key: "apple_music", label: "Apple Music", placeholder: "https://music.apple.com/artist/...", icon: "🍎" },
@@ -32,14 +40,17 @@ const MUSIC_LINKS = [
   { key: "songkick", label: "Songkick", placeholder: "https://songkick.com/artists/...", icon: "🎪" },
 ] as const;
 
+type SocialKey = typeof SOCIAL_LINKS[number]["key"];
 type MusicLinkKey = typeof MUSIC_LINKS[number]["key"];
 
 export default function EditProfilePanel() {
   const { user, profile, refreshProfile, signOut } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
   const [saved, setSaved] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
@@ -49,12 +60,14 @@ export default function EditProfilePanel() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [genre, setGenre] = useState("");
-  const [website, setWebsite] = useState("");
-  const [instagram, setInstagram] = useState("");
   const [rateMin, setRateMin] = useState("");
   const [rateMax, setRateMax] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [bannerUrl, setBannerUrl] = useState("");
 
+  const [socialLinks, setSocialLinks] = useState<Record<SocialKey, string>>(
+    Object.fromEntries(SOCIAL_LINKS.map(l => [l.key, ""])) as Record<SocialKey, string>
+  );
   const [musicLinks, setMusicLinks] = useState<Record<MusicLinkKey, string>>(
     Object.fromEntries(MUSIC_LINKS.map(l => [l.key, ""])) as Record<MusicLinkKey, string>
   );
@@ -75,14 +88,20 @@ export default function EditProfilePanel() {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("website, instagram, spotify, apple_music, soundcloud, youtube, tiktok, bandcamp, beatport, bandsintown, songkick")
+      .select("website, instagram, facebook, twitter, threads, spotify, apple_music, soundcloud, youtube, tiktok, bandcamp, beatport, bandsintown, songkick, banner_url")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
         if (data) {
           const d = data as any;
-          setWebsite(d.website ?? "");
-          setInstagram(d.instagram ?? "");
+          setBannerUrl(d.banner_url ?? "");
+          setSocialLinks({
+            instagram: d.instagram ?? "",
+            facebook: d.facebook ?? "",
+            twitter: d.twitter ?? "",
+            threads: d.threads ?? "",
+            website: d.website ?? "",
+          });
           setMusicLinks({
             spotify: d.spotify ?? "",
             apple_music: d.apple_music ?? "",
@@ -98,10 +117,6 @@ export default function EditProfilePanel() {
       });
   }, [user]);
 
-  const updateMusicLink = (key: MusicLinkKey, value: string) => {
-    setMusicLinks(prev => ({ ...prev, [key]: value }));
-  };
-
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
@@ -115,6 +130,19 @@ export default function EditProfilePanel() {
     setUploading(false);
   };
 
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    setUploadingBanner(true);
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}/banner.${ext}`;
+    const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+    if (error) { toast.error(error.message); setUploadingBanner(false); return; }
+    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+    setBannerUrl(urlData.publicUrl + "?t=" + Date.now());
+    setUploadingBanner(false);
+  };
+
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
@@ -124,14 +152,12 @@ export default function EditProfilePanel() {
       city: city || null,
       state: state || null,
       genre: genre || null,
-      website: website || null,
-      instagram: instagram || null,
       avatar_url: avatarUrl || null,
+      banner_url: bannerUrl || null,
       rate_min: rateMin ? parseFloat(rateMin) : null,
       rate_max: rateMax ? parseFloat(rateMax) : null,
-      ...Object.fromEntries(
-        MUSIC_LINKS.map(l => [l.key, musicLinks[l.key] || null])
-      ),
+      ...Object.fromEntries(SOCIAL_LINKS.map(l => [l.key, socialLinks[l.key] || null])),
+      ...Object.fromEntries(MUSIC_LINKS.map(l => [l.key, musicLinks[l.key] || null])),
     };
     const { error } = await supabase.from("profiles").update(updates).eq("user_id", user.id);
     if (error) { toast.error(error.message); } else {
@@ -167,27 +193,55 @@ export default function EditProfilePanel() {
     <div className="space-y-5">
       <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">edit profile</h2>
 
-      {/* Avatar */}
-      <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="relative w-16 h-16 rounded-xl bg-white/[0.04] border border-white/[0.06] overflow-hidden flex items-center justify-center hover:border-white/[0.12] transition-colors active:scale-[0.97] shrink-0"
-          >
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
-            ) : (
-              <Camera className="w-5 h-5 text-muted-foreground" />
-            )}
-            {uploading && (
-              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                <Loader2 className="w-4 h-4 animate-spin text-white" />
-              </div>
-            )}
-          </button>
-          <div>
-            <p className="text-sm font-medium">{displayName || "Your name"}</p>
-            <p className="text-[11px] text-muted-foreground">{role ?? "member"} · click photo to change</p>
+      {/* Banner */}
+      <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] overflow-hidden">
+        <button
+          onClick={() => bannerInputRef.current?.click()}
+          className="relative w-full h-32 bg-white/[0.02] flex items-center justify-center hover:bg-white/[0.04] transition-colors group"
+        >
+          {bannerUrl ? (
+            <img src={bannerUrl} alt="Banner" className="w-full h-full object-cover" />
+          ) : (
+            <div className="flex flex-col items-center gap-1 text-muted-foreground">
+              <ImageIcon className="w-5 h-5" />
+              <span className="text-[10px]">upload banner image</span>
+            </div>
+          )}
+          {uploadingBanner && (
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+              <Loader2 className="w-5 h-5 animate-spin text-white" />
+            </div>
+          )}
+          {bannerUrl && (
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span className="text-[10px] text-white font-medium">change banner</span>
+            </div>
+          )}
+        </button>
+        <input ref={bannerInputRef} type="file" accept="image/*" onChange={handleBannerUpload} className="hidden" />
+
+        {/* Avatar overlapping banner */}
+        <div className="px-4 pb-4 -mt-10">
+          <div className="flex items-end gap-3">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="relative w-20 h-20 rounded-xl bg-[#0e1420] border-2 border-[#0e1420] overflow-hidden flex items-center justify-center hover:border-white/[0.12] transition-colors active:scale-[0.97] shrink-0 ring-2 ring-[#0e1420]"
+            >
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <Camera className="w-5 h-5 text-muted-foreground" />
+              )}
+              {uploading && (
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                </div>
+              )}
+            </button>
+            <div className="pb-1">
+              <p className="text-sm font-medium">{displayName || "Your name"}</p>
+              <p className="text-[11px] text-muted-foreground">{role ?? "member"}</p>
+            </div>
           </div>
         </div>
         <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
@@ -224,16 +278,24 @@ export default function EditProfilePanel() {
 
       {/* Links & socials */}
       <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4 space-y-3">
-        <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">links & socials</h3>
+        <div className="flex items-center gap-2 mb-2">
+          <ExternalLink className="w-3.5 h-3.5 text-primary" />
+          <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest">links & socials</h3>
+        </div>
         <div className="grid sm:grid-cols-2 gap-3">
-          <div>
-            <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">website</Label>
-            <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://" className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
-          </div>
-          <div>
-            <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">instagram</Label>
-            <Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@handle" className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]" />
-          </div>
+          {SOCIAL_LINKS.map((link) => (
+            <div key={link.key}>
+              <Label className="text-[10px] text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                <span>{link.icon}</span> {link.label}
+              </Label>
+              <Input
+                value={socialLinks[link.key]}
+                onChange={(e) => setSocialLinks(prev => ({ ...prev, [link.key]: e.target.value }))}
+                placeholder={link.placeholder}
+                className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]"
+              />
+            </div>
+          ))}
         </div>
       </div>
 
@@ -252,7 +314,7 @@ export default function EditProfilePanel() {
                 </Label>
                 <Input
                   value={musicLinks[link.key]}
-                  onChange={(e) => updateMusicLink(link.key, e.target.value)}
+                  onChange={(e) => setMusicLinks(prev => ({ ...prev, [link.key]: e.target.value }))}
                   placeholder={link.placeholder}
                   className="mt-1 h-8 text-xs bg-[#080C14] border-white/[0.06]"
                 />
@@ -262,7 +324,7 @@ export default function EditProfilePanel() {
         </div>
       )}
 
-      {/* Rate range (artists, production, photo_video) */}
+      {/* Rate range */}
       {(role === "artist" || role === "production" || role === "photo_video") && (
         <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4 space-y-3">
           <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">rate range</h3>

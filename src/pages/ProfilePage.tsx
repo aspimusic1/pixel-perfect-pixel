@@ -359,6 +359,24 @@ export default function ProfilePage() {
                 Songkick
               </a>
             )}
+            {profile?.facebook && (
+              <a href={profile.facebook} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                Facebook
+              </a>
+            )}
+            {profile?.twitter && (
+              <a href={profile.twitter} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                X / Twitter
+              </a>
+            )}
+            {profile?.threads && (
+              <a href={profile.threads} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                Threads
+              </a>
+            )}
             <button onClick={handleShare}
               className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors active:scale-[0.97]">
               <Share2 className="w-3.5 h-3.5" /> Share

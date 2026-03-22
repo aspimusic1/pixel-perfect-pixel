@@ -195,10 +195,19 @@ export default function AdminUsers() {
                       <Button
                         size="sm"
                         variant="ghost"
+                        className="h-6 px-2 text-[10px] text-[#FFB83E] hover:text-[#FFB83E]"
+                        onClick={() => toggleAdmin(u.user_id)}
+                        title="Toggle admin role"
+                      >
+                        <Shield className="w-3 h-3 mr-1" />
+                        admin
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
                         className="h-6 px-2 text-[10px]"
                         onClick={() => toggleSuspend(u.user_id, !!(u as any).suspended)}
                       >
-                        <Shield className="w-3 h-3 mr-1" />
                         {(u as any).suspended ? "unsuspend" : "suspend"}
                       </Button>
                       <Button
