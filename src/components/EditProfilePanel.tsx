@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Loader2, Save, CheckCircle, Trash2, Music, ExternalLink, ImageIcon } from "lucide-react";
+import { Camera, Loader2, Save, CheckCircle, Trash2, Music, ExternalLink, ImageIcon, Bell } from "lucide-react";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,6 +65,13 @@ export default function EditProfilePanel() {
   const [rateMax, setRateMax] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
+  const [emailPrefs, setEmailPrefs] = useState({
+    offer_received: true,
+    offer_accepted: true,
+    offer_declined: true,
+    booking_confirmed: true,
+    new_message: false,
+  });
 
   const [socialLinks, setSocialLinks] = useState<Record<SocialKey, string>>(
     Object.fromEntries(SOCIAL_LINKS.map(l => [l.key, ""])) as Record<SocialKey, string>
@@ -88,13 +96,16 @@ export default function EditProfilePanel() {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("website, instagram, facebook, twitter, threads, spotify, apple_music, soundcloud, youtube, tiktok, bandcamp, beatport, bandsintown, songkick, banner_url")
+      .select("website, instagram, facebook, twitter, threads, spotify, apple_music, soundcloud, youtube, tiktok, bandcamp, beatport, bandsintown, songkick, banner_url, email_preferences")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
         if (data) {
           const d = data as any;
           setBannerUrl(d.banner_url ?? "");
+          if (d.email_preferences) {
+            setEmailPrefs(prev => ({ ...prev, ...(d.email_preferences as any) }));
+          }
           setSocialLinks({
             instagram: d.instagram ?? "",
             facebook: d.facebook ?? "",
@@ -158,6 +169,7 @@ export default function EditProfilePanel() {
       rate_max: rateMax ? parseFloat(rateMax) : null,
       ...Object.fromEntries(SOCIAL_LINKS.map(l => [l.key, socialLinks[l.key] || null])),
       ...Object.fromEntries(MUSIC_LINKS.map(l => [l.key, musicLinks[l.key] || null])),
+      email_preferences: emailPrefs,
     };
     const { error } = await supabase.from("profiles").update(updates).eq("user_id", user.id);
     if (error) { toast.error(error.message); } else {
@@ -345,6 +357,35 @@ export default function EditProfilePanel() {
         {saving ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : saved ? <CheckCircle className="w-3 h-3 mr-1" /> : <Save className="w-3 h-3 mr-1" />}
         {saving ? "saving..." : saved ? "saved!" : "save changes"}
       </Button>
+
+      {/* Email Preferences */}
+      <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-4 space-y-4">
+        <div className="flex items-center gap-2">
+          <Bell className="w-3.5 h-3.5 text-[#C8FF3E]" />
+          <h3 className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">email notifications</h3>
+        </div>
+        {[
+          { key: "offer_received" as const, label: "Email me when I receive an offer", desc: "Get notified immediately about new booking offers" },
+          { key: "offer_accepted" as const, label: "Email me when an offer is accepted", desc: "Know right away when an artist accepts your offer" },
+          { key: "offer_declined" as const, label: "Email me when an offer is declined", desc: "Stay informed about offer status changes" },
+          { key: "booking_confirmed" as const, label: "Email me when a booking is confirmed", desc: "Get booking confirmation details" },
+          { key: "new_message" as const, label: "Email me for new messages", desc: "Digest mode — off by default to reduce noise" },
+        ].map(item => (
+          <div key={item.key} className="flex items-center justify-between gap-3 py-2">
+            <div className="flex-1 min-w-0">
+              <p className="text-[12px] text-[#F0F2F7]">{item.label}</p>
+              <p className="text-[10px] text-[#5A6478] mt-0.5">{item.desc}</p>
+            </div>
+            <Switch
+              checked={emailPrefs[item.key]}
+              onCheckedChange={(checked) =>
+                setEmailPrefs(prev => ({ ...prev, [item.key]: checked }))
+              }
+              className="data-[state=checked]:bg-[#C8FF3E] shrink-0"
+            />
+          </div>
+        ))}
+      </div>
 
       {/* Danger zone */}
       <div className="rounded-lg border border-red-500/20 bg-red-500/[0.04] p-4 space-y-3 mt-8">
