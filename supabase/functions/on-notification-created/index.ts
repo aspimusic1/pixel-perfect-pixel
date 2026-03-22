@@ -102,22 +102,25 @@ function buildOfferReceivedEmail(meta: NotificationMeta) {
 }
 
 function buildOfferAcceptedEmail(meta: NotificationMeta) {
+  const artistName = escapeHtml(meta.artist_name || "The artist");
+  const eventName = escapeHtml(meta.event_name || "—");
+  const eventDate = escapeHtml(meta.event_date || "TBD");
   const subject = "Your offer was accepted!";
   const html = wrapEmail(subject, `
     <h1>Great news — your offer was accepted! ✅</h1>
-    <p>${meta.artist_name || "The artist"} has accepted your booking offer.</p>
+    <p>${artistName} has accepted your booking offer.</p>
     <div style="margin: 20px 0;">
       <div class="detail-row">
         <span class="detail-label">Artist</span>
-        <span class="detail-value">${meta.artist_name || "—"}</span>
+        <span class="detail-value">${artistName}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Event</span>
-        <span class="detail-value">${meta.event_name || "—"}</span>
+        <span class="detail-value">${eventName}</span>
       </div>
       <div class="detail-row" style="border-bottom:none;">
         <span class="detail-label">Date</span>
-        <span class="detail-value">${meta.event_date || "TBD"}</span>
+        <span class="detail-value">${eventDate}</span>
       </div>
     </div>
     <a href="${APP_URL}/dashboard" class="btn">Open Deal Room →</a>
