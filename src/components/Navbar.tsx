@@ -168,7 +168,7 @@ export default function Navbar() {
                 <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
 
                 {/* User avatar */}
-                <button onClick={() => navigate(profile?.slug ? `/artist/${profile.slug}` : "/setup")} className="w-8 h-8 rounded-full overflow-hidden border border-white/10 hover:border-white/25 transition-colors flex items-center justify-center bg-secondary active:scale-[0.95]">
+                <button onClick={() => navigate("/setup")} className="w-8 h-8 rounded-full overflow-hidden border border-white/10 hover:border-white/25 transition-colors flex items-center justify-center bg-secondary active:scale-[0.95]">
                   {profile?.avatar_url ? (
                     <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
                   ) : (
