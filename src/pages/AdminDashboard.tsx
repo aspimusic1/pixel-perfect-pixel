@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, LayoutDashboard, Users, Send, CalendarCheck, Map, DollarSign, Shield, Settings } from "lucide-react";
+import { Loader2, LayoutDashboard, Users, Send, CalendarCheck, Map, DollarSign, Shield, Settings, CreditCard, TrendingUp } from "lucide-react";
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminOffers from "@/components/admin/AdminOffers";
 import AdminBookings from "@/components/admin/AdminBookings";
 import AdminTours from "@/components/admin/AdminTours";
 import AdminRevenue from "@/components/admin/AdminRevenue";
+import AdminBilling from "@/components/admin/AdminBilling";
+import AdminGrowth from "@/components/admin/AdminGrowth";
 import AdminModeration from "@/components/admin/AdminModeration";
 import AdminSettings from "@/components/admin/AdminSettings";
 
@@ -19,6 +21,8 @@ const NAV_ITEMS = [
   { key: "bookings", label: "bookings", icon: CalendarCheck },
   { key: "tours", label: "tours", icon: Map },
   { key: "revenue", label: "revenue", icon: DollarSign },
+  { key: "billing", label: "billing", icon: CreditCard },
+  { key: "growth", label: "growth", icon: TrendingUp },
   { key: "moderation", label: "moderation", icon: Shield },
   { key: "settings", label: "settings", icon: Settings },
 ];
