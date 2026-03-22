@@ -364,6 +364,7 @@ export default function ArtistDashboard() {
               {/* ─── Offers ─── */}
               {activeView === "offers" && (
                 <>
+                  <AgentActiveBanner />
                   <div className="flex items-center justify-between">
                     <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">all offers</h2>
                     <span className="text-[11px] text-muted-foreground tabular-nums">{offers.length} total</span>
