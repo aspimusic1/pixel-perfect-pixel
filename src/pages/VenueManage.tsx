@@ -283,6 +283,8 @@ export default function VenueManage() {
                   </div>
                 </>
               )}
+
+              {activeView === "profile" && <EditProfilePanel />}
             </div>
           </main>
         </div>
