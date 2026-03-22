@@ -128,9 +128,10 @@ export default function Navbar() {
             )}
             {!user && (
               <Link
-                to="/auth?admin=true"
+                to="/auth"
                 className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
               >
+                <ShieldCheck className="w-3.5 h-3.5" />
                 Admin Login
               </Link>
             )}
