@@ -36,6 +36,14 @@ type ProfileData = {
   website: string | null;
   instagram: string | null;
   spotify: string | null;
+  apple_music: string | null;
+  soundcloud: string | null;
+  youtube: string | null;
+  tiktok: string | null;
+  bandcamp: string | null;
+  beatport: string | null;
+  bandsintown: string | null;
+  songkick: string | null;
   is_verified: boolean | null;
   slug: string | null;
 };
