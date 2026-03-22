@@ -106,6 +106,47 @@ export type Database = {
         }
         Relationships: []
       }
+      artist_claims: {
+        Row: {
+          artist_listing_id: string
+          created_at: string
+          id: string
+          manager_name: string | null
+          proof_text: string | null
+          reviewed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          artist_listing_id: string
+          created_at?: string
+          id?: string
+          manager_name?: string | null
+          proof_text?: string | null
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          artist_listing_id?: string
+          created_at?: string
+          id?: string
+          manager_name?: string | null
+          proof_text?: string | null
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_claims_artist_listing_id_fkey"
+            columns: ["artist_listing_id"]
+            isOneToOne: false
+            referencedRelation: "artist_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       artist_expenses: {
         Row: {
           amount: number
@@ -159,24 +200,39 @@ export type Database = {
       }
       artist_listings: {
         Row: {
+          bandsintown_url: string | null
+          claim_status: string
+          claimed_by: string | null
           created_at: string
           genre: string | null
           id: string
           name: string
+          notes: string | null
+          origin: string | null
           upcoming_concerts: number | null
         }
         Insert: {
+          bandsintown_url?: string | null
+          claim_status?: string
+          claimed_by?: string | null
           created_at?: string
           genre?: string | null
           id?: string
           name: string
+          notes?: string | null
+          origin?: string | null
           upcoming_concerts?: number | null
         }
         Update: {
+          bandsintown_url?: string | null
+          claim_status?: string
+          claimed_by?: string | null
           created_at?: string
           genre?: string | null
           id?: string
           name?: string
+          notes?: string | null
+          origin?: string | null
           upcoming_concerts?: number | null
         }
         Relationships: []
