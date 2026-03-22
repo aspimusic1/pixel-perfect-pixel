@@ -112,13 +112,21 @@ export default function Navbar() {
                 dashboard
               </Link>
             )}
+            {!user && (
+              <Link
+                to="/auth?admin=true"
+                className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+              >
+                Admin Login
+              </Link>
+            )}
             {user && isAdmin && (
               <Link
                 to="/admin"
                 className="text-sm font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                admin
+                Admin
               </Link>
             )}
           </div>
