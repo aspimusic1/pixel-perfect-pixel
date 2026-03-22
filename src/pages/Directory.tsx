@@ -86,7 +86,7 @@ async function fetchArtistListings(search: string, genre: string | null) {
     .select("*");
   if (search) query = query.ilike("name", `%${search}%`);
   if (genre) query = query.ilike("genre", `%${genre}%`);
-  const { data } = await query.order("upcoming_concerts", { ascending: false });
+  const { data } = await query.order("name", { ascending: true }).limit(200);
   return (data as ArtistListing[]) ?? [];
 }
 
