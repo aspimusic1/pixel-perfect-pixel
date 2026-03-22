@@ -402,6 +402,7 @@ export default function TourManagement() {
                   </div>
                 ))}
               </div>
+              </>
             )}
           </TabsContent>
 
