@@ -84,6 +84,7 @@ const App = () => (
               </Routes>
             </Suspense>
           </main>
+          <InstallBanner />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
