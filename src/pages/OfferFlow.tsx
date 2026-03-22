@@ -226,26 +226,35 @@ export default function OfferFlow() {
         </div>
 
         {/* Step indicator */}
-        <div className="flex items-center gap-1 mb-6 sm:mb-8 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
-          {STEPS.map((s, i) => (
-            <div key={s.label} className="flex items-center">
-              <button
-                onClick={() => i < step && setStep(i)}
-                disabled={i > step}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
-                  i === step ? "bg-primary text-primary-foreground" :
-                  i < step ? "bg-primary/10 text-primary cursor-pointer hover:bg-primary/20" :
-                  "bg-secondary text-muted-foreground"
-                )}
-              >
-                <s.icon className="w-3 h-3" />
-                <span className="hidden sm:inline">{s.label}</span>
-                <span className="sm:hidden">{i + 1}</span>
-              </button>
-              {i < STEPS.length - 1 && <div className={cn("w-4 h-px mx-0.5", i < step ? "bg-primary/40" : "bg-border")} />}
-            </div>
-          ))}
+        {/* Step indicator — mobile: current step only; desktop: all steps */}
+        <div className="mb-6 sm:mb-8">
+          {/* Mobile: show current step */}
+          <div className="flex sm:hidden items-center gap-2 px-1">
+            <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-primary-foreground text-xs font-bold">{step + 1}</span>
+            <span className="text-sm font-display font-medium">{STEPS[step].label}</span>
+            <span className="text-xs text-muted-foreground ml-auto">of {STEPS.length}</span>
+          </div>
+          {/* Desktop: full step bar */}
+          <div className="hidden sm:flex items-center gap-1 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+            {STEPS.map((s, i) => (
+              <div key={s.label} className="flex items-center">
+                <button
+                  onClick={() => i < step && setStep(i)}
+                  disabled={i > step}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap min-h-[44px]",
+                    i === step ? "bg-primary text-primary-foreground" :
+                    i < step ? "bg-primary/10 text-primary cursor-pointer hover:bg-primary/20" :
+                    "bg-secondary text-muted-foreground"
+                  )}
+                >
+                  <s.icon className="w-3 h-3" />
+                  {s.label}
+                </button>
+                {i < STEPS.length - 1 && <div className={cn("w-4 h-px mx-0.5", i < step ? "bg-primary/40" : "bg-border")} />}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Step content */}
@@ -375,7 +384,7 @@ export default function OfferFlow() {
                   <Label className="text-sm">Guarantee ({currencyInfo.symbol})</Label>
                   <Input type="number" min="0" step="50" value={guarantee} onChange={(e) => setGuarantee(e.target.value)} placeholder="2500" className="mt-1.5 bg-background border-border" />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <Label className="text-sm">Door split (%)</Label>
                     <Input type="number" min="0" max="100" value={doorSplit} onChange={(e) => setDoorSplit(e.target.value)} placeholder="80" className="mt-1.5 bg-background border-border" />

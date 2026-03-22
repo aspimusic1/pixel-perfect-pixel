@@ -20,7 +20,7 @@ export default function HeroSection() {
         </div>
 
         <h1
-          className="animate-reveal-up font-display text-5xl sm:text-7xl lg:text-8xl font-bold tracking-[-0.03em] mb-7 lowercase"
+          className="animate-reveal-up font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-[-0.03em] mb-7 lowercase"
           style={{ animationDelay: "80ms", lineHeight: "0.92" }}
         >
           book shows.{" "}
@@ -51,7 +51,7 @@ export default function HeroSection() {
 
         {/* Social proof */}
         <div
-          className="animate-reveal-up mt-16 flex justify-center gap-10 sm:gap-16"
+          className="animate-reveal-up mt-16 grid grid-cols-3 gap-6 sm:flex sm:justify-center sm:gap-16"
           style={{ animationDelay: "360ms" }}
         >
           {[
