@@ -27,22 +27,21 @@ Deno.serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const userId = claimsData.claims.sub;
+    const userId = user.id;
 
-    // Fetch profile
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    // Fetch profile
     const { data: profile } = await adminClient
       .from("profiles")
       .select("*")
@@ -64,6 +63,25 @@ Deno.serve(async (req) => {
       .order("event_date", { ascending: false })
       .limit(10);
 
+    // Fetch offers for acceptance rate
+    const { data: allOffers } = await adminClient
+      .from("offers")
+      .select("status")
+      .eq("recipient_id", userId);
+
+    const totalOffers = allOffers?.length ?? 0;
+    const acceptedOffers = allOffers?.filter(o => o.status === "accepted").length ?? 0;
+    const acceptanceRate = totalOffers > 0 ? Math.round((acceptedOffers / totalOffers) * 100) : 0;
+
+    // Fetch reviews for BookScore
+    const { data: reviews } = await adminClient
+      .from("reviews")
+      .select("rating")
+      .eq("reviewee_id", userId);
+    const avgRating = reviews && reviews.length > 0
+      ? (reviews.reduce((s: number, r: any) => s + r.rating, 0) / reviews.length).toFixed(1)
+      : null;
+
     const stats = profile.streaming_stats || {};
 
     // Generate PDF
@@ -71,100 +89,123 @@ Deno.serve(async (req) => {
     const W = doc.internal.pageSize.getWidth();
     let y = 50;
 
-    // Header
-    doc.setFontSize(28);
+    // ── Header ──
+    doc.setFontSize(32);
     doc.setFont("helvetica", "bold");
     doc.text(profile.display_name || "Artist", 50, y);
-    y += 30;
+    y += 36;
 
-    // Subtitle
+    // Subtitle line
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(120);
-    const subtitle = [profile.genre, profile.city && profile.state ? `${profile.city}, ${profile.state}` : null].filter(Boolean).join(" · ");
-    if (subtitle) { doc.text(subtitle, 50, y); y += 25; }
+    doc.setTextColor(100);
+    const subtitle = [
+      profile.genre,
+      profile.city && profile.state ? `${profile.city}, ${profile.state}` : profile.city,
+    ].filter(Boolean).join(" · ");
+    if (subtitle) { doc.text(subtitle, 50, y); y += 22; }
 
     // Divider
-    doc.setDrawColor(220);
+    doc.setDrawColor(200);
     doc.line(50, y, W - 50, y);
     y += 20;
 
-    // Stats row
-    doc.setTextColor(60);
+    // ── Stats Row ──
+    doc.setTextColor(40);
     doc.setFontSize(10);
-    const statsLine = [];
-    if (stats.followers) statsLine.push(`${stats.followers.toLocaleString()} Spotify followers`);
-    if (stats.popularity) statsLine.push(`Popularity: ${stats.popularity}/100`);
+    doc.setFont("helvetica", "bold");
+    const statsItems: string[] = [];
+    if (stats.monthly_listeners) statsItems.push(`${stats.monthly_listeners.toLocaleString()} monthly listeners`);
+    if (stats.followers) statsItems.push(`${stats.followers.toLocaleString()} Spotify followers`);
+    if (avgRating) statsItems.push(`BookScore: ${avgRating}/5`);
+    if (acceptanceRate > 0) statsItems.push(`${acceptanceRate}% acceptance rate`);
     if (profile.rate_min || profile.rate_max) {
-      statsLine.push(`Fee: $${(profile.rate_min || 0).toLocaleString()} – $${(profile.rate_max || 0).toLocaleString()}`);
+      statsItems.push(`Fee: $${(profile.rate_min || 0).toLocaleString()} – $${(profile.rate_max || 0).toLocaleString()}`);
     }
-    if (statsLine.length) { doc.text(statsLine.join("  ·  "), 50, y); y += 20; }
+    if (statsItems.length) {
+      doc.text(statsItems.join("  ·  "), 50, y);
+      y += 22;
+    }
 
-    // Top tracks
+    // ── Top Tracks ──
     if (stats.top_tracks?.length) {
-      y += 10;
-      doc.setFontSize(12);
+      y += 8;
+      doc.setFontSize(13);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(40);
+      doc.setTextColor(30);
       doc.text("Top Tracks", 50, y);
-      y += 18;
+      y += 20;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      doc.setTextColor(80);
+      doc.setTextColor(60);
       stats.top_tracks.slice(0, 5).forEach((t: any, i: number) => {
-        doc.text(`${i + 1}. ${t.name} (${t.album})`, 60, y);
-        y += 15;
+        doc.text(`${i + 1}. ${t.name}`, 60, y);
+        doc.setTextColor(120);
+        doc.text(`${t.album}`, 300, y);
+        doc.setTextColor(60);
+        y += 16;
       });
     }
 
-    // Bio
+    // ── Bio ──
     if (profile.bio) {
-      y += 15;
-      doc.setFontSize(12);
+      y += 12;
+      doc.setFontSize(13);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(40);
+      doc.setTextColor(30);
       doc.text("About", 50, y);
-      y += 18;
+      y += 20;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      doc.setTextColor(80);
+      doc.setTextColor(60);
       const lines = doc.splitTextToSize(profile.bio, W - 100);
       doc.text(lines, 50, y);
       y += lines.length * 14;
     }
 
-    // Past shows
-    if (bookings?.length) {
-      y += 15;
-      doc.setFontSize(12);
+    // ── Past Shows ──
+    const confirmedBookings = bookings?.filter(b => b.status === "confirmed" || b.status === "completed") ?? [];
+    if (confirmedBookings.length > 0) {
+      y += 12;
+      if (y > 620) { doc.addPage(); y = 50; }
+      doc.setFontSize(13);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(40);
+      doc.setTextColor(30);
       doc.text("Recent Shows", 50, y);
-      y += 18;
+      y += 20;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      doc.setTextColor(80);
-      bookings.forEach((b: any) => {
+      doc.setTextColor(60);
+      confirmedBookings.forEach((b: any) => {
         if (y > 700) { doc.addPage(); y = 50; }
-        doc.text(`${b.venue_name} — ${new Date(b.event_date).toLocaleDateString()} — $${b.guarantee.toLocaleString()}`, 60, y);
-        y += 15;
+        const dateStr = new Date(b.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        doc.text(`${b.venue_name}`, 60, y);
+        doc.text(dateStr, 300, y);
+        doc.text(`$${Number(b.guarantee).toLocaleString()}`, W - 100, y, { align: "right" });
+        y += 16;
       });
     }
 
-    // Footer CTA
-    y = Math.max(y + 30, 680);
-    doc.setDrawColor(220);
+    // ── Footer CTA ──
+    y = Math.max(y + 30, 660);
+    if (y > 700) { doc.addPage(); y = 50; }
+    doc.setDrawColor(200);
     doc.line(50, y, W - 50, y);
-    y += 20;
-    doc.setFontSize(11);
+    y += 24;
+    doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(0);
     doc.text("Book via GetBooked.Live", 50, y);
-    y += 15;
+    y += 18;
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(100);
+    doc.setFontSize(10);
+    doc.setTextColor(80);
     const profileUrl = `https://getbookedlive.lovable.app/p/${profile.slug || profile.user_id}`;
     doc.text(profileUrl, 50, y);
+    y += 14;
+    doc.setFontSize(9);
+    doc.setTextColor(140);
+    doc.text("Generated by GetBooked.Live — The Music Booking Marketplace", 50, y);
 
     // Convert to buffer and upload
     const pdfBuffer = doc.output("arraybuffer");
