@@ -11,10 +11,9 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // This function is called by pg_cron — verify via service role key (not the public anon key)
-  const authHeader = req.headers.get("Authorization");
-  const expectedKey = `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`;
-  if (!authHeader || authHeader !== expectedKey) {
+  // This function is called by pg_cron — verify via dedicated CRON_SECRET (not the public anon key)
+  const cronSecret = req.headers.get("x-cron-secret");
+  if (!cronSecret || cronSecret !== Deno.env.get("CRON_SECRET")) {
     return new Response(JSON.stringify({ error: "Forbidden" }), {
       status: 403,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
