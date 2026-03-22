@@ -466,7 +466,7 @@ export default function TourManagement() {
               <div className="space-y-3">
                 {budget.map((item) => (
                   <div key={item.id} className="rounded-xl bg-card border border-border p-4">
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
                       <div>
                         <Label className="text-xs text-muted-foreground">Category</Label>
                         <select value={item.category} onChange={(e) => updateBudget(item.id, { category: e.target.value })} className="mt-0.5 h-8 w-full rounded-md border border-border bg-background px-2 text-sm text-foreground">

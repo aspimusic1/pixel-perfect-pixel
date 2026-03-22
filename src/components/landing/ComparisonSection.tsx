@@ -32,13 +32,13 @@ export default function ComparisonSection() {
           {/* Rows */}
           {ROWS.map((row, i) => (
             <div key={i} className="grid grid-cols-2 border-b border-white/[0.04] last:border-b-0">
-              <div className="px-5 py-3.5 flex items-start gap-2.5 bg-white/[0.02]">
+              <div className="px-3 sm:px-5 py-3 sm:py-3.5 flex items-start gap-2 sm:gap-2.5 bg-white/[0.02]">
                 <X className="w-3.5 h-3.5 text-destructive shrink-0 mt-0.5" />
-                <span className="text-xs text-muted-foreground font-body leading-relaxed">{row.old}</span>
+                <span className="text-[11px] sm:text-xs text-muted-foreground font-body leading-relaxed">{row.old}</span>
               </div>
-              <div className="px-5 py-3.5 flex items-start gap-2.5 bg-primary/[0.03] border-l border-white/[0.06]">
+              <div className="px-3 sm:px-5 py-3 sm:py-3.5 flex items-start gap-2 sm:gap-2.5 bg-primary/[0.03] border-l border-white/[0.06]">
                 <Check className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                <span className="text-xs text-foreground font-body leading-relaxed">{row.new}</span>
+                <span className="text-[11px] sm:text-xs text-foreground font-body leading-relaxed">{row.new}</span>
               </div>
             </div>
           ))}

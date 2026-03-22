@@ -86,7 +86,7 @@ export default function PricingTeaser() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PLANS.map((plan) => {
             const price = yearly ? plan.yearlyPrice : plan.monthlyPrice;
             return (

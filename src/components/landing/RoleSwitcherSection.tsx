@@ -83,7 +83,7 @@ export default function RoleSwitcherSection() {
           one platform, five roles. everyone gets the tools they need.
         </p>
 
-        <div className="grid grid-cols-2 sm:flex sm:justify-center gap-2 mb-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mb-10">
           {ROLE_TABS.map((tab) => {
             const active = activeRole === tab.key;
             return (

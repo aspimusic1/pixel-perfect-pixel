@@ -199,5 +199,11 @@
   select,
   [data-state] {
     min-height: 44px;
+    touch-action: manipulation;
   }
+}
+
+/* Remove tap delay on all buttons */
+button, a, [role="button"] {
+  touch-action: manipulation;
 }

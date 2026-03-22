@@ -104,7 +104,7 @@ export default function HeroSection() {
 
         {/* Social proof */}
         <div
-          className="animate-reveal-up mt-14 grid grid-cols-3 gap-4 sm:flex sm:justify-center sm:gap-14"
+          className="animate-reveal-up mt-14 grid grid-cols-2 sm:grid-cols-3 gap-4 sm:flex sm:justify-center sm:gap-14"
           style={{ animationDelay: "440ms" }}
         >
           {[
