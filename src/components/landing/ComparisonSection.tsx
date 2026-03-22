@@ -21,11 +21,11 @@ export default function ComparisonSection() {
         <div className="max-w-[700px] mx-auto rounded-2xl overflow-hidden border border-white/[0.06]">
           {/* Headers */}
           <div className="grid grid-cols-2">
-            <div className="px-5 py-3.5 bg-white/[0.02] border-b border-white/[0.06]">
-              <span className="text-xs font-display font-bold text-muted-foreground uppercase tracking-wider">the old way</span>
+            <div className="px-3 sm:px-5 py-3 sm:py-3.5 bg-white/[0.02] border-b border-white/[0.06]">
+              <span className="text-[10px] sm:text-xs font-display font-bold text-muted-foreground uppercase tracking-wider">the old way</span>
             </div>
-            <div className="px-5 py-3.5 bg-primary/[0.03] border-b border-primary/[0.15] border-l border-white/[0.06]">
-              <span className="text-xs font-display font-bold text-primary uppercase tracking-wider">GetBooked.Live</span>
+            <div className="px-3 sm:px-5 py-3 sm:py-3.5 bg-primary/[0.03] border-b border-primary/[0.15] border-l border-white/[0.06]">
+              <span className="text-[10px] sm:text-xs font-display font-bold text-primary uppercase tracking-wider">GetBooked.Live</span>
             </div>
           </div>
 
