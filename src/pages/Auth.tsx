@@ -76,8 +76,8 @@ export default function Auth() {
         <div className="text-center mb-8">
           {isSignUp && activeRoleInfo && ActiveIcon ? (
             <>
-              <div className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center bg-primary-foreground/10">
-                <ActiveIcon className="w-6 h-6 text-primary-foreground" />
+              <div className="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center bg-white/[0.06]">
+                <ActiveIcon className="w-6 h-6 text-[#C8FF3E]" />
               </div>
               <h1 className="font-display font-bold text-xl mb-1.5 lowercase text-primary-foreground">
                 sign up as <span className="text-primary-foreground">{activeRoleInfo.label.toLowerCase()}</span>
