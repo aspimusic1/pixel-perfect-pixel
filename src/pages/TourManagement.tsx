@@ -534,6 +534,10 @@ export default function TourManagement() {
             setStops(stops.map((s) => (s.id === editingStop.id ? { ...s, ...updates } : s)));
             setEditingStop(null);
           }}
+          onDeleted={(id) => {
+            setStops(stops.filter((s) => s.id !== id));
+            setEditingStop(null);
+          }}
         />
       )}
     </div>
