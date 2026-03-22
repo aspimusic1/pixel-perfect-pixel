@@ -442,7 +442,8 @@ export default function ArtistDashboard() {
               {/* ─── Analytics ─── */}
               {activeView === "analytics" && (
                 <>
-                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">spotify analytics</h2>
+                  <PlatformConnectionCards />
+                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest mt-6">spotify analytics</h2>
                   <SpotifyAnalytics />
                 </>
               )}
