@@ -164,7 +164,7 @@ export default function Navbar() {
                 {profile?.role === "artist" && <MobileLink to="/tax" onClick={closeMenu}>{t("nav.tax")}</MobileLink>}
                 <MobileLink to="/insights" onClick={closeMenu}>insights</MobileLink>
                 <MobileLink to="/tours" onClick={closeMenu}>{t("nav.tours")}</MobileLink>
-                {isAdmin && <MobileLink to="/admin/claims" onClick={closeMenu}>admin</MobileLink>}
+                {isAdmin && <MobileLink to="/admin" onClick={closeMenu}><ShieldCheck className="w-3 h-3 mr-1 inline" /> admin</MobileLink>}
                 <div className="border-t border-border my-4" />
                 <div className="px-3 py-2">
                   <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
