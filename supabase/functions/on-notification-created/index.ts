@@ -9,6 +9,15 @@ const corsHeaders = {
 
 const APP_URL = "https://getbookedlive.lovable.app";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function wrapEmail(subject: string, bodyContent: string): string {
   return `<!DOCTYPE html>
 <html>
@@ -63,21 +72,24 @@ interface NotificationMeta {
 }
 
 function buildOfferReceivedEmail(meta: NotificationMeta) {
+  const eventName = escapeHtml(meta.event_name || "New Event");
+  const eventDate = escapeHtml(meta.event_date || "TBD");
+  const city = escapeHtml(meta.city || "—");
   const subject = `New booking offer — ${meta.event_name || "New Event"}`;
   const html = wrapEmail(subject, `
     <h1>You've received a new offer 🎉</h1>
     <div style="margin: 20px 0;">
       <div class="detail-row">
         <span class="detail-label">Event</span>
-        <span class="detail-value">${meta.event_name || "—"}</span>
+        <span class="detail-value">${eventName}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Date</span>
-        <span class="detail-value">${meta.event_date || "TBD"}</span>
+        <span class="detail-value">${eventDate}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">City</span>
-        <span class="detail-value">${meta.city || "—"}</span>
+        <span class="detail-value">${city}</span>
       </div>
       <div class="detail-row" style="border-bottom:none;">
         <span class="detail-label">Offer Amount</span>
@@ -90,22 +102,25 @@ function buildOfferReceivedEmail(meta: NotificationMeta) {
 }
 
 function buildOfferAcceptedEmail(meta: NotificationMeta) {
+  const artistName = escapeHtml(meta.artist_name || "The artist");
+  const eventName = escapeHtml(meta.event_name || "—");
+  const eventDate = escapeHtml(meta.event_date || "TBD");
   const subject = "Your offer was accepted!";
   const html = wrapEmail(subject, `
     <h1>Great news — your offer was accepted! ✅</h1>
-    <p>${meta.artist_name || "The artist"} has accepted your booking offer.</p>
+    <p>${artistName} has accepted your booking offer.</p>
     <div style="margin: 20px 0;">
       <div class="detail-row">
         <span class="detail-label">Artist</span>
-        <span class="detail-value">${meta.artist_name || "—"}</span>
+        <span class="detail-value">${artistName}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Event</span>
-        <span class="detail-value">${meta.event_name || "—"}</span>
+        <span class="detail-value">${eventName}</span>
       </div>
       <div class="detail-row" style="border-bottom:none;">
         <span class="detail-label">Date</span>
-        <span class="detail-value">${meta.event_date || "TBD"}</span>
+        <span class="detail-value">${eventDate}</span>
       </div>
     </div>
     <a href="${APP_URL}/dashboard" class="btn">Open Deal Room →</a>
@@ -114,10 +129,11 @@ function buildOfferAcceptedEmail(meta: NotificationMeta) {
 }
 
 function buildOfferDeclinedEmail(meta: NotificationMeta) {
+  const eventName = escapeHtml(meta.event_name || "this event");
   const subject = `Offer update — ${meta.event_name || "Your Event"}`;
   const html = wrapEmail(subject, `
     <h1>Offer update</h1>
-    <p>Unfortunately, the artist has decided not to move forward with your offer for <strong>${meta.event_name || "this event"}</strong>.</p>
+    <p>Unfortunately, the artist has decided not to move forward with your offer for <strong>${eventName}</strong>.</p>
     <p>This happens — artists receive many offers and can't accept them all. We encourage you to explore other talented artists on the platform.</p>
     <a href="${APP_URL}/directory" class="btn">Browse Artists →</a>
   `);
@@ -125,6 +141,9 @@ function buildOfferDeclinedEmail(meta: NotificationMeta) {
 }
 
 function buildBookingConfirmedEmail(meta: NotificationMeta) {
+  const eventName = escapeHtml(meta.event_name || "—");
+  const eventDate = escapeHtml(meta.event_date || "TBD");
+  const city = escapeHtml(meta.city || "—");
   const subject = `Booking confirmed — ${meta.event_name || "Your Event"}`;
   const html = wrapEmail(subject, `
     <h1>Booking confirmed! 🎤</h1>
@@ -132,15 +151,15 @@ function buildBookingConfirmedEmail(meta: NotificationMeta) {
     <div style="margin: 20px 0;">
       <div class="detail-row">
         <span class="detail-label">Event</span>
-        <span class="detail-value">${meta.event_name || "—"}</span>
+        <span class="detail-value">${eventName}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Date</span>
-        <span class="detail-value">${meta.event_date || "TBD"}</span>
+        <span class="detail-value">${eventDate}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">City</span>
-        <span class="detail-value">${meta.city || "—"}</span>
+        <span class="detail-value">${city}</span>
       </div>
       <div class="detail-row" style="border-bottom:none;">
         <span class="detail-label">Guarantee</span>
@@ -153,13 +172,15 @@ function buildBookingConfirmedEmail(meta: NotificationMeta) {
 }
 
 function buildNewMessageEmail(meta: NotificationMeta) {
+  const senderName = escapeHtml(meta.sender_name || "Someone");
   const subject = `New message from ${meta.sender_name || "someone"}`;
-  const preview = meta.message_preview
+  const rawPreview = meta.message_preview
     ? meta.message_preview.slice(0, 100) + (meta.message_preview.length > 100 ? "…" : "")
     : "You have a new message.";
+  const preview = escapeHtml(rawPreview);
   const html = wrapEmail(subject, `
     <h1>New message 💬</h1>
-    <p><strong>${meta.sender_name || "Someone"}</strong> sent you a message:</p>
+    <p><strong>${senderName}</strong> sent you a message:</p>
     <div class="message-preview">"${preview}"</div>
     <a href="${APP_URL}/dashboard" class="btn">Reply →</a>
   `);

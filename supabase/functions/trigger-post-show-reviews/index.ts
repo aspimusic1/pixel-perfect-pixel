@@ -9,6 +9,15 @@ const corsHeaders = {
 
 const APP_URL = "https://getbookedlive.lovable.app";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -150,6 +159,7 @@ serve(async (req) => {
 });
 
 function buildReviewRequestEmail(message: string, link: string): string {
+  const safeMessage = escapeHtml(message);
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -173,7 +183,7 @@ function buildReviewRequestEmail(message: string, link: string): string {
     <div class="logo"><span>GetBooked.Live</span></div>
     <div class="card">
       <h1>How was your show? ⭐</h1>
-      <p>${message}</p>
+      <p>${safeMessage}</p>
       <p>Your review helps other artists and promoters make better booking decisions.</p>
       <a href="${link}" class="btn">Leave a Review →</a>
     </div>
