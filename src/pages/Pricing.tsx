@@ -139,6 +139,9 @@ export default function Pricing() {
     <div ref={ref} className="min-h-screen pt-24 px-4 pb-16">
       <div className="container mx-auto max-w-5xl">
         <div className="text-center mb-16">
+          <div data-reveal className="opacity-0">
+            <SectionLabel>pricing</SectionLabel>
+          </div>
           <h1 data-reveal className="opacity-0 font-display text-4xl sm:text-5xl font-bold mb-4">Simple, transparent pricing</h1>
           <p data-reveal className="opacity-0 text-muted-foreground text-lg max-w-md mx-auto" style={{ animationDelay: "80ms" }}>
             Lower commissions as you grow. No hidden fees, ever.
