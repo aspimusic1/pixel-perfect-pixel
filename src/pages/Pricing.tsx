@@ -58,6 +58,15 @@ export default function Pricing() {
   const { user, profile, subscription, checkSubscription } = useAuth();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check admin status
+  useEffect(() => {
+    if (!user) return;
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
+      if (data) setIsAdmin(true);
+    });
+  }, [user]);
 
   // Check for success/cancel URL params
   useEffect(() => {
@@ -83,7 +92,7 @@ export default function Pricing() {
     return () => observer.disconnect();
   }, []);
 
-  const currentPlan = profile?.subscription_plan || "free";
+  const currentPlan = isAdmin ? "admin" : (profile?.subscription_plan || "free");
 
   const handleCheckout = async (tier: "pro" | "business") => {
     if (!user) {
@@ -131,6 +140,15 @@ export default function Pricing() {
             Lower commissions as you grow. No hidden fees, ever.
           </p>
         </div>
+
+        {isAdmin && (
+          <div data-reveal className="opacity-0 mb-8 flex justify-center">
+            <div className="px-5 py-3 rounded-xl bg-[#C8FF3E]/10 border border-[#C8FF3E]/20 text-center">
+              <p className="text-[#C8FF3E] font-syne font-bold text-sm">🛡️ admin — all access</p>
+              <p className="text-[10px] text-muted-foreground mt-1">you have full platform access as an administrator</p>
+            </div>
+          </div>
+        )}
 
         {subscription?.subscribed && (
           <div data-reveal className="opacity-0 mb-8 flex justify-center">

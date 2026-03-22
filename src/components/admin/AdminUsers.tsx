@@ -14,6 +14,7 @@ const ROLE_COLORS: Record<string, string> = {
   venue: "#FFB83E",
   production: "#7B5CF0",
   photo_video: "#3EC8FF",
+  admin: "#FF5C5C",
 };
 
 export default function AdminUsers() {
@@ -56,6 +57,18 @@ export default function AdminUsers() {
     const { error } = await supabase.from("profiles").update({ subscription_plan: plan }).eq("user_id", userId);
     if (error) { toast.error("Failed to update plan"); return; }
     toast.success(`Plan changed to ${plan}`);
+    queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+  };
+
+  const toggleAdmin = async (userId: string) => {
+    // Check if user already has admin role
+    const { data: existing } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    // We need to use edge function since only service_role can insert/delete user_roles
+    const { error } = await supabase.functions.invoke("admin-claim-action", {
+      body: { action: existing ? "remove_admin" : "grant_admin", user_id: userId },
+    });
+    if (error) { toast.error("Failed to update admin role"); return; }
+    toast.success(existing ? "Admin role removed" : "Admin role granted");
     queryClient.invalidateQueries({ queryKey: ["admin-users"] });
   };
 
@@ -182,10 +195,19 @@ export default function AdminUsers() {
                       <Button
                         size="sm"
                         variant="ghost"
+                        className="h-6 px-2 text-[10px] text-[#FFB83E] hover:text-[#FFB83E]"
+                        onClick={() => toggleAdmin(u.user_id)}
+                        title="Toggle admin role"
+                      >
+                        <Shield className="w-3 h-3 mr-1" />
+                        admin
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
                         className="h-6 px-2 text-[10px]"
                         onClick={() => toggleSuspend(u.user_id, !!(u as any).suspended)}
                       >
-                        <Shield className="w-3 h-3 mr-1" />
                         {(u as any).suspended ? "unsuspend" : "suspend"}
                       </Button>
                       <Button
