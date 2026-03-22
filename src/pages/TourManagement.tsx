@@ -218,15 +218,8 @@ export default function TourManagement() {
 
           {loading ? (
             <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="rounded-xl bg-card border border-border p-5 flex items-center justify-between">
-                  <div className="space-y-2 flex-1">
-                    <Skeleton className="h-5 w-48" />
-                    <Skeleton className="h-3 w-32" />
-                    <Skeleton className="h-3 w-20" />
-                  </div>
-                  <Skeleton className="h-8 w-8 rounded-md" />
-                </div>
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="animate-pulse rounded-xl bg-white/[0.05] h-24" />
               ))}
             </div>
           ) : tours.length === 0 ? (
