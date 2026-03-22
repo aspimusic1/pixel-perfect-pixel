@@ -5,7 +5,9 @@ import PowerFeaturesSection from "@/components/landing/PowerFeaturesSection";
 import RoleSwitcherSection from "@/components/landing/RoleSwitcherSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import ComparisonSection from "@/components/landing/ComparisonSection";
+import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import PricingTeaser from "@/components/landing/PricingTeaser";
+import FAQSection from "@/components/landing/FAQSection";
 import FinalCTA from "@/components/landing/FinalCTA";
 import Footer from "@/components/landing/Footer";
 import RolePickerPopup from "@/components/RolePickerPopup";
@@ -47,7 +49,9 @@ export default function Landing() {
       <RoleSwitcherSection />
       <HowItWorksSection />
       <ComparisonSection />
+      <TestimonialsSection />
       <PricingTeaser />
+      <FAQSection />
       <FinalCTA />
       <Footer />
     </div>
