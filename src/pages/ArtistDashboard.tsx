@@ -25,7 +25,7 @@ import ProfileCompletionRing from "@/components/ProfileCompletionRing";
 import StreamingStatsEditor from "@/components/StreamingStatsEditor";
 import EventsTab from "@/components/EventsTab";
 
-type ArtistView = "overview" | "offers" | "calendar" | "bookkeeping" | "agent" | "profile";
+type ArtistView = "overview" | "offers" | "events" | "calendar" | "bookkeeping" | "agent" | "profile";
 
 type Offer = {
   id: string;
