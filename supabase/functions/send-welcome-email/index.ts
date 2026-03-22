@@ -19,7 +19,7 @@ function escapeHtml(str: string): string {
 }
 
 function buildWelcomeHtml(displayName: string, role: string): string {
-  const firstName = displayName?.split(" ")[0] || "there";
+  const firstName = escapeHtml(displayName?.split(" ")[0] || "there");
   const roleTips: Record<string, string> = {
     artist: "Complete your profile, set your fee range, and mark your available dates so promoters can find and book you.",
     promoter: "Browse verified artists in the directory, send your first offer, and start building your event roster.",

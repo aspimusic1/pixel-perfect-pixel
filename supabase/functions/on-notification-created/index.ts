@@ -172,13 +172,15 @@ function buildBookingConfirmedEmail(meta: NotificationMeta) {
 }
 
 function buildNewMessageEmail(meta: NotificationMeta) {
+  const senderName = escapeHtml(meta.sender_name || "Someone");
   const subject = `New message from ${meta.sender_name || "someone"}`;
-  const preview = meta.message_preview
+  const rawPreview = meta.message_preview
     ? meta.message_preview.slice(0, 100) + (meta.message_preview.length > 100 ? "…" : "")
     : "You have a new message.";
+  const preview = escapeHtml(rawPreview);
   const html = wrapEmail(subject, `
     <h1>New message 💬</h1>
-    <p><strong>${meta.sender_name || "Someone"}</strong> sent you a message:</p>
+    <p><strong>${senderName}</strong> sent you a message:</p>
     <div class="message-preview">"${preview}"</div>
     <a href="${APP_URL}/dashboard" class="btn">Reply →</a>
   `);

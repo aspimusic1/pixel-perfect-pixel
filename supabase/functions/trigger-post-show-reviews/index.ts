@@ -183,7 +183,7 @@ function buildReviewRequestEmail(message: string, link: string): string {
     <div class="logo"><span>GetBooked.Live</span></div>
     <div class="card">
       <h1>How was your show? ⭐</h1>
-      <p>${message}</p>
+      <p>${safeMessage}</p>
       <p>Your review helps other artists and promoters make better booking decisions.</p>
       <a href="${link}" class="btn">Leave a Review →</a>
     </div>
