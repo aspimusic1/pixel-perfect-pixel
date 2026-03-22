@@ -1523,7 +1523,6 @@ export type Database = {
           capacity: number | null
           city: string | null
           claim_status: string | null
-          claimed_by: string | null
           created_at: string | null
           description: string | null
           id: string | null
@@ -1538,7 +1537,6 @@ export type Database = {
           capacity?: number | null
           city?: string | null
           claim_status?: string | null
-          claimed_by?: string | null
           created_at?: string | null
           description?: string | null
           id?: string | null
@@ -1553,7 +1551,6 @@ export type Database = {
           capacity?: number | null
           city?: string | null
           claim_status?: string | null
-          claimed_by?: string | null
           created_at?: string | null
           description?: string | null
           id?: string | null
