@@ -69,7 +69,7 @@ export default function ResetPassword() {
                   placeholder="••••••••"
                   required
                   minLength={6}
-                  className="mt-1.5 bg-background border-border"
+                  className="mt-1.5 bg-white/[0.04] border-white/[0.08]"
                 />
               </div>
               <div>
