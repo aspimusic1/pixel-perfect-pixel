@@ -25,6 +25,7 @@ export default function Navbar() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { t, i18n } = useTranslation();
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
