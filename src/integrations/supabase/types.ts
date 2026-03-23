@@ -1212,6 +1212,39 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          approved: boolean
+          created_at: string
+          id: string
+          quote: string
+          rating: number
+          reviewer_city: string | null
+          reviewer_name: string
+          reviewer_role: string
+        }
+        Insert: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          quote: string
+          rating?: number
+          reviewer_city?: string | null
+          reviewer_name: string
+          reviewer_role: string
+        }
+        Update: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          quote?: string
+          rating?: number
+          reviewer_city?: string | null
+          reviewer_name?: string
+          reviewer_role?: string
+        }
+        Relationships: []
+      }
       tour_budget_items: {
         Row: {
           actual_cost: number | null
