@@ -254,14 +254,7 @@ export default function HeroSection() {
 
         {/* Social proof — animated counters */}
         <div className="mt-14 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-8">
-          {[
-            { value: "2,400+", label: "artists" },
-            { value: "920+", label: "promoters" },
-            { value: "840+", label: "venues" },
-            { value: "380+", label: "production crews" },
-            { value: "640+", label: "creatives" },
-            { value: "12K+", label: "shows booked" },
-          ].map((stat, i) => (
+          {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 16 }}
