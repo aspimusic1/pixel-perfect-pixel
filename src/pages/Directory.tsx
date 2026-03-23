@@ -344,7 +344,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
   const tabLabel = ROLE_TABS.find((t) => t.value === activeTab)?.label.toLowerCase() ?? "";
 
   return (
-    <div ref={ref} className="min-h-screen pt-20 px-4 sm:px-6 md:px-8 pb-12">
+    <div ref={ref} className="min-h-screen pt-20 px-4 sm:px-6 md:px-8 pb-12" aria-busy={loading}>
       <SEO
         title="Browse Artists, Venues & Production Crews — GetBooked.Live"
         description="Search 2,400+ verified artists, 840+ venues, and 380+ production crews. Filter by genre, city, and fee range."
@@ -372,12 +372,13 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
         {/* Search + Genre dropdown + City filter */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="search by name, city, or genre..."
               className="pl-9 bg-card border-border font-body"
+              aria-label="Search directory"
             />
           </div>
           {isArtistTab && (
@@ -464,12 +465,10 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
             ))}
           </TabsList>
 
-          {/* Results count */}
-          {!loading && totalCount > 0 && (
-            <p className="text-[11px] text-muted-foreground font-body mt-4 tabular-nums">
-              Showing {rangeStart}–{rangeEnd} of {totalCount} {tabLabel}
-            </p>
-          )}
+          {/* Results count — announced to screen readers */}
+          <p className="text-[11px] text-muted-foreground font-body mt-4 tabular-nums" aria-live="polite" role="status">
+            {loading ? "Loading results…" : totalCount > 0 ? `Showing ${rangeStart}–${rangeEnd} of ${totalCount} ${tabLabel}` : `No ${tabLabel} found`}
+          </p>
 
           {/* Tab content */}
           {ROLE_TABS.map((tab) => (
