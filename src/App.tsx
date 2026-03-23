@@ -35,6 +35,7 @@ const PresalePage = lazy(() => import("@/pages/PresalePage"));
 const ReviewPage = lazy(() => import("@/pages/ReviewPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const Welcome = lazy(() => import("@/pages/Welcome"));
+const DemoDashboard = lazy(() => import("@/pages/DemoDashboard"));
 const Settings = lazy(() => import("@/pages/Settings"));
 
 const queryClient = new QueryClient();
