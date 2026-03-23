@@ -231,7 +231,7 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Mobile overlay */}
       {menuOpen && (
