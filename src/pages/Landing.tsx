@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import PageTransition from "@/components/PageTransition";
 import HeroSection from "@/components/landing/HeroSection";
 import ProfileMarquee from "@/components/landing/ProfileMarquee";
 import PersonaSection from "@/components/landing/PersonaSection";
