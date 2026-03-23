@@ -109,8 +109,11 @@ export default function HeroSection() {
         >
           {[
             { value: "2,400+", label: "artists" },
-            { value: "18,000+", label: "bookings" },
-            { value: "$4.2M", label: "paid out" },
+            { value: "920+", label: "promoters" },
+            { value: "840+", label: "venues" },
+            { value: "380+", label: "production crews" },
+            { value: "640+", label: "creatives" },
+            { value: "12K+", label: "shows booked" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="font-display font-bold text-xl sm:text-2xl text-foreground tabular-nums">{stat.value}</p>
