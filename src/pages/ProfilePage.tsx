@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { useParams, Link } from "react-router-dom";
+import BackButton from "@/components/BackButton";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
