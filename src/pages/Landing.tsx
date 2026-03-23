@@ -47,10 +47,12 @@ export default function Landing() {
       <RolePickerPopup />
       <HeroSection />
       <ProfileMarquee />
+      <PersonaSection />
       <LockedDirectoryPreview />
       <PowerFeaturesSection />
       <RoleSwitcherSection />
       <HowItWorksSection />
+      <BuildShowSection />
       <ComparisonSection />
       <TestimonialsSection />
       <PricingTeaser />
