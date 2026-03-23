@@ -1,42 +1,50 @@
 import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as HotToaster } from "react-hot-toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import InstallBanner from "@/components/InstallBanner";
 
-// Route-level code splitting
-const Landing = lazy(() => import("@/pages/Landing"));
-const Auth = lazy(() => import("@/pages/Auth"));
-const ProfileSetup = lazy(() => import("@/pages/ProfileSetup"));
-const ArtistDashboard = lazy(() => import("@/pages/ArtistDashboard"));
-const PromoterDashboard = lazy(() => import("@/pages/PromoterDashboard"));
-const CrewDashboard = lazy(() => import("@/pages/CrewDashboard"));
-const Directory = lazy(() => import("@/pages/Directory"));
-const Pricing = lazy(() => import("@/pages/Pricing"));
-const OfferFlow = lazy(() => import("@/pages/OfferFlow"));
-const TourManagement = lazy(() => import("@/pages/TourManagement"));
-const VenueManage = lazy(() => import("@/pages/VenueManage"));
-const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
-const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
-const Pipeline = lazy(() => import("@/pages/Pipeline"));
-const TaxDashboard = lazy(() => import("@/pages/TaxDashboard"));
-const Trending = lazy(() => import("@/pages/Trending"));
-const Insights = lazy(() => import("@/pages/Insights"));
-const AdminClaims = lazy(() => import("@/pages/AdminClaims"));
-const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
+// ── PUBLIC PAGES ──
+const HomePage = lazy(() => import("@/pages/HomePage"));
+const AuthPage = lazy(() => import("@/pages/AuthPage"));
+const PricingPage = lazy(() => import("@/pages/PricingPage"));
+const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
+const DirectoryPage = lazy(() => import("@/pages/DirectoryPage"));
+const PublicProfilePage = lazy(() => import("@/pages/PublicProfilePage"));
 const PresalePage = lazy(() => import("@/pages/PresalePage"));
+const DemoDashboardPage = lazy(() => import("@/pages/DemoDashboardPage"));
+const TrendingPage = lazy(() => import("@/pages/TrendingPage"));
+
+// ── PROTECTED PAGES ──
+const WelcomePage = lazy(() => import("@/pages/WelcomePage"));
+const ProfileSetupPage = lazy(() => import("@/pages/ProfileSetupPage"));
+const DashboardArtist = lazy(() => import("@/pages/DashboardArtist"));
+const DashboardPromoter = lazy(() => import("@/pages/DashboardPromoter"));
+const DashboardVenue = lazy(() => import("@/pages/DashboardVenue"));
+const DashboardCrew = lazy(() => import("@/pages/DashboardCrew"));
+const DashboardProduction = lazy(() => import("@/pages/DashboardProduction"));
+const DashboardCreative = lazy(() => import("@/pages/DashboardCreative"));
+const OfferFlowPage = lazy(() => import("@/pages/OfferFlowPage"));
+const TourManagementPage = lazy(() => import("@/pages/TourManagementPage"));
+const PipelinePage = lazy(() => import("@/pages/PipelinePage"));
+const TaxDashboardPage = lazy(() => import("@/pages/TaxDashboardPage"));
+const InsightsPage = lazy(() => import("@/pages/InsightsPage"));
+const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const ReviewPage = lazy(() => import("@/pages/ReviewPage"));
-const NotFound = lazy(() => import("@/pages/NotFound"));
-const Welcome = lazy(() => import("@/pages/Welcome"));
-const DemoDashboard = lazy(() => import("@/pages/DemoDashboard"));
-const Settings = lazy(() => import("@/pages/Settings"));
+
+// ── ADMIN PAGES ──
+const AdminPage = lazy(() => import("@/pages/AdminPage"));
+const AdminClaimsPage = lazy(() => import("@/pages/AdminClaimsPage"));
+
+// ── CATCH-ALL ──
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 
 const queryClient = new QueryClient();
 
@@ -48,37 +56,60 @@ function RouteLoadingFallback() {
   );
 }
 
+/** Renders the correct dashboard based on user role */
+function DashboardRouter() {
+  const { profile, isAdmin } = useAuth();
+  if (isAdmin) return <Navigate to="/admin" replace />;
+  switch (profile?.role) {
+    case "promoter": return <DashboardPromoter />;
+    case "venue": return <DashboardVenue />;
+    case "production": return <DashboardProduction />;
+    case "photo_video": return <DashboardCreative />;
+    default: return <DashboardArtist />;
+  }
+}
+
 function AnimatedRoutes() {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Landing />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
-        <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
-        <Route path="/artist-dashboard" element={<ProtectedRoute><ArtistDashboard /></ProtectedRoute>} />
-        <Route path="/promoter-dashboard" element={<ProtectedRoute><PromoterDashboard /></ProtectedRoute>} />
-        <Route path="/production-dashboard" element={<ProtectedRoute><CrewDashboard /></ProtectedRoute>} />
-        <Route path="/creative-dashboard" element={<ProtectedRoute><CrewDashboard /></ProtectedRoute>} />
-        <Route path="/directory" element={<Directory />} />
-        <Route path="/venues" element={<Directory initialRole="venue" />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/offer" element={<ProtectedRoute><OfferFlow /></ProtectedRoute>} />
-        <Route path="/tours" element={<ProtectedRoute><TourManagement /></ProtectedRoute>} />
-        <Route path="/venue-manage" element={<ProtectedRoute><VenueManage /></ProtectedRoute>} />
-        <Route path="/pipeline" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
-        <Route path="/tax" element={<ProtectedRoute><TaxDashboard /></ProtectedRoute>} />
-        <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
-        <Route path="/p/:slug" element={<ProfilePage />} />
-        <Route path="/admin/claims" element={<ProtectedRoute><AdminClaims /></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        {/* ── PUBLIC ROUTES ── */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/directory" element={<DirectoryPage />} />
+        <Route path="/venues" element={<DirectoryPage initialRole="venue" />} />
+        <Route path="/trending" element={<TrendingPage />} />
+        <Route path="/p/:slug" element={<PublicProfilePage />} />
         <Route path="/presale/:bookingId" element={<PresalePage />} />
+        <Route path="/demo-dashboard" element={<DemoDashboardPage />} />
+
+        {/* ── PROTECTED ROUTES ── */}
+        <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
+        <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />
+        {/* Legacy role-specific dashboard routes → redirect to unified /dashboard */}
+        <Route path="/artist-dashboard" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/promoter-dashboard" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/venue-manage" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/production-dashboard" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/creative-dashboard" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/offer" element={<ProtectedRoute><OfferFlowPage /></ProtectedRoute>} />
+        <Route path="/tours" element={<ProtectedRoute><TourManagementPage /></ProtectedRoute>} />
+        <Route path="/pipeline" element={<ProtectedRoute><PipelinePage /></ProtectedRoute>} />
+        <Route path="/tax" element={<ProtectedRoute><TaxDashboardPage /></ProtectedRoute>} />
+        <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/review/:bookingId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-        <Route path="/demo-dashboard" element={<DemoDashboard />} />
-        <Route path="*" element={<NotFound />} />
+
+        {/* ── ADMIN ROUTES ── */}
+        <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+        <Route path="/admin/claims" element={<ProtectedRoute><AdminClaimsPage /></ProtectedRoute>} />
+
+        {/* ── CATCH-ALL ── */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </AnimatePresence>
   );
