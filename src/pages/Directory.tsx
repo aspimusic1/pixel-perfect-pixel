@@ -101,8 +101,6 @@ async function fetchProfiles(roleFilter: string, search: string, city: string | 
   switch (sort) {
     case "name_asc": query = query.order("display_name", { ascending: true }); break;
     case "name_desc": query = query.order("display_name", { ascending: false }); break;
-    case "fee_low": query = query.order("updated_at", { ascending: true }); break;
-    case "fee_high": query = query.order("updated_at", { ascending: false }); break;
     default: query = query.order("updated_at", { ascending: false }); break;
   }
 
