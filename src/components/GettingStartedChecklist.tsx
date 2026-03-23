@@ -150,7 +150,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
       label: "Set your PromoScore preferences",
       description: "Configure your promoter metrics",
       icon: BarChart3,
-      action: () => navigate("/promoter-dashboard"),
+      action: () => navigate("/dashboard"),
       detectComplete: () => false,
     },
   ];

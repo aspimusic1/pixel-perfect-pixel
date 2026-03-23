@@ -72,15 +72,7 @@ export default function Welcome() {
     }
     // Route admin to admin panel
     if (isAdmin) { navigate("/admin"); return; }
-    // Route to role-specific dashboard
-    const dashMap: Record<string, string> = {
-      artist: "/artist-dashboard",
-      promoter: "/promoter-dashboard",
-      venue: "/venue-manage",
-      production: "/production-dashboard",
-      photo_video: "/creative-dashboard",
-    };
-    navigate(dashMap[role] || "/artist-dashboard");
+    navigate("/dashboard");
   };
 
   return (

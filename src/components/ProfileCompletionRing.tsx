@@ -109,7 +109,7 @@ export default function ProfileCompletionRing() {
           {incomplete.map((item) => (
             <button
               key={item.key}
-              onClick={() => item.key === "availability" ? navigate("/artist-dashboard") : navigate("/setup")}
+              onClick={() => item.key === "availability" ? navigate("/dashboard") : navigate("/profile-setup")}
               className="inline-flex items-center h-8 px-3 rounded-full text-[11px] font-medium border border-white/[0.06] bg-white/[0.03] text-muted-foreground hover:text-foreground hover:border-white/10 transition-colors active:scale-[0.97]"
             >
               {item.cta}

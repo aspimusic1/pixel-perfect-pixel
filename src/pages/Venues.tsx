@@ -166,7 +166,7 @@ export default function Venues() {
         <div className="flex items-center justify-between mb-2">
           <h1 data-reveal className="fade-in-section font-display text-3xl font-bold">venue directory</h1>
           {user && (
-            <Link to="/venue-manage">
+            <Link to="/dashboard">
               <Button size="sm" variant="outline" className="text-xs font-body border-role-venue/30 text-role-venue hover:bg-role-venue/10 active:scale-[0.97] transition-transform">
                 manage venues
               </Button>
