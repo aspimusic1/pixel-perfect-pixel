@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, X } from "lucide-react";
 import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 function MockupWindow() {
   return (
@@ -138,6 +139,42 @@ function AnimatedHeadline() {
 }
 
 export default function HeroSection() {
+  const [stats, setStats] = useState<{ value: string; label: string }[]>([
+    { value: "0+", label: "artists" },
+    { value: "0+", label: "promoters" },
+    { value: "0+", label: "venues" },
+    { value: "0+", label: "production crews" },
+    { value: "0+", label: "creatives" },
+    { value: "0+", label: "shows booked" },
+  ]);
+
+  useEffect(() => {
+    async function fetchStats() {
+      const [{ count: artists }, { count: promoters }, { count: venues }, { count: production }, { count: creatives }, { count: bookings }] = await Promise.all([
+        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "artist"),
+        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "promoter"),
+        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "venue"),
+        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "production"),
+        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "photo_video"),
+        supabase.from("bookings").select("id", { count: "exact", head: true }).eq("status", "confirmed"),
+      ]);
+      const fmt = (n: number | null) => {
+        const v = n || 0;
+        if (v >= 1000) return `${(v / 1000).toFixed(v >= 10000 ? 0 : 1)}K+`;
+        return `${v}+`;
+      };
+      setStats([
+        { value: fmt(artists), label: "artists" },
+        { value: fmt(promoters), label: "promoters" },
+        { value: fmt(venues), label: "venues" },
+        { value: fmt(production), label: "production crews" },
+        { value: fmt(creatives), label: "creatives" },
+        { value: fmt(bookings), label: "shows booked" },
+      ]);
+    }
+    fetchStats();
+  }, []);
+
   return (
     <section className="relative pt-24 sm:pt-40 pb-16 sm:pb-28 px-4 sm:px-6 md:px-8 overflow-hidden">
       {/* Subtle ambient glow */}
@@ -217,14 +254,7 @@ export default function HeroSection() {
 
         {/* Social proof — animated counters */}
         <div className="mt-14 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-8">
-          {[
-            { value: "2,400+", label: "artists" },
-            { value: "920+", label: "promoters" },
-            { value: "840+", label: "venues" },
-            { value: "380+", label: "production crews" },
-            { value: "640+", label: "creatives" },
-            { value: "12K+", label: "shows booked" },
-          ].map((stat, i) => (
+          {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 16 }}
