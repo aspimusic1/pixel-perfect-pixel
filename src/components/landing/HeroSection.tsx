@@ -103,7 +103,7 @@ function AnimatedHeadline() {
 
   return (
     <h1
-      className="font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase text-3xl sm:text-5xl md:text-6xl"
+      className="font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
       style={{ lineHeight: "1.05" }}
     >
       {words1.map((word, i) => {
