@@ -77,7 +77,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
       label: "Set your available dates",
       description: "Let promoters know when you're free",
       icon: CalendarDays,
-      action: () => navigate("/artist-dashboard"),
+      action: () => navigate("/dashboard"),
       detectComplete: () => availability.length >= 2,
     },
     {
