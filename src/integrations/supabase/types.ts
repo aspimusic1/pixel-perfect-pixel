@@ -1884,6 +1884,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_platform_stats: { Args: never; Returns: Json }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
       move_to_dlq: {
         Args: {
