@@ -241,23 +241,14 @@ export default function Navbar() {
       >
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-1">
-            {NAV_LINKS.map(link => {
-              if (link.pro && !user) {
-                return (
-                  <MobileLink key={link.label} to="/pricing" onClick={closeMenu}>
-                    {link.label} <span className="text-[9px] font-display font-bold bg-primary/20 text-primary px-1.5 py-0.5 rounded-full leading-none ml-1">PRO</span>
-                  </MobileLink>
-                );
-              }
-              return (
-                <MobileLink key={link.label} to={link.to} onClick={closeMenu}>
-                  {link.label}
-                </MobileLink>
-              );
-            })}
+            {NAV_LINKS.map(link => (
+              <MobileLink key={link.label} to={link.to} onClick={closeMenu}>
+                {link.label}
+              </MobileLink>
+            ))}
             {!user && (
-              <MobileLink to="/auth" onClick={closeMenu}>
-                admin login
+              <MobileLink to="/auth?admin=true" onClick={closeMenu}>
+                <ShieldCheck className="w-3.5 h-3.5 inline mr-1.5" />admin login
               </MobileLink>
             )}
 
