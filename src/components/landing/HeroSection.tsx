@@ -168,7 +168,7 @@ export default function HeroSection() {
 
         {/* CTA buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-3 justify-center"
+          className="flex flex-col sm:flex-row gap-3 justify-center items-center"
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.4, ease: "easeOut" }}
@@ -191,6 +191,18 @@ export default function HeroSection() {
               browse directory
             </motion.button>
           </Link>
+          <motion.button
+            onClick={() => {
+              sessionStorage.setItem("isDemo", "true");
+              sessionStorage.setItem("demoStart", String(Date.now()));
+              window.location.href = "/demo-dashboard";
+            }}
+            className="border border-white/[0.08] text-muted-foreground font-display font-medium text-xs rounded-[10px] px-6 h-10 hover:text-foreground hover:border-white/[0.15] active:scale-[0.96] transition-all w-full sm:w-auto"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            try a demo
+          </motion.button>
         </motion.div>
 
         {/* Product screenshot mockup */}

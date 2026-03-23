@@ -77,6 +77,7 @@ function AnimatedRoutes() {
         <Route path="/presale/:bookingId" element={<PresalePage />} />
         <Route path="/review/:bookingId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/demo-dashboard" element={<DemoDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
