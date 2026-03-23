@@ -358,7 +358,7 @@ export default function ProfilePage() {
           {/* Banner */}
           {profile?.banner_url && (
             <div className="w-full h-36 sm:h-48 rounded-xl overflow-hidden -mt-1 mb-5">
-              <img src={profile.banner_url} alt={`${name} banner`} className="w-full h-full object-cover" />
+              <img src={profile.banner_url} alt={`${name} banner`} className="w-full h-full object-cover" loading="lazy" />
             </div>
           )}
 
