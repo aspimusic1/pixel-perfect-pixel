@@ -44,23 +44,25 @@ export default function Landing() {
   const revealRef = useScrollReveal();
 
   return (
-    <div ref={revealRef} className="min-h-screen">
-      <RolePickerPopup />
-      <HeroSection />
-      <ProfileMarquee />
-      <PersonaSection />
-      <LockedDirectoryPreview />
-      <PowerFeaturesSection />
-      <RoleSwitcherSection />
-      <HowItWorksSection />
-      <BuildShowSection />
-      <ComparisonSection />
-      <TestimonialsSection />
-      <PricingTeaser />
-      <FAQSection />
-      <BlogSection />
-      <FinalCTA />
-      <Footer />
-    </div>
+    <PageTransition>
+      <div ref={revealRef} className="min-h-screen">
+        <RolePickerPopup />
+        <HeroSection />
+        <ProfileMarquee />
+        <PersonaSection />
+        <LockedDirectoryPreview />
+        <PowerFeaturesSection />
+        <RoleSwitcherSection />
+        <HowItWorksSection />
+        <BuildShowSection />
+        <ComparisonSection />
+        <TestimonialsSection />
+        <PricingTeaser />
+        <FAQSection />
+        <BlogSection />
+        <FinalCTA />
+        <Footer />
+      </div>
+    </PageTransition>
   );
 }
