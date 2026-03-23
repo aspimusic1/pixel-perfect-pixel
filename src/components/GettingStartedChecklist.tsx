@@ -93,16 +93,22 @@ export default function GettingStartedChecklist({ variant }: Props) {
       label: "Share your smart link",
       description: "Copy your profile URL to share",
       icon: Share2,
-      action: copySmartLink,
-      detectComplete: () => false, // manual
+      action: () => {
+        copySmartLink();
+        if (user) localStorage.setItem(`getbooked_shared_${user.id}`, "true");
+      },
+      detectComplete: () => !!user && localStorage.getItem(`getbooked_shared_${user.id}`) === "true",
     },
     {
       key: "browse_directory",
       label: "Browse the directory",
       description: "Discover other artists and promoters",
       icon: Compass,
-      action: () => navigate("/directory"),
-      detectComplete: () => false, // manual
+      action: () => {
+        if (user) localStorage.setItem(`getbooked_browsed_${user.id}`, "true");
+        navigate("/directory");
+      },
+      detectComplete: () => !!user && localStorage.getItem(`getbooked_browsed_${user.id}`) === "true",
     },
   ];
 

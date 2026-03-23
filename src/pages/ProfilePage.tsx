@@ -351,6 +351,7 @@ export default function ProfilePage() {
       </Helmet>
 
       <div className="mx-auto max-w-3xl">
+        <BackButton fallback="/directory" />
 
         {/* ════════════ HERO SECTION ════════════ */}
         <div className="rounded-2xl bg-[#0E1420] border border-white/[0.06] p-5 sm:p-7 mb-4">

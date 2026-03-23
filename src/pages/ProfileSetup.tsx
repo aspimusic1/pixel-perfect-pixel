@@ -198,6 +198,10 @@ export default function ProfileSetup() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-12">
       <div className="w-full max-w-lg">
+        <Breadcrumbs items={[
+          { label: "Home", to: "/" },
+          { label: "Profile Setup" },
+        ]} />
         <div className="flex items-center gap-3 mb-2">
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${meta.accent.replace("text-", "bg-")}/10`}>
             <RoleIcon className={`w-5 h-5 ${meta.accent}`} />
