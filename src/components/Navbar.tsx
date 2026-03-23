@@ -21,11 +21,7 @@ const LANGS = [
 ];
 
 const NAV_LINKS = [
-  { label: "browse", to: "/directory", pro: true },
-  { label: "directory", to: "/directory", pro: false },
-  { label: "pricing", to: "/pricing", pro: false },
-  { label: "for artists", to: "/auth?tab=signup&role=artist", pro: false },
-  { label: "for promoters", to: "/auth?tab=signup&role=promoter", pro: false },
+  { label: "pricing", to: "/pricing" },
 ];
 
 export default function Navbar() {

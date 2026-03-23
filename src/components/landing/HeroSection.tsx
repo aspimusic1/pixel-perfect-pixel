@@ -150,26 +150,21 @@ export default function HeroSection() {
 
   useEffect(() => {
     async function fetchStats() {
-      const [{ count: artists }, { count: promoters }, { count: venues }, { count: production }, { count: creatives }, { count: bookings }] = await Promise.all([
-        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "artist"),
-        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "promoter"),
-        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "venue"),
-        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "production"),
-        supabase.from("public_profiles").select("id", { count: "exact", head: true }).eq("role", "photo_video"),
-        supabase.from("bookings").select("id", { count: "exact", head: true }).eq("status", "confirmed"),
-      ]);
-      const fmt = (n: number | null) => {
-        const v = n || 0;
-        if (v >= 1000) return `${(v / 1000).toFixed(v >= 10000 ? 0 : 1)}K+`;
-        return `${v}+`;
+      const { data, error } = await supabase.rpc("get_platform_stats");
+      if (error || !data) return;
+      const d = data as Record<string, number>;
+      const fmt = (n: number) => {
+        if (n >= 1000) return `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}K+`;
+        if (n > 0) return `${n} and growing`;
+        return "0+";
       };
       setStats([
-        { value: fmt(artists), label: "artists" },
-        { value: fmt(promoters), label: "promoters" },
-        { value: fmt(venues), label: "venues" },
-        { value: fmt(production), label: "production crews" },
-        { value: fmt(creatives), label: "creatives" },
-        { value: fmt(bookings), label: "shows booked" },
+        { value: fmt(d.artists ?? 0), label: "artists" },
+        { value: fmt(d.promoters ?? 0), label: "promoters" },
+        { value: fmt(d.venues ?? 0), label: "venues" },
+        { value: fmt(d.production ?? 0), label: "production crews" },
+        { value: fmt(d.creatives ?? 0), label: "creatives" },
+        { value: fmt(d.bookings ?? 0), label: "shows booked" },
       ]);
     }
     fetchStats();
