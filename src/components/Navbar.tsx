@@ -21,11 +21,7 @@ const LANGS = [
 ];
 
 const NAV_LINKS = [
-  { label: "browse", to: "/directory", pro: true },
-  { label: "directory", to: "/directory", pro: false },
-  { label: "pricing", to: "/pricing", pro: false },
-  { label: "for artists", to: "/auth?tab=signup&role=artist", pro: false },
-  { label: "for promoters", to: "/auth?tab=signup&role=promoter", pro: false },
+  { label: "pricing", to: "/pricing" },
 ];
 
 export default function Navbar() {
@@ -93,36 +89,22 @@ export default function Navbar() {
           </Link>
 
           {/* Center nav links — desktop */}
-          <div className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map(link => {
-              if (link.pro && !user) {
-                return (
-                  <Link
-                    key={link.label}
-                    to="/pricing"
-                    className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
-                  >
-                    {link.label}
-                    <span className="text-[9px] font-display font-bold bg-primary/20 text-primary px-1.5 py-0.5 rounded-full leading-none">PRO</span>
-                  </Link>
-                );
-              }
-              return (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className={`text-sm font-body transition-colors ${
-                    location.pathname === link.to ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
+          <div className="hidden md:flex items-center gap-5">
+            {NAV_LINKS.map(link => (
+              <Link
+                key={link.label}
+                to={link.to}
+                className={`text-[13px] font-body transition-colors ${
+                  location.pathname === link.to ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
             {user && (
               <Link
                 to={dashboardRoute}
-                className={`text-sm font-body transition-colors ${
+                className={`text-[13px] font-body transition-colors ${
                   location.pathname === dashboardRoute ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -131,17 +113,18 @@ export default function Navbar() {
             )}
             {!user && (
               <Link
-                to="/auth"
-                className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+                to="/auth?admin=true"
+                className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                aria-label="Admin login"
+                title="Admin login"
               >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                admin login
+                <ShieldCheck className="w-4 h-4" />
               </Link>
             )}
             {user && isAdmin && (
               <Link
                 to="/admin"
-                className="text-sm font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
+                className="text-[13px] font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 admin
@@ -258,23 +241,14 @@ export default function Navbar() {
       >
         <div className="flex flex-col h-full px-5 py-6 overflow-y-auto">
           <nav className="flex flex-col gap-1">
-            {NAV_LINKS.map(link => {
-              if (link.pro && !user) {
-                return (
-                  <MobileLink key={link.label} to="/pricing" onClick={closeMenu}>
-                    {link.label} <span className="text-[9px] font-display font-bold bg-primary/20 text-primary px-1.5 py-0.5 rounded-full leading-none ml-1">PRO</span>
-                  </MobileLink>
-                );
-              }
-              return (
-                <MobileLink key={link.label} to={link.to} onClick={closeMenu}>
-                  {link.label}
-                </MobileLink>
-              );
-            })}
+            {NAV_LINKS.map(link => (
+              <MobileLink key={link.label} to={link.to} onClick={closeMenu}>
+                {link.label}
+              </MobileLink>
+            ))}
             {!user && (
-              <MobileLink to="/auth" onClick={closeMenu}>
-                admin login
+              <MobileLink to="/auth?admin=true" onClick={closeMenu}>
+                <ShieldCheck className="w-3.5 h-3.5 inline mr-1.5" />admin login
               </MobileLink>
             )}
 
