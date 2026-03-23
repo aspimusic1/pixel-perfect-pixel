@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, X } from "lucide-react";
 import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 function MockupWindow() {
   return (

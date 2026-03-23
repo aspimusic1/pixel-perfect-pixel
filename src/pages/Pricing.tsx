@@ -286,6 +286,39 @@ export default function Pricing() {
             );
           })}
         </div>
+
+        {/* Trust signals */}
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {[
+            {
+              emoji: "🔒",
+              title: "Secure payments",
+              desc: "All transactions processed by Stripe with bank-level encryption.",
+            },
+            {
+              emoji: "📋",
+              title: "Auto-generated contracts",
+              desc: "Every booking creates a legally-binding contract automatically.",
+            },
+            {
+              emoji: "⭐",
+              title: "Verified profiles",
+              desc: "BookScore built from real booking history, not self-reported.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              data-reveal
+              className="opacity-0 rounded-xl border border-white/[0.06] bg-card p-5 flex items-start gap-3.5"
+            >
+              <span className="text-xl leading-none shrink-0 mt-0.5">{item.emoji}</span>
+              <div>
+                <p className="text-[13px] font-display font-bold text-foreground mb-0.5">{item.title}</p>
+                <p className="text-[11px] text-muted-foreground font-body leading-relaxed">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
