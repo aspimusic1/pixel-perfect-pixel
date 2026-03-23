@@ -971,6 +971,8 @@ export type Database = {
           spotify: string | null
           state: string | null
           streaming_stats: Json | null
+          stripe_account_id: string | null
+          stripe_onboarding_complete: boolean | null
           subscription_plan: string
           suspended: boolean
           threads: string | null
@@ -1014,6 +1016,8 @@ export type Database = {
           spotify?: string | null
           state?: string | null
           streaming_stats?: Json | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
           subscription_plan?: string
           suspended?: boolean
           threads?: string | null
@@ -1057,6 +1061,8 @@ export type Database = {
           spotify?: string | null
           state?: string | null
           streaming_stats?: Json | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
           subscription_plan?: string
           suspended?: boolean
           threads?: string | null
