@@ -363,8 +363,11 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
           </Link>
         </div>
 
-        <h1 className="font-display text-3xl font-bold mb-2">Directory</h1>
-        <p className="text-muted-foreground text-sm mb-6 font-body">Discover artists, venues, crew, and more.</p>
+        <div className="mb-8">
+          <span className="section-label">directory</span>
+          <h1 className="section-heading">discover talent, venues & crews</h1>
+          <p className="section-subtext">Search verified profiles by genre, city, and availability.</p>
+        </div>
 
         {/* Search + Genre dropdown + City filter */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">

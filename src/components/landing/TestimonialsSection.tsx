@@ -26,10 +26,11 @@ export default function TestimonialsSection() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {TESTIMONIALS.map((t) => (
+          {TESTIMONIALS.map((t, i) => (
             <div
               key={t.name}
-              className="rounded-2xl p-6 bg-card/80 border border-white/[0.06]"
+              className="fade-in-section rounded-2xl p-6 bg-card/80 border border-white/[0.06]"
+              style={{ transitionDelay: `${i * 70}ms` }}
             >
               <p className="text-[13px] text-white/80 font-body italic leading-relaxed mb-5">"{t.quote}"</p>
               <div className="flex items-center gap-3">

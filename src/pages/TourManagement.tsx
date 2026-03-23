@@ -189,8 +189,9 @@ export default function TourManagement() {
         <div className="container mx-auto max-w-3xl">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="font-display text-2xl font-bold mb-1">Tour Management</h1>
-              <p className="text-muted-foreground text-sm">Plan and manage your tours.</p>
+              <span className="section-label">tours</span>
+              <h1 className="section-heading">tour management</h1>
+              <p className="section-subtext">Plan and manage your multi-city runs.</p>
             </div>
             <Button onClick={() => setShowCreate(true)} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform">
               <Plus className="w-4 h-4 mr-1" /> New Tour
