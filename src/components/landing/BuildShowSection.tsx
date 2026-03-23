@@ -1,4 +1,5 @@
 import { Mic2, Users, Building2, Wrench, Camera, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 const ROLES = [
   { icon: Users, label: "Promoter", color: "#FF5C8A", desc: "Books the artist and secures the venue" },
@@ -7,6 +8,11 @@ const ROLES = [
   { icon: Wrench, label: "Production", color: "#7B5CF0", desc: "Delivers sound, lights, and staging" },
   { icon: Camera, label: "Creative", color: "#3EC8FF", desc: "Captures and creates the content" },
 ];
+
+const cardVariants = {
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0 },
+};
 
 export default function BuildShowSection() {
   return (
@@ -24,9 +30,15 @@ export default function BuildShowSection() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-1">
           {ROLES.map((role, i) => (
             <div key={role.label} className="flex items-center gap-1 sm:gap-1">
-              <div
-                className="rounded-2xl border border-white/[0.08] bg-card/80 p-5 sm:p-6 text-center w-full sm:w-[160px] transition-all duration-300 hover:-translate-y-0.5"
+              <motion.div
+                className="rounded-2xl border border-white/[0.08] bg-card/80 p-5 sm:p-6 text-center w-full sm:w-[160px]"
                 style={{ borderTop: `2px solid ${role.color}` }}
+                variants={cardVariants}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.07, duration: 0.35, ease: "easeOut" }}
+                whileHover={{ y: -2 }}
               >
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center mx-auto mb-3"
@@ -36,7 +48,7 @@ export default function BuildShowSection() {
                 </div>
                 <p className="text-xs font-display font-bold text-foreground lowercase mb-1">{role.label}</p>
                 <p className="text-[10px] text-muted-foreground font-body leading-[1.5]">{role.desc}</p>
-              </div>
+              </motion.div>
               {i < ROLES.length - 1 && (
                 <ArrowRight className="w-4 h-4 text-muted-foreground/30 shrink-0 hidden sm:block" />
               )}
