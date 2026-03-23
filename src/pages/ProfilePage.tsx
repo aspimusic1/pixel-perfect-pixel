@@ -688,7 +688,7 @@ export default function ProfilePage() {
                 return (
                   <div key={r.id} className="flex gap-3">
                     {r.reviewer_avatar ? (
-                      <img src={r.reviewer_avatar} alt="" className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
+                      <img src={r.reviewer_avatar} alt="" className="w-9 h-9 rounded-full object-cover flex-shrink-0" loading="lazy" width={36} height={36} />
                     ) : (
                       <div className="w-9 h-9 rounded-full bg-[#141B28] flex items-center justify-center text-xs font-syne font-bold text-muted-foreground flex-shrink-0">
                         {(r.reviewer_name ?? "A").charAt(0).toUpperCase()}
