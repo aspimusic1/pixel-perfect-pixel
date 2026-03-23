@@ -223,7 +223,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
             <ChevronUp className="w-4 h-4" />
           </button>
           <button
-            onClick={() => setDismissed(true)}
+            onClick={() => { setDismissed(true); if (user) localStorage.setItem(`getbooked_onboarding_dismissed_${user.id}`, "true"); }}
             className="text-muted-foreground hover:text-foreground transition-colors p-1"
             aria-label="Dismiss"
           >
