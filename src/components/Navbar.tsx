@@ -190,6 +190,12 @@ export default function Navbar() {
                   <DropdownMenuContent align="end" className="min-w-[160px]">
                     <DropdownMenuItem onClick={() => navigate(dashboardRoute)}>Dashboard</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/settings")}>Settings</DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem onClick={() => navigate("/admin")} className="text-primary">
+                        <ShieldCheck className="w-3.5 h-3.5 mr-1.5" />
+                        Admin Panel
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={signOut}>{t("nav.signOut")}</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

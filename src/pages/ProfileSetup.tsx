@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Camera, Loader2, Mic2, Megaphone, Building2, Wrench, Camera as CameraIcon, Music, Youtube } from "lucide-react";
 import toast from "react-hot-toast";
+import BackButton from "@/components/BackButton";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const ROLE_META: Record<string, { icon: any; label: string; accent: string; stepLabel: string }> = {
   artist: { icon: Mic2, label: "Artist", accent: "text-[hsl(var(--role-artist))]", stepLabel: "Set up your artist profile" },
@@ -196,6 +198,10 @@ export default function ProfileSetup() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-12">
       <div className="w-full max-w-lg">
+        <Breadcrumbs items={[
+          { label: "Home", to: "/" },
+          { label: "Profile Setup" },
+        ]} />
         <div className="flex items-center gap-3 mb-2">
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${meta.accent.replace("text-", "bg-")}/10`}>
             <RoleIcon className={`w-5 h-5 ${meta.accent}`} />

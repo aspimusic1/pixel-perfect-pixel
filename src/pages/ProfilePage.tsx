@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { useParams, Link } from "react-router-dom";
+import BackButton from "@/components/BackButton";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -350,6 +351,7 @@ export default function ProfilePage() {
       </Helmet>
 
       <div className="mx-auto max-w-3xl">
+        <BackButton fallback="/directory" />
 
         {/* ════════════ HERO SECTION ════════════ */}
         <div className="rounded-2xl bg-[#0E1420] border border-white/[0.06] p-5 sm:p-7 mb-4">

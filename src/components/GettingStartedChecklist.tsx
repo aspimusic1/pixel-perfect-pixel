@@ -25,7 +25,10 @@ interface Props {
 export default function GettingStartedChecklist({ variant }: Props) {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(`getbooked_onboarding_dismissed_${user?.id}`) === "true";
+  });
   const [collapsed, setCollapsed] = useState(false);
   const [availability, setAvailability] = useState<any[]>([]);
   const [hasOffers, setHasOffers] = useState(false);
@@ -90,16 +93,22 @@ export default function GettingStartedChecklist({ variant }: Props) {
       label: "Share your smart link",
       description: "Copy your profile URL to share",
       icon: Share2,
-      action: copySmartLink,
-      detectComplete: () => false, // manual
+      action: () => {
+        copySmartLink();
+        if (user) localStorage.setItem(`getbooked_shared_${user.id}`, "true");
+      },
+      detectComplete: () => !!user && localStorage.getItem(`getbooked_shared_${user.id}`) === "true",
     },
     {
       key: "browse_directory",
       label: "Browse the directory",
       description: "Discover other artists and promoters",
       icon: Compass,
-      action: () => navigate("/directory"),
-      detectComplete: () => false, // manual
+      action: () => {
+        if (user) localStorage.setItem(`getbooked_browsed_${user.id}`, "true");
+        navigate("/directory");
+      },
+      detectComplete: () => !!user && localStorage.getItem(`getbooked_browsed_${user.id}`) === "true",
     },
   ];
 
@@ -172,7 +181,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
     return (
       <div className="mb-4">
         <button
-          onClick={() => setDismissed(true)}
+          onClick={() => { setDismissed(true); if (user) localStorage.setItem(`getbooked_onboarding_dismissed_${user.id}`, "true"); }}
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:opacity-80 active:scale-[0.97]"
           style={{ backgroundColor: `${ACCENT}15`, color: ACCENT, border: `1px solid ${ACCENT}30` }}
         >
@@ -214,7 +223,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
             <ChevronUp className="w-4 h-4" />
           </button>
           <button
-            onClick={() => setDismissed(true)}
+            onClick={() => { setDismissed(true); if (user) localStorage.setItem(`getbooked_onboarding_dismissed_${user.id}`, "true"); }}
             className="text-muted-foreground hover:text-foreground transition-colors p-1"
             aria-label="Dismiss"
           >
