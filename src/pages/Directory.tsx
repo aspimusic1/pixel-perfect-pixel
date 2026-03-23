@@ -347,7 +347,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
   const tabLabel = ROLE_TABS.find((t) => t.value === activeTab)?.label.toLowerCase() ?? "";
 
   return (
-    <div ref={ref} className="min-h-screen pt-20 px-4 pb-12">
+    <div ref={ref} className="min-h-screen pt-20 px-4 sm:px-6 md:px-8 pb-12">
       <div className="container mx-auto max-w-5xl">
         {/* CTA Banner */}
         <div className="mb-8 rounded-xl bg-primary/5 border border-primary/10 px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

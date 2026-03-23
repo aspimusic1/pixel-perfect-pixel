@@ -251,7 +251,7 @@ export default function TourManagement() {
   }
 
   return (
-    <div className="min-h-screen pt-20 px-4 pb-12">
+    <div className="min-h-screen pt-20 px-4 sm:px-6 md:px-8 pb-12">
       <div className="container mx-auto max-w-5xl">
         <button onClick={() => setSelectedTour(null)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
           <ArrowLeft className="w-3.5 h-3.5" /> All Tours
