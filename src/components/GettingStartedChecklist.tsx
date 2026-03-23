@@ -25,7 +25,10 @@ interface Props {
 export default function GettingStartedChecklist({ variant }: Props) {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(`getbooked_onboarding_dismissed_${user?.id}`) === "true";
+  });
   const [collapsed, setCollapsed] = useState(false);
   const [availability, setAvailability] = useState<any[]>([]);
   const [hasOffers, setHasOffers] = useState(false);
