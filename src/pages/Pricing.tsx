@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight, Loader2, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
