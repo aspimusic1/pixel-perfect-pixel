@@ -111,7 +111,8 @@ export default function HowItWorksSection() {
             return (
               <div
                 key={item.step}
-                className={`flex flex-col ${isReversed ? "sm:flex-row-reverse" : "sm:flex-row"} gap-6 sm:gap-10 items-center`}
+                className={`fade-in-section flex flex-col ${isReversed ? "sm:flex-row-reverse" : "sm:flex-row"} gap-6 sm:gap-10 items-center`}
+                style={{ transitionDelay: `${i * 100}ms` }}
               >
                 <div className="flex-1 text-center sm:text-left">
                   <span className="text-xs font-display font-bold text-primary uppercase tracking-wider">{item.step}</span>

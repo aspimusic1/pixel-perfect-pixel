@@ -87,16 +87,17 @@ export default function PricingTeaser() {
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {PLANS.map((plan) => {
+          {PLANS.map((plan, i) => {
             const price = yearly ? plan.yearlyPrice : plan.monthlyPrice;
             return (
               <div
                 key={plan.name}
-                className={`relative rounded-2xl p-7 border ${
+                className={`fade-in-section relative rounded-2xl p-7 border ${
                   plan.popular
                     ? "bg-primary/[0.04] border-primary/[0.35]"
                     : "bg-card/80 border-white/[0.06]"
                 }`}
+                style={{ transitionDelay: `${i * 70}ms` }}
               >
                 {plan.popular && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-display font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full">
