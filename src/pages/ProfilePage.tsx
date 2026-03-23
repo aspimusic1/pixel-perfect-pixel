@@ -743,7 +743,7 @@ export default function ProfilePage() {
                   className="flex items-center gap-3 rounded-xl bg-white/[0.02] border border-white/[0.04] p-3 hover:bg-white/[0.04] transition-colors"
                 >
                   {a.avatar_url ? (
-                    <img src={a.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                    <img src={a.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" loading="lazy" width={40} height={40} />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-[#141B28] flex items-center justify-center text-sm font-syne font-bold text-muted-foreground flex-shrink-0">
                       {(a.display_name ?? "?").charAt(0).toUpperCase()}
