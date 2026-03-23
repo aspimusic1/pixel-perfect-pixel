@@ -76,8 +76,6 @@ const SORT_OPTIONS = [
   { value: "newest", label: "Newest" },
   { value: "name_asc", label: "A–Z" },
   { value: "name_desc", label: "Z–A" },
-  { value: "fee_low", label: "Fee: Low to High" },
-  { value: "fee_high", label: "Fee: High to Low" },
 ];
 
 const roleColorMap: Record<string, string> = {
