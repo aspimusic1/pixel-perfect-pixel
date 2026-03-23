@@ -20,10 +20,12 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": resolveFromRoot("./src"),
-      react: resolveFromRoot("./node_modules/react"),
-      "react-dom": resolveFromRoot("./node_modules/react-dom"),
+      react: resolveFromRoot("./node_modules/react/index.js"),
+      "react-dom": resolveFromRoot("./node_modules/react-dom/index.js"),
       "react/jsx-runtime": resolveFromRoot("./node_modules/react/jsx-runtime.js"),
       "react/jsx-dev-runtime": resolveFromRoot("./node_modules/react/jsx-dev-runtime.js"),
+      "react-dom/client": resolveFromRoot("./node_modules/react-dom/client.js"),
+      "react-dom/server": resolveFromRoot("./node_modules/react-dom/server.browser.js"),
     },
     dedupe: [
       "react",
@@ -41,9 +43,11 @@ export default defineConfig(({ mode }) => ({
       "react-dom",
       "react/jsx-runtime",
       "react/jsx-dev-runtime",
+      "react-dom/client",
       "react-router",
       "react-router-dom",
       "@tanstack/react-query",
     ],
+    force: true,
   },
 }));
