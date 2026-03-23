@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, ChevronRight, DollarSign, TrendingUp, Megaphone, Loader2, UserCog, ArrowRight } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import SignContractDialog from "@/components/SignContractDialog";
