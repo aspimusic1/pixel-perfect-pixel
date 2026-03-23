@@ -175,6 +175,14 @@ export default function Navbar() {
                     </span>
                   )}
                 </button>
+                <button
+                  onClick={() => navigate("/settings")}
+                  className="text-muted-foreground hover:text-foreground transition-colors p-2"
+                  aria-label="Notification preferences"
+                  title="Notification settings"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                </button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="w-8 h-8 rounded-full overflow-hidden border border-white/10 hover:border-white/20 transition-colors flex items-center justify-center bg-secondary active:scale-[0.96]" aria-label="Account menu">
