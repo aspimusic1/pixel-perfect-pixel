@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Bell, Globe, ShieldCheck, ChevronDown } from "lucide-react";
+import { Menu, X, Bell, Globe, ShieldCheck, ChevronDown, Settings } from "lucide-react";
 const logoColor = "/logo-color.png";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,6 +52,7 @@ export default function Navbar() {
     const channel = supabase
       .channel("notifications")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => fetchUnread())
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => fetchUnread())
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [user]);
@@ -170,10 +171,18 @@ export default function Navbar() {
                 >
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center" aria-hidden="true">
-                      {unreadCount}
+                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-[#FF5C8A] text-white text-[10px] font-bold flex items-center justify-center px-1" aria-hidden="true">
+                      {unreadCount > 99 ? "99+" : unreadCount}
                     </span>
                   )}
+                </button>
+                <button
+                  onClick={() => navigate("/settings")}
+                  className="text-muted-foreground hover:text-foreground transition-colors p-2"
+                  aria-label="Notification preferences"
+                  title="Notification settings"
+                >
+                  <Settings className="w-3.5 h-3.5" />
                 </button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -220,8 +229,8 @@ export default function Navbar() {
               <button onClick={() => navigate("/notifications")} className="relative text-muted-foreground hover:text-foreground transition-colors p-2" aria-label={`View notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}>
                 <Bell className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center" aria-hidden="true">
-                    {unreadCount}
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-[#FF5C8A] text-white text-[10px] font-bold flex items-center justify-center px-1" aria-hidden="true">
+                    {unreadCount > 99 ? "99+" : unreadCount}
                   </span>
                 )}
               </button>
