@@ -344,7 +344,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
   const tabLabel = ROLE_TABS.find((t) => t.value === activeTab)?.label.toLowerCase() ?? "";
 
   return (
-    <div ref={ref} className="min-h-screen pt-20 px-4 sm:px-6 md:px-8 pb-12">
+    <div ref={ref} className="min-h-screen pt-20 px-4 sm:px-6 md:px-8 pb-12" aria-busy={loading}>
       <SEO
         title="Browse Artists, Venues & Production Crews — GetBooked.Live"
         description="Search 2,400+ verified artists, 840+ venues, and 380+ production crews. Filter by genre, city, and fee range."
