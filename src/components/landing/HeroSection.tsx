@@ -106,17 +106,21 @@ function AnimatedHeadline() {
       className="font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase text-3xl sm:text-5xl md:text-6xl"
       style={{ lineHeight: "1.05" }}
     >
-      {words1.map((word, i) => (
-        <motion.span
-          key={`l1-${i}`}
-          className={`inline-block mr-[0.25em]${word.replace(/[^a-z]/gi, '').toLowerCase() === 'paid' ? ' text-primary' : ''}`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
-        >
-          {word}
-        </motion.span>
-      ))}
+      {words1.map((word, i) => {
+        const w = word.replace(/[^a-z]/gi, '').toLowerCase();
+        const highlight = w === 'get' || w === 'paid';
+        return (
+          <motion.span
+            key={`l1-${i}`}
+            className={`inline-block mr-[0.25em]${highlight ? ' text-primary' : ''}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
+          >
+            {word}
+          </motion.span>
+        );
+      })}
       <br />
       {words2.map((word, i) => (
         <motion.span
