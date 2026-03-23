@@ -89,7 +89,7 @@ const App = () => (
         <AuthProvider>
           <a href="#main-content" className="skip-to-main">Skip to main content</a>
           <Navbar />
-          <main id="main-content">
+          <main id="main-content" className="overflow-x-hidden">
             <Suspense fallback={<RouteLoadingFallback />}>
               <AnimatedRoutes />
             </Suspense>

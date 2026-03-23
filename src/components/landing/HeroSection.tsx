@@ -103,7 +103,7 @@ function AnimatedHeadline() {
 
   return (
     <h1
-      className="font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase text-3xl sm:text-5xl md:text-6xl"
+      className="font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
       style={{ lineHeight: "1.05" }}
     >
       {words1.map((word, i) => {
@@ -139,7 +139,7 @@ function AnimatedHeadline() {
 
 export default function HeroSection() {
   return (
-    <section className="relative pt-24 sm:pt-40 pb-16 sm:pb-28 px-4 overflow-hidden">
+    <section className="relative pt-24 sm:pt-40 pb-16 sm:pb-28 px-4 sm:px-6 md:px-8 overflow-hidden">
       {/* Subtle ambient glow */}
       <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-primary/[0.04] blur-[120px] pointer-events-none" />
 
@@ -204,7 +204,7 @@ export default function HeroSection() {
         </motion.div>
 
         {/* Social proof — animated counters */}
-        <div className="mt-14 grid grid-cols-3 sm:grid-cols-6 gap-4 sm:gap-8">
+        <div className="mt-14 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-8">
           {[
             { value: "2,400+", label: "artists" },
             { value: "920+", label: "promoters" },
