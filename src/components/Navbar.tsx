@@ -66,16 +66,7 @@ export default function Navbar() {
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const role = profile?.role;
-  const dashboardRoute = (() => {
-    if (isAdmin) return "/admin";
-    switch (role) {
-      case "promoter": return "/promoter-dashboard";
-      case "venue": return "/venue-manage";
-      case "production": return "/production-dashboard";
-      case "photo_video": return "/creative-dashboard";
-      default: return "/artist-dashboard";
-    }
-  })();
+  const dashboardRoute = isAdmin ? "/admin" : "/dashboard";
 
   // Close menu on Escape key
   useEffect(() => {

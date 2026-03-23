@@ -113,7 +113,7 @@ Deno.serve(async (req) => {
         title: "🎉 You won the Flash Bid!",
         message: `Your bid of $${winner.amount.toLocaleString()} for ${artistName} on ${slot.date} won! An offer has been created.`,
         type: "flash_bid",
-        link: "/promoter-dashboard",
+        link: "/dashboard",
       });
 
       // Notify artist
@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
         title: "⚡ Flash Bid resolved",
         message: `Your Flash Bid for ${slot.date} ended with a winning bid of $${winner.amount.toLocaleString()}. Check your offers.`,
         type: "flash_bid",
-        link: "/artist-dashboard",
+        link: "/dashboard",
       });
 
       // Find next available date for losing bidders

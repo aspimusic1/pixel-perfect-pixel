@@ -205,7 +205,7 @@ export default function OfferFlow() {
 
       localStorage.removeItem(draftKey);
       toast.success("Offer sent successfully!");
-      navigate("/promoter-dashboard");
+      navigate("/dashboard");
     } catch (err: any) {
       toast.error(err.message);
     } finally {

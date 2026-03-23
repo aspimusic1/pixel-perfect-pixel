@@ -31,7 +31,7 @@ export default function ResetPassword() {
       if (error) throw error;
       setDone(true);
       toast.success("Password updated!");
-      setTimeout(() => navigate("/artist-dashboard"), 2000);
+      setTimeout(() => navigate("/dashboard"), 2000);
     } catch (err: any) {
       toast.error(err.message);
     } finally {

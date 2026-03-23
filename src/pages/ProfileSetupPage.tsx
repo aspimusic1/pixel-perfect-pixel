@@ -178,14 +178,7 @@ export default function ProfileSetup() {
       await refreshProfile();
       toast.success("Profile saved!");
 
-      const dashboardMap: Record<string, string> = {
-        artist: "/artist-dashboard",
-        promoter: "/promoter-dashboard",
-        venue: "/venue-manage",
-        production: "/artist-dashboard",
-        photo_video: "/artist-dashboard",
-      };
-      navigate(dashboardMap[role] || "/artist-dashboard");
+      navigate("/dashboard");
     } catch (err: any) {
       toast.error(err.message);
     } finally {
