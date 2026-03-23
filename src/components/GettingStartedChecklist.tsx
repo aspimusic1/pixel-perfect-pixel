@@ -181,7 +181,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
     return (
       <div className="mb-4">
         <button
-          onClick={() => setDismissed(true)}
+          onClick={() => { setDismissed(true); if (user) localStorage.setItem(`getbooked_onboarding_dismissed_${user.id}`, "true"); }}
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:opacity-80 active:scale-[0.97]"
           style={{ backgroundColor: `${ACCENT}15`, color: ACCENT, border: `1px solid ${ACCENT}30` }}
         >
