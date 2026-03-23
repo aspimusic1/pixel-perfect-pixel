@@ -20,11 +20,6 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": resolveFromRoot("./src"),
-      react: resolveFromRoot("./node_modules/react"),
-      "react-dom": resolveFromRoot("./node_modules/react-dom"),
-      "react-router": resolveFromRoot("./node_modules/react-router"),
-      "react-router-dom": resolveFromRoot("./node_modules/react-router-dom"),
-      "@tanstack/react-query": resolveFromRoot("./node_modules/@tanstack/react-query"),
     },
     dedupe: [
       "react",
