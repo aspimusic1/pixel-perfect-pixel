@@ -33,7 +33,11 @@ export default function Settings() {
   return (
     <div className="min-h-screen pt-[60px] bg-background">
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
-        <h1 className="text-2xl font-display font-bold text-foreground mb-6">Settings</h1>
+        <div className="mb-8">
+          <span className="section-label">settings</span>
+          <h1 className="section-heading">account settings</h1>
+          <p className="section-subtext">Manage your profile, preferences, and integrations.</p>
+        </div>
         <div className="flex flex-col md:flex-row gap-6">
           {/* Sidebar — horizontal scroll on mobile, vertical on desktop */}
           <nav className="md:w-[240px] shrink-0" aria-label="Settings sections">

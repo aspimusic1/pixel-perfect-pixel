@@ -156,8 +156,9 @@ export default function Pricing() {
       />
       <div className="container mx-auto max-w-5xl">
         <div className="text-center mb-10">
-          <h1 data-reveal className="opacity-0 font-display text-4xl sm:text-5xl font-bold mb-4">Simple, transparent pricing</h1>
-          <p data-reveal className="opacity-0 text-muted-foreground text-lg max-w-md mx-auto" style={{ animationDelay: "80ms" }}>
+          <span className="section-label">pricing</span>
+          <h1 data-reveal className="opacity-0 section-heading">simple, transparent pricing</h1>
+          <p data-reveal className="opacity-0 section-subtext mx-auto" style={{ animationDelay: "80ms" }}>
             Straightforward pricing with no hidden costs.
           </p>
         </div>
