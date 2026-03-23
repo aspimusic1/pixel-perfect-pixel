@@ -358,7 +358,7 @@ export default function ProfilePage() {
           {/* Banner */}
           {profile?.banner_url && (
             <div className="w-full h-36 sm:h-48 rounded-xl overflow-hidden -mt-1 mb-5">
-              <img src={profile.banner_url} alt={`${name} banner`} className="w-full h-full object-cover" />
+              <img src={profile.banner_url} alt={`${name} banner`} className="w-full h-full object-cover" loading="lazy" />
             </div>
           )}
 
@@ -369,6 +369,9 @@ export default function ProfilePage() {
                 <img
                   src={profile.avatar_url}
                   alt={`${name} profile photo`}
+                  loading="lazy"
+                  width={120}
+                  height={120}
                   className={cn(
                     "w-[120px] h-[120px] rounded-full object-cover border-2 border-white/[0.08]",
                     profile.banner_url && "-mt-16 ring-4 ring-[#0E1420]"
@@ -685,7 +688,7 @@ export default function ProfilePage() {
                 return (
                   <div key={r.id} className="flex gap-3">
                     {r.reviewer_avatar ? (
-                      <img src={r.reviewer_avatar} alt="" className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
+                      <img src={r.reviewer_avatar} alt="" className="w-9 h-9 rounded-full object-cover flex-shrink-0" loading="lazy" width={36} height={36} />
                     ) : (
                       <div className="w-9 h-9 rounded-full bg-[#141B28] flex items-center justify-center text-xs font-syne font-bold text-muted-foreground flex-shrink-0">
                         {(r.reviewer_name ?? "A").charAt(0).toUpperCase()}
@@ -740,7 +743,7 @@ export default function ProfilePage() {
                   className="flex items-center gap-3 rounded-xl bg-white/[0.02] border border-white/[0.04] p-3 hover:bg-white/[0.04] transition-colors"
                 >
                   {a.avatar_url ? (
-                    <img src={a.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                    <img src={a.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" loading="lazy" width={40} height={40} />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-[#141B28] flex items-center justify-center text-sm font-syne font-bold text-muted-foreground flex-shrink-0">
                       {(a.display_name ?? "?").charAt(0).toUpperCase()}

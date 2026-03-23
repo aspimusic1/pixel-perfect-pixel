@@ -87,7 +87,7 @@ export default function ProfileCompletionRing() {
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
             {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="w-24 h-24 rounded-full object-cover" />
+              <img src={profile.avatar_url} alt="" className="w-24 h-24 rounded-full object-cover" loading="lazy" width={96} height={96} />
             ) : (
               <div className="w-24 h-24 rounded-full bg-[#1C2535] flex items-center justify-center">
                 <span className="font-syne font-bold text-2xl text-foreground">
