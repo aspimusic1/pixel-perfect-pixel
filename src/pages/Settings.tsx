@@ -477,8 +477,72 @@ function SecuritySection() {
 
 /* ─── Section 5: Integrations ─── */
 function IntegrationsSection() {
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
   const hasSpotify = !!(profile as any)?.streaming_stats?.source;
+  const [stripeStatus, setStripeStatus] = useState<{
+    connected: boolean;
+    onboarding_complete: boolean;
+    payouts_enabled: boolean;
+  } | null>(null);
+  const [stripeLoading, setStripeLoading] = useState(false);
+  const [connectLoading, setConnectLoading] = useState(false);
+  const [dashboardLoading, setDashboardLoading] = useState(false);
+
+  const isArtist = (profile as any)?.role === "artist";
+
+  const fetchStripeStatus = useCallback(async () => {
+    if (!user) return;
+    setStripeLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("stripe-connect-status");
+      if (error) throw error;
+      setStripeStatus(data);
+    } catch {
+      setStripeStatus({ connected: false, onboarding_complete: false, payouts_enabled: false });
+    } finally {
+      setStripeLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (isArtist) fetchStripeStatus();
+  }, [isArtist, fetchStripeStatus]);
+
+  // Handle return from Stripe Connect onboarding
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("stripe_connect") === "success") {
+      toast.success("Stripe account connected!");
+      fetchStripeStatus();
+      window.history.replaceState({}, "", "/settings");
+    }
+  }, [fetchStripeStatus]);
+
+  const handleConnectStripe = async () => {
+    setConnectLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("stripe-connect-onboard");
+      if (error) throw error;
+      if (data?.url) window.open(data.url, "_blank");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to start Stripe Connect");
+    } finally {
+      setConnectLoading(false);
+    }
+  };
+
+  const handleOpenDashboard = async () => {
+    setDashboardLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("stripe-connect-dashboard");
+      if (error) throw error;
+      if (data?.url) window.open(data.url, "_blank");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to open Stripe dashboard");
+    } finally {
+      setDashboardLoading(false);
+    }
+  };
 
   const integrations = [
     { name: "Spotify", emoji: "🎵", desc: "Sync streaming stats and top tracks", connected: hasSpotify, phase: 1 },
@@ -492,6 +556,98 @@ function IntegrationsSection() {
 
   return (
     <section className="space-y-6" aria-label="Integrations settings">
+      {/* Stripe Connect — artists only */}
+      {isArtist && (
+        <div className="bg-card rounded-xl border border-white/[0.06] p-5 md:p-6 space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-[#635BFF]/10 flex items-center justify-center">
+              <CreditCard className="w-5 h-5 text-[#635BFF]" />
+            </div>
+            <div>
+              <h2 className="text-lg font-display font-semibold text-foreground">Stripe Connect</h2>
+              <p className="text-xs text-muted-foreground font-body">Receive payments directly to your bank account</p>
+            </div>
+          </div>
+
+          {stripeLoading ? (
+            <div className="flex items-center gap-2 py-4">
+              <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+              <span className="text-sm text-muted-foreground font-body">Checking status…</span>
+            </div>
+          ) : stripeStatus?.connected && stripeStatus?.onboarding_complete ? (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-3">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-body text-emerald-400 font-medium">Stripe account connected</p>
+                  <p className="text-xs text-emerald-400/70 font-body">
+                    {stripeStatus.payouts_enabled ? "Payouts enabled — you can receive payments" : "Account connected — payouts pending verification"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs min-h-[44px] font-body"
+                  onClick={handleOpenDashboard}
+                  disabled={dashboardLoading}
+                >
+                  {dashboardLoading ? <Loader2 className="w-3 h-3 animate-spin mr-1.5" /> : <ExternalLink className="w-3 h-3 mr-1.5" />}
+                  View Stripe dashboard
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs min-h-[44px] font-body"
+                  onClick={handleConnectStripe}
+                  disabled={connectLoading}
+                >
+                  {connectLoading ? <Loader2 className="w-3 h-3 animate-spin mr-1.5" /> : null}
+                  Update account
+                </Button>
+              </div>
+            </div>
+          ) : stripeStatus?.connected && !stripeStatus?.onboarding_complete ? (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-3">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-body text-amber-400 font-medium">Onboarding incomplete</p>
+                  <p className="text-xs text-amber-400/70 font-body">Complete your Stripe account setup to start receiving payments.</p>
+                </div>
+              </div>
+              <Button
+                onClick={handleConnectStripe}
+                disabled={connectLoading}
+                className="bg-[#635BFF] hover:bg-[#635BFF]/90 text-white font-display font-bold text-sm min-h-[44px] px-6 active:scale-[0.96]"
+              >
+                {connectLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                Complete Stripe setup
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 bg-secondary/50 rounded-lg px-4 py-3">
+                <AlertTriangle className="w-4 h-4 text-muted-foreground shrink-0" />
+                <p className="text-sm font-body text-muted-foreground">
+                  Not connected — connect your bank account to receive payments from bookings.
+                </p>
+              </div>
+              <Button
+                onClick={handleConnectStripe}
+                disabled={connectLoading}
+                className="bg-[#635BFF] hover:bg-[#635BFF]/90 text-white font-display font-bold text-sm min-h-[44px] px-6 active:scale-[0.96]"
+              >
+                {connectLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                Connect Stripe account
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Other integrations */}
       <div className="bg-card rounded-xl border border-white/[0.06] p-5 md:p-6 space-y-5">
         <h2 className="text-lg font-display font-semibold text-foreground">Integrations</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
