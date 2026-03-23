@@ -52,6 +52,7 @@ export default function Navbar() {
     const channel = supabase
       .channel("notifications")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => fetchUnread())
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => fetchUnread())
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [user]);
