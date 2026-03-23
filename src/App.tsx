@@ -117,7 +117,6 @@ const App = () => (
                 <Route path="/review/:bookingId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
-              </Routes>
             </Suspense>
           </main>
           <InstallBanner />
