@@ -56,7 +56,7 @@ export default function TaxDashboard() {
 
   useEffect(() => {
     if (profile && profile.role !== "artist") {
-      navigate("/promoter-dashboard");
+      navigate("/dashboard");
     }
   }, [profile, navigate]);
 

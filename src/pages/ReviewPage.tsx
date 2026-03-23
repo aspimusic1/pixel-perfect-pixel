@@ -271,7 +271,7 @@ export default function ReviewPage() {
           <p className="text-muted-foreground text-sm mb-6">
             Your review helps the community make better booking decisions.
           </p>
-          <Button onClick={() => navigate("/artist-dashboard")} className="bg-primary text-primary-foreground">
+          <Button onClick={() => navigate("/dashboard")} className="bg-primary text-primary-foreground">
             Back to Dashboard
           </Button>
         </div>

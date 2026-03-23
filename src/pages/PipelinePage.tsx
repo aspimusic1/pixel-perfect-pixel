@@ -41,7 +41,7 @@ export default function Pipeline() {
   // Redirect non-promoters
   useEffect(() => {
     if (profile && profile.role !== "promoter") {
-      navigate("/artist-dashboard");
+      navigate("/dashboard");
     }
   }, [profile, navigate]);
 
