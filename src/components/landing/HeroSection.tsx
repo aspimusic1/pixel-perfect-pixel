@@ -104,13 +104,16 @@ export default function HeroSection() {
 
         {/* Social proof */}
         <div
-          className="animate-reveal-up mt-14 grid grid-cols-2 sm:grid-cols-3 gap-4 sm:flex sm:justify-center sm:gap-14"
+          className="animate-reveal-up mt-14 grid grid-cols-3 sm:grid-cols-6 gap-4 sm:gap-8"
           style={{ animationDelay: "440ms" }}
         >
           {[
             { value: "2,400+", label: "artists" },
-            { value: "18,000+", label: "bookings" },
-            { value: "$4.2M", label: "paid out" },
+            { value: "920+", label: "promoters" },
+            { value: "840+", label: "venues" },
+            { value: "380+", label: "production crews" },
+            { value: "640+", label: "creatives" },
+            { value: "12K+", label: "shows booked" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="font-display font-bold text-xl sm:text-2xl text-foreground tabular-nums">{stat.value}</p>

@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import HeroSection from "@/components/landing/HeroSection";
 import ProfileMarquee from "@/components/landing/ProfileMarquee";
+import PersonaSection from "@/components/landing/PersonaSection";
 import PowerFeaturesSection from "@/components/landing/PowerFeaturesSection";
 import RoleSwitcherSection from "@/components/landing/RoleSwitcherSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
+import BuildShowSection from "@/components/landing/BuildShowSection";
 import ComparisonSection from "@/components/landing/ComparisonSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import PricingTeaser from "@/components/landing/PricingTeaser";
@@ -45,10 +47,12 @@ export default function Landing() {
       <RolePickerPopup />
       <HeroSection />
       <ProfileMarquee />
+      <PersonaSection />
       <LockedDirectoryPreview />
       <PowerFeaturesSection />
       <RoleSwitcherSection />
       <HowItWorksSection />
+      <BuildShowSection />
       <ComparisonSection />
       <TestimonialsSection />
       <PricingTeaser />
