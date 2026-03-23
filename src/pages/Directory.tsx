@@ -464,12 +464,10 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
             ))}
           </TabsList>
 
-          {/* Results count */}
-          {!loading && totalCount > 0 && (
-            <p className="text-[11px] text-muted-foreground font-body mt-4 tabular-nums">
-              Showing {rangeStart}–{rangeEnd} of {totalCount} {tabLabel}
-            </p>
-          )}
+          {/* Results count — announced to screen readers */}
+          <p className="text-[11px] text-muted-foreground font-body mt-4 tabular-nums" aria-live="polite" role="status">
+            {loading ? "Loading results…" : totalCount > 0 ? `Showing ${rangeStart}–${rangeEnd} of ${totalCount} ${tabLabel}` : `No ${tabLabel} found`}
+          </p>
 
           {/* Tab content */}
           {ROLE_TABS.map((tab) => (
