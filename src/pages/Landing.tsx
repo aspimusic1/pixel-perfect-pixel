@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import PageTransition from "@/components/PageTransition";
+import SEO from "@/components/SEO";
 import HeroSection from "@/components/landing/HeroSection";
 import PersonaSection from "@/components/landing/PersonaSection";
 import BuildShowSection from "@/components/landing/BuildShowSection";
