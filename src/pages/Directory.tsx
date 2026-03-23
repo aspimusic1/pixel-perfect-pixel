@@ -372,12 +372,13 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
         {/* Search + Genre dropdown + City filter */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="search by name, city, or genre..."
               className="pl-9 bg-card border-border font-body"
+              aria-label="Search directory"
             />
           </div>
           {isArtistTab && (
