@@ -1,29 +1,23 @@
-import { Search, FileText, Users, MapPin, Check, X } from "lucide-react";
+import { Search, FileText, Check } from "lucide-react";
 
 const STEPS = [
   {
-    step: "Step 1",
-    title: "find the right artist",
-    desc: "browse verified profiles by genre, city, and booking fee. see streaming stats, reviews, and availability in one place.",
-    mockup: "directory",
+    step: "01",
+    title: "find talent or opportunities",
+    desc: "browse verified profiles by genre, city, and fee — or let our AI match you.",
+    mockup: "search",
   },
   {
-    step: "Step 2",
-    title: "send a structured offer",
-    desc: "fill out date, venue, guarantee, door split, and hospitality. the artist gets a clean, professional offer — not a DM.",
+    step: "02",
+    title: "send or receive an offer",
+    desc: "structured offers with guarantee, splits, and hospitality — not a DM.",
     mockup: "offer",
   },
   {
-    step: "Step 3",
-    title: "manage the deal room",
-    desc: "once accepted, everything lives in one place — contracts, milestones, crew, and real-time chat between both parties.",
-    mockup: "dealroom",
-  },
-  {
-    step: "Step 4",
-    title: "hit the road",
-    desc: "plan multi-city tours with an interactive itinerary, crew manifests, budgets, and ground transport — all connected.",
-    mockup: "tour",
+    step: "03",
+    title: "close the deal and execute",
+    desc: "deal rooms with contracts, milestones, crew, and real-time chat.",
+    mockup: "deal",
   },
 ];
 
@@ -37,21 +31,21 @@ function StepMockup({ type }: { type: string }) {
   );
 
   const inner: Record<string, React.ReactNode> = {
-    directory: (
+    search: (
       <div className="p-4 space-y-3">
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/60 border border-white/[0.06]">
           <Search className="w-3.5 h-3.5 text-muted-foreground" />
           <span className="text-xs text-muted-foreground font-body">search artists…</span>
         </div>
         {[
-          { name: "Maya Chen", genre: "R&B · Soul", fee: "$2,500", listeners: "142K" },
-          { name: "Los Rumberos", genre: "Latin · Cumbia", fee: "$1,800", listeners: "89K" },
+          { name: "Maya Chen", genre: "R&B · Soul", fee: "$2,500" },
+          { name: "Los Rumberos", genre: "Latin · Cumbia", fee: "$1,800" },
         ].map(a => (
           <div key={a.name} className="flex items-center gap-3 p-3 rounded-xl bg-secondary/40 border border-white/[0.06]">
             <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-xs font-display font-bold text-primary">{a.name[0]}</div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-display font-bold text-foreground">{a.name}</p>
-              <p className="text-[10px] text-muted-foreground font-body">{a.genre} · {a.listeners} listeners</p>
+              <p className="text-[10px] text-muted-foreground font-body">{a.genre}</p>
             </div>
             <span className="text-[10px] font-display font-bold text-primary">{a.fee}</span>
           </div>
@@ -74,7 +68,7 @@ function StepMockup({ type }: { type: string }) {
         <button className="w-full mt-1 h-8 rounded-lg bg-primary text-primary-foreground text-xs font-display font-bold">send offer</button>
       </div>
     ),
-    dealroom: (
+    deal: (
       <div className="p-4 space-y-3">
         <p className="text-[10px] text-muted-foreground font-body uppercase tracking-wider">deal room · house of blues</p>
         {[
@@ -92,25 +86,6 @@ function StepMockup({ type }: { type: string }) {
         ))}
       </div>
     ),
-    tour: (
-      <div className="p-4 space-y-2.5">
-        <p className="text-[10px] text-muted-foreground font-body uppercase tracking-wider">winter tour 2026</p>
-        {[
-          { city: "Chicago, IL", venue: "House of Blues", date: "Dec 14" },
-          { city: "Detroit, MI", venue: "El Club", date: "Dec 16" },
-          { city: "Cleveland, OH", venue: "Beachland", date: "Dec 17" },
-        ].map(s => (
-          <div key={s.city} className="flex items-center gap-3 py-2 border-b border-white/[0.04]">
-            <MapPin className="w-3 h-3 text-primary shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-display font-semibold text-foreground">{s.venue}</p>
-              <p className="text-[10px] text-muted-foreground font-body">{s.city}</p>
-            </div>
-            <span className="text-[10px] font-display text-muted-foreground">{s.date}</span>
-          </div>
-        ))}
-      </div>
-    ),
   };
 
   return (
@@ -123,29 +98,26 @@ function StepMockup({ type }: { type: string }) {
 
 export default function HowItWorksSection() {
   return (
-    <section className="fade-in-section py-16 sm:py-32 px-4">
+    <section className="fade-in-section py-16 sm:py-28 px-4">
       <div className="container mx-auto max-w-4xl">
-        <div className="text-center mb-16">
+        <div className="text-center mb-14">
           <span className="section-label">how it works</span>
-          <h2 className="section-heading">from search to show in 4 steps</h2>
-          <p className="section-subtext mx-auto">a streamlined workflow that takes you from discovering talent to managing the tour.</p>
+          <h2 className="section-heading">from search to show in 3 steps</h2>
         </div>
 
-        <div className="space-y-16 sm:space-y-20">
+        <div className="space-y-12 sm:space-y-16">
           {STEPS.map((item, i) => {
             const isReversed = i % 2 === 1;
             return (
               <div
                 key={item.step}
-                className={`flex flex-col ${isReversed ? "sm:flex-row-reverse" : "sm:flex-row"} gap-8 sm:gap-12 items-center`}
+                className={`flex flex-col ${isReversed ? "sm:flex-row-reverse" : "sm:flex-row"} gap-6 sm:gap-10 items-center`}
               >
-                {/* Text */}
                 <div className="flex-1 text-center sm:text-left">
                   <span className="text-xs font-display font-bold text-primary uppercase tracking-wider">{item.step}</span>
                   <h3 className="font-display font-bold text-base sm:text-lg text-foreground mt-2 mb-2 lowercase">{item.title}</h3>
                   <p className="text-[13px] text-muted-foreground font-body leading-relaxed">{item.desc}</p>
                 </div>
-                {/* Mockup */}
                 <div className="flex-1 w-full max-w-sm sm:max-w-none">
                   <StepMockup type={item.mockup} />
                 </div>
