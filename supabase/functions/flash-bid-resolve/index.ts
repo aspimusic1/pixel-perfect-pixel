@@ -113,7 +113,7 @@ Deno.serve(async (req) => {
         title: "🎉 You won the Flash Bid!",
         message: `Your bid of $${winner.amount.toLocaleString()} for ${artistName} on ${slot.date} won! An offer has been created.`,
         type: "flash_bid",
-        link: "/promoter-dashboard",
+        link: "/dashboard",
       });
 
       // Notify artist
