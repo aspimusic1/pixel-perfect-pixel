@@ -184,15 +184,13 @@ export default function PromoterDashboard() {
                     {loading ? (
                       <div className="space-y-2">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 rounded-lg bg-[#0e1420]" />)}</div>
                     ) : offers.length === 0 ? (
-                      <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-8 text-center">
-                        <Send className="w-5 h-5 text-muted-foreground mx-auto mb-2" />
-                        <p className="text-xs text-muted-foreground mb-3">you haven't sent any offers yet — browse artists to get started</p>
-                        <Link to="/directory?role=artist">
-                          <Button size="sm" className="text-[11px] h-8 active:scale-[0.97]" style={{ backgroundColor: ACCENT, color: "#080C14" }}>
-                            browse artists <ArrowRight className="w-3 h-3 ml-1" />
-                          </Button>
-                        </Link>
-                      </div>
+                      <EmptyState
+                        emoji="📣"
+                        title="no offers sent yet"
+                        description="browse artists and send your first offer"
+                        actionLabel="Browse artists"
+                        actionHref="/directory?role=artist"
+                      />
                     ) : (
                       <div className="space-y-1.5">{offers.slice(0, 5).map(renderOfferCard)}</div>
                     )}
