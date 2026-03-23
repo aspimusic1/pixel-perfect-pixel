@@ -369,6 +369,9 @@ export default function ProfilePage() {
                 <img
                   src={profile.avatar_url}
                   alt={`${name} profile photo`}
+                  loading="lazy"
+                  width={120}
+                  height={120}
                   className={cn(
                     "w-[120px] h-[120px] rounded-full object-cover border-2 border-white/[0.08]",
                     profile.banner_url && "-mt-16 ring-4 ring-[#0E1420]"
