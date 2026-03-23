@@ -89,36 +89,22 @@ export default function Navbar() {
           </Link>
 
           {/* Center nav links — desktop */}
-          <div className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map(link => {
-              if (link.pro && !user) {
-                return (
-                  <Link
-                    key={link.label}
-                    to="/pricing"
-                    className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
-                  >
-                    {link.label}
-                    <span className="text-[9px] font-display font-bold bg-primary/20 text-primary px-1.5 py-0.5 rounded-full leading-none">PRO</span>
-                  </Link>
-                );
-              }
-              return (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className={`text-sm font-body transition-colors ${
-                    location.pathname === link.to ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
+          <div className="hidden md:flex items-center gap-5">
+            {NAV_LINKS.map(link => (
+              <Link
+                key={link.label}
+                to={link.to}
+                className={`text-[13px] font-body transition-colors ${
+                  location.pathname === link.to ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
             {user && (
               <Link
                 to={dashboardRoute}
-                className={`text-sm font-body transition-colors ${
+                className={`text-[13px] font-body transition-colors ${
                   location.pathname === dashboardRoute ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -127,17 +113,18 @@ export default function Navbar() {
             )}
             {!user && (
               <Link
-                to="/auth"
-                className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+                to="/auth?admin=true"
+                className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                aria-label="Admin login"
+                title="Admin login"
               >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                admin login
+                <ShieldCheck className="w-4 h-4" />
               </Link>
             )}
             {user && isAdmin && (
               <Link
                 to="/admin"
-                className="text-sm font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
+                className="text-[13px] font-body text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 admin
