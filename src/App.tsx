@@ -47,6 +47,41 @@ function RouteLoadingFallback() {
   );
 }
 
+function AnimatedRoutes() {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Landing />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
+        <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
+        <Route path="/artist-dashboard" element={<ProtectedRoute><ArtistDashboard /></ProtectedRoute>} />
+        <Route path="/promoter-dashboard" element={<ProtectedRoute><PromoterDashboard /></ProtectedRoute>} />
+        <Route path="/production-dashboard" element={<ProtectedRoute><CrewDashboard /></ProtectedRoute>} />
+        <Route path="/creative-dashboard" element={<ProtectedRoute><CrewDashboard /></ProtectedRoute>} />
+        <Route path="/directory" element={<Directory />} />
+        <Route path="/venues" element={<Directory initialRole="venue" />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/offer" element={<ProtectedRoute><OfferFlow /></ProtectedRoute>} />
+        <Route path="/tours" element={<ProtectedRoute><TourManagement /></ProtectedRoute>} />
+        <Route path="/venue-manage" element={<ProtectedRoute><VenueManage /></ProtectedRoute>} />
+        <Route path="/pipeline" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
+        <Route path="/tax" element={<ProtectedRoute><TaxDashboard /></ProtectedRoute>} />
+        <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
+        <Route path="/p/:slug" element={<ProfilePage />} />
+        <Route path="/admin/claims" element={<ProtectedRoute><AdminClaims /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/presale/:bookingId" element={<PresalePage />} />
+        <Route path="/review/:bookingId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -56,7 +91,7 @@ const App = () => (
           <Navbar />
           <main id="main-content">
             <Suspense fallback={<RouteLoadingFallback />}>
-              <Routes>
+              <AnimatedRoutes />
                 <Route path="/" element={<Landing />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
