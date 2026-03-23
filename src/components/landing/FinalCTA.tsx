@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 const ROLE_BUTTONS = [
   { label: "Join as Artist", color: "#C8FF3E", link: "/auth?mode=signup&role=artist" },
@@ -21,22 +22,32 @@ export default function FinalCTA() {
         </p>
 
         <div className="flex flex-wrap justify-center gap-3">
-          {ROLE_BUTTONS.map((btn) => (
+          {ROLE_BUTTONS.map((btn, i) => (
             <Link key={btn.label} to={btn.link}>
-              <button
-                className="font-display font-bold text-sm rounded-[10px] px-6 h-11 active:scale-[0.96] transition-all inline-flex items-center gap-2 lowercase"
+              <motion.button
+                className="font-display font-bold text-sm rounded-[10px] px-6 h-11 transition-all inline-flex items-center gap-2 lowercase"
                 style={{ backgroundColor: btn.color, color: "#080C14" }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: i * 0.07, duration: 0.35, ease: "easeOut" }}
               >
-                {btn.label} <ArrowRight className="w-4 h-4" />
-              </button>
+                {btn.label} <motion.span whileHover={{ x: 4 }}><ArrowRight className="w-4 h-4" /></motion.span>
+              </motion.button>
             </Link>
           ))}
         </div>
 
         <Link to="/directory" className="inline-block mt-4">
-          <button className="border border-white/[0.1] text-foreground font-display font-medium text-sm rounded-[10px] px-7 h-11 hover:bg-secondary hover:border-white/[0.15] active:scale-[0.96] transition-all lowercase">
+          <motion.button
+            className="border border-white/[0.1] text-foreground font-display font-medium text-sm rounded-[10px] px-7 h-11 hover:bg-secondary hover:border-white/[0.15] transition-all lowercase"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
             browse directory
-          </button>
+          </motion.button>
         </Link>
       </div>
     </section>
