@@ -352,15 +352,13 @@ export default function ArtistDashboard() {
                         {[1, 2, 3].map((i) => <SkeletonCard key={i} height="h-40" />)}
                       </div>
                     ) : offers.length === 0 ? (
-                      <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] p-8 text-center">
-                        <Inbox className="w-5 h-5 text-muted-foreground mx-auto mb-2" />
-                        <p className="text-xs text-muted-foreground mb-3">no offers yet — when promoters send you offers, they'll appear here.</p>
-                        <Link to="/directory?role=promoter">
-                          <Button size="sm" variant="outline" className="text-[11px] h-7 border-border">
-                            browse promoters <ArrowRight className="w-3 h-3 ml-1" />
-                          </Button>
-                        </Link>
-                      </div>
+                      <EmptyState
+                        emoji="📥"
+                        title="no offers yet"
+                        description="complete your profile to start attracting promoters"
+                        actionLabel="Edit profile"
+                        actionHref="/profile-setup"
+                      />
                     ) : (
                       <div className="space-y-1.5">{offers.slice(0, 5).map(renderOfferCard)}</div>
                     )}
