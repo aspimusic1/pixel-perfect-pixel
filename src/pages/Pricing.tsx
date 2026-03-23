@@ -136,6 +136,24 @@ export default function Pricing() {
 
   return (
     <div ref={ref} className="min-h-screen pt-24 px-4 pb-16">
+      <SEO
+        title="Pricing — GetBooked.Live | Free, Pro & Agency Plans"
+        description="Start free. Pro plan at $29/month cuts your commission from 20% to 10%. One booking pays for itself."
+        canonical="https://getbookedlive.lovable.app/pricing"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "GetBooked.Live Pricing",
+          description: "Start free. Pro plan at $29/month cuts your commission from 20% to 10%.",
+          url: "https://getbookedlive.lovable.app/pricing",
+          mainEntity: {
+            "@type": "PriceSpecification",
+            priceCurrency: "USD",
+            price: "29.00",
+            description: "Pro plan — 10% commission, unlimited offers, verified badge",
+          },
+        }}
+      />
       <div className="container mx-auto max-w-5xl">
         <div className="text-center mb-10">
           <h1 data-reveal className="opacity-0 font-display text-4xl sm:text-5xl font-bold mb-4">Simple, transparent pricing</h1>
