@@ -1,24 +1,34 @@
 import { useState } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const FAQS = [
-  { q: "What is GetBooked.Live and who is it for?", a: "GetBooked.Live is an all-in-one booking and tour management platform for the live music industry. It's built for artists, promoters, venues, production crews, and photographers/videographers — anyone involved in making live shows happen." },
-  { q: "How does the commission system work?", a: "Free accounts pay a 20% platform commission on confirmed bookings. Pro subscribers ($29/mo) pay 10%, and Agency accounts ($99/mo) pay just 5–7%. Commission is automatically calculated and deducted — no invoicing required." },
-  { q: "Can I use GetBooked.Live on mobile?", a: "Yes. The entire platform is mobile-responsive. You can browse, send offers, manage deal rooms, and track tours from your phone. We're also working on dedicated iOS and Android apps." },
-  { q: "How do I get a verified badge?", a: "Verified badges are awarded to users who complete their profile, connect their Spotify (for artists), and maintain a BookScore above 80. You can also apply for manual verification through your settings." },
-  { q: "What happens after an offer is accepted?", a: "Once accepted, a Deal Room is created for both parties. It includes auto-generated contracts, milestone tracking, real-time chat, and logistics management. Both sides sign digitally, and payment is processed through Stripe." },
-  { q: "Is there a free plan and what does it include?", a: "Yes. The free plan includes a full profile page, up to 3 offers per month, in-app notifications, and access to the directory. Upgrade to Pro for unlimited offers, lower commission, and premium features like income smoothing." },
+  {
+    q: "How does the commission system work?",
+    a: "Free accounts pay a 20% platform commission on confirmed bookings. Pro subscribers ($29/mo) pay 10%, and Agency accounts ($99/mo) pay just 5–7%. Commission is automatically calculated and deducted — no invoicing required.",
+  },
+  {
+    q: "What happens after an offer is accepted?",
+    a: "A Deal Room is created for both parties. It includes auto-generated contracts, milestone tracking, real-time chat, and logistics management. Both sides sign digitally, and payment is processed through Stripe.",
+  },
+  {
+    q: "Is there a free plan?",
+    a: "Yes. The free plan includes a full profile page, up to 3 offers per month, in-app notifications, and access to the directory. Upgrade to Pro for unlimited offers, lower commission, and premium features like income smoothing.",
+  },
+  {
+    q: "How do I get verified?",
+    a: "Verified badges are awarded to users who complete their profile, connect their Spotify (for artists), and maintain a BookScore above 80. You can also apply for manual verification through your settings.",
+  },
 ];
 
 export default function FAQSection() {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   return (
-    <section className="fade-in-section py-24 sm:py-32 px-4">
+    <section className="fade-in-section py-16 sm:py-28 px-4">
       <div className="container mx-auto max-w-2xl">
         <div className="text-center mb-14">
           <span className="section-label">FAQ</span>
-          <h2 className="section-heading">got questions? we've got answers.</h2>
+          <h2 className="section-heading">got questions?</h2>
         </div>
 
         <div>
