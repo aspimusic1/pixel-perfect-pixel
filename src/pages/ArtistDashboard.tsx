@@ -28,6 +28,7 @@ import EventsTab from "@/components/EventsTab";
 import SpotifyAnalytics from "@/components/SpotifyAnalytics";
 import PresaleSection from "@/components/PresaleSection";
 import PlatformConnectionCards from "@/components/PlatformConnectionCards";
+import EmptyState from "@/components/EmptyState";
 
 type ArtistView = "overview" | "offers" | "events" | "analytics" | "bookkeeping" | "agent" | "profile";
 
