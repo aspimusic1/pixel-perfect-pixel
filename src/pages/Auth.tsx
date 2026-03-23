@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SEO from "@/components/SEO";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
@@ -154,6 +155,11 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 pt-20 pb-12">
+      <SEO
+        title="Sign Up or Sign In — GetBooked.Live"
+        description="Join the fastest-growing music booking marketplace. Free to join. First booking in minutes."
+        canonical="https://getbookedlive.lovable.app/auth"
+      />
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           {isSignUp && activeRoleInfo && ActiveIcon ? (

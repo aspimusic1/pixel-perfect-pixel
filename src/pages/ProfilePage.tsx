@@ -335,6 +335,18 @@ export default function ProfilePage() {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={ogImage} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "MusicGroup",
+            name: name,
+            description: profile?.bio ?? "",
+            genre: genres.length > 0 ? genres : undefined,
+            url: canonicalUrl,
+            image: profile?.avatar_url ?? undefined,
+            location: location ? { "@type": "Place", name: location } : undefined,
+          })}
+        </script>
       </Helmet>
 
       <div className="mx-auto max-w-3xl">
