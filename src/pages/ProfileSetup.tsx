@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Camera, Loader2, Mic2, Megaphone, Building2, Wrench, Camera as CameraIcon, Music, Youtube } from "lucide-react";
 import toast from "react-hot-toast";
+import BackButton from "@/components/BackButton";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const ROLE_META: Record<string, { icon: any; label: string; accent: string; stepLabel: string }> = {
   artist: { icon: Mic2, label: "Artist", accent: "text-[hsl(var(--role-artist))]", stepLabel: "Set up your artist profile" },
