@@ -35,6 +35,7 @@ const PresalePage = lazy(() => import("@/pages/PresalePage"));
 const ReviewPage = lazy(() => import("@/pages/ReviewPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 const Welcome = lazy(() => import("@/pages/Welcome"));
+const DemoDashboard = lazy(() => import("@/pages/DemoDashboard"));
 const Settings = lazy(() => import("@/pages/Settings"));
 
 const queryClient = new QueryClient();
@@ -76,6 +77,7 @@ function AnimatedRoutes() {
         <Route path="/presale/:bookingId" element={<PresalePage />} />
         <Route path="/review/:bookingId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/demo-dashboard" element={<DemoDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
