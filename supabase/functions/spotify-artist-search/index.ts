@@ -13,15 +13,22 @@ async function getSpotifyToken(): Promise<string> {
   const clientSecret = Deno.env.get("SPOTIFY_CLIENT_SECRET");
   if (!clientId || !clientSecret) throw new Error(`Spotify credentials not configured: id=${!!clientId} secret=${!!clientSecret}`);
 
+  const credentials = `${clientId}:${clientSecret}`;
+  const encoded = btoa(credentials);
+
   const res = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
-      Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
+      Authorization: `Basic ${encoded}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: "grant_type=client_credentials",
   });
-  if (!res.ok) throw new Error(`Spotify auth failed: ${res.status}`);
+  if (!res.ok) {
+    const errBody = await res.text();
+    console.error("Spotify token error:", res.status, errBody);
+    throw new Error(`Spotify auth failed: ${res.status} - ${errBody}`);
+  }
   const data = await res.json();
   cachedToken = { token: data.access_token, expires: Date.now() + (data.expires_in - 60) * 1000 };
   return data.access_token;
