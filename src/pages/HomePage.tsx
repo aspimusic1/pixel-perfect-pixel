@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import PageTransition from "@/components/PageTransition";
 import SEO from "@/components/SEO";
 import HeroSection from "@/components/landing/HeroSection";
+import ActivityTicker from "@/components/landing/ActivityTicker";
 import PersonaSection from "@/components/landing/PersonaSection";
 import BuildShowSection from "@/components/landing/BuildShowSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
@@ -58,6 +59,7 @@ export default function Landing() {
       <div ref={revealRef} className="min-h-screen">
         <RolePickerPopup />
         <HeroSection />
+        <ActivityTicker />
         <PersonaSection />
         <BuildShowSection />
         <HowItWorksSection />
