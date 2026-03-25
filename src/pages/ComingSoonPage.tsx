@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Instagram } from "lucide-react";
+import { Instagram, Linkedin } from "lucide-react";
 
 const WAITLIST_BASE_COUNT = 2847;
 
@@ -257,13 +257,18 @@ export default function ComingSoonPage() {
       {/* Footer */}
       <footer className={`relative z-10 w-full py-8 mt-auto ${fadeIn} ${transition}`} style={{ transitionDelay: "1100ms" }}>
         <div className="flex flex-wrap items-center justify-center gap-6 text-muted-foreground/50 text-xs">
-          <a href="#" className="hover:text-muted-foreground transition-colors">Privacy Policy</a>
+          <a href="/privacy" className="hover:text-muted-foreground transition-colors">Privacy Policy</a>
           <span className="w-px h-3 bg-border" />
-          <a href="mailto:getbookedlive@gmail.com" className="hover:text-muted-foreground transition-colors">Contact</a>
+          <a href="/contact" className="hover:text-muted-foreground transition-colors">Contact</a>
           <span className="w-px h-3 bg-border" />
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
+          <a href="https://www.instagram.com/getbooked.live" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
             <Instagram className="w-3.5 h-3.5" />
             Instagram
+          </a>
+          <span className="w-px h-3 bg-border" />
+          <a href="https://www.linkedin.com/company/getbookedlive/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
+            <Linkedin className="w-3.5 h-3.5" />
+            LinkedIn
           </a>
         </div>
       </footer>
