@@ -142,7 +142,7 @@ export default function ComingSoonPage() {
           <img
             src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663474163600/CNVjdejEzeGWRZMX.webp"
             alt="GetBooked"
-            className="h-12 w-auto"
+            className="h-8 w-auto"
           />
         </div>
 
