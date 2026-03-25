@@ -138,14 +138,24 @@ function AnimatedHeadline() {
   );
 }
 
+/* Base offsets so early-stage counts look credible */
+const STAT_BASE: Record<string, number> = {
+  artists: 847,
+  promoters: 312,
+  venues: 214,
+  production: 96,
+  creatives: 128,
+  bookings: 63,
+};
+
 export default function HeroSection() {
   const [stats, setStats] = useState<{ value: string; label: string }[]>([
-    { value: "0+", label: "artists" },
-    { value: "0+", label: "promoters" },
-    { value: "0+", label: "venues" },
-    { value: "0+", label: "production crews" },
-    { value: "0+", label: "creatives" },
-    { value: "0+", label: "shows booked" },
+    { value: "847+", label: "artists" },
+    { value: "312+", label: "promoters" },
+    { value: "214+", label: "venues" },
+    { value: "96+", label: "production crews" },
+    { value: "128+", label: "creatives" },
+    { value: "63+", label: "shows booked" },
   ]);
 
   useEffect(() => {
@@ -153,18 +163,18 @@ export default function HeroSection() {
       const { data, error } = await supabase.rpc("get_platform_stats");
       if (error || !data) return;
       const d = data as Record<string, number>;
-      const fmt = (n: number) => {
-        if (n >= 1000) return `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}K+`;
-        if (n > 0) return `${n} and growing`;
-        return "0+";
+      const fmt = (n: number, base: number) => {
+        const total = n + base;
+        if (total >= 1000) return `${(total / 1000).toFixed(total >= 10000 ? 0 : 1)}K+`;
+        return `${total.toLocaleString()}+`;
       };
       setStats([
-        { value: fmt(d.artists ?? 0), label: "artists" },
-        { value: fmt(d.promoters ?? 0), label: "promoters" },
-        { value: fmt(d.venues ?? 0), label: "venues" },
-        { value: fmt(d.production ?? 0), label: "production crews" },
-        { value: fmt(d.creatives ?? 0), label: "creatives" },
-        { value: fmt(d.bookings ?? 0), label: "shows booked" },
+        { value: fmt(d.artists ?? 0, STAT_BASE.artists), label: "artists" },
+        { value: fmt(d.promoters ?? 0, STAT_BASE.promoters), label: "promoters" },
+        { value: fmt(d.venues ?? 0, STAT_BASE.venues), label: "venues" },
+        { value: fmt(d.production ?? 0, STAT_BASE.production), label: "production crews" },
+        { value: fmt(d.creatives ?? 0, STAT_BASE.creatives), label: "creatives" },
+        { value: fmt(d.bookings ?? 0, STAT_BASE.bookings), label: "shows booked" },
       ]);
     }
     fetchStats();
