@@ -224,7 +224,8 @@ export default function ArtistDashboard() {
         )}
 
         {offer.status === "negotiating" && (
-          <div className="px-4 pb-3 border-t border-white/[0.04] mt-2 pt-2">
+          <div className="px-4 pb-3 border-t border-white/[0.04] mt-2 pt-2 space-y-2">
+            <ThreadSummary offerId={offer.id} />
             <NegotiationThread offerId={offer.id} offer={offer} onOfferUpdated={(newStatus, updatedTerms) => { setOffers((prev) => prev.map((o) => o.id === offer.id ? { ...o, status: newStatus, ...(updatedTerms ?? {}) } : o)); }} />
           </div>
         )}
