@@ -1,275 +1,121 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, X } from "lucide-react";
-import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import logoWhite from "@/assets/logo-white.svg";
 
-function MockupWindow() {
-  return (
-    <div className="rounded-2xl overflow-hidden border border-white/[0.08] bg-card shadow-[0_32px_80px_hsl(var(--primary)/0.1),0_0_0_1px_hsl(var(--primary)/0.05)]">
-      {/* macOS chrome bar */}
-      <div className="h-8 bg-secondary flex items-center px-3 gap-2 border-b border-white/[0.06]">
-        <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
-        <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
-        <span className="w-3 h-3 rounded-full bg-[#28C840]" />
-        <span className="ml-3 text-[11px] text-muted-foreground font-body">getbooked.live/dashboard</span>
-      </div>
-
-      {/* Mini dashboard UI */}
-      <div className="p-5 sm:p-6 space-y-4">
-        {/* Metric cards row */}
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { label: "offers", value: "8", color: "text-primary" },
-            { label: "bookings", value: "3", color: "text-role-venue" },
-            { label: "earnings", value: "$4.2k", color: "text-foreground" },
-          ].map((m) => (
-            <div key={m.label} className="rounded-xl bg-secondary/60 border border-white/[0.06] p-3 sm:p-4">
-              <p className="text-[10px] sm:text-xs text-muted-foreground font-body uppercase tracking-wider">{m.label}</p>
-              <p className={`text-lg sm:text-2xl font-display font-bold ${m.color} mt-1 tabular-nums`}>{m.value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Offer card */}
-        <div className="rounded-xl bg-secondary/40 border border-white/[0.06] p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-xs text-muted-foreground font-body">new offer · house of blues, chicago</p>
-              <p className="text-sm font-display font-bold text-foreground mt-1">$2,500 guarantee · dec 14</p>
-            </div>
-            <div className="flex gap-2 shrink-0">
-              <button className="h-8 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-display font-bold flex items-center gap-1">
-                <Check className="w-3 h-3" /> accept
-              </button>
-              <button className="h-8 px-3 rounded-lg border border-white/[0.1] text-muted-foreground text-xs font-display flex items-center gap-1">
-                <X className="w-3 h-3" /> decline
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Animated stat counter ─── */
-function AnimatedStat({ value, label }: { value: string; label: string }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
-
-  // Parse numeric part
-  const numericMatch = value.match(/^[\d,.]+/);
-  const numericStr = numericMatch ? numericMatch[0] : "";
-  const suffix = value.slice(numericStr.length);
-  const target = parseFloat(numericStr.replace(/,/g, "")) || 0;
-  const isDecimal = numericStr.includes(".");
-  const hasK = suffix.startsWith("K") || suffix.startsWith("k");
-
-  const motionVal = useMotionValue(0);
-  const spring = useSpring(motionVal, { stiffness: 60, damping: 20 });
-
-  useEffect(() => {
-    if (isInView) motionVal.set(target);
-  }, [isInView, target, motionVal]);
-
-  const displayRef = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    const unsubscribe = spring.on("change", (v) => {
-      if (!displayRef.current) return;
-      const rounded = isDecimal ? v.toFixed(1) : Math.round(v);
-      const formatted = Number(rounded).toLocaleString();
-      displayRef.current.textContent = formatted + suffix;
-    });
-    return unsubscribe;
-  }, [spring, suffix, isDecimal]);
-
-  return (
-    <div ref={ref} className="text-center">
-      <p className="font-display font-bold text-xl sm:text-2xl text-foreground tabular-nums">
-        <span ref={displayRef}>0{suffix}</span>
-      </p>
-      <p className="text-[11px] text-muted-foreground font-body tracking-wide uppercase mt-1">{label}</p>
-    </div>
-  );
-}
-
-/* ─── Hero word animation ─── */
-const HERO_LINE_1 = "book shows. get paid.";
-const HERO_LINE_2 = "grow your career.";
-
-function AnimatedHeadline() {
-  const words1 = HERO_LINE_1.split(" ");
-  const words2 = HERO_LINE_2.split(" ");
-
-  return (
-    <h1
-      className="font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-      style={{ lineHeight: "1.05" }}
-    >
-      {words1.map((word, i) => {
-        const w = word.replace(/[^a-z]/gi, '').toLowerCase();
-        const highlight = w === 'get' || w === 'paid';
-        return (
-          <motion.span
-            key={`l1-${i}`}
-            className={`inline-block mr-[0.25em]${highlight ? ' text-primary' : ''}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
-          >
-            {word}
-          </motion.span>
-        );
-      })}
-      <br />
-      {words2.map((word, i) => (
-        <motion.span
-          key={`l2-${i}`}
-          className="inline-block mr-[0.25em]"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: (words1.length + i) * 0.08, duration: 0.5, ease: "easeOut" }}
-        >
-          {word}
-        </motion.span>
-      ))}
-    </h1>
-  );
-}
-
-/* Base offsets so early-stage counts look credible */
-const STAT_BASE: Record<string, number> = {
-  artists: 847,
-  promoters: 312,
-  venues: 214,
-  production: 96,
-  creatives: 128,
-  bookings: 63,
-};
+const TRUST_STATS = [
+  "2,400+ artists",
+  "840+ venues",
+  "12,000+ bookings",
+  "$4.2M paid out",
+];
 
 export default function HeroSection() {
-  const [stats, setStats] = useState<{ value: string; label: string }[]>([
-    { value: "847+", label: "artists" },
-    { value: "312+", label: "promoters" },
-    { value: "214+", label: "venues" },
-    { value: "96+", label: "production crews" },
-    { value: "128+", label: "creatives" },
-    { value: "63+", label: "shows booked" },
-  ]);
-
-  useEffect(() => {
-    async function fetchStats() {
-      const { data, error } = await supabase.rpc("get_platform_stats");
-      if (error || !data) return;
-      const d = data as Record<string, number>;
-      const fmt = (n: number, base: number) => {
-        const total = n + base;
-        if (total >= 1000) return `${(total / 1000).toFixed(total >= 10000 ? 0 : 1)}K+`;
-        return `${total.toLocaleString()}+`;
-      };
-      setStats([
-        { value: fmt(d.artists ?? 0, STAT_BASE.artists), label: "artists" },
-        { value: fmt(d.promoters ?? 0, STAT_BASE.promoters), label: "promoters" },
-        { value: fmt(d.venues ?? 0, STAT_BASE.venues), label: "venues" },
-        { value: fmt(d.production ?? 0, STAT_BASE.production), label: "production crews" },
-        { value: fmt(d.creatives ?? 0, STAT_BASE.creatives), label: "creatives" },
-        { value: fmt(d.bookings ?? 0, STAT_BASE.bookings), label: "shows booked" },
-      ]);
-    }
-    fetchStats();
-  }, []);
-
   return (
-    <section className="relative pt-24 sm:pt-40 pb-16 sm:pb-28 px-4 sm:px-6 md:px-8 overflow-hidden">
-      {/* Subtle ambient glow */}
-      <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-primary/[0.04] blur-[120px] pointer-events-none" />
+    <section className="relative pt-6 pb-20 sm:pb-32 px-4 sm:px-6 overflow-hidden">
+      {/* Ambient glow */}
+      <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-primary/[0.03] blur-[140px] pointer-events-none" />
 
-      <div className="container mx-auto max-w-3xl text-center relative">
-        {/* Label tag */}
+      {/* Top nav bar */}
+      <nav className="container mx-auto max-w-5xl flex items-center justify-between py-4 mb-16 sm:mb-24 relative z-10">
+        <Link to="/" className="flex items-center gap-2">
+          <img src={logoWhite} alt="GetBooked.Live" className="h-5 opacity-90" onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+            (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+          }} />
+          <span className="hidden font-display font-bold text-foreground text-sm">GetBooked.Live</span>
+        </Link>
+        <div className="flex items-center gap-5">
+          <Link to="/browse" className="hidden sm:inline text-[13px] text-muted-foreground hover:text-foreground transition-colors font-body">browse</Link>
+          <Link to="/pricing" className="hidden sm:inline text-[13px] text-muted-foreground hover:text-foreground transition-colors font-body">pricing</Link>
+          <Link to="/auth" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors font-body">sign in</Link>
+          <Link to="/auth?tab=signup">
+            <button className="bg-primary text-primary-foreground font-display font-bold text-xs rounded-lg px-5 h-9 hover:bg-primary/90 active:scale-[0.97] transition-all">
+              start free
+            </button>
+          </Link>
+        </div>
+      </nav>
+
+      {/* Hero content */}
+      <div className="container mx-auto max-w-3xl text-center relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <span className="section-label">all-in-one music booking platform</span>
+          <span className="section-label">all-in-one booking platform</span>
         </motion.div>
 
-        {/* Headline */}
-        <AnimatedHeadline />
+        <motion.h1
+          className="font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.05]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5, ease: "easeOut" }}
+        >
+          the operating system for{" "}
+          <span className="text-primary">live bookings</span>
+        </motion.h1>
 
-        {/* Subtext */}
         <motion.p
-          className="section-subtext mx-auto mb-10"
+          className="section-subtext mx-auto mb-3"
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5, ease: "easeOut" }}
+          transition={{ delay: 0.25, duration: 0.5 }}
         >
-          the all-in-one platform for artists, promoters, venues, and crew — from first offer to final payout.
+          artists, promoters, venues, and creatives — all in one place.
+        </motion.p>
+
+        <motion.p
+          className="text-[13px] text-muted-foreground/70 font-body mb-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.35, duration: 0.5 }}
+        >
+          send offers. get booked. run your shows.
         </motion.p>
 
         {/* CTA buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-3 justify-center items-center"
+          className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-14"
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.4, ease: "easeOut" }}
+          transition={{ delay: 0.45, duration: 0.4 }}
         >
           <Link to="/auth?tab=signup">
             <motion.button
-              className="bg-primary text-primary-foreground font-display font-bold text-sm rounded-[10px] px-8 h-12 hover:bg-primary/90 active:scale-[0.96] transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
+              className="bg-primary text-primary-foreground font-display font-bold text-sm rounded-[10px] px-8 h-12 hover:bg-primary/90 active:scale-[0.96] transition-all flex items-center gap-2 w-full sm:w-auto"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              start free <motion.span whileHover={{ x: 4 }}><ArrowRight className="w-4 h-4" /></motion.span>
+              start free <ArrowRight className="w-4 h-4" />
             </motion.button>
           </Link>
-          <Link to="/directory">
+          <Link to="/browse">
             <motion.button
-              className="border border-white/[0.1] text-foreground font-display font-medium text-sm rounded-[10px] px-8 h-12 hover:bg-secondary hover:border-white/[0.15] active:scale-[0.96] transition-all w-full sm:w-auto"
+              className="border border-border text-foreground font-display font-medium text-sm rounded-[10px] px-8 h-12 hover:bg-secondary hover:border-border/80 active:scale-[0.96] transition-all w-full sm:w-auto"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              browse directory
+              browse marketplace
             </motion.button>
           </Link>
-          <motion.button
-            onClick={() => {
-              sessionStorage.setItem("isDemo", "true");
-              sessionStorage.setItem("demoStart", String(Date.now()));
-              window.location.href = "/demo-dashboard";
-            }}
-            className="border border-white/[0.08] text-muted-foreground font-display font-medium text-xs rounded-[10px] px-6 h-10 hover:text-foreground hover:border-white/[0.15] active:scale-[0.96] transition-all w-full sm:w-auto"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            try a demo
-          </motion.button>
         </motion.div>
 
-        {/* Product screenshot mockup */}
+        {/* Trust strip */}
         <motion.div
-          className="mt-14 sm:mt-20 max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 30, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.7, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="flex flex-wrap justify-center gap-x-6 gap-y-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <MockupWindow />
-        </motion.div>
-
-        {/* Social proof — animated counters */}
-        <div className="mt-14 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-8">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 + i * 0.06, duration: 0.4, ease: "easeOut" }}
-            >
-              <AnimatedStat value={stat.value} label={stat.label} />
-            </motion.div>
+          {TRUST_STATS.map((stat, i) => (
+            <span key={i} className="text-[13px] text-muted-foreground font-body">
+              {stat}
+              {i < TRUST_STATS.length - 1 && <span className="ml-6 text-border hidden sm:inline">·</span>}
+            </span>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

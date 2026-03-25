@@ -2,20 +2,17 @@ import { useEffect, useRef } from "react";
 import PageTransition from "@/components/PageTransition";
 import SEO from "@/components/SEO";
 import HeroSection from "@/components/landing/HeroSection";
-import ActivityTicker from "@/components/landing/ActivityTicker";
-import PersonaSection from "@/components/landing/PersonaSection";
-import BuildShowSection from "@/components/landing/BuildShowSection";
+import RoleSelectorSection from "@/components/landing/RoleSelectorSection";
+import ProblemSection from "@/components/landing/ProblemSection";
+import CoreValueSection from "@/components/landing/CoreValueSection";
+import RoleValueSection from "@/components/landing/RoleValueSection";
+import SocialProofSection from "@/components/landing/SocialProofSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
-import WhatMakesDifferentSection from "@/components/landing/WhatMakesDifferentSection";
-import PowerFeaturesSection from "@/components/landing/PowerFeaturesSection";
-import TestimonialsSection from "@/components/landing/TestimonialsSection";
+import FeaturePreviewSection from "@/components/landing/FeaturePreviewSection";
 import PricingTeaser from "@/components/landing/PricingTeaser";
-import FAQSection from "@/components/landing/FAQSection";
 import FinalCTA from "@/components/landing/FinalCTA";
 import Footer from "@/components/landing/Footer";
-import RolePickerPopup from "@/components/RolePickerPopup";
 
-/* ─── Scroll reveal hook ─── */
 function useScrollReveal() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -44,30 +41,27 @@ export default function Landing() {
   return (
     <PageTransition>
       <SEO
-        title="GetBooked.Live — Music Booking Marketplace | Artists, Promoters & Venues"
-        description="The all-in-one platform for live music. Connect artists, promoters, venues, and production crews. Structured offers, auto-contracts, tour management."
+        title="GetBooked.Live — The Operating System for Live Bookings"
+        description="The all-in-one platform for live music. Connect artists, promoters, venues, and crews. Structured offers, contracts, and payments."
         canonical="https://getbookedlive.lovable.app/"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "GetBooked.Live",
           url: "https://getbookedlive.lovable.app",
-          description: "The all-in-one platform for live music booking. Connect artists, promoters, venues, and production crews.",
-          logo: "https://getbookedlive.lovable.app/og-image.png",
+          description: "The all-in-one platform for live music booking.",
         }}
       />
       <div ref={revealRef} className="min-h-screen">
-        <RolePickerPopup />
         <HeroSection />
-        <ActivityTicker />
-        <PersonaSection />
-        <BuildShowSection />
+        <RoleSelectorSection />
+        <ProblemSection />
+        <CoreValueSection />
+        <RoleValueSection />
+        <SocialProofSection />
         <HowItWorksSection />
-        <WhatMakesDifferentSection />
-        <PowerFeaturesSection />
-        <TestimonialsSection />
+        <FeaturePreviewSection />
         <PricingTeaser />
-        <FAQSection />
         <FinalCTA />
         <Footer />
       </div>
