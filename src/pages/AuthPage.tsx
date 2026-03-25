@@ -20,7 +20,7 @@ const ROLES = [
   { value: "photo_video", label: "Creative", icon: Camera, accent: "text-primary-foreground border-primary-foreground/30 bg-primary-foreground/10", tagline: "Capture moments. Build your reel. Get booked." },
 ];
 
-export default function Auth() {
+export default function AuthPage() {
   const [searchParams] = useSearchParams();
   const presetRole = searchParams.get("role") || "";
   const [isSignUp, setIsSignUp] = useState(searchParams.get("tab") === "signup");
