@@ -20,6 +20,7 @@ import BookkeepingSection from "@/components/BookkeepingSection";
 import AdvanceRequestDialog from "@/components/AdvanceRequestDialog";
 import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import { openSignedContract, downloadSignedContract } from "@/lib/db-call";
+import DepositPaymentButton from "@/components/DepositPaymentButton";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
 import EditProfilePanel from "@/components/EditProfilePanel";
 import ProfileCompletionRing from "@/components/ProfileCompletionRing";
@@ -276,6 +277,12 @@ export default function ArtistDashboard() {
             )}
             {advanceRequested.has(booking.id) && (
               <span className="inline-flex items-center gap-1 text-[11px] text-[#3EC8FF] font-medium px-2.5 py-1"><CheckCircle className="w-3 h-3" /> advance requested</span>
+            )}
+            {booking.status !== "deposit_paid" && (
+              <DepositPaymentButton bookingId={booking.id} guarantee={booking.guarantee} onSuccess={() => { setBookings((prev) => prev.map((b) => b.id === booking.id ? { ...b, status: "deposit_paid" } : b)); }} />
+            )}
+            {booking.status === "deposit_paid" && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-[#3EFFBE] font-medium px-2.5 py-1"><CheckCircle className="w-3 h-3" /> deposit paid</span>
             )}
             {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
               <div className="w-full mt-1 space-y-1.5">
