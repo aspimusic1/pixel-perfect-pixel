@@ -41,7 +41,9 @@ export default defineConfig(({ mode }) => ({
       "react-router",
       "react-router-dom",
       "@tanstack/react-query",
+      "framer-motion",
     ],
     force: true,
+    needsInterop: [],
   },
 }));
