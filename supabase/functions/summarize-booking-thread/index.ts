@@ -23,12 +23,7 @@ serve(async (req) => {
     const manusApiKey = Deno.env.get("MANUS_API_KEY");
     const manusApiUrl = Deno.env.get("MANUS_API_URL");
 
-    if (!manusApiKey || !manusApiUrl) {
-      return new Response(JSON.stringify({ error: "AI service not configured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
+    // Verify user
     const supabaseAuth = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
       global: { headers: { Authorization: authHeader } },
     });
@@ -48,7 +43,7 @@ serve(async (req) => {
       });
     }
 
-    // Fetch the offer details
+    // Fetch the offer
     const { data: offer } = await supabase.from("offers").select("*").eq("id", offer_id).single();
     if (!offer) {
       return new Response(JSON.stringify({ error: "Offer not found" }), {
@@ -56,60 +51,98 @@ serve(async (req) => {
       });
     }
 
-    // Fetch sender profile
+    // Verify the user is a party to the offer
+    if (offer.sender_id !== user.id && offer.recipient_id !== user.id) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Fetch counter offers (negotiation history)
+    const { data: counters } = await supabase
+      .from("counter_offers")
+      .select("*")
+      .eq("offer_id", offer_id)
+      .order("created_at", { ascending: true });
+
+    // Fetch sender + recipient profiles
     const { data: senderProfile } = await supabase
       .from("profiles")
-      .select("display_name, city, state, subscription_plan, bookscore")
+      .select("display_name, role")
       .eq("user_id", offer.sender_id)
       .single();
 
-    // Fetch sender's past booking history
-    const { data: senderBookings, count: bookingCount } = await supabase
-      .from("bookings")
-      .select("id, status, guarantee", { count: "exact" })
-      .eq("promoter_id", offer.sender_id);
-
-    const completedBookings = (senderBookings || []).filter((b: any) => b.status === "completed").length;
-    const totalSpent = (senderBookings || []).reduce((s: number, b: any) => s + (b.guarantee || 0), 0);
+    const { data: recipientProfile } = await supabase
+      .from("profiles")
+      .select("display_name, role")
+      .eq("user_id", offer.recipient_id)
+      .single();
 
     // Create AI task
     const { data: taskRow } = await supabase.from("ai_tasks").insert({
       related_entity_type: "offer",
       related_entity_id: offer_id,
       provider: "manus",
-      task_type: "score_booking_request",
-      input_payload: { offer, senderProfile, bookingCount, completedBookings, totalSpent },
+      task_type: "summarize_thread",
+      input_payload: { offer_id },
       status: "processing",
     }).select("id").single();
 
-    const prompt = `You are an AI booking quality analyst. Score this booking request on quality and risk.
+    if (!manusApiKey || !manusApiUrl) {
+      // Fallback summary without AI
+      const counterCount = counters?.length || 0;
+      const fallback = {
+        summary: `Offer from ${senderProfile?.display_name || "promoter"} to ${recipientProfile?.display_name || "artist"} for ${offer.venue_name} on ${offer.event_date}. Guarantee: $${offer.guarantee}. Status: ${offer.status}. ${counterCount} counter-offer(s) exchanged.`,
+        key_points: [
+          `Original guarantee: $${offer.guarantee}`,
+          counterCount > 0 ? `${counterCount} counter-offer(s) in negotiation` : "No counter-offers yet",
+          `Current status: ${offer.status}`,
+        ],
+        next_steps: offer.status === "pending"
+          ? "Awaiting response from the artist."
+          : offer.status === "negotiating"
+          ? "Parties are actively negotiating terms."
+          : `Offer has been ${offer.status}.`,
+      };
 
-Offer Details:
-- Venue: ${offer.venue_name}
-- Date: ${offer.event_date}
-- Guarantee: $${offer.guarantee}
-- Door Split: ${offer.door_split || "N/A"}%
-- Merch Split: ${offer.merch_split || "N/A"}%
+      await supabase.from("ai_tasks").update({
+        status: "completed",
+        output_payload: fallback,
+        completed_at: new Date().toISOString(),
+      }).eq("id", taskRow?.id);
 
-Promoter Profile:
-- Name: ${senderProfile?.display_name || "Unknown"}
-- Location: ${senderProfile?.city || "Unknown"}, ${senderProfile?.state || ""}
-- Plan: ${senderProfile?.subscription_plan || "free"}
-- BookScore: ${senderProfile?.bookscore || "N/A"}
-- Past Bookings: ${bookingCount || 0} (${completedBookings} completed)
-- Total Spent: $${totalSpent}
+      return new Response(JSON.stringify(fallback), {
+        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-Respond with a JSON object:
+    const timeline = [
+      `Original offer: $${offer.guarantee} at ${offer.venue_name} on ${offer.event_date}`,
+      ...(counters || []).map((c: any, i: number) =>
+        `Counter #${i + 1} (${c.sender_id === offer.sender_id ? "promoter" : "artist"}): $${c.guarantee}, date: ${c.event_date}, message: "${c.message || "none"}"`
+      ),
+    ];
+
+    const prompt = `Summarize this booking negotiation thread for a music marketplace.
+
+Parties:
+- Sender (${senderProfile?.role || "promoter"}): ${senderProfile?.display_name || "Unknown"}
+- Recipient (${recipientProfile?.role || "artist"}): ${recipientProfile?.display_name || "Unknown"}
+
+Offer Status: ${offer.status}
+
+Timeline:
+${timeline.join("\n")}
+
+Return a JSON object:
 {
-  "quality_score": number 0-100,
-  "risk_level": "low" | "medium" | "high",
-  "risk_flags": ["array of specific concerns"],
-  "pricing_assessment": "below_market" | "fair" | "above_market",
-  "summary": "2-3 sentence summary for the artist reviewing this offer",
-  "recommendation": "accept" | "negotiate" | "caution"
+  "summary": "2-3 sentence plain English summary of the negotiation",
+  "key_points": ["array of 3-5 bullet points"],
+  "next_steps": "What should happen next",
+  "sentiment": "positive" | "neutral" | "strained"
 }
 
-Only return the JSON object, no other text.`;
+Only return JSON.`;
 
     const manusResponse = await fetch(manusApiUrl, {
       method: "POST",
@@ -119,7 +152,7 @@ Only return the JSON object, no other text.`;
       },
       body: JSON.stringify({
         messages: [
-          { role: "system", content: "You are an expert music industry booking analyst. Always respond with valid JSON only." },
+          { role: "system", content: "You are a music industry booking assistant. Always respond with valid JSON only." },
           { role: "user", content: prompt },
         ],
         stream: false,
@@ -141,33 +174,34 @@ Only return the JSON object, no other text.`;
     const manusData = await manusResponse.json();
     const content = manusData.choices?.[0]?.message?.content || "{}";
 
-    let score: any = {};
+    let result: any = {};
     try {
       const jsonMatch = content.match(/\{[\s\S]*\}/);
-      score = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+      result = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
     } catch {
-      console.error("Failed to parse score response:", content);
+      console.error("Failed to parse summary response:", content);
     }
 
     await supabase.from("ai_tasks").update({
       status: "completed",
-      output_payload: score,
+      output_payload: result,
       completed_at: new Date().toISOString(),
     }).eq("id", taskRow?.id);
 
     await supabase.from("activity_logs").insert({
       actor_type: "manus",
-      action_type: "booking_scored",
+      actor_id: user.id,
+      action_type: "thread_summarized",
       entity_type: "offer",
       entity_id: offer_id,
-      metadata: { quality_score: score.quality_score, risk_level: score.risk_level },
+      metadata: { sentiment: result.sentiment },
     });
 
-    return new Response(JSON.stringify(score), {
+    return new Response(JSON.stringify(result), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("score-booking-request error:", error);
+    console.error("summarize-booking-thread error:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

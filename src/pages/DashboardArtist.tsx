@@ -30,6 +30,7 @@ import PresaleSection from "@/components/PresaleSection";
 import PlatformConnectionCards from "@/components/PlatformConnectionCards";
 import OfferScoreCard from "@/components/OfferScoreCard";
 import EmptyState from "@/components/EmptyState";
+import ThreadSummary from "@/components/ThreadSummary";
 
 type ArtistView = "overview" | "offers" | "events" | "analytics" | "bookkeeping" | "agent" | "profile";
 
@@ -224,7 +225,8 @@ export default function ArtistDashboard() {
         )}
 
         {offer.status === "negotiating" && (
-          <div className="px-4 pb-3 border-t border-white/[0.04] mt-2 pt-2">
+          <div className="px-4 pb-3 border-t border-white/[0.04] mt-2 pt-2 space-y-2">
+            <ThreadSummary offerId={offer.id} />
             <NegotiationThread offerId={offer.id} offer={offer} onOfferUpdated={(newStatus, updatedTerms) => { setOffers((prev) => prev.map((o) => o.id === offer.id ? { ...o, status: newStatus, ...(updatedTerms ?? {}) } : o)); }} />
           </div>
         )}
