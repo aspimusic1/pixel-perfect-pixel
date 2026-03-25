@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      directory_listings: {
+        Row: {
+          id: string
+          listing_type: string
+          name: string
+          slug: string | null
+          genres: string[] | null
+          city: string | null
+          state: string | null
+          country: string | null
+          bio: string | null
+          avatar_url: string | null
+          venue_type: string | null
+          capacity_min: number | null
+          capacity_max: number | null
+          fee_min: number | null
+          fee_max: number | null
+          tier: string | null
+          bookscore: number | null
+          is_claimed: boolean
+          claimed_by: string | null
+          source: string | null
+          external_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          listing_type: string
+          name: string
+          slug?: string | null
+          genres?: string[] | null
+          city?: string | null
+          state?: string | null
+          country?: string | null
+          bio?: string | null
+          avatar_url?: string | null
+          venue_type?: string | null
+          capacity_min?: number | null
+          capacity_max?: number | null
+          fee_min?: number | null
+          fee_max?: number | null
+          tier?: string | null
+          bookscore?: number | null
+          is_claimed?: boolean
+          claimed_by?: string | null
+          source?: string | null
+          external_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          listing_type?: string
+          name?: string
+          slug?: string | null
+          genres?: string[] | null
+          city?: string | null
+          state?: string | null
+          country?: string | null
+          bio?: string | null
+          avatar_url?: string | null
+          venue_type?: string | null
+          capacity_min?: number | null
+          capacity_max?: number | null
+          fee_min?: number | null
+          fee_max?: number | null
+          tier?: string | null
+          bookscore?: number | null
+          is_claimed?: boolean
+          claimed_by?: string | null
+          source?: string | null
+          external_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       activity_logs: {
         Row: {
           action_type: string

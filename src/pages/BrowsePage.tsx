@@ -5,11 +5,13 @@ import SEO from "@/components/SEO";
 import PageTransition from "@/components/PageTransition";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, MapPin, Music, Building2, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, MapPin, Music, User, Star, CheckCircle2, Zap } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 type ProfileCard = {
   id: string;
-  user_id: string;
+  user_id?: string;
   display_name: string | null;
   avatar_url: string | null;
   genre: string | null;
@@ -19,6 +21,14 @@ type ProfileCard = {
   slug: string | null;
   is_verified: boolean | null;
   bio: string | null;
+  bookscore?: number | null;
+  tier?: string | null;
+  fee_min?: number | null;
+  fee_max?: number | null;
+  is_claimed?: boolean;
+  source?: "live" | "directory";
+  listing_type?: string;
+  genres?: string[];
 };
 
 const ROLE_FILTERS = [
@@ -30,11 +40,21 @@ const ROLE_FILTERS = [
   { value: "photo_video", label: "Creatives" },
 ];
 
+const TIER_COLORS: Record<string, string> = {
+  headliner: "text-yellow-400 bg-yellow-400/10",
+  national: "text-purple-400 bg-purple-400/10",
+  regional: "text-blue-400 bg-blue-400/10",
+  independent: "text-teal-400 bg-teal-400/10",
+  emerging: "text-lime-400 bg-lime-400/10",
+};
+
 export default function BrowsePage() {
   const [profiles, setProfiles] = useState<ProfileCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
+  const [claimingId, setClaimingId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchProfiles();
@@ -42,18 +62,69 @@ export default function BrowsePage() {
 
   async function fetchProfiles() {
     setLoading(true);
-    let query = supabase
+
+    // Fetch real signed-up profiles
+    let liveQuery = supabase
       .from("public_profiles")
       .select("id, user_id, display_name, avatar_url, genre, city, state, role, slug, is_verified, bio")
       .order("display_name", { ascending: true })
       .limit(60);
 
     if (roleFilter !== "all") {
-      query = query.eq("role", roleFilter as "artist" | "promoter" | "venue" | "production" | "photo_video");
+      liveQuery = liveQuery.eq("role", roleFilter as "artist" | "promoter" | "venue" | "production" | "photo_video");
     }
 
-    const { data } = await query;
-    setProfiles((data as ProfileCard[]) || []);
+    const { data: liveData } = await liveQuery;
+    const liveProfiles: ProfileCard[] = (liveData || []).map((p: any) => ({
+      ...p,
+      source: "live" as const,
+      is_claimed: true,
+    }));
+
+    // For non-artist/venue filters, only show live profiles
+    if (roleFilter !== "all" && roleFilter !== "artist" && roleFilter !== "venue") {
+      setProfiles(liveProfiles);
+      setLoading(false);
+      return;
+    }
+
+    // Fetch directory listings (unclaimed profiles from spreadsheet data)
+    let dirQuery = supabase
+      .from("directory_listings")
+      .select("id, name, avatar_url, genres, city, state, listing_type, slug, bio, bookscore, tier, fee_min, fee_max, is_claimed")
+      .eq("is_claimed", false)
+      .order("bookscore", { ascending: false })
+      .limit(200);
+
+    if (roleFilter === "artist") {
+      dirQuery = dirQuery.eq("listing_type", "artist");
+    } else if (roleFilter === "venue") {
+      dirQuery = dirQuery.eq("listing_type", "venue");
+    }
+
+    const { data: dirData } = await dirQuery;
+    const dirProfiles: ProfileCard[] = (dirData || []).map((p: any) => ({
+      id: p.id,
+      display_name: p.name,
+      avatar_url: p.avatar_url,
+      genre: p.genres ? p.genres[0] : null,
+      genres: p.genres,
+      city: p.city,
+      state: p.state,
+      role: p.listing_type === "venue" ? "venue" : "artist",
+      slug: p.slug,
+      is_verified: false,
+      bio: p.bio,
+      bookscore: p.bookscore,
+      tier: p.tier,
+      fee_min: p.fee_min,
+      fee_max: p.fee_max,
+      is_claimed: false,
+      source: "directory" as const,
+      listing_type: p.listing_type,
+    }));
+
+    setProfiles([...liveProfiles, ...dirProfiles]);
     setLoading(false);
   }
 
@@ -63,24 +134,55 @@ export default function BrowsePage() {
     return (
       p.display_name?.toLowerCase().includes(q) ||
       p.genre?.toLowerCase().includes(q) ||
-      p.city?.toLowerCase().includes(q)
+      p.city?.toLowerCase().includes(q) ||
+      p.genres?.some((g) => g.toLowerCase().includes(q))
     );
   });
+
+  async function handleClaim(profile: ProfileCard) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast({
+        title: "Sign in to claim this profile",
+        description: "Create a free account to claim your profile on GetBooked.Live.",
+      });
+      return;
+    }
+    setClaimingId(profile.id);
+    const { error } = await supabase
+      .from("directory_listings")
+      .update({ is_claimed: true, claimed_by: session.user.id })
+      .eq("id", profile.id);
+
+    if (error) {
+      toast({ title: "Error", description: "Could not claim profile. Please try again.", variant: "destructive" });
+    } else {
+      toast({
+        title: "Profile claimed!",
+        description: `You've claimed ${profile.display_name}. Complete your profile in the dashboard.`,
+      });
+      fetchProfiles();
+    }
+    setClaimingId(null);
+  }
 
   return (
     <PageTransition>
       <SEO
         title="Browse Directory | GetBooked.Live"
-        description="Discover artists, venues, promoters, and production crews on GetBooked.Live. Search by genre, city, or role."
+        description="Discover 700+ artists and venues on GetBooked.Live. Search by genre, city, or role. Claim your profile today."
       />
       <div className="min-h-screen bg-background pt-24 pb-16 px-4">
         <div className="container mx-auto max-w-6xl">
-          <h1 className="font-syne text-3xl md:text-4xl font-bold text-foreground mb-2">
-            Browse Artists & Venues
-          </h1>
-          <p className="text-muted-foreground mb-8 max-w-xl">
-            Discover talent, venues, and crews across the live music industry.
-          </p>
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="font-syne text-3xl md:text-4xl font-bold text-foreground mb-2">
+              Browse Artists & Venues
+            </h1>
+            <p className="text-muted-foreground max-w-xl">
+              Discover {profiles.length > 0 ? `${profiles.length}+` : "hundreds of"} artists and venues across the live music industry. See your name here? Claim your profile.
+            </p>
+          </div>
 
           {/* Search + Filters */}
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -110,10 +212,24 @@ export default function BrowsePage() {
             </div>
           </div>
 
+          {/* Stats bar */}
+          {!loading && filtered.length > 0 && (
+            <div className="flex items-center gap-6 mb-6 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" />
+                {profiles.filter(p => p.is_claimed).length} claimed profiles
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-primary" />
+                {profiles.filter(p => !p.is_claimed).length} unclaimed — is one yours?
+              </span>
+            </div>
+          )}
+
           {/* Results */}
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="h-48 rounded-xl bg-card animate-pulse" />
               ))}
             </div>
@@ -126,59 +242,130 @@ export default function BrowsePage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filtered.map((p) => (
-                <Link
+                <div
                   key={p.id}
-                  to={p.slug ? `/p/${p.slug}` : `/p/${p.user_id}`}
-                  className="group block rounded-xl bg-card border border-white/[0.06] p-5 hover:border-primary/30 transition-colors"
+                  className={`group rounded-xl bg-card border transition-colors relative overflow-hidden ${
+                    p.is_claimed
+                      ? "border-white/[0.06] hover:border-primary/30"
+                      : "border-dashed border-white/[0.10] hover:border-primary/40"
+                  }`}
                 >
-                  <div className="flex items-start gap-3">
-                    {p.avatar_url ? (
-                      <img
-                        src={p.avatar_url}
-                        alt={p.display_name || "Profile"}
-                        className="w-12 h-12 rounded-full object-cover"
-                        loading="lazy"
-                        width={48}
-                        height={48}
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-foreground font-bold text-lg">
-                        {(p.display_name || "?")[0]?.toUpperCase()}
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-syne font-semibold text-foreground truncate">
-                          {p.display_name || "Unnamed"}
-                        </h3>
-                        {p.is_verified && (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">✓</Badge>
-                        )}
-                      </div>
-                      {p.genre && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                          <Music className="w-3 h-3" />
-                          {p.genre}
+                  {!p.is_claimed && (
+                    <div className="absolute top-3 right-3 z-10">
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30">
+                        Unclaimed
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="p-5">
+                    <div className="flex items-start gap-3">
+                      {p.avatar_url ? (
+                        <img
+                          src={p.avatar_url}
+                          alt={p.display_name || "Profile"}
+                          className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                          loading="lazy"
+                          width={48}
+                          height={48}
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-foreground font-bold text-lg flex-shrink-0">
+                          {(p.display_name || "?")[0]?.toUpperCase()}
                         </div>
                       )}
-                      {(p.city || p.state) && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                          <MapPin className="w-3 h-3" />
-                          {[p.city, p.state].filter(Boolean).join(", ")}
+                      <div className="flex-1 min-w-0 pr-8">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-syne font-semibold text-foreground truncate">
+                            {p.display_name || "Unnamed"}
+                          </h3>
+                          {p.is_verified && (
+                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">✓</Badge>
+                          )}
                         </div>
+                        {(p.genre || (p.genres && p.genres.length > 0)) && (
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+                            <Music className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{p.genre || p.genres?.[0]}</span>
+                          </div>
+                        )}
+                        {(p.city || p.state) && (
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+                            <MapPin className="w-3 h-3 flex-shrink-0" />
+                            {[p.city, p.state].filter(Boolean).join(", ")}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {p.bio && (
+                      <p className="text-xs text-muted-foreground mt-3 line-clamp-2">{p.bio}</p>
+                    )}
+
+                    <div className="mt-3 flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-[10px] capitalize">
+                          {p.role === "photo_video" ? "Creative" : p.listing_type || p.role || "Artist"}
+                        </Badge>
+                        {p.tier && (
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full capitalize ${TIER_COLORS[p.tier] || "text-muted-foreground bg-muted"}`}>
+                            {p.tier}
+                          </span>
+                        )}
+                        {p.bookscore && (
+                          <span className="flex items-center gap-0.5 text-[10px] text-yellow-400">
+                            <Star className="w-2.5 h-2.5 fill-yellow-400" />
+                            {p.bookscore}
+                          </span>
+                        )}
+                      </div>
+                      {p.fee_min && p.fee_max && (
+                        <span className="text-[10px] text-muted-foreground">
+                          ${p.fee_min.toLocaleString()}–${p.fee_max.toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      {p.is_claimed ? (
+                        <Link
+                          to={p.slug ? `/p/${p.slug}` : `/p/${p.user_id}`}
+                          className="flex-1 text-center text-xs font-medium py-1.5 px-3 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                        >
+                          View Profile
+                        </Link>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 text-xs h-7 border-primary/30 text-primary hover:bg-primary/10"
+                          onClick={() => handleClaim(p)}
+                          disabled={claimingId === p.id}
+                        >
+                          {claimingId === p.id ? "Claiming…" : "Claim This Profile"}
+                        </Button>
                       )}
                     </div>
                   </div>
-                  {p.bio && (
-                    <p className="text-xs text-muted-foreground mt-3 line-clamp-2">{p.bio}</p>
-                  )}
-                  <div className="mt-3">
-                    <Badge variant="outline" className="text-[10px] capitalize">
-                      {p.role === "photo_video" ? "Creative" : p.role || "Artist"}
-                    </Badge>
-                  </div>
-                </Link>
+                </div>
               ))}
+            </div>
+          )}
+
+          {/* Bottom CTA */}
+          {!loading && (
+            <div className="mt-12 text-center p-8 rounded-2xl bg-card border border-white/[0.06]">
+              <h2 className="font-syne text-xl font-bold text-foreground mb-2">
+                Don't see yourself here?
+              </h2>
+              <p className="text-muted-foreground text-sm mb-4">
+                Join GetBooked.Live and create your profile to start getting booked.
+              </p>
+              <Link to="/auth">
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  Create Your Free Profile
+                </Button>
+              </Link>
             </div>
           )}
         </div>
