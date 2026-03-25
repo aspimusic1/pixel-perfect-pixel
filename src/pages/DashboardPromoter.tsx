@@ -19,6 +19,7 @@ import { openSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
 import EditProfilePanel from "@/components/EditProfilePanel";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
+import ThreadSummary from "@/components/ThreadSummary";
 
 type PromoterView = "overview" | "offers" | "discover" | "profile";
 type Offer = { id: string; venue_name: string; event_date: string; event_time: string | null; guarantee: number; door_split: number | null; merch_split: number | null; status: string; recipient_id: string; sender_id: string; created_at: string };
@@ -97,7 +98,8 @@ export default function PromoterDashboard() {
         </div>
 
         {offer.status === "negotiating" && (
-          <div className="px-4 pb-3 border-t border-white/[0.04] mt-2 pt-2">
+          <div className="px-4 pb-3 border-t border-white/[0.04] mt-2 pt-2 space-y-2">
+            <ThreadSummary offerId={offer.id} />
             <NegotiationThread offerId={offer.id} offer={offer} onOfferUpdated={(newStatus, updatedTerms) => { setOffers((prev) => prev.map((o) => o.id === offer.id ? { ...o, status: newStatus, ...(updatedTerms ?? {}) } : o)); }} />
           </div>
         )}
