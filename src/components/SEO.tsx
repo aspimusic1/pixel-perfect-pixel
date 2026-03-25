@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 
 const SITE_URL = "https://getbookedlive.lovable.app";
 const SITE_NAME = "GetBooked.Live";
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
+const DEFAULT_OG_IMAGE = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663474163600/hIZPHRepusQInvFT.png";
 
 interface SEOProps {
   title: string;
