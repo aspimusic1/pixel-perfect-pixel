@@ -11,6 +11,9 @@ import Navbar from "@/components/Navbar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import InstallBanner from "@/components/InstallBanner";
 
+// ── COMING SOON ──
+const ComingSoonPage = lazy(() => import("@/pages/ComingSoonPage"));
+
 // ── PUBLIC PAGES ──
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const AuthPage = lazy(() => import("@/pages/AuthPage"));
@@ -74,8 +77,11 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* ── PUBLIC ROUTES ── */}
-        <Route path="/" element={<HomePage />} />
+        {/* ── COMING SOON (public landing) ── */}
+        <Route path="/" element={<ComingSoonPage />} />
+
+        {/* ── FULL APP (hidden behind /app) ── */}
+        <Route path="/app" element={<HomePage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
@@ -115,22 +121,37 @@ function AnimatedRoutes() {
   );
 }
 
+function AppLayout() {
+  const location = useLocation();
+  const isComingSoon = location.pathname === "/";
+
+  return (
+    <>
+      {!isComingSoon && (
+        <>
+          <a href="#main-content" className="skip-to-main">Skip to main content</a>
+          <Navbar />
+        </>
+      )}
+      <main id="main-content" className={isComingSoon ? "" : "overflow-x-hidden"}>
+        <Suspense fallback={<RouteLoadingFallback />}>
+          <AnimatedRoutes />
+        </Suspense>
+      </main>
+      {!isComingSoon && <InstallBanner />}
+      <Toaster />
+      <Sonner />
+      <HotToaster position="bottom-right" toastOptions={{ duration: 3500, style: { background: '#0E1420', color: '#F0F2F7', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '13px' }, success: { iconTheme: { primary: '#C8FF3E', secondary: '#080C14' } } }} containerStyle={{}} />
+    </>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <BrowserRouter>
         <AuthProvider>
-          <a href="#main-content" className="skip-to-main">Skip to main content</a>
-          <Navbar />
-          <main id="main-content" className="overflow-x-hidden">
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <AnimatedRoutes />
-            </Suspense>
-          </main>
-          <InstallBanner />
-          <Toaster />
-          <Sonner />
-          <HotToaster position="bottom-right" toastOptions={{ duration: 3500, style: { background: '#0E1420', color: '#F0F2F7', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '13px' }, success: { iconTheme: { primary: '#C8FF3E', secondary: '#080C14' } } }} containerStyle={{}} />
+          <AppLayout />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
