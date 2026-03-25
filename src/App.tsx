@@ -19,7 +19,7 @@ const ComingSoonPage = lazy(() => import("@/pages/ComingSoonPage"));
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const PricingPage = lazy(() => import("@/pages/PricingPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
-const DirectoryPage = lazy(() => import("@/pages/DirectoryPage"));
+// DirectoryPage removed — /directory and /venues now redirect to /browse
 const PublicProfilePage = lazy(() => import("@/pages/PublicProfilePage"));
 const PresalePage = lazy(() => import("@/pages/PresalePage"));
 const DemoDashboardPage = lazy(() => import("@/pages/DemoDashboardPage"));
