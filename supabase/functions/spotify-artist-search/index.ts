@@ -11,7 +11,7 @@ async function getSpotifyToken(): Promise<string> {
 
   const clientId = Deno.env.get("SPOTIFY_CLIENT_ID");
   const clientSecret = Deno.env.get("SPOTIFY_CLIENT_SECRET");
-  if (!clientId || !clientSecret) throw new Error("Spotify credentials not configured");
+  if (!clientId || !clientSecret) throw new Error(`Spotify credentials not configured: id=${!!clientId} secret=${!!clientSecret}`);
 
   const res = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
