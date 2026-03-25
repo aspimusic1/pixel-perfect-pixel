@@ -10,13 +10,13 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import InstallBanner from "@/components/InstallBanner";
+import AuthPage from "@/pages/AuthPage";
 
 // ── COMING SOON ──
 const ComingSoonPage = lazy(() => import("@/pages/ComingSoonPage"));
 
 // ── PUBLIC PAGES ──
 const HomePage = lazy(() => import("@/pages/HomePage"));
-const AuthPage = lazy(() => import("@/pages/AuthPage"));
 const PricingPage = lazy(() => import("@/pages/PricingPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const DirectoryPage = lazy(() => import("@/pages/DirectoryPage"));
