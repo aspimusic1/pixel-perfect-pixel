@@ -49,7 +49,7 @@ export default function BrowsePage() {
       .limit(60);
 
     if (roleFilter !== "all") {
-      query = query.eq("role", roleFilter);
+      query = query.eq("role", roleFilter as "artist" | "promoter" | "venue" | "production" | "photo_video");
     }
 
     const { data } = await query;
