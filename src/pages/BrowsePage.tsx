@@ -70,7 +70,7 @@ export default function BrowsePage() {
   return (
     <PageTransition>
       <SEO
-        title="Browse Artists & Venues | GetBooked.Live"
+        title="Browse Directory | GetBooked.Live"
         description="Discover artists, venues, promoters, and production crews on GetBooked.Live. Search by genre, city, or role."
       />
       <div className="min-h-screen bg-background pt-24 pb-16 px-4">

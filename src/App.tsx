@@ -95,8 +95,8 @@ function AnimatedRoutes() {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/directory" element={<DirectoryPage />} />
-        <Route path="/venues" element={<DirectoryPage initialRole="venue" />} />
+        <Route path="/directory" element={<Navigate to="/browse" replace />} />
+        <Route path="/venues" element={<Navigate to="/browse" replace />} />
         <Route path="/trending" element={<TrendingPage />} />
         <Route path="/p/:slug" element={<PublicProfilePage />} />
         <Route path="/presale/:bookingId" element={<PresalePage />} />
