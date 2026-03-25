@@ -145,9 +145,7 @@ export default function ComingSoonPage() {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="mb-16"
         >
-          <span className="font-syne text-2xl font-bold tracking-tight text-white">
-            Get<span className="text-[hsl(var(--primary))]">Booked</span>.live
-          </span>
+          <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663474163600/CNVjdejEzeGWRZMX.webp" alt="GetBooked" className="h-12 w-auto" />
         </motion.div>
 
         {/* Headline */}
