@@ -11,6 +11,7 @@ import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import SignContractDialog from "@/components/SignContractDialog";
 import NegotiationThread from "@/components/NegotiationThread";
 import RecommendedArtists from "@/components/RecommendedArtists";
+import AIRecommendationPanel from "@/components/AIRecommendationPanel";
 import AttendanceReportDialog from "@/components/AttendanceReportDialog";
 import InsuranceOfferCard from "@/components/InsuranceOfferCard";
 import FinancingOption from "@/components/FinancingOption";
@@ -230,11 +231,14 @@ export default function PromoterDashboard() {
 
               {activeView === "discover" && (
                 <>
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">discover talent</h2>
-                    <Link to="/directory"><Button variant="ghost" size="sm" className="text-[11px] lowercase h-7 text-muted-foreground hover:text-foreground"><Plus className="w-3 h-3 mr-1" /> directory</Button></Link>
+                  <AIRecommendationPanel />
+                  <div className="border-t border-white/[0.06] pt-4 mt-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">browse directory</h2>
+                      <Link to="/directory"><Button variant="ghost" size="sm" className="text-[11px] lowercase h-7 text-muted-foreground hover:text-foreground"><Plus className="w-3 h-3 mr-1" /> full directory</Button></Link>
+                    </div>
+                    <RecommendedArtists />
                   </div>
-                  <RecommendedArtists />
                 </>
               )}
 
