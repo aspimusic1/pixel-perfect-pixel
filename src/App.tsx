@@ -11,6 +11,9 @@ import Navbar from "@/components/Navbar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import InstallBanner from "@/components/InstallBanner";
 
+// ── COMING SOON ──
+const ComingSoonPage = lazy(() => import("@/pages/ComingSoonPage"));
+
 // ── PUBLIC PAGES ──
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const AuthPage = lazy(() => import("@/pages/AuthPage"));
