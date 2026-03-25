@@ -89,9 +89,9 @@ export default function BrowsePage() {
     }
 
     // Fetch directory listings (unclaimed profiles from spreadsheet data)
-    let dirQuery = supabase
-      .from("directory_listings")
-      .select("id, name, avatar_url, genres, city, state, listing_type, slug, bio, bookscore, tier, fee_min, fee_max, is_claimed")
+    let dirQuery = (supabase
+      .from("directory_listings" as any)
+      .select("id, name, avatar_url, genres, city, state, listing_type, slug, bio, bookscore, tier, fee_min, fee_max, is_claimed") as any)
       .eq("is_claimed", false)
       .order("bookscore", { ascending: false })
       .limit(200);
@@ -149,9 +149,11 @@ export default function BrowsePage() {
       return;
     }
     setClaimingId(profile.id);
+    // Determine which underlying table to update based on listing type
+    const table = profile.listing_type === "venue" ? "venue_listings" : "artist_listings";
     const { error } = await supabase
-      .from("directory_listings")
-      .update({ is_claimed: true, claimed_by: session.user.id })
+      .from(table)
+      .update({ claim_status: "approved", claimed_by: session.user.id })
       .eq("id", profile.id);
 
     if (error) {

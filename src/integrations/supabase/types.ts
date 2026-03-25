@@ -1871,6 +1871,26 @@ export type Database = {
       }
     }
     Views: {
+      directory_listings: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          bookscore: number | null
+          city: string | null
+          claimed_by: string | null
+          fee_max: number | null
+          fee_min: number | null
+          genres: string[] | null
+          id: string | null
+          is_claimed: boolean | null
+          listing_type: string | null
+          name: string | null
+          slug: string | null
+          state: string | null
+          tier: string | null
+        }
+        Relationships: []
+      }
       public_profiles: {
         Row: {
           apple_music: string | null
