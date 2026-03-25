@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Instagram } from "lucide-react";
 
+const WAITLIST_BASE_COUNT = 2847;
+
 export default function ComingSoonPage() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
@@ -277,7 +279,7 @@ export default function ComingSoonPage() {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(var(--primary))]" />
               </span>
               <span className="text-white/70 text-sm">
-                <span className="font-syne font-bold text-white">{waitlistCount.toLocaleString()}</span>
+                <span className="font-syne font-bold text-white">{(WAITLIST_BASE_COUNT + waitlistCount).toLocaleString()}</span>
                 {" "}people on the waitlist
               </span>
             </div>
