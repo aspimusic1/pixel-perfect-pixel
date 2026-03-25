@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action_type: string
+          actor_id: string | null
+          actor_type: string
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          metadata: Json | null
+        }
+        Insert: {
+          action_type: string
+          actor_id?: string | null
+          actor_type?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          metadata?: Json | null
+        }
+        Update: {
+          action_type?: string
+          actor_id?: string | null
+          actor_type?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json | null
+        }
+        Relationships: []
+      }
       advance_requests: {
         Row: {
           amount_requested: number
@@ -69,6 +102,90 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ai_recommendations: {
+        Row: {
+          booking_request_id: string | null
+          confidence_score: number | null
+          created_at: string
+          id: string
+          rank_order: number | null
+          recommendation_reason: string | null
+          recommended_artist_id: string
+          requesting_user_id: string | null
+          status: string
+          suggested_price: number | null
+        }
+        Insert: {
+          booking_request_id?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          rank_order?: number | null
+          recommendation_reason?: string | null
+          recommended_artist_id: string
+          requesting_user_id?: string | null
+          status?: string
+          suggested_price?: number | null
+        }
+        Update: {
+          booking_request_id?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          rank_order?: number | null
+          recommendation_reason?: string | null
+          recommended_artist_id?: string
+          requesting_user_id?: string | null
+          status?: string
+          suggested_price?: number | null
+        }
+        Relationships: []
+      }
+      ai_tasks: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          input_payload: Json | null
+          output_payload: Json | null
+          provider: string
+          related_entity_id: string
+          related_entity_type: string
+          status: string
+          task_type: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          input_payload?: Json | null
+          output_payload?: Json | null
+          provider?: string
+          related_entity_id: string
+          related_entity_type: string
+          status?: string
+          task_type: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          input_payload?: Json | null
+          output_payload?: Json | null
+          provider?: string
+          related_entity_id?: string
+          related_entity_type?: string
+          status?: string
+          task_type?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       artist_availability: {
         Row: {

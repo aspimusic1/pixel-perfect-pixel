@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, LayoutDashboard, Users, Send, CalendarCheck, Map, DollarSign, Shield, Settings, CreditCard, TrendingUp } from "lucide-react";
+import { Loader2, LayoutDashboard, Users, Send, CalendarCheck, Map, DollarSign, Shield, Settings, CreditCard, TrendingUp, Sparkles } from "lucide-react";
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminOffers from "@/components/admin/AdminOffers";
@@ -13,6 +13,7 @@ import AdminBilling from "@/components/admin/AdminBilling";
 import AdminGrowth from "@/components/admin/AdminGrowth";
 import AdminModeration from "@/components/admin/AdminModeration";
 import AdminSettings from "@/components/admin/AdminSettings";
+import AdminAIMonitor from "@/components/admin/AdminAIMonitor";
 
 const NAV_ITEMS = [
   { key: "overview", label: "overview", icon: LayoutDashboard },
@@ -21,6 +22,7 @@ const NAV_ITEMS = [
   { key: "bookings", label: "bookings", icon: CalendarCheck },
   { key: "tours", label: "tours", icon: Map },
   { key: "revenue", label: "revenue", icon: DollarSign },
+  { key: "ai", label: "ai monitor", icon: Sparkles },
   { key: "billing", label: "billing", icon: CreditCard },
   { key: "growth", label: "growth", icon: TrendingUp },
   { key: "moderation", label: "moderation", icon: Shield },
@@ -90,6 +92,7 @@ export default function AdminDashboard() {
         {activeView === "bookings" && <AdminBookings />}
         {activeView === "tours" && <AdminTours />}
         {activeView === "revenue" && <AdminRevenue />}
+        {activeView === "ai" && <AdminAIMonitor />}
         {activeView === "billing" && <AdminBilling />}
         {activeView === "growth" && <AdminGrowth />}
         {activeView === "moderation" && <AdminModeration />}
