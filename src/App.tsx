@@ -121,22 +121,37 @@ function AnimatedRoutes() {
   );
 }
 
+function AppLayout() {
+  const location = useLocation();
+  const isComingSoon = location.pathname === "/";
+
+  return (
+    <>
+      {!isComingSoon && (
+        <>
+          <a href="#main-content" className="skip-to-main">Skip to main content</a>
+          <Navbar />
+        </>
+      )}
+      <main id="main-content" className={isComingSoon ? "" : "overflow-x-hidden"}>
+        <Suspense fallback={<RouteLoadingFallback />}>
+          <AnimatedRoutes />
+        </Suspense>
+      </main>
+      {!isComingSoon && <InstallBanner />}
+      <Toaster />
+      <Sonner />
+      <HotToaster position="bottom-right" toastOptions={{ duration: 3500, style: { background: '#0E1420', color: '#F0F2F7', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '13px' }, success: { iconTheme: { primary: '#C8FF3E', secondary: '#080C14' } } }} containerStyle={{}} />
+    </>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <BrowserRouter>
         <AuthProvider>
-          <a href="#main-content" className="skip-to-main">Skip to main content</a>
-          <Navbar />
-          <main id="main-content" className="overflow-x-hidden">
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <AnimatedRoutes />
-            </Suspense>
-          </main>
-          <InstallBanner />
-          <Toaster />
-          <Sonner />
-          <HotToaster position="bottom-right" toastOptions={{ duration: 3500, style: { background: '#0E1420', color: '#F0F2F7', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '13px' }, success: { iconTheme: { primary: '#C8FF3E', secondary: '#080C14' } } }} containerStyle={{}} />
+          <AppLayout />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
