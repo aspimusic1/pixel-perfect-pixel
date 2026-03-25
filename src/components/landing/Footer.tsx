@@ -3,16 +3,15 @@ import logoColor from "@/assets/logo-color.png";
 import { useTranslation } from "react-i18next";
 
 const QUICK_MENU = [
-  { label: "Browse", to: "/" },
-  { label: "Directory", to: "/directory" },
+  { label: "Browse", to: "/browse" },
+  { label: "For Artists", to: "/artists" },
+  { label: "For Promoters", to: "/promoters" },
   { label: "Pricing", to: "/pricing" },
-  { label: "For Artists", to: "/auth?tab=signup" },
-  { label: "For Promoters", to: "/auth?tab=signup" },
 ];
 
 const INFO = [
-  { label: "Contact", to: "/pricing" },
-  { label: "Privacy Policy", to: "/" },
+  { label: "Contact", to: "/contact" },
+  { label: "Privacy Policy", to: "/privacy" },
   { label: "Terms", to: "/" },
   { label: "Blog", to: "/" },
   { label: "Sign in", to: "/auth" },

@@ -24,6 +24,11 @@ const PublicProfilePage = lazy(() => import("@/pages/PublicProfilePage"));
 const PresalePage = lazy(() => import("@/pages/PresalePage"));
 const DemoDashboardPage = lazy(() => import("@/pages/DemoDashboardPage"));
 const TrendingPage = lazy(() => import("@/pages/TrendingPage"));
+const BrowsePage = lazy(() => import("@/pages/BrowsePage"));
+const ForArtistsPage = lazy(() => import("@/pages/ForArtistsPage"));
+const ForPromotersPage = lazy(() => import("@/pages/ForPromotersPage"));
+const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
+const ContactPage = lazy(() => import("@/pages/ContactPage"));
 
 // ── PROTECTED PAGES ──
 const WelcomePage = lazy(() => import("@/pages/WelcomePage"));
@@ -84,6 +89,11 @@ function AnimatedRoutes() {
         <Route path="/app" element={<HomePage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/browse" element={<BrowsePage />} />
+        <Route path="/artists" element={<ForArtistsPage />} />
+        <Route path="/promoters" element={<ForPromotersPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/directory" element={<DirectoryPage />} />
         <Route path="/venues" element={<DirectoryPage initialRole="venue" />} />

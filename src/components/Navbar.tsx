@@ -31,10 +31,10 @@ const LANGS = [
 type NavItem = { label: string; to: string; icon?: React.ReactNode };
 
 const LOGGED_OUT_LINKS: NavItem[] = [
-  { label: "Browse", to: "/directory" },
+  { label: "Browse", to: "/browse" },
   { label: "Pricing", to: "/pricing" },
-  { label: "For Artists", to: "/pricing?role=artist" },
-  { label: "For Promoters", to: "/pricing?role=promoter" },
+  { label: "For Artists", to: "/artists" },
+  { label: "For Promoters", to: "/promoters" },
 ];
 
 const ARTIST_LINKS: NavItem[] = [
