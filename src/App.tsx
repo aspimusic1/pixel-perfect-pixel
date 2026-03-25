@@ -77,8 +77,11 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* ── PUBLIC ROUTES ── */}
-        <Route path="/" element={<HomePage />} />
+        {/* ── COMING SOON (public landing) ── */}
+        <Route path="/" element={<ComingSoonPage />} />
+
+        {/* ── FULL APP (hidden behind /app) ── */}
+        <Route path="/app" element={<HomePage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
