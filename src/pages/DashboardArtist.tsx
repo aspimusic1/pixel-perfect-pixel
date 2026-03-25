@@ -30,6 +30,7 @@ import PresaleSection from "@/components/PresaleSection";
 import PlatformConnectionCards from "@/components/PlatformConnectionCards";
 import OfferScoreCard from "@/components/OfferScoreCard";
 import EmptyState from "@/components/EmptyState";
+import ThreadSummary from "@/components/ThreadSummary";
 
 type ArtistView = "overview" | "offers" | "events" | "analytics" | "bookkeeping" | "agent" | "profile";
 
