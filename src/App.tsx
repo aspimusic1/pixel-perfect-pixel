@@ -13,6 +13,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import InstallBanner from "@/components/InstallBanner";
 import AuthPage from "@/pages/AuthPage";
 import ComingSoonPage from "@/pages/ComingSoonPage";
+import AdminPage from "@/pages/AdminPage";
 
 // ── PUBLIC PAGES ──
 const HomePage = lazy(() => import("@/pages/HomePage"));
@@ -47,7 +48,6 @@ const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const ReviewPage = lazy(() => import("@/pages/ReviewPage"));
 
 // ── ADMIN PAGES ──
-const AdminPage = lazy(() => import("@/pages/AdminPage"));
 const AdminClaimsPage = lazy(() => import("@/pages/AdminClaimsPage"));
 
 // ── CATCH-ALL ──
