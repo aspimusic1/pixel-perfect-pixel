@@ -77,23 +77,19 @@ export default function ComingSoonPage() {
     };
   }, []);
 
-  // Fetch waitlist count
+   // Fetch waitlist count via security-definer RPC (no direct table SELECT needed)
   useEffect(() => {
     const fetchCount = async () => {
-      const { count } = await supabase
-        .from("waitlist")
-        .select("id", { count: "exact", head: true });
-      if (count !== null) setWaitlistCount(count);
+      const { data, error } = await supabase.rpc("get_waitlist_count");
+      if (!error && data !== null) setWaitlistCount(data as number);
     };
     fetchCount();
-
     const channel = supabase
       .channel("waitlist-count")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "waitlist" }, () => {
         fetchCount();
       })
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   }, []);
 
