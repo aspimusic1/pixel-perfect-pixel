@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarIcon, ArrowLeft, ArrowRight, Check, DollarSign, Music, MapPin, Clock, Globe } from "lucide-react";
+import { CalendarIcon, ArrowLeft, ArrowRight, Check, DollarSign, Music, MapPin, Clock, Globe, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import OfferIntelligence from "@/components/OfferIntelligence";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -46,7 +46,7 @@ const FX_TO_USD: Record<string, number> = {
 };
 
 export default function OfferFlow() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const preselectedArtist = searchParams.get("artist");
@@ -423,6 +423,29 @@ export default function OfferFlow() {
                     <div className="flex justify-between text-sm">
                       <span className="font-semibold">Artist payout</span>
                       <span className="font-bold text-primary">{currencyInfo.symbol}{artistPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Commission upgrade warning for Free tier users on $1,000+ offers */}
+                {guaranteeUsd >= 1000 && commissionRate >= 0.20 && profile?.subscription_plan === "free" && (
+                  <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/5 p-4">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-semibold text-yellow-500 mb-1">
+                          You're about to pay ${(guaranteeUsd * 0.20).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} in commission
+                        </p>
+                        <p className="text-xs text-muted-foreground mb-3">
+                          Upgrade to <span className="text-primary font-semibold">Pro Yearly ($276/year)</span> and pay only ${(guaranteeUsd * 0.10).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} on this booking. That's a <span className="text-primary font-semibold">${(guaranteeUsd * 0.10).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} savings</span> — the upgrade pays for itself in one deal.
+                        </p>
+                        <Link
+                          to="/pricing"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary/80 transition-colors"
+                        >
+                          Upgrade to Pro <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 )}

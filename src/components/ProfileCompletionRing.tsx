@@ -119,7 +119,7 @@ export default function ProfileCompletionRing() {
       )}
 
       <button
-        onClick={() => navigate("/setup")}
+        onClick={() => navigate("/profile-setup")}
         className="w-full inline-flex items-center justify-center h-10 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-[0.97]"
         style={{ backgroundColor: ACCENT, color: "#080C14" }}
       >

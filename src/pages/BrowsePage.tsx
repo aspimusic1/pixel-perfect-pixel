@@ -6,7 +6,7 @@ import PageTransition from "@/components/PageTransition";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Music, User, Star, CheckCircle2, Zap } from "lucide-react";
+import { Search, MapPin, Music, User, Star, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type ProfileCard = {
@@ -214,16 +214,12 @@ export default function BrowsePage() {
             </div>
           </div>
 
-          {/* Stats bar */}
+          {/* Stats bar — only show unclaimed count to encourage claiming */}
           {!loading && filtered.length > 0 && (
             <div className="flex items-center gap-6 mb-6 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" />
-                {profiles.filter(p => p.is_claimed).length} claimed profiles
-              </span>
-              <span className="flex items-center gap-1.5">
                 <Zap className="w-3.5 h-3.5 text-primary" />
-                {profiles.filter(p => !p.is_claimed).length} unclaimed — is one yours?
+                {profiles.filter(p => !p.is_claimed).length} unclaimed profiles — is one yours?
               </span>
             </div>
           )}

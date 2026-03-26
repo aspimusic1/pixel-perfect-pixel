@@ -20,9 +20,16 @@ const ROLE_META: Record<string, { icon: any; label: string; accent: string; step
 };
 
 export default function ProfileSetup() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  // Admin users should never go through the role onboarding flow
+  useEffect(() => {
+    if (isAdmin) {
+      navigate("/admin", { replace: true });
+    }
+  }, [isAdmin, navigate]);
   const role = profile?.role ?? "artist";
   const meta = ROLE_META[role] ?? ROLE_META.artist;
   const RoleIcon = meta.icon;
@@ -100,6 +107,26 @@ export default function ProfileSetup() {
         baseUpdate.instagram = instagram || null;
         baseUpdate.spotify = spotify || null;
         baseUpdate.youtube = youtubeUrl || null;
+        baseUpdate.rate_min = rateMin ? parseFloat(rateMin) : null;
+      }
+
+      if (role === "promoter") {
+        if (companyName.trim()) baseUpdate.display_name = companyName.trim();
+        // Reuse genre field to store event types for promoters
+        if (eventTypes.trim()) baseUpdate.genre = eventTypes.trim();
+      }
+
+      if (role === "production") {
+        // Reuse genre field to store production type
+        if (productionType.trim()) baseUpdate.genre = productionType.trim();
+        baseUpdate.rate_min = rateMin ? parseFloat(rateMin) : null;
+      }
+
+      if (role === "photo_video") {
+        // Reuse genre field to store specialty
+        if (specialty.trim()) baseUpdate.genre = specialty.trim();
+        // Reuse website field to store portfolio URL
+        if (portfolioUrl.trim()) baseUpdate.website = portfolioUrl.trim();
         baseUpdate.rate_min = rateMin ? parseFloat(rateMin) : null;
       }
 
@@ -308,6 +335,10 @@ export default function ProfileSetup() {
                   <Label className="text-sm">Crew size</Label>
                   <Input value={crewSize} onChange={(e) => setCrewSize(e.target.value)} placeholder="Solo, 2-3, full crew..." className="mt-1.5 bg-background border-border" />
                 </div>
+                <div>
+                  <Label className="text-sm">Day rate (starting from $)</Label>
+                  <Input type="number" value={rateMin} onChange={(e) => setRateMin(e.target.value)} placeholder="300" className="mt-1.5 bg-background border-border" />
+                </div>
               </>
             )}
 
@@ -321,6 +352,10 @@ export default function ProfileSetup() {
                 <div>
                   <Label className="text-sm">Portfolio URL</Label>
                   <Input value={portfolioUrl} onChange={(e) => setPortfolioUrl(e.target.value)} placeholder="https://yourportfolio.com" className="mt-1.5 bg-background border-border" />
+                </div>
+                <div>
+                  <Label className="text-sm">Day rate (starting from $)</Label>
+                  <Input type="number" value={rateMin} onChange={(e) => setRateMin(e.target.value)} placeholder="200" className="mt-1.5 bg-background border-border" />
                 </div>
               </>
             )}

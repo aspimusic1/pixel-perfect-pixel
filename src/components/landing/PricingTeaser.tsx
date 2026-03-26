@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
 
 const PLANS = [
   {
@@ -41,7 +41,7 @@ const PLANS = [
     popular: false,
     features: [
       "Up to 25 artist profiles",
-      "5–7% commission",
+      "5-7% commission",
       "Team seats & permissions",
       "White-label contracts",
       "Dedicated account manager",
@@ -52,7 +52,8 @@ const PLANS = [
 ];
 
 export default function PricingTeaser() {
-  const [yearly, setYearly] = useState(false);
+  // Default to yearly to encourage annual subscriptions
+  const [yearly, setYearly] = useState(true);
 
   return (
     <section className="fade-in-section py-16 sm:py-32 px-4">
@@ -60,20 +61,14 @@ export default function PricingTeaser() {
         <div className="text-center mb-10">
           <span className="section-label">pricing</span>
           <h2 className="section-heading">simple plans.</h2>
-          <p className="section-subtext mx-auto">straightforward pricing with no hidden costs.</p>
+          <p className="section-subtext mx-auto">
+            Every new account gets a <span className="text-primary font-semibold">14-day Pro trial</span>. No credit card required.
+          </p>
         </div>
 
-        {/* Toggle */}
+        {/* Toggle — yearly shown first and selected by default */}
         <div className="flex justify-center mb-12">
-          <div className="inline-flex rounded-full border border-white/[0.08] p-1 bg-secondary/40">
-            <button
-              onClick={() => setYearly(false)}
-              className={`text-xs font-display font-bold px-5 py-2 rounded-full transition-all ${
-                !yearly ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              monthly
-            </button>
+          <div className="inline-flex items-center rounded-full border border-white/[0.08] p-1 bg-secondary/40">
             <button
               onClick={() => setYearly(true)}
               className={`text-xs font-display font-bold px-5 py-2 rounded-full transition-all ${
@@ -82,6 +77,19 @@ export default function PricingTeaser() {
             >
               yearly
             </button>
+            <button
+              onClick={() => setYearly(false)}
+              className={`text-xs font-display font-bold px-5 py-2 rounded-full transition-all ${
+                !yearly ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              monthly
+            </button>
+            {yearly && (
+              <span className="ml-2 mr-1 text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                Save 20%
+              </span>
+            )}
           </div>
         </div>
 
@@ -89,6 +97,7 @@ export default function PricingTeaser() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PLANS.map((plan, i) => {
             const price = yearly ? plan.yearlyPrice : plan.monthlyPrice;
+            const monthlySavings = plan.monthlyPrice - plan.yearlyPrice;
             return (
               <div
                 key={plan.name}
@@ -112,6 +121,11 @@ export default function PricingTeaser() {
                   </span>
                   <span className="text-[13px] text-muted-foreground font-body">{plan.unit}</span>
                 </div>
+                {yearly && monthlySavings > 0 && (
+                  <p className="text-[11px] text-primary/70 mb-1">
+                    Save ${monthlySavings * 12}/year vs monthly
+                  </p>
+                )}
 
                 <div className="border-t border-white/[0.06] my-5" />
 

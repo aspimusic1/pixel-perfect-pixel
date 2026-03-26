@@ -17,14 +17,21 @@ type Profile = {
   rate_min: number | null;
   rate_max: number | null;
   subscription_plan: string | null;
+  trial_ends_at: string | null;
   youtube: string | null;
   streaming_stats: Record<string, any> | null;
+  website: string | null;
+  instagram: string | null;
+  slug: string | null;
+  completion_score: number | null;
 };
 
 type SubscriptionInfo = {
   subscribed: boolean;
   product_id: string | null;
   subscription_end: string | null;
+  is_trial?: boolean;
+  trial_days_remaining?: number;
 };
 
 type AuthContextType = {
@@ -84,14 +91,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
+          // On SIGNED_IN (new signup), the handle_new_user trigger may still be running.
+          // Use a 600ms delay to ensure the profile row exists before fetching.
+          const delay = event === "SIGNED_IN" ? 600 : 0;
           setTimeout(() => {
             fetchProfile(session.user.id);
             checkAdminRole(session.user.id);
-          }, 0);
+          }, delay);
         } else {
           setProfile(null);
           setSubscription(null);

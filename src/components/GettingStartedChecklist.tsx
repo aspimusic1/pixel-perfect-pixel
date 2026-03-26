@@ -6,6 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import {
   CheckCircle, Circle, X, User, CalendarDays, Music2, Share2, Compass,
   Building2, Send, CreditCard, BarChart3, ChevronDown, ChevronUp,
+  Image as ImageIcon, MapPin, Wrench, Users, FolderOpen, DollarSign,
+  Camera, Link as LinkIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,9 +20,19 @@ type StepDef = {
   detectComplete: () => boolean;
 };
 
+type Variant = "artist" | "promoter" | "venue" | "production" | "photo_video";
+
 interface Props {
-  variant: "artist" | "promoter";
+  variant: Variant;
 }
+
+const ACCENT_BY_VARIANT: Record<Variant, string> = {
+  artist: "#C8FF3E",
+  promoter: "#FF5C8A",
+  venue: "#FFB83E",
+  production: "#A78BFA",
+  photo_video: "#38BDF8",
+};
 
 export default function GettingStartedChecklist({ variant }: Props) {
   const { user, profile } = useAuth();
@@ -32,9 +44,13 @@ export default function GettingStartedChecklist({ variant }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [availability, setAvailability] = useState<any[]>([]);
   const [hasOffers, setHasOffers] = useState(false);
+  const [hasVenueListing, setHasVenueListing] = useState(false);
+  const [hasVenuePhotos, setHasVenuePhotos] = useState(false);
+  const [hasVenueAvailability, setHasVenueAvailability] = useState(false);
 
   useEffect(() => {
     if (!user) return;
+
     if (variant === "artist") {
       supabase
         .from("artist_availability")
@@ -43,6 +59,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
         .limit(2)
         .then(({ data }) => setAvailability(data ?? []));
     }
+
     if (variant === "promoter") {
       supabase
         .from("offers")
@@ -50,6 +67,35 @@ export default function GettingStartedChecklist({ variant }: Props) {
         .eq("sender_id", user.id)
         .limit(1)
         .then(({ data }) => setHasOffers((data ?? []).length > 0));
+    }
+
+    if (variant === "venue") {
+      // First fetch the venue listing for this user, then check photos/availability by venue ID
+      supabase
+        .from("venue_listings")
+        .select("id")
+        .eq("claimed_by", user.id)
+        .limit(1)
+        .then(({ data }) => {
+          const hasListing = (data ?? []).length > 0;
+          setHasVenueListing(hasListing);
+          if (hasListing && data?.[0]?.id) {
+            const venueId = data[0].id;
+            // Now query photos and availability by the actual venue UUID
+            supabase
+              .from("venue_photos")
+              .select("id")
+              .eq("venue_id", venueId)
+              .limit(1)
+              .then(({ data: pd }) => setHasVenuePhotos((pd ?? []).length > 0));
+            supabase
+              .from("venue_availability")
+              .select("id")
+              .eq("venue_id", venueId)
+              .limit(1)
+              .then(({ data: ad }) => setHasVenueAvailability((ad ?? []).length > 0));
+          }
+        });
     }
   }, [user, variant]);
 
@@ -63,6 +109,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
     }
   };
 
+  // ── ARTIST STEPS ──────────────────────────────────────────────────────────
   const artistSteps: StepDef[] = [
     {
       key: "complete_profile",
@@ -112,6 +159,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
     },
   ];
 
+  // ── PROMOTER STEPS ────────────────────────────────────────────────────────
   const promoterSteps: StepDef[] = [
     {
       key: "complete_profile",
@@ -155,7 +203,156 @@ export default function GettingStartedChecklist({ variant }: Props) {
     },
   ];
 
-  const steps = variant === "artist" ? artistSteps : promoterSteps;
+  // ── VENUE STEPS ───────────────────────────────────────────────────────────
+  const venueSteps: StepDef[] = [
+    {
+      key: "complete_profile",
+      label: "Complete your venue profile",
+      description: "Add your venue name, capacity, and description",
+      icon: User,
+      action: () => navigate("/profile-setup"),
+      detectComplete: () => !!(profile?.bio && (profile.bio?.length ?? 0) > 20 && profile?.display_name),
+    },
+    {
+      key: "add_venue_details",
+      label: "Add venue details",
+      description: "Set your address, capacity, and amenities",
+      icon: MapPin,
+      action: () => navigate("/dashboard"),
+      detectComplete: () => hasVenueListing,
+    },
+    {
+      key: "upload_photos",
+      label: "Upload venue photos",
+      description: "Show artists what your space looks like",
+      icon: ImageIcon,
+      action: () => navigate("/dashboard"),
+      detectComplete: () => hasVenuePhotos,
+    },
+    {
+      key: "set_availability",
+      label: "Set your availability calendar",
+      description: "Let artists know when you're open to bookings",
+      icon: CalendarDays,
+      action: () => navigate("/dashboard"),
+      detectComplete: () => hasVenueAvailability,
+    },
+    {
+      key: "share_link",
+      label: "Share your venue profile",
+      description: "Copy your venue link to promote it",
+      icon: Share2,
+      action: () => {
+        copySmartLink();
+        if (user) localStorage.setItem(`getbooked_shared_${user.id}`, "true");
+      },
+      detectComplete: () => !!user && localStorage.getItem(`getbooked_shared_${user.id}`) === "true",
+    },
+  ];
+
+  // ── PRODUCTION STEPS ──────────────────────────────────────────────────────
+  const productionSteps: StepDef[] = [
+    {
+      key: "complete_profile",
+      label: "Complete your production profile",
+      description: "Add your specialty, bio, and experience",
+      icon: User,
+      action: () => navigate("/profile-setup"),
+      detectComplete: () => !!(profile?.bio && (profile.bio?.length ?? 0) > 20 && profile?.display_name),
+    },
+    {
+      key: "set_rates",
+      label: "Set your day rates",
+      description: "Add your minimum day rate",
+      icon: DollarSign,
+      action: () => navigate("/profile-setup"),
+      detectComplete: () => !!(profile?.rate_min),
+    },
+    {
+      key: "set_availability",
+      label: "Set your availability",
+      description: "Let tours know when you're available",
+      icon: CalendarDays,
+      action: () => navigate("/dashboard"),
+      detectComplete: () => false,
+    },
+    {
+      key: "add_crew",
+      label: "Add your crew members",
+      description: "Build out your team for larger gigs",
+      icon: Users,
+      action: () => navigate("/dashboard"),
+      detectComplete: () => false,
+    },
+    {
+      key: "share_link",
+      label: "Share your production profile",
+      description: "Copy your profile link to attract work",
+      icon: Share2,
+      action: () => {
+        copySmartLink();
+        if (user) localStorage.setItem(`getbooked_shared_${user.id}`, "true");
+      },
+      detectComplete: () => !!user && localStorage.getItem(`getbooked_shared_${user.id}`) === "true",
+    },
+  ];
+
+  // ── CREATIVE (PHOTO/VIDEO) STEPS ──────────────────────────────────────────
+  const creativeSteps: StepDef[] = [
+    {
+      key: "complete_profile",
+      label: "Complete your creative profile",
+      description: "Add your specialty, bio, and location",
+      icon: User,
+      action: () => navigate("/profile-setup"),
+      detectComplete: () => !!(profile?.bio && (profile.bio?.length ?? 0) > 20 && profile?.display_name),
+    },
+    {
+      key: "upload_reel",
+      label: "Upload your reel or portfolio",
+      description: "Showcase your best work to get booked",
+      icon: FolderOpen,
+      action: () => navigate("/dashboard"),
+      detectComplete: () => false,
+    },
+    {
+      key: "set_rates",
+      label: "Set your rates",
+      description: "Add your day rate and project pricing",
+      icon: DollarSign,
+      action: () => navigate("/profile-setup"),
+      detectComplete: () => !!(profile?.rate_min),
+    },
+    {
+      key: "add_portfolio_url",
+      label: "Link your external portfolio",
+      description: "Add a link to your website or portfolio",
+      icon: LinkIcon,
+      action: () => navigate("/profile-setup"),
+      detectComplete: () => !!(profile as any)?.website,
+    },
+    {
+      key: "share_link",
+      label: "Share your creative profile",
+      description: "Copy your profile link to attract clients",
+      icon: Camera,
+      action: () => {
+        copySmartLink();
+        if (user) localStorage.setItem(`getbooked_shared_${user.id}`, "true");
+      },
+      detectComplete: () => !!user && localStorage.getItem(`getbooked_shared_${user.id}`) === "true",
+    },
+  ];
+
+  const STEP_MAP: Record<Variant, StepDef[]> = {
+    artist: artistSteps,
+    promoter: promoterSteps,
+    venue: venueSteps,
+    production: productionSteps,
+    photo_video: creativeSteps,
+  };
+
+  const steps = STEP_MAP[variant] ?? artistSteps;
 
   // Check onboarding_steps from profile for manually marked items
   const manualSteps = ((profile as any)?.onboarding_steps as Record<string, boolean>) || {};
@@ -174,7 +371,7 @@ export default function GettingStartedChecklist({ variant }: Props) {
       .eq("user_id", user.id);
   };
 
-  const ACCENT = variant === "artist" ? "#C8FF3E" : "#FF5C8A";
+  const ACCENT = ACCENT_BY_VARIANT[variant] ?? "#C8FF3E";
 
   // If all done, show collapsed badge
   if (allDone) {

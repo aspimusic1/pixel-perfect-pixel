@@ -39,12 +39,17 @@ export default function Welcome() {
   const { user, profile, refreshProfile, isAdmin } = useAuth();
   const navigate = useNavigate();
 
-  // If already seen welcome, redirect
+  // Admin users should never land on the welcome/onboarding screen
   useEffect(() => {
+    if (isAdmin) {
+      navigate("/admin", { replace: true });
+      return;
+    }
+    // If already seen welcome, skip straight to profile setup
     if (profile && (profile as any).seen_welcome) {
       navigate("/profile-setup", { replace: true });
     }
-  }, [profile, navigate]);
+  }, [profile, isAdmin, navigate]);
 
   const role = profile?.role || "artist";
   const copy = ROLE_COPY[role] || ROLE_COPY.artist;

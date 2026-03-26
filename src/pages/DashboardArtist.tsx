@@ -32,6 +32,7 @@ import PlatformConnectionCards from "@/components/PlatformConnectionCards";
 import OfferScoreCard from "@/components/OfferScoreCard";
 import EmptyState from "@/components/EmptyState";
 import ThreadSummary from "@/components/ThreadSummary";
+import TrialBanner from "@/components/TrialBanner";
 
 type ArtistView = "overview" | "offers" | "events" | "analytics" | "bookkeeping" | "agent" | "profile";
 
@@ -335,6 +336,7 @@ export default function ArtistDashboard() {
                     </div>
                   ) : (
                     <>
+                   <TrialBanner />
                    <ProfileCompletionRing />
                    <GettingStartedChecklist variant="artist" />
 

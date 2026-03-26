@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Check, ArrowRight, Loader2, Settings } from "lucide-react";
+import { Check, ArrowRight, Loader2, Settings, Clock, Zap, TrendingDown, ShieldCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,11 +9,13 @@ import { toast } from "sonner";
 
 const STRIPE_TIERS = {
   pro: {
-    price_id: "price_1TDYpGRdIALML9YuWtcG1UCG",
+    monthly_price_id: "price_1TDYpGRdIALML9YuWtcG1UCG",
+    yearly_price_id: "price_1TDYpGRdIALML9YuWtcG1UCG", // TODO: replace with actual yearly Stripe price ID when created
     product_id: "prod_UBwiBhPDnrEdUZ",
   },
   business: {
-    price_id: "price_1TDYpZRdIALML9YuPIs1CHiA",
+    monthly_price_id: "price_1TDYpZRdIALML9YuPIs1CHiA",
+    yearly_price_id: "price_1TDYpZRdIALML9YuPIs1CHiA", // TODO: replace with actual yearly Stripe price ID when created
     product_id: "prod_UBwjw5DHeMV0yo",
   },
 };
@@ -38,7 +40,7 @@ const PLANS = [
     unit: "/month",
     desc: "For working artists and active promoters.",
     commission: "10%",
-    features: ["Unlimited offers", "10% commission on bookings", "Verified badge", "Deal rooms & contracts", "Income smoothing", "Priority support"],
+    features: ["14-day free trial — no card required", "Unlimited offers", "10% commission on bookings", "Verified badge", "Deal rooms & contracts", "Income smoothing", "Priority support"],
     cta: "Start free trial",
     highlight: true,
     tier: "pro" as const,
@@ -49,8 +51,8 @@ const PLANS = [
     yearlyPrice: 79,
     unit: "/month",
     desc: "For agencies, venues, and power users.",
-    commission: "5–7%",
-    features: ["Up to 25 artist profiles", "5–7% commission", "Team seats & permissions", "White-label contracts", "Dedicated account manager", "API access"],
+    commission: "5-7%",
+    features: ["Up to 25 artist profiles", "5-7% commission", "Team seats & permissions", "White-label contracts", "Dedicated account manager", "API access"],
     cta: "Contact us",
     highlight: false,
     tier: "business" as const,
@@ -63,7 +65,11 @@ export default function Pricing() {
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [yearly, setYearly] = useState(false);
+  // Default to yearly (aggressive yearly push)
+  const [yearly, setYearly] = useState(true);
+
+  const isTrial = subscription?.is_trial === true;
+  const trialDaysLeft = subscription?.trial_days_remaining ?? 0;
 
   useEffect(() => {
     if (!user) return;
@@ -105,8 +111,11 @@ export default function Pricing() {
 
     setLoadingTier(tier);
     try {
+      const priceId = yearly
+        ? STRIPE_TIERS[tier].yearly_price_id
+        : STRIPE_TIERS[tier].monthly_price_id;
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: STRIPE_TIERS[tier].price_id },
+        body: { priceId },
       });
       if (error) throw error;
       if (data?.url) {
@@ -138,19 +147,19 @@ export default function Pricing() {
     <div ref={ref} className="min-h-screen pt-24 px-4 pb-16">
       <SEO
         title="Pricing — GetBooked.Live | Free, Pro & Agency Plans"
-        description="Start free. Pro plan at $29/month cuts your commission from 20% to 10%. One booking pays for itself."
-        canonical="https://getbookedlive.lovable.app/pricing"
+        description="Start free with a 14-day Pro trial. Pro plan at $23/month (yearly) cuts your commission from 20% to 10%. One booking pays for itself."
+        canonical="https://www.getbooked.live/pricing"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebPage",
           name: "GetBooked.Live Pricing",
-          description: "Start free. Pro plan at $29/month cuts your commission from 20% to 10%.",
-          url: "https://getbookedlive.lovable.app/pricing",
+          description: "Start free with a 14-day Pro trial. Pro plan at $23/month (yearly) cuts your commission from 20% to 10%.",
+          url: "https://www.getbooked.live/pricing",
           mainEntity: {
             "@type": "PriceSpecification",
             priceCurrency: "USD",
-            price: "29.00",
-            description: "Pro plan — 10% commission, unlimited offers, verified badge",
+            price: "23.00",
+            description: "Pro plan (yearly) — 10% commission, unlimited offers, verified badge",
           },
         }}
       />
@@ -159,21 +168,30 @@ export default function Pricing() {
           <span className="section-label">pricing</span>
           <h1 data-reveal className="opacity-0 section-heading">simple, transparent pricing</h1>
           <p data-reveal className="opacity-0 section-subtext mx-auto" style={{ animationDelay: "80ms" }}>
-            Straightforward pricing with no hidden costs.
+            Every new account starts with a <span className="text-primary font-semibold">14-day Pro trial</span>. No credit card required.
           </p>
         </div>
 
-        {/* Yearly/Monthly toggle */}
+        {/* Trial banner */}
+        {isTrial && trialDaysLeft > 0 && (
+          <div data-reveal className="opacity-0 mb-8 flex justify-center">
+            <div className="px-5 py-3 rounded-xl bg-primary/10 border border-primary/20 text-center flex items-center gap-3">
+              <Clock className="w-4 h-4 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-primary font-syne font-bold text-sm">
+                  {trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""} left on your Pro trial
+                </p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">
+                  Subscribe now to keep Pro features and 10% commission after your trial ends.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Yearly/Monthly toggle — Yearly shown first and selected by default */}
         <div className="flex justify-center mb-12">
-          <div className="inline-flex rounded-full border border-white/[0.08] p-1 bg-secondary/40">
-            <button
-              onClick={() => setYearly(false)}
-              className={`text-xs font-display font-bold px-5 py-2 rounded-full transition-all ${
-                !yearly ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              monthly
-            </button>
+          <div className="inline-flex items-center rounded-full border border-white/[0.08] p-1 bg-secondary/40">
             <button
               onClick={() => setYearly(true)}
               className={`text-xs font-display font-bold px-5 py-2 rounded-full transition-all ${
@@ -182,19 +200,32 @@ export default function Pricing() {
             >
               yearly
             </button>
+            <button
+              onClick={() => setYearly(false)}
+              className={`text-xs font-display font-bold px-5 py-2 rounded-full transition-all ${
+                !yearly ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              monthly
+            </button>
+            {yearly && (
+              <span className="ml-2 mr-1 text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                Save 20%
+              </span>
+            )}
           </div>
         </div>
 
         {isAdmin && (
           <div data-reveal className="opacity-0 mb-8 flex justify-center">
             <div className="px-5 py-3 rounded-xl bg-primary/10 border border-primary/20 text-center">
-              <p className="text-primary font-syne font-bold text-sm">🛡️ admin — all access</p>
+              <p className="text-primary font-syne font-bold text-sm">admin — all access</p>
               <p className="text-[10px] text-muted-foreground mt-1">you have full platform access as an administrator</p>
             </div>
           </div>
         )}
 
-        {subscription?.subscribed && (
+        {subscription?.subscribed && !isTrial && (
           <div data-reveal className="opacity-0 mb-8 flex justify-center">
             <Button
               variant="outline"
@@ -210,9 +241,11 @@ export default function Pricing() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {PLANS.map((plan, i) => {
-            const isCurrentPlan = currentPlan === plan.tier;
+            const isCurrentPlan = !isTrial && currentPlan === plan.tier;
+            const isTrialPro = isTrial && plan.tier === "pro";
             const isLoading = loadingTier === plan.tier;
             const price = yearly ? plan.yearlyPrice : plan.monthlyPrice;
+            const monthlySavings = plan.monthlyPrice - plan.yearlyPrice;
 
             return (
               <div
@@ -222,13 +255,18 @@ export default function Pricing() {
                   plan.highlight
                     ? "bg-primary/[0.04] border-primary/[0.35]"
                     : "bg-card border-border hover:border-border/80"
-                } ${isCurrentPlan ? "ring-2 ring-primary/50" : ""}`}
+                } ${isCurrentPlan ? "ring-2 ring-primary/50" : ""} ${isTrialPro ? "ring-2 ring-[#3EFFBE]/50" : ""}`}
                 style={{ animationDelay: `${i * 100}ms` }}
               >
                 {isCurrentPlan && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#3EFFBE] text-[#080C14] text-[10px] font-display font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full">Your Plan</span>
                 )}
-                {plan.highlight && !isCurrentPlan && (
+                {isTrialPro && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#3EFFBE] text-[#080C14] text-[10px] font-display font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full">
+                    Trial — {trialDaysLeft}d left
+                  </span>
+                )}
+                {plan.highlight && !isCurrentPlan && !isTrialPro && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-display font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full">popular</span>
                 )}
 
@@ -239,6 +277,11 @@ export default function Pricing() {
                   </span>
                   <span className="text-[13px] text-muted-foreground font-body">{plan.unit}</span>
                 </div>
+                {yearly && monthlySavings > 0 && (
+                  <p className="text-[11px] text-primary/70 mb-1">
+                    Save ${monthlySavings * 12}/year vs monthly
+                  </p>
+                )}
                 <p className="text-sm text-muted-foreground mb-6">
                   Commission: <span className="text-primary font-semibold">{plan.commission}</span>
                 </p>
@@ -268,6 +311,8 @@ export default function Pricing() {
                       <Loader2 className="w-4 h-4 mx-auto animate-spin" />
                     ) : isCurrentPlan ? (
                       "Current plan"
+                    ) : isTrialPro ? (
+                      "Subscribe to keep Pro"
                     ) : (
                       plan.cta
                     )}
@@ -286,6 +331,61 @@ export default function Pricing() {
             );
           })}
         </div>
+
+        {/* How the 14-day trial works */}
+        {!user && (
+          <div data-reveal className="opacity-0 mt-14 mb-2">
+            <div className="rounded-2xl border border-primary/20 bg-primary/[0.03] p-8">
+              <div className="text-center mb-8">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-display font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full mb-3">
+                  <Zap className="w-3 h-3" /> how the trial works
+                </span>
+                <h2 className="font-display font-bold text-xl text-foreground">Pro free for 14 days. No card required.</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: Zap,
+                    step: "1",
+                    title: "Sign up — get Pro instantly",
+                    desc: "Create your account and your 14-day Pro trial starts immediately. No credit card, no commitment.",
+                  },
+                  {
+                    icon: ShieldCheck,
+                    step: "2",
+                    title: "Use every Pro feature",
+                    desc: "Deal Rooms, standard contracts, 10% commission, verified badge — everything unlocked for 14 days.",
+                  },
+                  {
+                    icon: TrendingDown,
+                    step: "3",
+                    title: "Stay free or subscribe",
+                    desc: "After 14 days you drop to the Free tier automatically. No surprise charges. Upgrade any time.",
+                  },
+                ].map((item) => (
+                  <div key={item.step} className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                      <span className="text-[11px] font-display font-bold text-primary">{item.step}</span>
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-display font-bold text-foreground mb-1">{item.title}</p>
+                      <p className="text-[11px] text-muted-foreground font-body leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-8 text-center">
+                <Link to="/auth?tab=signup">
+                  <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-display font-bold transition-all active:scale-[0.97] hover:bg-primary/90">
+                    Start your free trial
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
+                <p className="text-[10px] text-muted-foreground mt-2">No credit card required · Cancel anytime</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Trust signals */}
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-3">
