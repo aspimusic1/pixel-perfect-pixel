@@ -6,7 +6,7 @@ import PageTransition from "@/components/PageTransition";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Music, User, Star, Zap } from "lucide-react";
+import { Search, MapPin, Music, User, Star, Zap, ChevronDown, ChevronUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type ProfileCard = {
@@ -54,6 +54,8 @@ export default function BrowsePage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [claimingId, setClaimingId] = useState<string | null>(null);
+  // Track which card is expanded — Unclaimed badge + Claim button only show when expanded
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -168,6 +170,10 @@ export default function BrowsePage() {
     setClaimingId(null);
   }
 
+  function toggleExpand(id: string) {
+    setExpandedId((prev) => (prev === id ? null : id));
+  }
+
   return (
     <PageTransition>
       <SEO
@@ -239,114 +245,132 @@ export default function BrowsePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filtered.map((p) => (
-                <div
-                  key={p.id}
-                  className={`group rounded-xl bg-card border transition-colors relative overflow-hidden ${
-                    p.is_claimed
-                      ? "border-white/[0.06] hover:border-primary/30"
-                      : "border-dashed border-white/[0.10] hover:border-primary/40"
-                  }`}
-                >
-                  {!p.is_claimed && (
-                    <div className="absolute top-3 right-3 z-10">
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30">
-                        Unclaimed
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="p-5">
-                    <div className="flex items-start gap-3">
-                      {p.avatar_url ? (
-                        <img
-                          src={p.avatar_url}
-                          alt={p.display_name || "Profile"}
-                          className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                          loading="lazy"
-                          width={48}
-                          height={48}
-                        />
-                      ) : (
-                        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-foreground font-bold text-lg flex-shrink-0">
-                          {(p.display_name || "?")[0]?.toUpperCase()}
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0 pr-8">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-syne font-semibold text-foreground truncate">
-                            {p.display_name || "Unnamed"}
-                          </h3>
-                          {p.is_verified && (
-                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">✓</Badge>
+              {filtered.map((p) => {
+                const isExpanded = expandedId === p.id;
+                return (
+                  <div
+                    key={p.id}
+                    className={`rounded-xl bg-card border transition-colors relative overflow-hidden cursor-pointer ${
+                      p.is_claimed
+                        ? "border-white/[0.06] hover:border-primary/30"
+                        : "border-dashed border-white/[0.10] hover:border-primary/40"
+                    }`}
+                    onClick={() => toggleExpand(p.id)}
+                  >
+                    <div className="p-5">
+                      <div className="flex items-start gap-3">
+                        {p.avatar_url ? (
+                          <img
+                            src={p.avatar_url}
+                            alt={p.display_name || "Profile"}
+                            className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                            loading="lazy"
+                            width={48}
+                            height={48}
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-foreground font-bold text-lg flex-shrink-0">
+                            {(p.display_name || "?")[0]?.toUpperCase()}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-syne font-semibold text-foreground truncate">
+                              {p.display_name || "Unnamed"}
+                            </h3>
+                            {p.is_verified && (
+                              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">✓</Badge>
+                            )}
+                          </div>
+                          {(p.genre || (p.genres && p.genres.length > 0)) && (
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+                              <Music className="w-3 h-3 flex-shrink-0" />
+                              <span className="truncate">{p.genre || p.genres?.[0]}</span>
+                            </div>
+                          )}
+                          {(p.city || p.state) && (
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+                              <MapPin className="w-3 h-3 flex-shrink-0" />
+                              {[p.city, p.state].filter(Boolean).join(", ")}
+                            </div>
                           )}
                         </div>
-                        {(p.genre || (p.genres && p.genres.length > 0)) && (
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                            <Music className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate">{p.genre || p.genres?.[0]}</span>
-                          </div>
-                        )}
-                        {(p.city || p.state) && (
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                            <MapPin className="w-3 h-3 flex-shrink-0" />
-                            {[p.city, p.state].filter(Boolean).join(", ")}
-                          </div>
-                        )}
+                        {/* Expand/collapse chevron */}
+                        <div className="flex-shrink-0 text-muted-foreground">
+                          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </div>
                       </div>
-                    </div>
 
-                    {p.bio && (
-                      <p className="text-xs text-muted-foreground mt-3 line-clamp-2">{p.bio}</p>
-                    )}
-
-                    <div className="mt-3 flex items-center justify-between gap-2 flex-wrap">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px] capitalize">
-                          {p.role === "photo_video" ? "Creative" : p.listing_type || p.role || "Artist"}
-                        </Badge>
-                        {p.tier && (
-                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full capitalize ${TIER_COLORS[p.tier] || "text-muted-foreground bg-muted"}`}>
-                            {p.tier}
-                          </span>
-                        )}
-                        {p.bookscore && (
-                          <span className="flex items-center gap-0.5 text-[10px] text-yellow-400">
-                            <Star className="w-2.5 h-2.5 fill-yellow-400" />
-                            {p.bookscore}
-                          </span>
-                        )}
-                      </div>
-                      {p.fee_min && p.fee_max && (
-                        <span className="text-[10px] text-muted-foreground">
-                          ${p.fee_min.toLocaleString()}–${p.fee_max.toLocaleString()}
-                        </span>
+                      {p.bio && (
+                        <p className="text-xs text-muted-foreground mt-3 line-clamp-2">{p.bio}</p>
                       )}
-                    </div>
 
-                    <div className="mt-4 flex gap-2">
-                      {p.is_claimed ? (
-                        <Link
-                          to={p.slug ? `/p/${p.slug}` : `/p/${p.user_id}`}
-                          className="flex-1 text-center text-xs font-medium py-1.5 px-3 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                        >
-                          View Profile
-                        </Link>
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1 text-xs h-7 border-primary/30 text-primary hover:bg-primary/10"
-                          onClick={() => handleClaim(p)}
-                          disabled={claimingId === p.id}
-                        >
-                          {claimingId === p.id ? "Claiming…" : "Claim This Profile"}
-                        </Button>
+                      <div className="mt-3 flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-[10px] capitalize">
+                            {p.role === "photo_video" ? "Creative" : p.listing_type || p.role || "Artist"}
+                          </Badge>
+                          {p.tier && (
+                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full capitalize ${TIER_COLORS[p.tier] || "text-muted-foreground bg-muted"}`}>
+                              {p.tier}
+                            </span>
+                          )}
+                          {p.bookscore && (
+                            <span className="flex items-center gap-0.5 text-[10px] text-yellow-400">
+                              <Star className="w-2.5 h-2.5 fill-yellow-400" />
+                              {p.bookscore}
+                            </span>
+                          )}
+                        </div>
+                        {p.fee_min && p.fee_max && (
+                          <span className="text-[10px] text-muted-foreground">
+                            ${p.fee_min.toLocaleString()}–${p.fee_max.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Expanded panel — only visible after clicking the card */}
+                      {isExpanded && (
+                        <div className="mt-4 pt-4 border-t border-white/[0.06] space-y-3">
+                          {/* Unclaimed badge — only shown here, not on the card face */}
+                          {!p.is_claimed && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30">
+                                Unclaimed
+                              </span>
+                              <span className="text-[10px] text-muted-foreground">
+                                This profile hasn't been claimed yet — is this you?
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Action buttons */}
+                          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                            {p.is_claimed ? (
+                              <Link
+                                to={p.slug ? `/p/${p.slug}` : `/p/${p.user_id}`}
+                                className="flex-1 text-center text-xs font-medium py-1.5 px-3 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                              >
+                                View Profile
+                              </Link>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="flex-1 text-xs h-7 border-primary/30 text-primary hover:bg-primary/10"
+                                onClick={() => handleClaim(p)}
+                                disabled={claimingId === p.id}
+                              >
+                                {claimingId === p.id ? "Claiming…" : "Claim This Profile"}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
