@@ -1067,6 +1067,7 @@ export type Database = {
           bookscore: number | null
           city: string | null
           completion_score: number | null
+          country: string | null
           created_at: string
           display_name: string | null
           email_preferences: Json
@@ -1112,6 +1113,7 @@ export type Database = {
           bookscore?: number | null
           city?: string | null
           completion_score?: number | null
+          country?: string | null
           created_at?: string
           display_name?: string | null
           email_preferences?: Json
@@ -1157,6 +1159,7 @@ export type Database = {
           bookscore?: number | null
           city?: string | null
           completion_score?: number | null
+          country?: string | null
           created_at?: string
           display_name?: string | null
           email_preferences?: Json
