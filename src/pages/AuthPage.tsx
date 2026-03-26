@@ -64,12 +64,52 @@ export default function AuthPage() {
   const activeRoleInfo = ROLES.find((r) => r.value === selectedRole);
   const ActiveIcon = activeRoleInfo?.icon;
 
+  // HaveIBeenPwned k-anonymity check — only the first 5 chars of the SHA-1
+  // hash are sent over the wire. Returns true if the password is in a breach.
+  const checkPasswordBreached = async (pwd: string): Promise<boolean> => {
+    try {
+      const encoder = new TextEncoder();
+      const hashBuffer = await crypto.subtle.digest("SHA-1", encoder.encode(pwd));
+      const hashHex = Array.from(new Uint8Array(hashBuffer))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("")
+        .toUpperCase();
+      const prefix = hashHex.slice(0, 5);
+      const suffix = hashHex.slice(5);
+      const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
+        headers: { "Add-Padding": "true" },
+      });
+      if (!res.ok) return false; // API down — don't block signup
+      const text = await res.text();
+      for (const line of text.split("\n")) {
+        const [hs, countStr] = line.split(":");
+        if (hs.trim().toUpperCase() === suffix && parseInt(countStr?.trim() ?? "0", 10) > 0) {
+          return true;
+        }
+      }
+      return false;
+    } catch {
+      return false; // Network error — don't block signup
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       if (isSignUp) {
         if (!selectedRole) { toast.error("Please select your role"); setLoading(false); return; }
+
+        // Leaked password protection (HaveIBeenPwned k-anonymity)
+        const isBreached = await checkPasswordBreached(password);
+        if (isBreached) {
+          toast.error(
+            "This password has appeared in a known data breach. Please choose a different password to keep your account secure.",
+            { duration: 6000 }
+          );
+          setLoading(false);
+          return;
+        }
 
         // FIX: Embed role + display_name in the signUp metadata so the
         // handle_new_user trigger can read them immediately. This eliminates
