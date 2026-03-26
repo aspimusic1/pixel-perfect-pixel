@@ -5,6 +5,7 @@ import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import { Wrench, CheckCircle, DollarSign, Users, Calendar, FileText, UserCog } from "lucide-react";
 import EditProfilePanel from "@/components/EditProfilePanel";
+import GettingStartedChecklist from "@/components/GettingStartedChecklist";
 
 type ProductionView = "overview" | "gigs" | "crew" | "calendar" | "documents" | "profile";
 
@@ -39,6 +40,7 @@ export default function ProductionDashboard() {
 
               {activeView === "overview" && (
                 <>
+                  <GettingStartedChecklist variant="production" />
                   <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] divide-x divide-white/[0.06] grid grid-cols-2 lg:grid-cols-4">
                     {[
                       { label: "active gigs", value: 0, color: ACCENT },

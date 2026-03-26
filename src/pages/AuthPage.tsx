@@ -33,10 +33,27 @@ export default function AuthPage() {
   const [resetEmail, setResetEmail] = useState("");
   const [resetSent, setResetSent] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
-  const { user, isAdmin } = useAuth();
+
+  // Social login role picker: shown when a social-login user has no role set yet
+  const [showRolePicker, setShowRolePicker] = useState(false);
+  const [socialRoleLoading, setSocialRoleLoading] = useState(false);
+  const [pendingSocialRole, setPendingSocialRole] = useState("");
+
+  const { user, profile, isAdmin, refreshProfile } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => { if (user) navigate(isAdmin ? "/admin" : "/welcome"); }, [user, isAdmin, navigate]);
+  // After any login, check if the user needs to pick a role (social login gap)
+  useEffect(() => {
+    if (!user) return;
+    if (!profile) return;
+    // If the profile has no role yet, show the role picker before proceeding
+    if (!profile.role) {
+      setShowRolePicker(true);
+      return;
+    }
+    navigate(isAdmin ? "/admin" : "/welcome");
+  }, [user, profile, isAdmin, navigate]);
+
   useEffect(() => { if (presetRole) { setSelectedRole(presetRole); setIsSignUp(true); } }, [presetRole]);
 
   const activeRoleInfo = ROLES.find((r) => r.value === selectedRole);
@@ -48,15 +65,34 @@ export default function AuthPage() {
     try {
       if (isSignUp) {
         if (!selectedRole) { toast.error("Please select your role"); setLoading(false); return; }
-        const { error } = await supabase.auth.signUp({
-          email, password,
-          options: { data: { display_name: displayName }, emailRedirectTo: window.location.origin },
+
+        // FIX: Embed role + display_name in the signUp metadata so the
+        // handle_new_user trigger can read them immediately. This eliminates
+        // the race condition where a subsequent UPDATE would run before the
+        // trigger had finished inserting the profile row.
+        const { data: signUpData, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              display_name: displayName,
+              role: selectedRole,
+            },
+            emailRedirectTo: window.location.origin,
+          },
         });
         if (error) throw error;
-        const { data: { user: newUser } } = await supabase.auth.getUser();
-        if (newUser) {
-          await supabase.from("profiles").update({ role: selectedRole as any, display_name: displayName }).eq("user_id", newUser.id);
+
+        // Belt-and-suspenders: if the user session is immediately available
+        // (email confirmation disabled), also write the role directly.
+        // This is a no-op if the trigger already handled it.
+        if (signUpData.user) {
+          await supabase
+            .from("profiles")
+            .update({ role: selectedRole as any, display_name: displayName })
+            .eq("user_id", signUpData.user.id);
         }
+
         toast.success("Account created!");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -92,6 +128,80 @@ export default function AuthPage() {
       setResetLoading(false);
     }
   };
+
+  // Called when a social-login user picks their role from the modal
+  const handleSocialRoleConfirm = async () => {
+    if (!pendingSocialRole) { toast.error("Please select your role"); return; }
+    if (!user) return;
+    setSocialRoleLoading(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ role: pendingSocialRole as any })
+        .eq("user_id", user.id);
+      if (error) throw error;
+      await refreshProfile();
+      setShowRolePicker(false);
+      navigate(isAdmin ? "/admin" : "/welcome");
+    } catch (err: any) {
+      toast.error(err.message ?? "Could not save your role. Please try again.");
+    } finally {
+      setSocialRoleLoading(false);
+    }
+  };
+
+  // Social login role picker modal — shown when a social user has no role
+  if (showRolePicker) {
+    return (
+      <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 pt-20 pb-12">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" />
+            <h1 className="font-display font-bold text-xl mb-1 lowercase text-foreground">one more thing</h1>
+            <p className="text-muted-foreground text-sm font-body">what best describes you?</p>
+          </div>
+          <div className="rounded-2xl bg-white/[0.04] border border-white/[0.08] p-7 space-y-4">
+            <div className="grid grid-cols-2 gap-2" role="radiogroup">
+              {ROLES.map((role) => {
+                const Icon = role.icon;
+                const selected = pendingSocialRole === role.value;
+                return (
+                  <button
+                    key={role.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => setPendingSocialRole(role.value)}
+                    className={`px-3 py-2.5 rounded-lg border text-sm font-display font-medium transition-all active:scale-[0.96] flex items-center gap-2 lowercase ${
+                      selected
+                        ? "border-[#C8FF3E]/40 bg-[#C8FF3E]/10 text-[#C8FF3E]"
+                        : "border-white/[0.08] text-muted-foreground hover:text-foreground hover:border-white/[0.15]"
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                    {role.label.toLowerCase()}
+                  </button>
+                );
+              })}
+            </div>
+            {pendingSocialRole && (
+              <p className="text-xs text-muted-foreground text-center">
+                {ROLES.find(r => r.value === pendingSocialRole)?.tagline}
+              </p>
+            )}
+            <Button
+              onClick={handleSocialRoleConfirm}
+              disabled={socialRoleLoading || !pendingSocialRole}
+              className="w-full font-display font-semibold h-11 lowercase bg-[#C8FF3E] text-[#080C14] hover:bg-[#C8FF3E]/90"
+            >
+              {socialRoleLoading ? "saving..." : "continue"}
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Forgot password mode
   if (forgotMode) {
