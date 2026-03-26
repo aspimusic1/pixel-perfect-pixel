@@ -20,9 +20,16 @@ const ROLE_META: Record<string, { icon: any; label: string; accent: string; step
 };
 
 export default function ProfileSetup() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  // Admin users should never go through the role onboarding flow
+  useEffect(() => {
+    if (isAdmin) {
+      navigate("/admin", { replace: true });
+    }
+  }, [isAdmin, navigate]);
   const role = profile?.role ?? "artist";
   const meta = ROLE_META[role] ?? ROLE_META.artist;
   const RoleIcon = meta.icon;

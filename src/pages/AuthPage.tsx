@@ -46,12 +46,17 @@ export default function AuthPage() {
   useEffect(() => {
     if (!user) return;
     if (!profile) return;
-    // If the profile has no role yet, show the role picker before proceeding
+    // Admin users bypass onboarding entirely — go straight to the admin panel
+    if (isAdmin) {
+      navigate("/admin", { replace: true });
+      return;
+    }
+    // If the profile has no role yet (social login gap), show the role picker
     if (!profile.role) {
       setShowRolePicker(true);
       return;
     }
-    navigate(isAdmin ? "/admin" : "/welcome");
+    navigate("/welcome");
   }, [user, profile, isAdmin, navigate]);
 
   useEffect(() => { if (presetRole) { setSelectedRole(presetRole); setIsSignUp(true); } }, [presetRole]);
@@ -98,7 +103,8 @@ export default function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Welcome back!");
-        navigate("/");
+        // Redirect is handled by the useEffect above once profile loads
+        // (admin → /admin, regular user → /welcome or /dashboard)
       }
     } catch (err: any) {
       const msg = err.message ?? "Something went wrong";
@@ -142,6 +148,7 @@ export default function AuthPage() {
       if (error) throw error;
       await refreshProfile();
       setShowRolePicker(false);
+      // isAdmin is re-evaluated after refreshProfile
       navigate(isAdmin ? "/admin" : "/welcome");
     } catch (err: any) {
       toast.error(err.message ?? "Could not save your role. Please try again.");

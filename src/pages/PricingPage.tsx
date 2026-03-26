@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Check, ArrowRight, Loader2, Settings, Clock } from "lucide-react";
+import { Check, ArrowRight, Loader2, Settings, Clock, Zap, TrendingDown, ShieldCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,7 +40,7 @@ const PLANS = [
     unit: "/month",
     desc: "For working artists and active promoters.",
     commission: "10%",
-    features: ["Unlimited offers", "10% commission on bookings", "Verified badge", "Deal rooms & contracts", "Income smoothing", "Priority support"],
+    features: ["14-day free trial — no card required", "Unlimited offers", "10% commission on bookings", "Verified badge", "Deal rooms & contracts", "Income smoothing", "Priority support"],
     cta: "Start free trial",
     highlight: true,
     tier: "pro" as const,
@@ -331,6 +331,61 @@ export default function Pricing() {
             );
           })}
         </div>
+
+        {/* How the 14-day trial works */}
+        {!user && (
+          <div data-reveal className="opacity-0 mt-14 mb-2">
+            <div className="rounded-2xl border border-primary/20 bg-primary/[0.03] p-8">
+              <div className="text-center mb-8">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-display font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full mb-3">
+                  <Zap className="w-3 h-3" /> how the trial works
+                </span>
+                <h2 className="font-display font-bold text-xl text-foreground">Pro free for 14 days. No card required.</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: Zap,
+                    step: "1",
+                    title: "Sign up — get Pro instantly",
+                    desc: "Create your account and your 14-day Pro trial starts immediately. No credit card, no commitment.",
+                  },
+                  {
+                    icon: ShieldCheck,
+                    step: "2",
+                    title: "Use every Pro feature",
+                    desc: "Deal Rooms, standard contracts, 10% commission, verified badge — everything unlocked for 14 days.",
+                  },
+                  {
+                    icon: TrendingDown,
+                    step: "3",
+                    title: "Stay free or subscribe",
+                    desc: "After 14 days you drop to the Free tier automatically. No surprise charges. Upgrade any time.",
+                  },
+                ].map((item) => (
+                  <div key={item.step} className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                      <span className="text-[11px] font-display font-bold text-primary">{item.step}</span>
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-display font-bold text-foreground mb-1">{item.title}</p>
+                      <p className="text-[11px] text-muted-foreground font-body leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-8 text-center">
+                <Link to="/auth?tab=signup">
+                  <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-display font-bold transition-all active:scale-[0.97] hover:bg-primary/90">
+                    Start your free trial
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
+                <p className="text-[10px] text-muted-foreground mt-2">No credit card required · Cancel anytime</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Trust signals */}
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-3">
