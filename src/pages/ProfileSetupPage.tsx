@@ -26,52 +26,6 @@ export default function ProfileSetup() {
   const role = profile?.role ?? "artist";
   const meta = ROLE_META[role] ?? ROLE_META.artist;
   const RoleIcon = meta.icon;
-  const [spotifyConnecting, setSpotifyConnecting] = useState(false);
-  const [spotifyConnected, setSpotifyConnected] = useState(!!(profile as any)?.streaming_stats?.source);
-
-  useEffect(() => {
-    const code = searchParams.get("code");
-    if (code && !spotifyConnected) {
-      handleSpotifyCallback(code);
-    }
-  }, [searchParams]);
-
-  const handleSpotifyConnect = async () => {
-    setSpotifyConnecting(true);
-    try {
-      const redirectUri = `${window.location.origin}/profile-setup`;
-      const { data, error } = await supabase.functions.invoke("spotify-callback", {
-        body: { action: "get_auth_url", redirect_uri: redirectUri },
-      });
-      if (error) throw error;
-      if (data?.url) {
-        window.location.href = data.url;
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to connect Spotify");
-      setSpotifyConnecting(false);
-    }
-  };
-
-  const handleSpotifyCallback = async (code: string) => {
-    setSpotifyConnecting(true);
-    try {
-      const redirectUri = `${window.location.origin}/profile-setup`;
-      const { data, error } = await supabase.functions.invoke("spotify-callback", {
-        body: { action: "exchange_code", code, redirect_uri: redirectUri },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      toast.success("Spotify connected!");
-      setSpotifyConnected(true);
-      await refreshProfile();
-      window.history.replaceState({}, "", "/profile-setup");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to connect Spotify");
-    } finally {
-      setSpotifyConnecting(false);
-    }
-  };
 
   // Shared fields
   const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
@@ -302,24 +256,9 @@ export default function ProfileSetup() {
                 <div>
                   <Label className="text-sm flex items-center gap-1.5">
                     <Music className="w-4 h-4 text-[#1DB954]" />
-                    Spotify
+                    Spotify profile URL
                   </Label>
-                  {spotifyConnected ? (
-                    <div className="mt-1.5 flex items-center gap-2 px-3 py-2 rounded-lg bg-[#1DB954]/10 border border-[#1DB954]/20">
-                      <Music className="w-4 h-4 text-[#1DB954]" />
-                      <span className="text-xs text-[#1DB954] font-medium">Spotify connected</span>
-                    </div>
-                  ) : (
-                    <Button
-                      type="button"
-                      onClick={handleSpotifyConnect}
-                      disabled={spotifyConnecting}
-                      className="mt-1.5 w-full h-10 bg-[#1DB954] text-[#080C14] hover:bg-[#1DB954]/90 font-medium text-sm active:scale-[0.97] transition-transform"
-                    >
-                      {spotifyConnecting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Music className="w-4 h-4 mr-2" />}
-                      {spotifyConnecting ? "Connecting..." : "Connect Spotify"}
-                    </Button>
-                  )}
+                  <Input value={spotify} onChange={(e) => setSpotify(e.target.value)} placeholder="https://open.spotify.com/artist/..." className="mt-1.5 bg-background border-border" />
                 </div>
               </>
             )}
