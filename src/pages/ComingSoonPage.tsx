@@ -185,7 +185,8 @@ export default function ComingSoonPage() {
               <option value="artist" className="bg-card">Artist</option>
               <option value="promoter" className="bg-card">Promoter</option>
               <option value="venue" className="bg-card">Venue</option>
-              <option value="manager" className="bg-card">Manager</option>
+              <option value="production" className="bg-card">Crew / Production</option>
+              <option value="photo_video" className="bg-card">Creative</option>
             </select>
 
             <div className="relative">
