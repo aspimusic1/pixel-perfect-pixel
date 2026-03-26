@@ -77,23 +77,20 @@ export default function ComingSoonPage() {
     };
   }, []);
 
-  // Fetch waitlist count
+   // Fetch waitlist count via a security-definer RPC that returns only an integer.
+  // Direct SELECT on the waitlist table is restricted to admins/service_role only.
   useEffect(() => {
     const fetchCount = async () => {
-      const { count } = await supabase
-        .from("waitlist")
-        .select("id", { count: "exact", head: true });
-      if (count !== null) setWaitlistCount(count);
+      const { data, error } = await supabase.rpc("get_waitlist_count");
+      if (!error && typeof data === "number") setWaitlistCount(data);
     };
     fetchCount();
-
     const channel = supabase
       .channel("waitlist-count")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "waitlist" }, () => {
         fetchCount();
       })
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   }, []);
 
