@@ -70,29 +70,32 @@ export default function GettingStartedChecklist({ variant }: Props) {
     }
 
     if (variant === "venue") {
-      // Check if they have a venue listing
+      // First fetch the venue listing for this user, then check photos/availability by venue ID
       supabase
         .from("venue_listings")
         .select("id")
         .eq("claimed_by", user.id)
         .limit(1)
-        .then(({ data }) => setHasVenueListing((data ?? []).length > 0));
-
-      // Check if they have venue photos
-      supabase
-        .from("venue_photos")
-        .select("id")
-        .eq("venue_id", user.id)
-        .limit(1)
-        .then(({ data }) => setHasVenuePhotos((data ?? []).length > 0));
-
-      // Check if they have availability set
-      supabase
-        .from("venue_availability")
-        .select("id")
-        .eq("venue_id", user.id)
-        .limit(1)
-        .then(({ data }) => setHasVenueAvailability((data ?? []).length > 0));
+        .then(({ data }) => {
+          const hasListing = (data ?? []).length > 0;
+          setHasVenueListing(hasListing);
+          if (hasListing && data?.[0]?.id) {
+            const venueId = data[0].id;
+            // Now query photos and availability by the actual venue UUID
+            supabase
+              .from("venue_photos")
+              .select("id")
+              .eq("venue_id", venueId)
+              .limit(1)
+              .then(({ data: pd }) => setHasVenuePhotos((pd ?? []).length > 0));
+            supabase
+              .from("venue_availability")
+              .select("id")
+              .eq("venue_id", venueId)
+              .limit(1)
+              .then(({ data: ad }) => setHasVenueAvailability((ad ?? []).length > 0));
+          }
+        });
     }
   }, [user, variant]);
 
@@ -260,10 +263,10 @@ export default function GettingStartedChecklist({ variant }: Props) {
     {
       key: "set_rates",
       label: "Set your day rates",
-      description: "Add your minimum and maximum rates",
+      description: "Add your minimum day rate",
       icon: DollarSign,
       action: () => navigate("/profile-setup"),
-      detectComplete: () => !!(profile?.rate_min && profile?.rate_max),
+      detectComplete: () => !!(profile?.rate_min),
     },
     {
       key: "set_availability",
@@ -318,15 +321,15 @@ export default function GettingStartedChecklist({ variant }: Props) {
       description: "Add your day rate and project pricing",
       icon: DollarSign,
       action: () => navigate("/profile-setup"),
-      detectComplete: () => !!(profile?.rate_min && profile?.rate_max),
+      detectComplete: () => !!(profile?.rate_min),
     },
     {
       key: "add_portfolio_url",
       label: "Link your external portfolio",
-      description: "Add a link to your website or Instagram",
+      description: "Add a link to your website or portfolio",
       icon: LinkIcon,
       action: () => navigate("/profile-setup"),
-      detectComplete: () => !!(profile?.website || profile?.instagram),
+      detectComplete: () => !!(profile as any)?.website,
     },
     {
       key: "share_link",

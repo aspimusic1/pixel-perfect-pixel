@@ -6,6 +6,7 @@ import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import { Camera, CheckCircle, DollarSign, FolderOpen, Star, Calendar, UserCog } from "lucide-react";
 import EditProfilePanel from "@/components/EditProfilePanel";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
+import TrialBanner from "@/components/TrialBanner";
 
 type CreativeView = "overview" | "portfolio" | "bookings" | "calendar" | "reviews" | "profile";
 
@@ -40,6 +41,7 @@ export default function CreativeDashboard() {
 
               {activeView === "overview" && (
                 <>
+                  <TrialBanner />
                   <GettingStartedChecklist variant="photo_video" />
                   <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] divide-x divide-white/[0.06] grid grid-cols-2 lg:grid-cols-4">
                     {[

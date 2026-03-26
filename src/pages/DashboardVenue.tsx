@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { MapPin, Save, Upload, Trash2, CalendarIcon, Plus, Image as ImageIcon, Building2, Clock, CheckCircle, UserCog } from "lucide-react";
 import EditProfilePanel from "@/components/EditProfilePanel";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
+import TrialBanner from "@/components/TrialBanner";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -155,6 +156,7 @@ export default function VenueManage() {
               {/* Overview */}
               {activeView === "overview" && selectedVenue && (
                 <>
+                  <TrialBanner />
                   <GettingStartedChecklist variant="venue" />
                   <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] divide-x divide-white/[0.06] grid grid-cols-2 lg:grid-cols-4">
                     {[
