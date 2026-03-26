@@ -14,7 +14,6 @@ import InstallBanner from "@/components/InstallBanner";
 import AuthPage from "@/pages/AuthPage";
 import ComingSoonPage from "@/pages/ComingSoonPage";
 import AdminPage from "@/pages/AdminPage";
-import AdminLoginPage from "@/pages/AdminLoginPage";
 
 // ── PUBLIC PAGES ──
 const HomePage = lazy(() => import("@/pages/HomePage"));
@@ -121,8 +120,6 @@ function AnimatedRoutes() {
         <Route path="/review/:bookingId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
 
         {/* ── ADMIN ROUTES ── */}
-        {/* Isolated admin login — no navbar, no signup, no links to main app */}
-        <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
         <Route path="/admin/claims" element={<ProtectedRoute><AdminClaimsPage /></ProtectedRoute>} />
 
@@ -136,11 +133,10 @@ function AnimatedRoutes() {
 function AppLayout() {
   const location = useLocation();
   const isComingSoon = location.pathname === "/";
-  const isAdminLogin = location.pathname === "/admin-login";
 
   return (
     <>
-      {!isComingSoon && !isAdminLogin && (
+      {!isComingSoon && (
         <>
           <a href="#main-content" className="skip-to-main">Skip to main content</a>
           <Navbar />
@@ -151,7 +147,7 @@ function AppLayout() {
           <AnimatedRoutes />
         </Suspense>
       </main>
-      {!isComingSoon && !isAdminLogin && <InstallBanner />}
+      {!isComingSoon && <InstallBanner />}
       <Toaster />
       <Sonner />
       <HotToaster position="bottom-right" toastOptions={{ duration: 3500, style: { background: '#0E1420', color: '#F0F2F7', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '13px' }, success: { iconTheme: { primary: '#C8FF3E', secondary: '#080C14' } } }} containerStyle={{}} />

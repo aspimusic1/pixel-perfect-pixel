@@ -267,7 +267,7 @@ export default function ComingSoonPage() {
         {/* Discreet admin login — nearly invisible to visitors, clickable by admin */}
         <div className="flex justify-center mt-4">
           <a
-            href="/admin-login"
+            href="/auth?tab=signin"
             className="text-[10px] text-muted-foreground/20 hover:text-muted-foreground/50 transition-colors tracking-widest uppercase"
           >
             Admin
