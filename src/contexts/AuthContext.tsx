@@ -17,6 +17,7 @@ type Profile = {
   rate_min: number | null;
   rate_max: number | null;
   subscription_plan: string | null;
+  trial_ends_at: string | null;
   youtube: string | null;
   streaming_stats: Record<string, any> | null;
 };
@@ -25,6 +26,8 @@ type SubscriptionInfo = {
   subscribed: boolean;
   product_id: string | null;
   subscription_end: string | null;
+  is_trial?: boolean;
+  trial_days_remaining?: number;
 };
 
 type AuthContextType = {
