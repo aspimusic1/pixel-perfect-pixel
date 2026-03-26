@@ -254,6 +254,10 @@ export default function ComingSoonPage() {
       {/* Footer */}
       <footer className={`relative z-10 w-full py-8 mt-auto ${fadeIn} ${transition}`} style={{ transitionDelay: "1100ms" }}>
         <div className="flex flex-wrap items-center justify-center gap-6 text-muted-foreground/50 text-xs">
+          <a href="/privacy" className="hover:text-muted-foreground transition-colors">Privacy Policy</a>
+          <span className="w-px h-3 bg-border" />
+          <a href="/contact" className="hover:text-muted-foreground transition-colors">Contact</a>
+          <span className="w-px h-3 bg-border" />
           <a href="https://www.instagram.com/getbooked.live" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
             <Instagram className="w-3.5 h-3.5" />
             Instagram
@@ -262,15 +266,6 @@ export default function ComingSoonPage() {
           <a href="https://www.linkedin.com/company/getbookedlive/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
             <Linkedin className="w-3.5 h-3.5" />
             LinkedIn
-          </a>
-        </div>
-        {/* Discreet admin login — nearly invisible to visitors, clickable by admin */}
-        <div className="flex justify-center mt-4">
-          <a
-            href="/auth?tab=signin"
-            className="text-[10px] text-muted-foreground/20 hover:text-muted-foreground/50 transition-colors tracking-widest uppercase"
-          >
-            Admin
           </a>
         </div>
       </footer>
