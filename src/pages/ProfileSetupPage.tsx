@@ -74,9 +74,11 @@ export default function ProfileSetup() {
   };
 
   // Shared fields
+  const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
   const [city, setCity] = useState(profile?.city ?? "");
   const [state, setState] = useState(profile?.state ?? "");
+  const [country, setCountry] = useState((profile as any)?.country ?? "");
   const [timezone, setTimezone] = useState("America/New_York");
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? "");
   const [uploading, setUploading] = useState(false);
@@ -131,8 +133,10 @@ export default function ProfileSetup() {
     if (!user) return;
     setLoading(true);
     try {
-      const baseUpdate: Record<string, any> = {
-        bio, city, state, profile_complete: true,
+        const baseUpdate: Record<string, any> = {
+        display_name: displayName || null,
+        bio, city, state, country: country || null,
+        profile_complete: true,
         avatar_url: avatarUrl || null, timezone,
       };
 
@@ -228,6 +232,16 @@ export default function ProfileSetup() {
               <p className="text-[11px] text-muted-foreground mt-2 font-body">click to upload photo</p>
             </div>
 
+            {/* Display Name */}
+            <div>
+              <Label className="text-sm">{role === "artist" ? "Artist / Stage name" : role === "venue" ? "Venue name" : "Display name"}</Label>
+              <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={
+                role === "artist" ? "Your artist or stage name" :
+                role === "venue" ? "The Ryman, House of Blues..." :
+                "Your name or brand"
+              } className="mt-1.5 bg-background border-border" />
+            </div>
+
             {/* Bio */}
             <div>
               <Label className="text-sm">Bio</Label>
@@ -241,7 +255,7 @@ export default function ProfileSetup() {
             </div>
 
             {/* Location */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <div>
                 <Label className="text-sm">City</Label>
                 <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Nashville" className="mt-1.5 bg-background border-border" />
@@ -249,6 +263,10 @@ export default function ProfileSetup() {
               <div>
                 <Label className="text-sm">State</Label>
                 <Input value={state} onChange={(e) => setState(e.target.value)} placeholder="TN" className="mt-1.5 bg-background border-border" />
+              </div>
+              <div>
+                <Label className="text-sm">Country</Label>
+                <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="US" className="mt-1.5 bg-background border-border" />
               </div>
             </div>
 
