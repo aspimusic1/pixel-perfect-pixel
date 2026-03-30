@@ -77,21 +77,10 @@ export default function ComingSoonPage() {
     };
   }, []);
 
-   // Fetch waitlist count via security-definer RPC (no direct table SELECT needed)
+   // Waitlist count is no longer publicly queryable for security reasons.
+  // Show only the base count as a static number.
   useEffect(() => {
-    const fetchCount = async () => {
-      const { count, error } = await supabase.from("waitlist").select("*", { count: "exact", head: true });
-      const data = count;
-      if (!error && data !== null) setWaitlistCount(data as number);
-    };
-    fetchCount();
-    const channel = supabase
-      .channel("waitlist-count")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "waitlist" }, () => {
-        fetchCount();
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    setWaitlistCount(0);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
