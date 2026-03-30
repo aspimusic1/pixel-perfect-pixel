@@ -11,6 +11,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import InstallBanner from "@/components/InstallBanner";
+import LaunchGate from "@/components/LaunchGate";
 import AuthPage from "@/pages/AuthPage";
 import ComingSoonPage from "@/pages/ComingSoonPage";
 import AdminPage from "@/pages/AdminPage";
@@ -83,8 +84,8 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* ── COMING SOON (public landing) ── */}
-         <Route path="/" element={<HomePage />} />
+        {/* ── COMING SOON — gate: / and /coming-soon both render the gate page ── */}
+        <Route path="/" element={<ComingSoonPage />} />
         <Route path="/coming-soon" element={<ComingSoonPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/pricing" element={<PricingPage />} />
@@ -135,7 +136,7 @@ function AnimatedRoutes() {
 
 function AppLayout() {
   const location = useLocation();
-  const isComingSoon = location.pathname === "/coming-soon";
+  const isComingSoon = location.pathname === "/coming-soon" || location.pathname === "/";
   const isAdminLogin = location.pathname === "/admin-login";
 
   return (
@@ -148,7 +149,9 @@ function AppLayout() {
       )}
       <main id="main-content" className={isComingSoon ? "" : "overflow-x-hidden"}>
         <Suspense fallback={<RouteLoadingFallback />}>
-          <AnimatedRoutes />
+          <LaunchGate>
+            <AnimatedRoutes />
+          </LaunchGate>
         </Suspense>
       </main>
       {!isComingSoon && !isAdminLogin && <InstallBanner />}
