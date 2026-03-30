@@ -10,7 +10,7 @@ interface DepositPaymentButtonProps {
   onSuccess?: () => void;
 }
 
-const STRIPE_PK = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+const STRIPE_PK = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_live_51TDYNqRard5VqoGDORBtT0cYGSgJRjPTRy6YDYGljkhXeJ7TWiHAkR2FKMGgZ5jNtKFsXaDBf3m4gFs5DrxbZLYm00DUqXN04o";
 
 export default function DepositPaymentButton({ bookingId, guarantee, onSuccess }: DepositPaymentButtonProps) {
   const [loading, setLoading] = useState(false);

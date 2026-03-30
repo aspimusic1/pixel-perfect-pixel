@@ -84,10 +84,8 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* ── COMING SOON (public landing) ── */}
-        <Route path="/" element={<ComingSoonPage />} />
-
-        {/* ── FULL APP (hidden behind /app) ── */}
-        <Route path="/app" element={<HomePage />} />
+         <Route path="/" element={<HomePage />} />
+        <Route path="/coming-soon" element={<ComingSoonPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/browse" element={<BrowsePage />} />
@@ -137,7 +135,7 @@ function AnimatedRoutes() {
 
 function AppLayout() {
   const location = useLocation();
-  const isComingSoon = location.pathname === "/";
+  const isComingSoon = location.pathname === "/coming-soon";
   const isAdminLogin = location.pathname === "/admin-login";
 
   return (

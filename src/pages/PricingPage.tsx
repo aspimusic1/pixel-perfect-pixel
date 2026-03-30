@@ -9,14 +9,14 @@ import { toast } from "sonner";
 
 const STRIPE_TIERS = {
   pro: {
-    monthly_price_id: "price_1TDYpGRdIALML9YuWtcG1UCG",
-    yearly_price_id: "price_1TDYpGRdIALML9YuWtcG1UCG", // TODO: replace with actual yearly Stripe price ID when created
-    product_id: "prod_UBwiBhPDnrEdUZ",
+    monthly_price_id: "price_1TDz0XRard5VqoGDEZumRzPp",
+    yearly_price_id: "price_1TGYHuRard5VqoGD6dTwv6wl",
+    product_id: "prod_UCNmzyxcl7E3JD",
   },
   business: {
-    monthly_price_id: "price_1TDYpZRdIALML9YuPIs1CHiA",
-    yearly_price_id: "price_1TDYpZRdIALML9YuPIs1CHiA", // TODO: replace with actual yearly Stripe price ID when created
-    product_id: "prod_UBwjw5DHeMV0yo",
+    monthly_price_id: "price_1TDz0TRard5VqoGDql9FySVQ",
+    yearly_price_id: "price_1TGYHvRard5VqoGDT1uvbcdz",
+    product_id: "prod_UCNmSg0DRrBwAN",
   },
 };
 
