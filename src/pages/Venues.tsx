@@ -145,6 +145,8 @@ export default function Venues() {
   };
 
   return (
+    <>
+      <SEO title="Venues | GetBooked.Live" description="Discover and book venues for your next event on GetBooked.Live." />
     <div ref={ref} className="min-h-screen pt-20 px-4 pb-12">
       <div className="container mx-auto max-w-5xl">
         {/* Upgrade banner for free users */}
