@@ -112,8 +112,7 @@ export default function Venues() {
     );
   });
 
-  const grouped = filtered.reduce<Record<string, VenueListing[]>
-      <SEO title="Venues | GetBooked.Live" description="Discover and book venues for your next event on GetBooked.Live." />>((acc, v) => {
+  const grouped = filtered.reduce<Record<string, VenueListing[]>>((acc, v) => {
     const key = v.region || "Other";
     if (!acc[key]) acc[key] = [];
     acc[key].push(v);
