@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
+import OpenForBookingsToggle from "@/components/OpenForBookingsToggle";
 import DashboardOnboarding from "@/components/DashboardOnboarding";
 import AIAgentPanel, { AgentActiveBanner } from "@/components/AIAgentPanel";
 import SignContractDialog from "@/components/SignContractDialog";
@@ -339,6 +340,7 @@ export default function ArtistDashboard() {
                     <>
                    <DashboardOnboarding />
                    <TrialBanner />
+                   <OpenForBookingsToggle />
                    <ProfileCompletionRing />
                    <GettingStartedChecklist variant="artist" />
 
@@ -372,10 +374,10 @@ export default function ArtistDashboard() {
                     ) : offers.length === 0 ? (
                       <EmptyState
                         emoji="📥"
-                        title="no offers yet"
-                        description="complete your profile to start attracting promoters"
-                        actionLabel="Edit profile"
-                        actionHref="/profile-setup"
+                        title="No offers yet — but they are coming"
+                        description="Promoters find you through your profile. Complete your profile to appear in search."
+                        actionLabel="Complete your profile →"
+                        actionHref="/setup"
                       />
                     ) : (
                       <div className="space-y-1.5">{offers.slice(0, 5).map(renderOfferCard)}</div>
@@ -402,10 +404,10 @@ export default function ArtistDashboard() {
                    ) : offers.length === 0 ? (
                     <EmptyState
                       emoji="📥"
-                      title="no offers yet"
-                      description="get discovered by promoters — complete your profile and share your smart link"
-                      actionLabel="Edit profile"
-                      actionHref="/profile-setup"
+                      title="No offers yet — but they are coming"
+                      description="Promoters find you through your profile. Complete your profile to appear in search."
+                      actionLabel="Complete your profile →"
+                      actionHref="/setup"
                     />
                   ) : (
                     <>

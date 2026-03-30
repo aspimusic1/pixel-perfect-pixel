@@ -192,25 +192,35 @@ export default function ProfileSetup() {
 
         <div className="rounded-xl bg-card border border-border p-6 mt-4">
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Avatar upload */}
-            <div className="flex flex-col items-center mb-2">
+            {/* FIX 5: Avatar upload — 120px circular with camera overlay and motivational text */}
+            <div className="flex flex-col items-center mb-4">
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                className="relative w-20 h-20 rounded-full bg-secondary border-2 border-border hover:border-primary/30 transition-colors overflow-hidden group active:scale-[0.97]"
+                className="relative rounded-full bg-secondary border-2 border-border hover:border-primary/30 transition-colors overflow-hidden group active:scale-[0.97] flex items-center justify-center"
+                style={{ width: 120, height: 120 }}
               >
                 {avatarUrl ? (
                   <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" loading="lazy" />
                 ) : (
-                  <span className="font-display font-bold text-2xl text-foreground">{initials}</span>
+                  <span className="font-display font-bold text-3xl text-foreground">{initials}</span>
                 )}
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  {uploading ? <Loader2 className="w-5 h-5 text-white animate-spin" /> : <Camera className="w-5 h-5 text-white" />}
+                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity gap-1">
+                  {uploading ? (
+                    <Loader2 className="w-6 h-6 text-white animate-spin" />
+                  ) : (
+                    <>
+                      <Camera className="w-6 h-6 text-white" />
+                      <span className="text-[10px] text-white font-body">Upload photo</span>
+                    </>
+                  )}
                 </div>
               </button>
-              <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleAvatarUpload} className="hidden" />
-              <p className="text-[11px] text-muted-foreground mt-2 font-body">click to upload photo</p>
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
+              <p className="text-[11px] text-muted-foreground mt-2 font-body text-center">
+                {avatarUrl ? "Photo uploaded ✓" : "Profiles with photos get 3× more engagement"}
+              </p>
             </div>
 
             {/* Display Name */}

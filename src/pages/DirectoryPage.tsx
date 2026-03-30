@@ -213,6 +213,14 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
   const { user, profile: authProfile } = useAuth();
   const queryClient = useQueryClient();
 
+  const clearFilters = () => {
+    setSearch("");
+    setGenreFilter(null);
+    setCityFilter(null);
+    setVerifiedOnly(false);
+    setSortBy("newest");
+  };
+
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(t);
@@ -601,7 +609,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                     )}
                   </div>
                 ) : (
-                  <EmptyState role="artist" />
+                  <EmptyState role="artist" onClearFilters={clearFilters} />
                 )
               ) : (
                 profiles.length > 0 ? (
@@ -613,7 +621,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
                     </div>
                   </div>
                 ) : (
-                  <EmptyState role={tab.value} />
+                  <EmptyState role={tab.value} onClearFilters={clearFilters} />
                 )
               )}
             </TabsContent>
@@ -665,23 +673,16 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
   );
 }
 
-function EmptyState({ role }: { role: string }) {
-  const roleMessages: Record<string, { text: string; cta: string; link: string }> = {
-    artist: { text: "No artists found. Try adjusting your filters.", cta: "List yourself as an artist", link: "/auth?tab=signup&role=artist" },
-    venue: { text: "No venues listed yet — be the first to list yours.", cta: "List your venue", link: "/auth?tab=signup&role=venue" },
-    promoter: { text: "No promoters found. Try adjusting your search.", cta: "Sign up as a promoter", link: "/auth?tab=signup&role=promoter" },
-    production: { text: "No production profiles found.", cta: "Sign up as production", link: "/auth?tab=signup&role=production" },
-    photo_video: { text: "No creative profiles found.", cta: "Sign up as creative", link: "/auth?tab=signup&role=photo_video" },
-  };
-  const msg = roleMessages[role] ?? roleMessages.artist;
+function EmptyState({ role, onClearFilters }: { role: string; onClearFilters?: () => void }) {
   return (
     <div className="rounded-xl bg-card border border-border p-8 text-center">
-      <p className="text-muted-foreground font-body mb-3">{msg.text}</p>
-      <Link to={msg.link}>
-        <Button size="sm" variant="outline" className="text-xs h-8">
-          {msg.cta} <ArrowRight className="w-3 h-3 ml-1" />
+      <p className="font-syne font-bold text-base text-foreground mb-2">No artists found</p>
+      <p className="text-sm text-muted-foreground font-body mb-4">Try removing a filter or searching a nearby city.</p>
+      {onClearFilters && (
+        <Button size="sm" variant="outline" className="text-xs h-8" onClick={onClearFilters}>
+          Clear filters <ArrowRight className="w-3 h-3 ml-1" />
         </Button>
-      </Link>
+      )}
     </div>
   );
 }

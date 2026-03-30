@@ -1,5 +1,6 @@
 import { useState, useEffect, lazy } from "react";
 import { Link } from "react-router-dom";
+import EmptyState from "@/components/EmptyState";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -193,7 +194,7 @@ export default function TourManagement() {
               <h1 className="section-heading">tour management</h1>
               <p className="section-subtext">Plan and manage your multi-city runs.</p>
             </div>
-            <Button onClick={() => setShowCreate(true)} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform">
+            <Button id="create-tour-btn" onClick={() => setShowCreate(true)} className="bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] transition-transform">
               <Plus className="w-4 h-4 mr-1" /> New Tour
             </Button>
           </div>
@@ -225,11 +226,13 @@ export default function TourManagement() {
               ))}
             </div>
           ) : tours.length === 0 ? (
-            <div className="rounded-xl bg-card border border-border p-8 text-center">
-              <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground mb-1">No tours yet</p>
-              <p className="text-sm text-muted-foreground">Create your first tour to start planning.</p>
-            </div>
+            <EmptyState
+              emoji="📍"
+              title="Plan your first tour"
+              description="Add your shows, crew, and budget all in one place."
+              actionLabel="Create your first tour →"
+              onAction={() => document.getElementById('create-tour-btn')?.click()}
+            />
           ) : (
             <div className="space-y-3">
               {tours.map((tour) => (

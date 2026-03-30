@@ -202,11 +202,11 @@ export default function PromoterDashboard() {
                       <div className="space-y-2">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 rounded-lg bg-[#0e1420]" />)}</div>
                     ) : offers.length === 0 ? (
                       <EmptyState
-                        emoji="📣"
-                        title="no offers sent yet"
-                        description="browse artists and send your first offer"
-                        actionLabel="Browse artists"
-                        actionHref="/directory?role=artist"
+                        emoji="🎯"
+                        title="Your first booking is one offer away"
+                        description="Browse verified artists and send a structured offer in minutes."
+                        actionLabel="Browse artists →"
+                        actionHref="/directory"
                       />
                     ) : (
                       <div className="space-y-1.5">{offers.slice(0, 5).map(renderOfferCard)}</div>
@@ -226,10 +226,10 @@ export default function PromoterDashboard() {
                     <div className="space-y-2">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 rounded-lg bg-[#0e1420]" />)}</div>
                    ) : offers.length === 0 ? (
                     <EmptyState
-                      emoji="📣"
-                      title="no offers sent yet"
-                      description="browse artists and send your first structured booking offer"
-                      actionLabel="Browse artists"
+                      emoji="🎯"
+                      title="Your first booking is one offer away"
+                      description="Browse verified artists and send a structured offer in minutes."
+                      actionLabel="Browse artists →"
                       actionHref="/directory"
                     />
                   ) : (
