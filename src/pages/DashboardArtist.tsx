@@ -127,7 +127,7 @@ export default function ArtistDashboard() {
       const today = new Date().toISOString().split("T")[0];
       const [offersRes, bookingsRes, availRes] = await Promise.all([
         supabase.from("offers").select("*").eq("recipient_id", user.id).order("created_at", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1),
-        supabase.from("bookings").select("id, offer_id, contract_url, status, payment_status, deposit_paid_at, artist_id, promoter_id, venue_name, event_date, guarantee").eq("artist_id", user.id),
+        supabase.from("bookings").select("id, offer_id, contract_url, status, artist_id, promoter_id, venue_name, event_date, guarantee").eq("artist_id", user.id),
         supabase.from("artist_availability").select("date, is_available, notes").eq("artist_id", user.id).gte("date", today).order("date", { ascending: true }).limit(8),
       ]);
       const fetchedOffers = (offersRes.data as Offer[]) ?? [];
