@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import DashboardOnboarding from "@/components/DashboardOnboarding";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -165,6 +166,7 @@ export default function PromoterDashboard() {
           <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
             <div className="max-w-4xl mx-auto space-y-5">
 
+              <DashboardOnboarding />
               {activeView === "overview" && (
                 <>
                   <TrialBanner />

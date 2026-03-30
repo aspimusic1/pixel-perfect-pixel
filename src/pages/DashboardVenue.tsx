@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import DashboardOnboarding from "@/components/DashboardOnboarding";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -143,6 +144,7 @@ export default function VenueManage() {
           <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
             <div className="max-w-4xl mx-auto space-y-5">
 
+              <DashboardOnboarding />
               {venues.length > 1 && (
                 <div className="flex gap-1.5 overflow-x-auto pb-1">
                   {venues.map((v) => (

@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
+import DashboardOnboarding from "@/components/DashboardOnboarding";
 import AIAgentPanel, { AgentActiveBanner } from "@/components/AIAgentPanel";
 import SignContractDialog from "@/components/SignContractDialog";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
@@ -336,6 +337,7 @@ export default function ArtistDashboard() {
                     </div>
                   ) : (
                     <>
+                   <DashboardOnboarding />
                    <TrialBanner />
                    <ProfileCompletionRing />
                    <GettingStartedChecklist variant="artist" />

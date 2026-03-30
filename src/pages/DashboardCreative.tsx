@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DashboardOnboarding from "@/components/DashboardOnboarding";
 import { useAuth } from "@/contexts/AuthContext";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
@@ -39,6 +40,7 @@ export default function CreativeDashboard() {
           <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
             <div className="max-w-4xl mx-auto space-y-5">
 
+              <DashboardOnboarding />
               {activeView === "overview" && (
                 <>
                   <TrialBanner />
