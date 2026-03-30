@@ -59,7 +59,7 @@ export default function TopTracksSection({ tracks, spotifyUrl }: Props) {
             <div className="flex items-center gap-3 mb-2">
               <span className="text-[10px] text-muted-foreground tabular-nums w-4 text-right font-medium">{i + 1}</span>
               {track.album_art && (
-                <img src={track.album_art} alt={track.album} className="w-10 h-10 rounded object-cover" />
+                <img src={track.album_art} alt={track.album} className="w-10 h-10 rounded object-cover" loading="lazy" />
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{track.name}</p>

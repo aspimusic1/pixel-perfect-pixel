@@ -232,7 +232,7 @@ export default function VenueManage() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {photos.map((p) => (
                       <div key={p.id} className="relative group rounded-lg overflow-hidden aspect-video bg-[#0e1420]">
-                        <img src={p.file_path} alt="" className="w-full h-full object-cover" />
+                        <img src={p.file_path} alt="" className="w-full h-full object-cover" loading="lazy" />
                         <button onClick={() => handleDeletePhoto(p)} className="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-red-500/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                           <Trash2 className="w-3 h-3" />
                         </button>

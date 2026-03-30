@@ -12,7 +12,7 @@ const NotFound = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="text-center">
-        <img src={logoWhite} alt="GetBooked.Live" className="h-5 mx-auto mb-8 opacity-40" />
+        <img src={logoWhite} alt="GetBooked.Live" className="h-5 mx-auto mb-8 opacity-40" loading="lazy" />
         <p className="font-display text-6xl font-bold text-primary mb-3">404</p>
         <h1 className="font-display text-xl font-semibold mb-2">page not found</h1>
         <p className="text-sm text-muted-foreground mb-8 max-w-xs mx-auto font-body">

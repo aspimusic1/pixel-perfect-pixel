@@ -163,7 +163,7 @@ export default function AuthPage() {
       <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 pt-20 pb-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" />
+            <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" loading="lazy" />
             <h1 className="font-display font-bold text-xl mb-1 lowercase text-foreground">one more thing</h1>
             <p className="text-muted-foreground text-sm font-body">what best describes you?</p>
           </div>
@@ -216,7 +216,7 @@ export default function AuthPage() {
       <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 pt-20 pb-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" />
+            <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" loading="lazy" />
             <h1 className="font-display font-bold text-xl mb-1 lowercase text-foreground">reset your password</h1>
             <p className="text-muted-foreground text-sm font-body">we'll send you a link to get back in</p>
           </div>
@@ -292,7 +292,7 @@ export default function AuthPage() {
             </>
           ) : (
             <>
-              <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" />
+              <img src={logoBlack} alt="GetBooked.Live" className="h-6 mx-auto mb-4 opacity-90" loading="lazy" />
               <h1 className="font-display font-bold text-xl mb-1 lowercase text-foreground">
                 {isSignUp ? "create your account" : "welcome back"}
               </h1>

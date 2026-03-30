@@ -10,7 +10,7 @@ export default function UpgradeWall() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-12">
       <div className="max-w-md w-full text-center">
-        <img src={logoWhite} alt="GetBooked.Live" className="h-5 mx-auto mb-8 opacity-60" />
+        <img src={logoWhite} alt="GetBooked.Live" className="h-5 mx-auto mb-8 opacity-60" loading="lazy" />
 
         <div className="w-16 h-16 rounded-2xl bg-[hsl(var(--role-venue))]/10 flex items-center justify-center mx-auto mb-6">
           <Lock className="w-8 h-8 text-[hsl(var(--role-venue))]" />

@@ -212,7 +212,7 @@ export default function EditProfilePanel() {
           className="relative w-full h-32 bg-white/[0.02] flex items-center justify-center hover:bg-white/[0.04] transition-colors group"
         >
           {bannerUrl ? (
-            <img src={bannerUrl} alt="Banner" className="w-full h-full object-cover" />
+            <img src={bannerUrl} alt="Banner" className="w-full h-full object-cover" loading="lazy" />
           ) : (
             <div className="flex flex-col items-center gap-1 text-muted-foreground">
               <ImageIcon className="w-5 h-5" />
@@ -240,7 +240,7 @@ export default function EditProfilePanel() {
               className="relative w-20 h-20 rounded-xl bg-[#0e1420] border-2 border-[#0e1420] overflow-hidden flex items-center justify-center hover:border-white/[0.12] transition-colors active:scale-[0.97] shrink-0 ring-2 ring-[#0e1420]"
             >
               {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" loading="lazy" />
               ) : (
                 <Camera className="w-5 h-5 text-muted-foreground" />
               )}

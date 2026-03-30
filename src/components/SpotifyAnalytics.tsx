@@ -187,7 +187,7 @@ export default function SpotifyAnalytics() {
                   <div key={i} className="flex items-center gap-3 group">
                     <span className="text-[10px] text-muted-foreground tabular-nums w-4 text-right">{i + 1}</span>
                     {track.album_art && (
-                      <img src={track.album_art} alt="" className="w-8 h-8 rounded object-cover" />
+                      <img src={track.album_art} alt="" className="w-8 h-8 rounded object-cover" loading="lazy" />
                     )}
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{track.name}</p>

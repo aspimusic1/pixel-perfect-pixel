@@ -125,7 +125,7 @@ export default function PresalePage() {
         {/* Header */}
         <div className="text-center mb-8">
           {booking.artist_avatar ? (
-            <img src={booking.artist_avatar} alt="" className="w-20 h-20 rounded-full object-cover mx-auto mb-4 border-2 border-white/10" />
+            <img src={booking.artist_avatar} alt="" className="w-20 h-20 rounded-full object-cover mx-auto mb-4 border-2 border-white/10" loading="lazy" />
           ) : (
             <div className="w-20 h-20 rounded-full bg-[#1C2535] flex items-center justify-center mx-auto mb-4 border-2 border-white/10">
               <Music2 className="w-8 h-8 text-muted-foreground" />

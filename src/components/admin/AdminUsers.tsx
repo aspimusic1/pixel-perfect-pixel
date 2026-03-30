@@ -381,7 +381,7 @@ export default function AdminUsers() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
                       {u.avatar_url ? (
-                        <img src={u.avatar_url} className="w-7 h-7 rounded-full object-cover" alt="" />
+                        <img src={u.avatar_url} className="w-7 h-7 rounded-full object-cover" alt="" loading="lazy" />
                       ) : (
                         <div className="w-7 h-7 rounded-full bg-[#1C2535] flex items-center justify-center text-[10px] font-bold text-[#8892A4]">
                           {(u.display_name || "?")[0].toUpperCase()}
@@ -449,7 +449,7 @@ export default function AdminUsers() {
               <SheetHeader className="mb-6">
                 <SheetTitle className="text-[#F0F2F7] font-syne lowercase flex items-center gap-3">
                   {detailUser.avatar_url ? (
-                    <img src={detailUser.avatar_url} className="w-12 h-12 rounded-full object-cover" alt="" />
+                    <img src={detailUser.avatar_url} className="w-12 h-12 rounded-full object-cover" alt="" loading="lazy" />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-[#1C2535] flex items-center justify-center text-lg font-bold text-[#8892A4]">
                       {(detailUser.display_name || "?")[0].toUpperCase()}

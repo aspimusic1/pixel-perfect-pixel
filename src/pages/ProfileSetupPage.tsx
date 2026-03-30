@@ -201,7 +201,7 @@ export default function ProfileSetup() {
                 className="relative w-20 h-20 rounded-full bg-secondary border-2 border-border hover:border-primary/30 transition-colors overflow-hidden group active:scale-[0.97]"
               >
                 {avatarUrl ? (
-                  <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                  <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" loading="lazy" />
                 ) : (
                   <span className="font-display font-bold text-2xl text-foreground">{initials}</span>
                 )}

@@ -154,7 +154,7 @@ export default function AdminBilling() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
                       {u.avatar_url ? (
-                        <img src={u.avatar_url} className="w-6 h-6 rounded-full object-cover" alt="" />
+                        <img src={u.avatar_url} className="w-6 h-6 rounded-full object-cover" alt="" loading="lazy" />
                       ) : (
                         <div className="w-6 h-6 rounded-full bg-[#1C2535] flex items-center justify-center text-[9px] font-bold text-[#8892A4]">
                           {(u.display_name || "?")[0].toUpperCase()}

@@ -58,7 +58,7 @@ export default function RecommendedArtists() {
             >
               <div className="flex items-center gap-2 mb-2">
                 {rec.avatar_url ? (
-                  <img src={rec.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
+                  <img src={rec.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" loading="lazy" />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
                     {(rec.display_name || "?")[0]}

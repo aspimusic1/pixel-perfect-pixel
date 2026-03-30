@@ -68,7 +68,7 @@ export default function AdminModeration() {
               <div key={lp.userId} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
                 <div className="flex items-center gap-2.5">
                   {lp.profile?.avatar_url ? (
-                    <img src={lp.profile.avatar_url} className="w-7 h-7 rounded-full object-cover" alt="" />
+                    <img src={lp.profile.avatar_url} className="w-7 h-7 rounded-full object-cover" alt="" loading="lazy" />
                   ) : (
                     <div className="w-7 h-7 rounded-full bg-[#1C2535] flex items-center justify-center text-[10px] font-bold text-[#8892A4]">
                       {(lp.profile?.display_name || "?")[0].toUpperCase()}
