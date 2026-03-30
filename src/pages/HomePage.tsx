@@ -1,3 +1,4 @@
+/* Landing page – redesigned */
 import { useEffect, useRef } from "react";
 import PageTransition from "@/components/PageTransition";
 import SEO from "@/components/SEO";
