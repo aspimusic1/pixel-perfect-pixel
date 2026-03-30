@@ -9,6 +9,7 @@ import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import WhatMakesDifferentSection from "@/components/landing/WhatMakesDifferentSection";
 import PowerFeaturesSection from "@/components/landing/PowerFeaturesSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
+import PressSection from "@/components/landing/PressSection";
 import PricingTeaser from "@/components/landing/PricingTeaser";
 import FAQSection from "@/components/landing/FAQSection";
 import FinalCTA from "@/components/landing/FinalCTA";
@@ -66,6 +67,7 @@ export default function Landing() {
         <WhatMakesDifferentSection />
         <PowerFeaturesSection />
         <TestimonialsSection />
+        <PressSection />
         <PricingTeaser />
         <FAQSection />
         <FinalCTA />
