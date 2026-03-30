@@ -755,8 +755,11 @@ function DangerSection() {
   const [confirmEmail, setConfirmEmail] = useState("");
   const [deleting, setDeleting] = useState(false);
 
+  const [exporting, setExporting] = useState(false);
+
   const handleExport = async () => {
-    if (!user) return;
+    if (!user || exporting) return;
+    setExporting(true);
     try {
       const [profileRes, offersRes, bookingsRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", user.id).single(),
@@ -781,6 +784,8 @@ function DangerSection() {
       toast.success("Data exported successfully");
     } catch {
       toast.error("Could not export data");
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -813,8 +818,9 @@ function DangerSection() {
             <p className="text-sm font-body font-medium text-foreground">Export my data</p>
             <p className="text-xs text-muted-foreground font-body">Download all your profile, offers, and bookings as JSON.</p>
           </div>
-          <Button variant="outline" size="sm" className="min-h-[44px] font-body text-xs shrink-0" onClick={handleExport}>
-            <Download className="w-3.5 h-3.5 mr-1.5" /> Export data
+          <Button variant="outline" size="sm" className="min-h-[44px] font-body text-xs shrink-0" onClick={handleExport} disabled={exporting}>
+            {exporting ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Download className="w-3.5 h-3.5 mr-1.5" />}
+            {exporting ? "Exporting…" : "Export data"}
           </Button>
         </div>
 
