@@ -64,8 +64,7 @@ export default function Trending() {
   const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
 
   const artistMap = useMemo(() => {
-    const m = new Map<string, ArtistRow>
-      <SEO title="Trending Artists | GetBooked.Live" description="Discover trending artists and rising talent on GetBooked.Live." />();
+    const m = new Map<string, ArtistRow>();
     (profiles ?? []).forEach(p => { if (p.user_id) m.set(p.user_id, p); });
     return m;
   }, [profiles]);
@@ -134,6 +133,8 @@ export default function Trending() {
   }, [profiles]);
 
   return (
+    <>
+      <SEO title="Trending Artists | GetBooked.Live" description="Discover trending artists and rising talent on GetBooked.Live." />
     <div className="min-h-screen pt-20 pb-16 px-4">
       <div className="container mx-auto max-w-3xl">
         <div className="mb-8">
@@ -233,6 +234,7 @@ export default function Trending() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
