@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 
 type Claim = {
   id: string;
@@ -105,6 +106,7 @@ export default function AdminClaims() {
   if (authLoading || isAdmin === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+      <SEO title="Admin Claims | GetBooked.Live" description="Review and manage artist profile claims." />
         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
     );

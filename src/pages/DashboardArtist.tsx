@@ -35,6 +35,7 @@ import OfferScoreCard from "@/components/OfferScoreCard";
 import EmptyState from "@/components/EmptyState";
 import ThreadSummary from "@/components/ThreadSummary";
 import TrialBanner from "@/components/TrialBanner";
+import SEO from "@/components/SEO";
 
 type ArtistView = "overview" | "offers" | "events" | "analytics" | "bookkeeping" | "agent" | "profile";
 
@@ -126,7 +127,7 @@ export default function ArtistDashboard() {
       const today = new Date().toISOString().split("T")[0];
       const [offersRes, bookingsRes, availRes] = await Promise.all([
         supabase.from("offers").select("*").eq("recipient_id", user.id).order("created_at", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1),
-        supabase.from("bookings").select("id, offer_id, contract_url, status, artist_id, promoter_id, venue_name, event_date, guarantee").eq("artist_id", user.id),
+        supabase.from("bookings").select("id, offer_id, contract_url, status, payment_status, deposit_paid_at, artist_id, promoter_id, venue_name, event_date, guarantee").eq("artist_id", user.id),
         supabase.from("artist_availability").select("date, is_available, notes").eq("artist_id", user.id).gte("date", today).order("date", { ascending: true }).limit(8),
       ]);
       const fetchedOffers = (offersRes.data as Offer[]) ?? [];
@@ -197,6 +198,7 @@ export default function ArtistDashboard() {
 
     return (
       <div key={offer.id} className="group rounded-lg border border-white/[0.06] bg-[#0e1420] hover:border-white/[0.12] transition-colors">
+      <SEO title="Artist Dashboard | GetBooked.Live" description="Manage your offers, bookings, events, and analytics as an artist." />
         {/* Compact header row */}
         <div className="flex items-center gap-3 px-4 py-3">
           <span className={`w-2 h-2 rounded-full shrink-0 ${STATUS_DOT[offer.status] ?? "bg-muted"}`} />
@@ -281,11 +283,20 @@ export default function ArtistDashboard() {
             {advanceRequested.has(booking.id) && (
               <span className="inline-flex items-center gap-1 text-[11px] text-[#3EC8FF] font-medium px-2.5 py-1"><CheckCircle className="w-3 h-3" /> advance requested</span>
             )}
-            {booking.status !== "deposit_paid" && (
-              <DepositPaymentButton bookingId={booking.id} guarantee={booking.guarantee} onSuccess={() => { setBookings((prev) => prev.map((b) => b.id === booking.id ? { ...b, status: "deposit_paid" } : b)); }} />
+            {/* Payment status badges */}
+            {(booking as any).payment_status === "deposit_paid" && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-amber-400 font-medium px-2.5 py-1 bg-amber-400/10 rounded-full border border-amber-400/20">
+                <DollarSign className="w-3 h-3" /> deposit paid
+              </span>
             )}
-            {booking.status === "deposit_paid" && (
-              <span className="inline-flex items-center gap-1 text-[11px] text-[#3EFFBE] font-medium px-2.5 py-1"><CheckCircle className="w-3 h-3" /> deposit paid</span>
+            {(booking as any).payment_status === "fully_paid" && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-[#3EFFBE] font-medium px-2.5 py-1 bg-[#3EFFBE]/10 rounded-full border border-[#3EFFBE]/20">
+                <CheckCircle className="w-3 h-3" /> fully paid
+              </span>
+            )}
+            {/* Deposit button — only when unpaid */}
+            {(!(booking as any).payment_status || (booking as any).payment_status === "unpaid") && (
+              <DepositPaymentButton bookingId={booking.id} guarantee={booking.guarantee} onSuccess={() => { setBookings((prev) => prev.map((b) => b.id === booking.id ? { ...b, payment_status: "deposit_paid" } as any : b)); }} />
             )}
             {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
               <div className="w-full mt-1 space-y-1.5">

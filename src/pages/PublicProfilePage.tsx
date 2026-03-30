@@ -20,6 +20,7 @@ import ReelDisplay from "@/components/ReelDisplay";
 import TopTracksSection from "@/components/TopTracksSection";
 import DemandMap from "@/components/DemandMap";
 import { Download } from "lucide-react";
+import SEO from "@/components/SEO";
 
 // ─── Types ───
 type Review = {
@@ -98,6 +99,7 @@ function SocialPill({ href, label }: { href: string; label: string }) {
       rel="noopener noreferrer"
       className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground transition-colors"
     >
+      <SEO title="Artist Profile | GetBooked.Live" description="View this artist's profile, music, and booking availability on GetBooked.Live." />
       {label}
     </a>
   );

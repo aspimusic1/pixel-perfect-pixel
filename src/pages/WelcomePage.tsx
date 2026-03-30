@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ArrowRight, Mic2, Megaphone, Building2, Wrench, Camera } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const ROLE_COPY: Record<string, { intro: string; detail: string }> = {
   artist: {
@@ -82,6 +83,7 @@ export default function Welcome() {
 
   return (
     <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-6">
+      <SEO title="Welcome to GetBooked.Live" description="Get started with GetBooked.Live — the platform for music industry bookings." />
       <div className="max-w-lg w-full text-center space-y-8">
         {/* Icon */}
         <div

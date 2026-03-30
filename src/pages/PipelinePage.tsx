@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import NegotiationThread from "@/components/NegotiationThread";
 import CounterOfferDialog from "@/components/CounterOfferDialog";
+import SEO from "@/components/SEO";
 
 const COLUMNS = [
   { key: "pending", label: "Pending", color: "#FFB83E" },
@@ -175,6 +176,7 @@ export default function Pipeline() {
 
   return (
     <div className="min-h-screen bg-[#080C14] text-[#F0F2F7]">
+      <SEO title="Booking Pipeline | GetBooked.Live" description="Track your booking pipeline and deal stages on GetBooked.Live." />
       <div className="px-4 sm:px-6 py-6 max-w-[1600px] mx-auto">
 
         {/* Header */}

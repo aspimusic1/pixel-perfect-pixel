@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
+import SEO from "@/components/SEO";
 
 type VenueView = "overview" | "details" | "photos" | "availability" | "profile";
 type VenueListing = { id: string; name: string; city: string | null; state: string | null; address: string | null; phone: string | null; email: string | null; website: string | null; description: string | null; capacity: number | null; amenities: string[] | null; claim_status: string };
@@ -120,6 +121,7 @@ export default function VenueManage() {
   if (venues.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#080C14] px-4">
+      <SEO title="Venue Dashboard | GetBooked.Live" description="Manage your venue bookings and events on GetBooked.Live." />
         <div className="text-center max-w-sm">
           <Building2 className="w-8 h-8 mx-auto mb-3" style={{ color: ACCENT }} />
           <h1 className="font-display text-lg font-bold mb-1 lowercase">no claimed venues yet</h1>

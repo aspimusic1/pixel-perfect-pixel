@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import SEO from "@/components/SEO";
 
 interface BookingWithOffer {
   id: string;
@@ -203,6 +204,7 @@ export default function TaxDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
+      <SEO title="Tax Dashboard | GetBooked.Live" description="Track your earnings and generate tax reports for your bookings." />
         <Loader2 className="w-6 h-6 animate-spin text-[#C8FF3E]" />
       </div>
     );

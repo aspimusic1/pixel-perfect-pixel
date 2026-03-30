@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Star, Loader2, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 
 const ARTIST_CATEGORIES = [
   { key: "performance", label: "Performance" },
@@ -33,6 +34,7 @@ function StarRating({
   const starSize = size === "lg" ? "w-10 h-10" : "w-6 h-6";
   return (
     <div className="flex gap-1">
+      <SEO title="Leave a Review | GetBooked.Live" description="Share your experience with an artist or promoter on GetBooked.Live." />
       {[1, 2, 3, 4, 5].map((i) => (
         <button
           key={i}

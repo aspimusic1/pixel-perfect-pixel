@@ -473,6 +473,15 @@ function ProfileDropdown({
           <CreditCard className="w-3.5 h-3.5 mr-2" />
           Subscription
         </DropdownMenuItem>
+        {isAdmin && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/admin")} className="text-[#7B5CF0] focus:text-[#7B5CF0]">
+              <ShieldCheck className="w-3.5 h-3.5 mr-2" />
+              Admin Panel
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate("/help")}>
           <HelpCircle className="w-3.5 h-3.5 mr-2" />

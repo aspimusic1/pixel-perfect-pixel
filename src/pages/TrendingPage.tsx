@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { TrendingUp, TrendingDown, Minus, Flame, Star, Sparkles, UserPlus } from "lucide-react";
+import SEO from "@/components/SEO";
 
 type ArtistRow = {
   user_id: string | null;
@@ -63,7 +64,8 @@ export default function Trending() {
   const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
 
   const artistMap = useMemo(() => {
-    const m = new Map<string, ArtistRow>();
+    const m = new Map<string, ArtistRow>
+      <SEO title="Trending Artists | GetBooked.Live" description="Discover trending artists and rising talent on GetBooked.Live." />();
     (profiles ?? []).forEach(p => { if (p.user_id) m.set(p.user_id, p); });
     return m;
   }, [profiles]);

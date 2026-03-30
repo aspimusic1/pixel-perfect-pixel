@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Wrench, Camera, Calendar, FileText, UserCog, Briefcase, ChevronLeft, ChevronRight, MapPin, Clock, Users, ArrowRight } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameDay, parseISO, isAfter, isBefore, startOfToday, isWithinInterval, startOfWeek, endOfWeek } from "date-fns";
 import toast from "react-hot-toast";
+import SEO from "@/components/SEO";
 
 type CrewView = "overview" | "bookings" | "calendar" | "profile";
 
@@ -174,6 +175,7 @@ export default function CrewDashboard() {
 
   return (
     <SidebarProvider>
+      <SEO title="Crew Dashboard | GetBooked.Live" description="Manage your crew services and bookings on GetBooked.Live." />
       <div className="min-h-screen flex w-full bg-background">
         <DashboardSidebar items={navItems} activeView={activeView} onViewChange={setActiveView as (v: string) => void} accentColor={ACCENT} roleLabel={roleLabel} roleIcon={RoleIcon} displayName={profile?.display_name ?? undefined} />
 

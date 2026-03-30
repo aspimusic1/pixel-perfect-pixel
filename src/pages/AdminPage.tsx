@@ -14,6 +14,7 @@ import AdminGrowth from "@/components/admin/AdminGrowth";
 import AdminModeration from "@/components/admin/AdminModeration";
 import AdminSettings from "@/components/admin/AdminSettings";
 import AdminAIMonitor from "@/components/admin/AdminAIMonitor";
+import SEO from "@/components/SEO";
 
 const NAV_ITEMS = [
   { key: "overview", label: "overview", icon: LayoutDashboard },
@@ -50,6 +51,7 @@ export default function AdminDashboard() {
   if (loading || isAdmin === null) {
     return (
       <div className="min-h-screen bg-[#080C14] flex items-center justify-center pt-14">
+      <SEO title="Admin Panel | GetBooked.Live" description="Manage the GetBooked.Live platform." />
         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
     );

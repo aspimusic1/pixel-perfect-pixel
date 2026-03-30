@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Inbox, Calendar, DollarSign, TrendingUp, ArrowRight, MapPin, CheckCircle, XCircle, ArrowRightLeft } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
+import SEO from "@/components/SEO";
 
 const ACCENT = "#C8FF3E";
 
@@ -70,6 +71,7 @@ export default function DemoDashboard() {
 
   return (
     <div className="min-h-screen bg-[#080C14] pt-16">
+      <SEO title="Demo Dashboard | GetBooked.Live" description="Explore the GetBooked.Live dashboard with demo data." />
       {/* Demo banner */}
       <div className="sticky top-16 z-40 bg-yellow-500/90 backdrop-blur-sm text-[#080C14] text-center py-2.5 px-4 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs font-semibold">
         <span>🎯 Demo mode — create a free account to save your data ({mins}:{secs.toString().padStart(2, "0")} remaining)</span>

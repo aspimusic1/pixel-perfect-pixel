@@ -10,6 +10,7 @@ import { Camera, Loader2, Mic2, Megaphone, Building2, Wrench, Camera as CameraIc
 import toast from "react-hot-toast";
 import BackButton from "@/components/BackButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import SEO from "@/components/SEO";
 
 const ROLE_META: Record<string, { icon: any; label: string; accent: string; stepLabel: string }> = {
   artist: { icon: Mic2, label: "Artist", accent: "text-[hsl(var(--role-artist))]", stepLabel: "Set up your artist profile" },
@@ -175,6 +176,7 @@ export default function ProfileSetup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-12">
+      <SEO title="Set Up Your Profile | GetBooked.Live" description="Complete your GetBooked.Live profile to start receiving or sending booking offers." />
       <div className="w-full max-w-lg">
         <Breadcrumbs items={[
           { label: "Home", to: "/" },

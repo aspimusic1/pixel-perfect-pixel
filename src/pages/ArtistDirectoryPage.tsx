@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Music, Star, Send, Instagram, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import SEO from "@/components/SEO";
 
 // ─── Types ───
 type DirectoryArtist = {
@@ -51,6 +52,7 @@ function SocialPill({ href, label, icon }: { href: string; label: string; icon?:
       rel="noopener noreferrer"
       className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/[0.06] text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
     >
+      <SEO title="Artist Directory | GetBooked.Live" description="Browse and discover artists available for booking on GetBooked.Live." />
       {icon}
       {label}
     </a>

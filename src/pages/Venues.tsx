@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Search, MapPin, Phone, Mail, Globe, Lock, ArrowRight, Shield, CheckCircle, Clock, CalendarDays } from "lucide-react";
 import { format, parseISO, isAfter, startOfToday } from "date-fns";
 import VenueClaimDialog from "@/components/VenueClaimDialog";
+import SEO from "@/components/SEO";
 
 type VenueListing = {
   id: string;
@@ -111,7 +112,8 @@ export default function Venues() {
     );
   });
 
-  const grouped = filtered.reduce<Record<string, VenueListing[]>>((acc, v) => {
+  const grouped = filtered.reduce<Record<string, VenueListing[]>
+      <SEO title="Venues | GetBooked.Live" description="Discover and book venues for your next event on GetBooked.Live." />>((acc, v) => {
     const key = v.region || "Other";
     if (!acc[key]) acc[key] = [];
     acc[key].push(v);

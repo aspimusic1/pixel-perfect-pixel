@@ -8,6 +8,7 @@ import { Wrench, CheckCircle, DollarSign, Users, Calendar, FileText, UserCog } f
 import EditProfilePanel from "@/components/EditProfilePanel";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
 import TrialBanner from "@/components/TrialBanner";
+import SEO from "@/components/SEO";
 
 type ProductionView = "overview" | "gigs" | "crew" | "calendar" | "documents" | "profile";
 
@@ -28,6 +29,7 @@ export default function ProductionDashboard() {
 
   return (
     <SidebarProvider>
+      <SEO title="Production Dashboard | GetBooked.Live" description="Manage your production services and bookings on GetBooked.Live." />
       <div className="min-h-screen flex w-full bg-[#080C14]">
         <DashboardSidebar items={navItems} activeView={activeView} onViewChange={setActiveView as (v: string) => void} accentColor={ACCENT} roleLabel="production" roleIcon={Wrench} displayName={profile?.display_name ?? undefined} />
 

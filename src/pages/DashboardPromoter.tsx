@@ -23,6 +23,7 @@ import EditProfilePanel from "@/components/EditProfilePanel";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
 import ThreadSummary from "@/components/ThreadSummary";
 import TrialBanner from "@/components/TrialBanner";
+import SEO from "@/components/SEO";
 
 type PromoterView = "overview" | "offers" | "discover" | "profile";
 type Offer = { id: string; venue_name: string; event_date: string; event_time: string | null; guarantee: number; door_split: number | null; merch_split: number | null; status: string; recipient_id: string; sender_id: string; created_at: string };
@@ -88,6 +89,7 @@ export default function PromoterDashboard() {
     const booking = getBookingForOffer(offer.id);
     return (
       <div key={offer.id} className="group rounded-lg border border-white/[0.06] bg-[#0e1420] hover:border-white/[0.12] transition-colors">
+      <SEO title="Promoter Dashboard | GetBooked.Live" description="Manage your offers, bookings, and artist pipeline as a promoter." />
         <div className="flex items-center gap-3 px-4 py-3">
           <span className={`w-2 h-2 rounded-full shrink-0 ${STATUS_DOT[offer.status] ?? "bg-muted"}`} />
           <span className="font-display text-sm font-semibold lowercase truncate flex-1">{offer.venue_name}</span>

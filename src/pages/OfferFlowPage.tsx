@@ -14,6 +14,7 @@ import { CalendarIcon, ArrowLeft, ArrowRight, Check, DollarSign, Music, MapPin, 
 import toast from "react-hot-toast";
 import OfferIntelligence from "@/components/OfferIntelligence";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import SEO from "@/components/SEO";
 
 type ArtistOption = { user_id: string; display_name: string | null; genre: string | null; city: string | null };
 
@@ -215,6 +216,7 @@ export default function OfferFlow() {
 
   return (
     <div className="min-h-screen pt-20 px-4 pb-24 sm:pb-12">
+      <SEO title="Send a Booking Offer | GetBooked.Live" description="Create and send a structured booking offer to an artist on GetBooked.Live." />
       <div className="container mx-auto max-w-2xl">
         {/* Header */}
         <div className="mb-8">

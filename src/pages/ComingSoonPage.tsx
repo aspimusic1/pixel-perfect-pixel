@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Instagram, Linkedin } from "lucide-react";
 import { waitlistSchema } from "@/lib/publicInputValidation";
+import SEO from "@/components/SEO";
 
 const WAITLIST_BASE_COUNT = 2847;
 
@@ -124,6 +125,7 @@ export default function ComingSoonPage() {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      <SEO title="Coming Soon | GetBooked.Live" description="GetBooked.Live is launching soon. Join the waitlist for early access." />
       <canvas ref={canvasRef} className="fixed inset-0 z-0" />
 
       <div className="fixed inset-0 z-[1] opacity-[0.03] pointer-events-none"

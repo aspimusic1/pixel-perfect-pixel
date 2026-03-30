@@ -8,6 +8,7 @@ import { Camera, CheckCircle, DollarSign, FolderOpen, Star, Calendar, UserCog } 
 import EditProfilePanel from "@/components/EditProfilePanel";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
 import TrialBanner from "@/components/TrialBanner";
+import SEO from "@/components/SEO";
 
 type CreativeView = "overview" | "portfolio" | "bookings" | "calendar" | "reviews" | "profile";
 
@@ -28,6 +29,7 @@ export default function CreativeDashboard() {
 
   return (
     <SidebarProvider>
+      <SEO title="Creative Dashboard | GetBooked.Live" description="Manage your creative services and bookings on GetBooked.Live." />
       <div className="min-h-screen flex w-full bg-[#080C14]">
         <DashboardSidebar items={navItems} activeView={activeView} onViewChange={setActiveView as (v: string) => void} accentColor={ACCENT} roleLabel="photo / video" roleIcon={Camera} displayName={profile?.display_name ?? undefined} />
 

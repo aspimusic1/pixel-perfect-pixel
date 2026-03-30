@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import toast from "react-hot-toast";
 import EditStopDialog from "@/components/EditStopDialog";
 import TransportSection from "@/components/TransportSection";
+import SEO from "@/components/SEO";
 
 type Tour = { id: string; name: string; description: string | null; start_date: string | null; end_date: string | null; status: string };
 type TourStop = { id: string; tour_id: string; venue_name: string; city: string | null; state: string | null; date: string; load_in_time: string | null; sound_check_time: string | null; doors_time: string | null; show_time: string | null; guarantee: number | null; notes: string | null; sort_order: number };
@@ -187,6 +188,7 @@ export default function TourManagement() {
   if (!selectedTour) {
     return (
       <div className="min-h-screen pt-20 px-4 sm:px-6 md:px-8 pb-12">
+      <SEO title="Tour Management | GetBooked.Live" description="Plan and manage your tours, stops, crew, and budget in one place." />
         <div className="container mx-auto max-w-3xl">
           <div className="flex items-center justify-between mb-8">
             <div>

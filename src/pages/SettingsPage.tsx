@@ -14,6 +14,7 @@ import {
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import SEO from "@/components/SEO";
 
 const SECTIONS = [
   { id: "profile", label: "Profile", icon: User },
@@ -32,6 +33,7 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen pt-[60px] bg-background">
+      <SEO title="Account Settings | GetBooked.Live" description="Manage your profile, notifications, subscription, and integrations on GetBooked.Live." />
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
         <div className="mb-8">
           <span className="section-label">settings</span>

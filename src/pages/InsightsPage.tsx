@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { BarChart3, TrendingUp, MapPin, Lock, Flame, DollarSign, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import SEO from "@/components/SEO";
 
 type GenreCity = { genre: string; city: string; avg_guarantee: number; count: number };
 type TrendingArtist = { user_id: string; display_name: string; genre: string; booking_count: number };
@@ -129,6 +130,7 @@ export default function Insights() {
 
   return (
     <div className="min-h-screen pt-20 px-4 pb-12">
+      <SEO title="Insights & Analytics | GetBooked.Live" description="Track your BookScore, offer funnel, revenue, and genre performance." />
       <div className="container mx-auto max-w-5xl">
         <div className="flex items-center justify-between mb-6">
           <div>

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { KeyRound, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -41,6 +42,7 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen bg-[#080C14] flex items-center justify-center px-4 pt-20">
+      <SEO title="Reset Password | GetBooked.Live" description="Reset your GetBooked.Live account password." />
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">

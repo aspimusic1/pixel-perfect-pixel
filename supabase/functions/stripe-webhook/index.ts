@@ -71,27 +71,26 @@ serve(async (req) => {
         const isDeposit = Math.abs(amountPaid - depositAmount) < 1; // within $1 tolerance
         const isFinalPayment = !isDeposit;
 
-        const newStatus = isFinalPayment ? "completed" : "deposit_paid";
-        const paymentType = isFinalPayment ? "final_payment" : "deposit";
+        const newBookingStatus = isFinalPayment ? "completed" : "deposit_paid";
+        const newPaymentStatus = isFinalPayment ? "fully_paid" : "deposit_paid";
 
-        // Update booking status
+        // Update booking with new payment_status column + booking status
+        const updatePayload: Record<string, unknown> = {
+          status: newBookingStatus,
+          payment_status: newPaymentStatus,
+          stripe_payment_intent_id: (session.payment_intent as string) ?? null,
+        };
+        if (!isFinalPayment) updatePayload.deposit_paid_at = new Date().toISOString();
+        else updatePayload.final_paid_at = new Date().toISOString();
+
         const { error: updateErr } = await supabase
           .from("bookings")
-          .update({
-            status: newStatus,
-            [`${paymentType}_paid_at`]: new Date().toISOString(),
-            [`${paymentType}_stripe_session_id`]: session.id,
-            [`${paymentType}_amount`]: amountPaid,
-          })
+          .update(updatePayload)
           .eq("id", bookingId);
 
         if (updateErr) {
-          console.error("Failed to update booking status:", updateErr);
-          // Try minimal update if extended columns don't exist yet
-          await supabase
-            .from("bookings")
-            .update({ status: newStatus })
-            .eq("id", bookingId);
+          console.error("Failed to update booking payment status:", updateErr);
+          await supabase.from("bookings").update({ status: newBookingStatus }).eq("id", bookingId);
         }
 
         // If final payment, trigger artist payout via Stripe Connect transfer

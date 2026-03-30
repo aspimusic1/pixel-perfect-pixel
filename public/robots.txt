@@ -1,16 +1,12 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /admin
+Disallow: /offer-flow
+Disallow: /tour-management
+Disallow: /pipeline
+Disallow: /tax-dashboard
+Disallow: /insights
 
-Sitemap: https://getbookedlive.lovable.app/sitemap.xml
+Sitemap: https://getbooked.live/sitemap.xml

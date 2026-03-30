@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import logoWhite from "@/assets/logo-white.svg";
+import SEO from "@/components/SEO";
 
 const NotFound = () => {
   const location = useLocation();
@@ -11,6 +12,7 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
+      <SEO title="Page Not Found | GetBooked.Live" description="The page you are looking for does not exist on GetBooked.Live." />
       <div className="text-center">
         <img src={logoWhite} alt="GetBooked.Live" className="h-5 mx-auto mb-8 opacity-40" loading="lazy" />
         <p className="font-display text-6xl font-bold text-primary mb-3">404</p>
