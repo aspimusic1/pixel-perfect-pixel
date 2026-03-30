@@ -147,18 +147,18 @@ export default function Pricing() {
     <div ref={ref} className="min-h-screen pt-24 px-4 pb-16">
       <SEO
         title="Pricing — GetBooked.Live | Free, Pro & Agency Plans"
-        description="Start free with a 7-day Pro trial. Pro plan at $23/month (yearly) cuts your commission from 20% to 10%. One booking pays for itself."
+        description="Start free with a 7-day Pro trial. Pro plan from $23/month (billed yearly) or $29/month — cuts your commission from 20% to 10%. One booking pays for itself."
         canonical="https://www.getbooked.live/pricing"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebPage",
           name: "GetBooked.Live Pricing",
-          description: "Start free with a 7-day Pro trial. Pro plan at $23/month (yearly) cuts your commission from 20% to 10%.",
+          description: "Start free with a 7-day Pro trial. Pro plan from $23/month (billed yearly) or $29/month — cuts your commission from 20% to 10%.",
           url: "https://www.getbooked.live/pricing",
           mainEntity: {
             "@type": "PriceSpecification",
             priceCurrency: "USD",
-            price: "23.00",
+            price: "29.00",
             description: "Pro plan (yearly) — 10% commission, unlimited offers, verified badge",
           },
         }}

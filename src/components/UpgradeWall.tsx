@@ -26,7 +26,7 @@ export default function UpgradeWall() {
         <div className="flex flex-col gap-3 max-w-xs mx-auto">
           <Link to="/pricing">
             <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium h-12 active:scale-[0.97] transition-transform lowercase">
-              upgrade to pro — $29/mo <ArrowRight className="ml-2 w-4 h-4" />
+              upgrade to pro — from $23/mo <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>
           {!user && (

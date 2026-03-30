@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 const FAQS = [
   {
     q: "How does the commission system work?",
-    a: "Free accounts pay a 20% platform commission on confirmed bookings. Pro subscribers ($29/mo) pay 10%, and Agency accounts ($99/mo) pay just 5–7%. Commission is automatically calculated and deducted — no invoicing required.",
+    a: "Free accounts pay a 20% platform commission on confirmed bookings. Pro subscribers ($29/mo monthly, or $23/mo billed yearly) pay 10%, and Agency accounts ($99/mo monthly, or $79/mo billed yearly) pay just 5–7%. Commission is automatically calculated and deducted — no invoicing required.",
   },
   {
     q: "What happens after an offer is accepted?",
