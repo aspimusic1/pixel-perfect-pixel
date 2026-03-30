@@ -133,6 +133,8 @@ export default function Trending() {
   }, [profiles]);
 
   return (
+    <>
+      <SEO title="Trending Artists | GetBooked.Live" description="Discover trending artists and rising talent on GetBooked.Live." />
     <div className="min-h-screen pt-20 pb-16 px-4">
       <div className="container mx-auto max-w-3xl">
         <div className="mb-8">
