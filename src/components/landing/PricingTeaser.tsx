@@ -62,7 +62,7 @@ export default function PricingTeaser() {
           <span className="section-label">pricing</span>
           <h2 className="section-heading">simple plans.</h2>
           <p className="section-subtext mx-auto">
-            Every new account gets a <span className="text-primary font-semibold">14-day Pro trial</span>. No credit card required.
+            Every new account gets a <span className="text-primary font-semibold">7-day Pro trial</span>.
           </p>
         </div>
 

@@ -40,7 +40,7 @@ const PLANS = [
     unit: "/month",
     desc: "For working artists and active promoters.",
     commission: "10%",
-    features: ["14-day free trial — no card required", "Unlimited offers", "10% commission on bookings", "Verified badge", "Deal rooms & contracts", "Income smoothing", "Priority support"],
+    features: ["7-day free trial", "Unlimited offers", "10% commission on bookings", "Verified badge", "Deal rooms & contracts", "Income smoothing", "Priority support"],
     cta: "Start free trial",
     highlight: true,
     tier: "pro" as const,
@@ -147,13 +147,13 @@ export default function Pricing() {
     <div ref={ref} className="min-h-screen pt-24 px-4 pb-16">
       <SEO
         title="Pricing — GetBooked.Live | Free, Pro & Agency Plans"
-        description="Start free with a 14-day Pro trial. Pro plan at $23/month (yearly) cuts your commission from 20% to 10%. One booking pays for itself."
+        description="Start free with a 7-day Pro trial. Pro plan at $23/month (yearly) cuts your commission from 20% to 10%. One booking pays for itself."
         canonical="https://www.getbooked.live/pricing"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebPage",
           name: "GetBooked.Live Pricing",
-          description: "Start free with a 14-day Pro trial. Pro plan at $23/month (yearly) cuts your commission from 20% to 10%.",
+          description: "Start free with a 7-day Pro trial. Pro plan at $23/month (yearly) cuts your commission from 20% to 10%.",
           url: "https://www.getbooked.live/pricing",
           mainEntity: {
             "@type": "PriceSpecification",
@@ -168,7 +168,7 @@ export default function Pricing() {
           <span className="section-label">pricing</span>
           <h1 data-reveal className="opacity-0 section-heading">simple, transparent pricing</h1>
           <p data-reveal className="opacity-0 section-subtext mx-auto" style={{ animationDelay: "80ms" }}>
-            Every new account starts with a <span className="text-primary font-semibold">14-day Pro trial</span>. No credit card required.
+            Every new account starts with a <span className="text-primary font-semibold">7-day Pro trial</span>.
           </p>
         </div>
 
@@ -340,7 +340,7 @@ export default function Pricing() {
                 <span className="inline-flex items-center gap-1.5 text-[10px] font-display font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full mb-3">
                   <Zap className="w-3 h-3" /> how the trial works
                 </span>
-                <h2 className="font-display font-bold text-xl text-foreground">Pro free for 14 days. No card required.</h2>
+                <h2 className="font-display font-bold text-xl text-foreground">Pro free for 7 days.</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {[
@@ -348,19 +348,19 @@ export default function Pricing() {
                     icon: Zap,
                     step: "1",
                     title: "Sign up — get Pro instantly",
-                    desc: "Create your account and your 14-day Pro trial starts immediately. No credit card, no commitment.",
+                    desc: "Create your account and your 7-day Pro trial starts immediately.",
                   },
                   {
                     icon: ShieldCheck,
                     step: "2",
                     title: "Use every Pro feature",
-                    desc: "Deal Rooms, standard contracts, 10% commission, verified badge — everything unlocked for 14 days.",
+                    desc: "Deal Rooms, standard contracts, 10% commission, verified badge — everything unlocked for 7 days.",
                   },
                   {
                     icon: TrendingDown,
                     step: "3",
                     title: "Stay free or subscribe",
-                    desc: "After 14 days you drop to the Free tier automatically. No surprise charges. Upgrade any time.",
+                    desc: "After 7 days you drop to the Free tier automatically. No surprise charges. Upgrade any time.",
                   },
                 ].map((item) => (
                   <div key={item.step} className="flex gap-4">

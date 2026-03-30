@@ -18,7 +18,7 @@ export default function FinalCTA() {
           one platform. every role. every show.
         </h2>
         <p className="text-[15px] text-muted-foreground font-body leading-relaxed mb-10 max-w-md mx-auto">
-          free to join. first booking takes minutes. no credit card required.
+          free to join. first booking takes minutes.
         </p>
 
         <div className="flex flex-wrap justify-center gap-3">
