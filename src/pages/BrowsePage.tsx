@@ -234,7 +234,27 @@ export default function BrowsePage() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="h-48 rounded-xl bg-card animate-pulse" />
+                <div key={i} className="rounded-xl bg-card border border-white/[0.06] p-5 animate-pulse">
+                  {/* Avatar + name row */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 rounded-full bg-white/[0.08] flex-shrink-0" />
+                    <div className="flex-1 min-w-0 space-y-2 pt-1">
+                      <div className="h-4 bg-white/[0.08] rounded w-3/4" />
+                      <div className="h-3 bg-white/[0.05] rounded w-1/2" />
+                      <div className="h-3 bg-white/[0.05] rounded w-2/5" />
+                    </div>
+                  </div>
+                  {/* Bio line */}
+                  <div className="mt-3 space-y-1.5">
+                    <div className="h-3 bg-white/[0.05] rounded w-full" />
+                    <div className="h-3 bg-white/[0.05] rounded w-4/5" />
+                  </div>
+                  {/* Badges row */}
+                  <div className="mt-3 flex gap-2">
+                    <div className="h-5 bg-white/[0.06] rounded-full w-16" />
+                    <div className="h-5 bg-white/[0.06] rounded-full w-20" />
+                  </div>
+                </div>
               ))}
             </div>
           ) : filtered.length === 0 ? (
