@@ -1,23 +1,183 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, X } from "lucide-react";
-import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
+import { ArrowRight, Check, X, Mic2, Megaphone, Building2, Camera, Zap } from "lucide-react";
+import { motion, useMotionValue, useSpring, useInView, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+/* ─── Concert background with parallax ─── */
+function ConcertBackground() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+
+  return (
+    <motion.div ref={ref} className="absolute inset-0 overflow-hidden pointer-events-none" style={{ opacity }}>
+      <motion.div className="absolute inset-0 w-full h-[120%] -top-[10%]" style={{ y }}>
+        <img
+          src="/images/concert-crowd.jpg"
+          alt=""
+          className="w-full h-full object-cover object-center"
+          loading="eager"
+          fetchPriority="high"
+        />
+      </motion.div>
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050810]/75 via-[#050810]/55 to-[#050810]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#050810]/50 via-transparent to-[#050810]/50" />
+      {/* Accent glows */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1000px] h-[280px] bg-primary/[0.07] blur-[100px]" />
+      <div className="absolute top-1/3 left-1/4 w-[500px] h-[400px] bg-[#FF5C8A]/[0.04] blur-[130px]" />
+      <div className="absolute top-1/3 right-1/4 w-[500px] h-[400px] bg-[#3EC8FF]/[0.04] blur-[130px]" />
+    </motion.div>
+  );
+}
+
+/* ─── Role entry buttons ─── */
+const ROLES = [
+  {
+    id: "artist",
+    icon: Mic2,
+    label: "I AM AN ARTIST",
+    cta: "Get Booked",
+    color: "#C8FF3E",
+    textColor: "#080C14",
+    link: "/auth?tab=signup&role=artist",
+    glow: "rgba(200,255,62,0.25)",
+  },
+  {
+    id: "promoter",
+    icon: Megaphone,
+    label: "I AM A PROMOTER",
+    cta: "Book Talent",
+    color: "#FF5C8A",
+    textColor: "#fff",
+    link: "/auth?tab=signup&role=promoter",
+    glow: "rgba(255,92,138,0.25)",
+  },
+  {
+    id: "venue",
+    icon: Building2,
+    label: "I AM A VENUE",
+    cta: "Find Events",
+    color: "#FFB83E",
+    textColor: "#080C14",
+    link: "/auth?tab=signup&role=venue",
+    glow: "rgba(255,184,62,0.25)",
+  },
+  {
+    id: "creative",
+    icon: Camera,
+    label: "I AM A CREATIVE",
+    cta: "Find Work",
+    color: "#3EC8FF",
+    textColor: "#080C14",
+    link: "/auth?tab=signup&role=photo_video",
+    glow: "rgba(62,200,255,0.25)",
+  },
+];
+
+function RoleEntryButtons() {
+  return (
+    <motion.div
+      className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-2xl mx-auto mt-10"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.55, duration: 0.5, ease: "easeOut" }}
+    >
+      {ROLES.map((role, i) => {
+        const Icon = role.icon;
+        return (
+          <Link key={role.id} to={role.link}>
+            <motion.div
+              className="relative group flex flex-col items-center justify-center gap-2 rounded-2xl border p-4 h-[100px] cursor-pointer overflow-hidden"
+              style={{
+                borderColor: `${role.color}30`,
+                backgroundColor: `${role.color}08`,
+              }}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 + i * 0.08, duration: 0.45, ease: "easeOut" }}
+              whileHover={{
+                scale: 1.04,
+                backgroundColor: `${role.color}18`,
+                borderColor: `${role.color}60`,
+                boxShadow: `0 0 28px ${role.glow}`,
+              }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <Icon className="w-5 h-5" style={{ color: role.color }} />
+              <div className="text-center">
+                <p className="text-[10px] font-display font-bold tracking-widest uppercase" style={{ color: role.color }}>
+                  {role.label}
+                </p>
+                <p className="text-[11px] font-body text-white/60 mt-0.5 flex items-center justify-center gap-1">
+                  {role.cta} <ArrowRight className="w-3 h-3" />
+                </p>
+              </div>
+            </motion.div>
+          </Link>
+        );
+      })}
+    </motion.div>
+  );
+}
+
+/* ─── Live activity badge ─── */
+function LiveBadge({ dealsThisWeek }: { dealsThisWeek: number }) {
+  return (
+    <motion.div
+      className="inline-flex items-center gap-2 bg-white/[0.05] border border-white/[0.1] rounded-full px-4 py-1.5 mb-5 backdrop-blur-sm"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <span className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+      </span>
+      <span className="text-[11px] text-white/60 font-body tracking-wide">
+        {dealsThisWeek > 0 ? `${dealsThisWeek} deals sent this week` : "live · booking platform open"}
+      </span>
+    </motion.div>
+  );
+}
+
+/* ─── Social proof bar ─── */
+function SocialProofBar({ artistCount }: { artistCount: number }) {
+  const cities = ["Miami", "NYC", "LA", "Chicago", "LATAM"];
+  return (
+    <motion.div
+      className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.1, duration: 0.5 }}
+    >
+      <span className="text-[11px] text-white/40 font-body">Used by promoters in</span>
+      {cities.map((city) => (
+        <span key={city} className="text-[11px] text-white/60 font-display font-semibold tracking-wide">
+          {city}
+        </span>
+      ))}
+      <span className="text-[11px] text-white/40 font-body">·</span>
+      <span className="text-[11px] text-white/60 font-body">
+        <span className="text-primary font-display font-bold">{artistCount.toLocaleString()}+</span> artists onboarded
+      </span>
+    </motion.div>
+  );
+}
+
+/* ─── Mockup window ─── */
 function MockupWindow() {
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/[0.08] bg-card shadow-[0_32px_80px_hsl(var(--primary)/0.1),0_0_0_1px_hsl(var(--primary)/0.05)]">
-      {/* macOS chrome bar */}
-      <div className="h-8 bg-secondary flex items-center px-3 gap-2 border-b border-white/[0.06]">
+    <div className="rounded-2xl overflow-hidden border border-white/[0.08] bg-[#080C14]/90 backdrop-blur-xl shadow-[0_32px_80px_hsl(var(--primary)/0.12),0_0_0_1px_hsl(var(--primary)/0.06)]">
+      <div className="h-8 bg-[#0d1117]/80 backdrop-blur-sm flex items-center px-3 gap-2 border-b border-white/[0.06]">
         <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
         <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
         <span className="w-3 h-3 rounded-full bg-[#28C840]" />
         <span className="ml-3 text-[11px] text-muted-foreground font-body">getbooked.live/dashboard</span>
       </div>
-
-      {/* Mini dashboard UI */}
       <div className="p-5 sm:p-6 space-y-4">
-        {/* Metric cards row */}
         <div className="grid grid-cols-3 gap-3">
           {[
             { label: "offers", value: "8", color: "text-primary" },
@@ -30,8 +190,6 @@ function MockupWindow() {
             </div>
           ))}
         </div>
-
-        {/* Offer card */}
         <div className="rounded-xl bg-secondary/40 border border-white/[0.06] p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
@@ -57,33 +215,25 @@ function MockupWindow() {
 function AnimatedStat({ value, label }: { value: string; label: string }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
-
-  // Parse numeric part
   const numericMatch = value.match(/^[\d,.]+/);
   const numericStr = numericMatch ? numericMatch[0] : "";
   const suffix = value.slice(numericStr.length);
   const target = parseFloat(numericStr.replace(/,/g, "")) || 0;
   const isDecimal = numericStr.includes(".");
-  const hasK = suffix.startsWith("K") || suffix.startsWith("k");
-
   const motionVal = useMotionValue(0);
   const spring = useSpring(motionVal, { stiffness: 60, damping: 20 });
-
   useEffect(() => {
     if (isInView) motionVal.set(target);
   }, [isInView, target, motionVal]);
-
   const displayRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const unsubscribe = spring.on("change", (v) => {
       if (!displayRef.current) return;
       const rounded = isDecimal ? v.toFixed(1) : Math.round(v);
-      const formatted = Number(rounded).toLocaleString();
-      displayRef.current.textContent = formatted + suffix;
+      displayRef.current.textContent = Number(rounded).toLocaleString() + suffix;
     });
     return unsubscribe;
   }, [spring, suffix, isDecimal]);
-
   return (
     <div ref={ref} className="text-center">
       <p className="font-display font-bold text-xl sm:text-2xl text-foreground tabular-nums">
@@ -94,51 +244,7 @@ function AnimatedStat({ value, label }: { value: string; label: string }) {
   );
 }
 
-/* ─── Hero word animation ─── */
-const HERO_LINE_1 = "book shows. get paid.";
-const HERO_LINE_2 = "grow your career.";
-
-function AnimatedHeadline() {
-  const words1 = HERO_LINE_1.split(" ");
-  const words2 = HERO_LINE_2.split(" ");
-
-  return (
-    <h1
-      className="font-display font-extrabold tracking-[-0.03em] text-foreground mb-5 lowercase text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
-      style={{ lineHeight: "1.05" }}
-    >
-      {words1.map((word, i) => {
-        const w = word.replace(/[^a-z]/gi, '').toLowerCase();
-        const highlight = w === 'get' || w === 'paid';
-        return (
-          <motion.span
-            key={`l1-${i}`}
-            className={`inline-block mr-[0.25em]${highlight ? ' text-primary' : ''}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
-          >
-            {word}
-          </motion.span>
-        );
-      })}
-      <br />
-      {words2.map((word, i) => (
-        <motion.span
-          key={`l2-${i}`}
-          className="inline-block mr-[0.25em]"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: (words1.length + i) * 0.08, duration: 0.5, ease: "easeOut" }}
-        >
-          {word}
-        </motion.span>
-      ))}
-    </h1>
-  );
-}
-
-/* Base offsets so early-stage counts look credible */
+/* ─── Stat base values ─── */
 const STAT_BASE: Record<string, number> = {
   artists: 847,
   promoters: 312,
@@ -148,6 +254,7 @@ const STAT_BASE: Record<string, number> = {
   bookings: 63,
 };
 
+/* ─── Main HeroSection ─── */
 export default function HeroSection() {
   const [stats, setStats] = useState<{ value: string; label: string }[]>([
     { value: "847+", label: "artists" },
@@ -157,6 +264,8 @@ export default function HeroSection() {
     { value: "128+", label: "creatives" },
     { value: "63+", label: "shows booked" },
   ]);
+  const [dealsThisWeek, setDealsThisWeek] = useState(0);
+  const [artistCount, setArtistCount] = useState(847);
 
   useEffect(() => {
     async function fetchStats() {
@@ -176,100 +285,114 @@ export default function HeroSection() {
         { value: fmt(d.creatives ?? 0, STAT_BASE.creatives), label: "creatives" },
         { value: fmt(d.bookings ?? 0, STAT_BASE.bookings), label: "shows booked" },
       ]);
+      setDealsThisWeek(d.deals_this_week ?? 0);
+      setArtistCount((d.artists ?? 0) + STAT_BASE.artists);
     }
     fetchStats();
   }, []);
 
   return (
-    <section className="relative pt-24 sm:pt-40 pb-16 sm:pb-28 px-4 sm:px-6 md:px-8 overflow-hidden">
-      {/* Subtle ambient glow */}
-      <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-primary/[0.04] blur-[120px] pointer-events-none" />
+    <section className="relative min-h-[100svh] flex items-center pt-20 pb-20 px-4 sm:px-6 md:px-8 overflow-hidden">
+      {/* Full-bleed concert background */}
+      <ConcertBackground />
 
-      <div className="container mx-auto max-w-3xl text-center relative">
-        {/* Label tag */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
+      <div className="container mx-auto max-w-3xl text-center relative z-10">
+
+        {/* Live badge */}
+        <LiveBadge dealsThisWeek={dealsThisWeek} />
+
+        {/* Headline — outcome focused */}
+        <motion.h1
+          className="font-display font-extrabold tracking-[-0.03em] text-foreground lowercase mb-4"
+          style={{ fontSize: "clamp(36px, 6vw, 68px)", lineHeight: "1.04" }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          transition={{ delay: 0.1, duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          <span className="section-label">all-in-one music booking platform</span>
-        </motion.div>
+          book artists.{" "}
+          <span className="text-primary">close deals.</span>
+          <br />
+          run your shows.
+        </motion.h1>
 
-        {/* Headline */}
-        <AnimatedHeadline />
-
-        {/* Subtext */}
+        {/* Sub — pain point */}
         <motion.p
-          className="section-subtext mx-auto mb-10"
+          className="text-base sm:text-lg text-white/50 font-body leading-relaxed mx-auto mb-2 max-w-lg"
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5, ease: "easeOut" }}
+          transition={{ delay: 0.25, duration: 0.5, ease: "easeOut" }}
         >
-          the all-in-one platform for artists, promoters, venues, and crew — from first offer to final payout.
+          stop using emails, DMs, and spreadsheets.
         </motion.p>
 
-        {/* CTA buttons */}
-        <motion.div
-          className="flex flex-col sm:flex-row gap-3 justify-center items-center"
+        {/* Sub — platform pitch */}
+        <motion.p
+          className="text-sm text-white/35 font-body leading-relaxed mx-auto mb-0 max-w-md"
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.4, ease: "easeOut" }}
+          transition={{ delay: 0.32, duration: 0.5, ease: "easeOut" }}
+        >
+          one platform for artists, promoters, venues, and crew — from first offer to final payout.
+        </motion.p>
+
+        {/* ── 4 ROLE ENTRY BUTTONS ── */}
+        <RoleEntryButtons />
+
+        {/* Primary CTA */}
+        <motion.div
+          className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-6"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.95, duration: 0.4, ease: "easeOut" }}
         >
           <Link to="/auth?tab=signup">
             <motion.button
-              className="bg-primary text-primary-foreground font-display font-bold text-sm rounded-[10px] px-8 h-12 hover:bg-primary/90 active:scale-[0.96] transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
-              whileHover={{ scale: 1.03 }}
+              className="bg-primary text-primary-foreground font-display font-bold text-sm rounded-[10px] px-8 h-12 hover:bg-primary/90 transition-all flex items-center justify-center gap-2 w-full sm:w-auto shadow-[0_0_28px_hsl(var(--primary)/0.35)]"
+              whileHover={{ scale: 1.03, boxShadow: "0 0 40px hsl(var(--primary)/0.5)" }}
               whileTap={{ scale: 0.97 }}
             >
-              start free <motion.span whileHover={{ x: 4 }}><ArrowRight className="w-4 h-4" /></motion.span>
+              <Zap className="w-4 h-4" />
+              start booking in 60 seconds
             </motion.button>
           </Link>
           <Link to="/directory">
             <motion.button
-              className="border border-white/[0.1] text-foreground font-display font-medium text-sm rounded-[10px] px-8 h-12 hover:bg-secondary hover:border-white/[0.15] active:scale-[0.96] transition-all w-full sm:w-auto"
+              className="border border-white/[0.12] text-white/70 font-display font-medium text-sm rounded-[10px] px-7 h-12 hover:bg-white/[0.06] hover:border-white/[0.22] hover:text-white transition-all w-full sm:w-auto backdrop-blur-sm"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
               browse directory
             </motion.button>
           </Link>
-          <motion.button
-            onClick={() => {
-              sessionStorage.setItem("isDemo", "true");
-              sessionStorage.setItem("demoStart", String(Date.now()));
-              window.location.href = "/demo-dashboard";
-            }}
-            className="border border-white/[0.08] text-muted-foreground font-display font-medium text-xs rounded-[10px] px-6 h-10 hover:text-foreground hover:border-white/[0.15] active:scale-[0.96] transition-all w-full sm:w-auto"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            try a demo
-          </motion.button>
         </motion.div>
 
-        {/* Product screenshot mockup */}
+        {/* Social proof — city + artist count */}
+        <SocialProofBar artistCount={artistCount} />
+
+        {/* Product mockup */}
         <motion.div
-          className="mt-14 sm:mt-20 max-w-2xl mx-auto"
+          className="mt-14 sm:mt-16 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 30, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.7, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ delay: 1.2, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <MockupWindow />
         </motion.div>
 
-        {/* Social proof — animated counters */}
-        <div className="mt-14 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-8">
+        {/* Stat counters */}
+        <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-8">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 + i * 0.06, duration: 0.4, ease: "easeOut" }}
+              transition={{ delay: 1.3 + i * 0.06, duration: 0.4, ease: "easeOut" }}
             >
               <AnimatedStat value={stat.value} label={stat.label} />
             </motion.div>
           ))}
         </div>
+
       </div>
     </section>
   );
