@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://getbookedlive.lovable.app/functions/v1/sitemap
+Sitemap: https://getbookedlive.lovable.app/sitemap.xml
