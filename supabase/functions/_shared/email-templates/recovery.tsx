@@ -19,7 +19,7 @@ interface RecoveryEmailProps {
   confirmationUrl: string
 }
 
-const LOGO_URL = 'https://xsvamqzhdrhmznocgbxe.supabase.co/storage/v1/object/public/email-assets/logo-color.svg'
+const LOGO_URL = 'https://ycqtqbecadarulohxvan.supabase.co/storage/v1/object/public/email-assets/logo-color.svg'
 
 export const RecoveryEmail = ({ siteName, confirmationUrl }: RecoveryEmailProps) => (
   <Html lang="en" dir="ltr">
