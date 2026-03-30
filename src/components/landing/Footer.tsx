@@ -7,6 +7,7 @@ const QUICK_MENU = [
   { label: "For Artists", to: "/artists" },
   { label: "For Promoters", to: "/promoters" },
   { label: "Pricing", to: "/pricing" },
+  { label: "Blog", to: "/blog" },
 ];
 
 const INFO = [
