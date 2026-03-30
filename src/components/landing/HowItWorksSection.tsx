@@ -27,7 +27,7 @@ const STEPS = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="fade-in-section py-20 sm:py-32 px-4 sm:px-6">
+    <section id="how-it-works" className="fade-in-section py-20 sm:py-32 px-4 sm:px-6">
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-16">
           <span className="section-label">how it works</span>

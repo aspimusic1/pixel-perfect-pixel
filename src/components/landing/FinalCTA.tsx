@@ -19,7 +19,7 @@ export default function FinalCTA() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          Start booking smarter today
+          Your next show starts here.
         </motion.h2>
 
         <motion.p
@@ -29,7 +29,7 @@ export default function FinalCTA() {
           viewport={{ once: true }}
           transition={{ delay: 0.1, duration: 0.4 }}
         >
-          Free to join. No credit card required. Your first booking takes 60 seconds.
+          Join free — no credit card. First booking in minutes.
         </motion.p>
 
         <motion.div

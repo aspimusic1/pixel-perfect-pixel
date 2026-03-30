@@ -1,3 +1,5 @@
+// FIX 4: Added "No credit card required" below the Pro plan CTA button.
+// FIX 8: Added payment security trust strip above the pricing cards.
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Check } from "lucide-react";
@@ -93,6 +95,21 @@ export default function PricingTeaser() {
           </div>
         </div>
 
+        {/* FIX 8: Payment security trust strip */}
+        <div className="flex items-center justify-center gap-8 flex-wrap py-6 border-y border-white/[0.06] my-8">
+          {[
+            { icon: '🔒', text: 'Payments secured by Stripe' },
+            { icon: '📋', text: 'Auto-generated contracts' },
+            { icon: '✅', text: 'Verified profiles only' },
+            { icon: '💸', text: 'Transparent payout — see your fee before accepting' },
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-2 text-xs text-[#8892A4]">
+              <span>{item.icon}</span>
+              <span>{item.text}</span>
+            </div>
+          ))}
+        </div>
+
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PLANS.map((plan, i) => {
@@ -149,6 +166,10 @@ export default function PricingTeaser() {
                     {plan.cta}
                   </button>
                 </Link>
+                {/* FIX 4: No credit card required text under Pro plan CTA */}
+                {plan.popular && (
+                  <p className="text-xs text-[#5A6478] text-center mt-2">No credit card required</p>
+                )}
               </div>
             );
           })}

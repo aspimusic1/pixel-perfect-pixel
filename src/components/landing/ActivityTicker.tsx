@@ -1,3 +1,5 @@
+// FIX 3: Replaced fake hardcoded ticker items (DJ Koda, The Velvet Union, etc.)
+// with a real Supabase profiles query. Falls back to honest static items if no data yet.
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Music2 } from "lucide-react";
@@ -7,14 +9,9 @@ interface TickerItem {
 }
 
 const FALLBACK_ITEMS: TickerItem[] = [
-  { text: "🎵 DJ Koda booked in Miami, FL — $2,500" },
-  { text: "🎵 The Velvet Union booked in Brooklyn, NY — $1,800" },
-  { text: "🎵 Maya Chen booked in Los Angeles, CA — $3,200" },
-  { text: "🎵 Arlo Washington booked in Chicago, IL — $2,100" },
-  { text: "🎵 Prism Events booked in Atlanta, GA — $4,000" },
-  { text: "🎵 SoundCraft Audio booked in Nashville, TN — $1,500" },
-  { text: "🎵 NightOwl Presents booked in Denver, CO — $2,800" },
-  { text: "🎵 The Monarch booked in Austin, TX — $3,500" },
+  { text: "GetBooked.Live is now live" },
+  { text: "Join as an artist — it's free" },
+  { text: "Book your first show today" },
 ];
 
 export default function ActivityTicker() {
@@ -23,22 +20,23 @@ export default function ActivityTicker() {
   useEffect(() => {
     async function fetchRecent() {
       const { data, error } = await supabase
-        .from("bookings")
-        .select("venue_name, guarantee, event_date")
+        .from("profiles")
+        .select("display_name, role, location")
         .order("created_at", { ascending: false })
         .limit(8);
 
       if (error || !data || data.length === 0) return;
 
-      const mapped = data.map((b: any) => ({
-        text: `🎵 ${b.venue_name} booked — $${Number(b.guarantee).toLocaleString()}`,
+      const mapped = data.map((p: any) => ({
+        text: `${p.display_name} joined from ${p.location || "the US"} as a ${p.role}`,
       }));
-      setItems(mapped);
+      // Duplicate for seamless loop
+      setItems([...mapped, ...mapped]);
     }
     fetchRecent();
   }, []);
 
-  // Double items for seamless loop
+  // Double items for seamless loop (applies to fallback items too)
   const doubled = [...items, ...items];
 
   return (

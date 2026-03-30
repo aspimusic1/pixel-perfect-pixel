@@ -1,3 +1,5 @@
+// FIX 2: Replaced hardcoded platform stats (2,400+ artists, 840+ venues, etc.)
+// with real Supabase direct table counts. Shows "Be the first" if count is 0.
 import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,30 +34,49 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
   );
 }
 
-const STAT_BASE: Record<string, number> = {
-  artists: 847,
-  promoters: 312,
-  venues: 214,
-  bookings: 63,
-};
-
 const PRESS_LOGOS = ["Hypebot", "Pollstar", "DJ Mag", "Billboard", "Music Connection"];
 
+interface RealStats {
+  artists: number;
+  promoters: number;
+  venues: number;
+  bookings: number;
+}
+
 export default function SocialProofSection() {
-  const [stats, setStats] = useState(STAT_BASE);
+  const [stats, setStats] = useState<RealStats>({ artists: 0, promoters: 0, venues: 0, bookings: 0 });
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    supabase.rpc("get_platform_stats").then(({ data }) => {
-      if (!data) return;
-      const d = data as Record<string, number>;
+    const fetchStats = async () => {
+      const [
+        { count: artists },
+        { count: promoters },
+        { count: venues },
+        { count: bookings },
+      ] = await Promise.all([
+        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "artist"),
+        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "promoter"),
+        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "venue"),
+        supabase.from("bookings").select("*", { count: "exact", head: true }),
+      ]);
       setStats({
-        artists: (d.artists ?? 0) + STAT_BASE.artists,
-        promoters: (d.promoters ?? 0) + STAT_BASE.promoters,
-        venues: (d.venues ?? 0) + STAT_BASE.venues,
-        bookings: (d.bookings ?? 0) + STAT_BASE.bookings,
+        artists: artists || 0,
+        promoters: promoters || 0,
+        venues: venues || 0,
+        bookings: bookings || 0,
       });
-    });
+      setLoaded(true);
+    };
+    fetchStats();
   }, []);
+
+  const statItems = [
+    { key: "artists" as keyof RealStats, label: "Artists Onboarded", suffix: "+" },
+    { key: "promoters" as keyof RealStats, label: "Promoters Active", suffix: "+" },
+    { key: "venues" as keyof RealStats, label: "Venues Listed", suffix: "+" },
+    { key: "bookings" as keyof RealStats, label: "Deals Closed", suffix: "+" },
+  ];
 
   return (
     <section className="fade-in-section py-20 sm:py-28 px-4">
@@ -65,28 +86,30 @@ export default function SocialProofSection() {
           <h2 className="section-heading">trusted by artists and promoters worldwide</h2>
         </div>
 
-        {/* Stats grid */}
+        {/* Stats grid — real Supabase counts */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-16">
-          {[
-            { key: "artists", label: "Artists Onboarded", suffix: "+" },
-            { key: "promoters", label: "Promoters Active", suffix: "+" },
-            { key: "venues", label: "Venues Listed", suffix: "+" },
-            { key: "bookings", label: "Deals Closed", suffix: "+" },
-          ].map((s, i) => (
-            <motion.div
-              key={s.key}
-              className="text-center rounded-2xl bg-card/80 border border-white/[0.06] p-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.4 }}
-            >
-              <p className="font-display font-extrabold text-2xl sm:text-3xl text-primary mb-1">
-                <AnimatedCounter value={stats[s.key]} suffix={s.suffix} />
-              </p>
-              <p className="text-[11px] text-muted-foreground font-body uppercase tracking-wider">{s.label}</p>
-            </motion.div>
-          ))}
+          {statItems.map((s, i) => {
+            const count = stats[s.key];
+            return (
+              <motion.div
+                key={s.key}
+                className="text-center rounded-2xl bg-card/80 border border-white/[0.06] p-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.4 }}
+              >
+                <p className="font-display font-extrabold text-2xl sm:text-3xl text-primary mb-1">
+                  {loaded && count === 0 ? (
+                    <span className="text-lg text-muted-foreground font-body normal-case">Be the first</span>
+                  ) : (
+                    <AnimatedCounter value={count} suffix={s.suffix} />
+                  )}
+                </p>
+                <p className="text-[11px] text-muted-foreground font-body uppercase tracking-wider">{s.label}</p>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Press logos */}

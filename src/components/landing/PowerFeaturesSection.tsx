@@ -68,6 +68,17 @@ export default function PowerFeaturesSection() {
             );
           })}
         </div>
+
+        {/* FIX 7: CTA after features section */}
+        <div className="text-center mt-10">
+          <p className="text-[#8892A4] text-sm mb-4">Ready to replace your booking chaos?</p>
+          <a
+            href="/auth?mode=signup"
+            className="inline-block px-8 py-4 bg-[#C8FF3E] text-[#080C14] rounded-2xl text-sm font-black hover:opacity-90 transition-opacity"
+          >
+            Start free — no credit card →
+          </a>
+        </div>
       </div>
     </section>
   );

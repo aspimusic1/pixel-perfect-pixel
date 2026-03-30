@@ -322,7 +322,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.5, ease: "easeOut" }}
         >
-          The all-in-one platform for artists, promoters, venues, and creatives to connect and close bookings faster.
+          Send your first booking offer in minutes. Receive a structured contract automatically. Close the deal without leaving the platform.
         </motion.p>
 
         {/* Sub — platform pitch */}
@@ -334,6 +334,19 @@ export default function HeroSection() {
         >
           Stop using emails, DMs, and spreadsheets. One platform from first offer to final payout.
         </motion.p>
+
+        {/* FIX 10: Founding member urgency badge */}
+        <motion.div
+          className="flex justify-center mb-2 mt-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45, duration: 0.4, ease: "easeOut" }}
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#C8FF3E]/[0.08] border border-[#C8FF3E]/20 rounded-full text-xs text-[#C8FF3E]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C8FF3E] animate-pulse" />
+            Founding member spots open — free Pro for first 100 artists
+          </div>
+        </motion.div>
 
         {/* ── 4 ROLE ENTRY BUTTONS ── */}
         <RoleEntryButtons />
@@ -355,15 +368,15 @@ export default function HeroSection() {
               Get Started
             </motion.button>
           </Link>
-          <Link to="/directory">
-            <motion.button
-              className="border border-white/[0.12] text-white/70 font-display font-medium text-sm rounded-[10px] px-7 h-12 hover:bg-white/[0.06] hover:border-white/[0.22] hover:text-white transition-all w-full sm:w-auto backdrop-blur-sm"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              Explore Platform
-            </motion.button>
-          </Link>
+          {/* FIX 5: Changed secondary CTA from 'Explore Platform' → 'See how it works →' with smooth scroll */}
+          <motion.button
+            className="border border-white/[0.12] text-white/70 font-display font-medium text-sm rounded-[10px] px-7 h-12 hover:bg-white/[0.06] hover:border-white/[0.22] hover:text-white transition-all w-full sm:w-auto backdrop-blur-sm"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+          >
+            See how it works →
+          </motion.button>
         </motion.div>
 
         {/* Social proof — city + artist count */}
