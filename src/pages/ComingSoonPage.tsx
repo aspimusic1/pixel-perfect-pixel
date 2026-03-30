@@ -101,7 +101,10 @@ export default function ComingSoonPage() {
     setLoading(true);
     const { error: dbError } = await supabase
       .from("waitlist")
-      .insert(parsed.data);
+      .insert({
+        email: parsed.data.email,
+        role: parsed.data.role,
+      });
 
     setLoading(false);
 
