@@ -80,7 +80,8 @@ export default function ComingSoonPage() {
    // Fetch waitlist count via security-definer RPC (no direct table SELECT needed)
   useEffect(() => {
     const fetchCount = async () => {
-      const { data, error } = await supabase.rpc("get_waitlist_count");
+      const { count, error } = await supabase.from("waitlist").select("*", { count: "exact", head: true });
+      const data = count;
       if (!error && data !== null) setWaitlistCount(data as number);
     };
     fetchCount();

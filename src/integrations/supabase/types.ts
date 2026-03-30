@@ -1096,7 +1096,6 @@ export type Database = {
           threads: string | null
           tiktok: string | null
           timezone: string | null
-          trial_ends_at: string | null
           twitter: string | null
           updated_at: string
           user_id: string
@@ -1143,7 +1142,6 @@ export type Database = {
           threads?: string | null
           tiktok?: string | null
           timezone?: string | null
-          trial_ends_at?: string | null
           twitter?: string | null
           updated_at?: string
           user_id: string
@@ -1190,7 +1188,6 @@ export type Database = {
           threads?: string | null
           tiktok?: string | null
           timezone?: string | null
-          trial_ends_at?: string | null
           twitter?: string | null
           updated_at?: string
           user_id?: string
