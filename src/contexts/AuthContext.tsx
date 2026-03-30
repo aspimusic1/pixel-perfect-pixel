@@ -17,7 +17,7 @@ type Profile = {
   rate_min: number | null;
   rate_max: number | null;
   subscription_plan: string | null;
-  trial_ends_at: string | null;
+  trial_ends_at?: string | null;
   youtube: string | null;
   streaming_stats: Record<string, any> | null;
   website: string | null;
