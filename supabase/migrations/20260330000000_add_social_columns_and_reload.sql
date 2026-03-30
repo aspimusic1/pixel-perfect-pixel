@@ -1,9 +1,6 @@
--- Add social media columns to directory_listings (safe - IF NOT EXISTS)
-ALTER TABLE directory_listings 
-  ADD COLUMN IF NOT EXISTS instagram TEXT,
-  ADD COLUMN IF NOT EXISTS spotify TEXT,
-  ADD COLUMN IF NOT EXISTS tiktok TEXT,
-  ADD COLUMN IF NOT EXISTS website TEXT;
+-- NOTE: directory_listings is a VIEW. Columns are added to artist_listings instead.
+-- This is a no-op since 20260330120000_complete_migration.sql handles this correctly.
+-- Keeping this file to preserve migration history order.
 
 -- Create a function that sends pg_notify to reload PostgREST schema cache
 CREATE OR REPLACE FUNCTION notify_pgrst_reload()
