@@ -188,7 +188,7 @@ export default function CrewDashboard() {
               {/* ─── Overview ─── */}
               {activeView === "overview" && (
                 <>
-                  <div className="rounded-lg border border-border bg-card divide-x divide-border grid grid-cols-2 lg:grid-cols-4">
+                  <div className="rounded-lg border border-border bg-card grid grid-cols-2 lg:grid-cols-4 divide-y divide-border lg:divide-y-0 lg:divide-x lg:divide-border">
                     {[
                       { label: "upcoming gigs", value: upcoming.length + thisMonthStops.length, color: ACCENT },
                       { label: "completed", value: past.length, color: "hsl(var(--success))" },

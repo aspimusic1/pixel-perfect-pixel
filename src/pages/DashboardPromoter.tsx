@@ -159,7 +159,7 @@ export default function PromoterDashboard() {
                 <>
                   <TrialBanner />
                   <GettingStartedChecklist variant="promoter" />
-                  <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] divide-x divide-white/[0.06] grid grid-cols-2 lg:grid-cols-4">
+                  <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] grid grid-cols-2 lg:grid-cols-4 divide-y divide-white/[0.06] lg:divide-y-0 lg:divide-x lg:divide-white/[0.06]">
                     {[
                       { label: "sent", value: loading ? "—" : sentCount, color: ACCENT },
                       { label: "accepted", value: loading ? "—" : acceptedCount, color: "#4ADE80" },
