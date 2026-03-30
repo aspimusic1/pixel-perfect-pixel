@@ -3,6 +3,9 @@
 -- Creates: deal_room_messages, crew_members, messages, message_threads,
 --          conversations, payment_tracking, admin_users,
 --          pipeline_stages, pipeline_deals, booking_analytics
+-- Schema verified against live DB: deal_rooms(id,booking_id,created_at)
+--   bookings(artist_id, promoter_id, booking_status)
+--   tours(artist_id, ...)
 -- ============================================================
 
 -- ─── deal_room_messages ──────────────────────────────────────
@@ -19,12 +22,14 @@ CREATE TABLE IF NOT EXISTS public.deal_room_messages (
 
 ALTER TABLE public.deal_room_messages ENABLE ROW LEVEL SECURITY;
 
+-- Join through bookings since deal_rooms only has booking_id (no artist_id/promoter_id)
 CREATE POLICY "deal_room_messages_select" ON public.deal_room_messages
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.deal_rooms dr
+      JOIN public.bookings b ON b.id = dr.booking_id
       WHERE dr.id = deal_room_id
-        AND (dr.artist_id = auth.uid() OR dr.promoter_id = auth.uid())
+        AND (b.artist_id = auth.uid() OR b.promoter_id = auth.uid())
     )
   );
 
@@ -49,9 +54,14 @@ CREATE TABLE IF NOT EXISTS public.crew_members (
 
 ALTER TABLE public.crew_members ENABLE ROW LEVEL SECURITY;
 
+-- tours uses artist_id (not user_id) — join through profiles to check ownership
 CREATE POLICY "crew_members_owner" ON public.crew_members
   FOR ALL USING (
-    EXISTS (SELECT 1 FROM public.tours t WHERE t.id = tour_id AND t.user_id = auth.uid())
+    EXISTS (
+      SELECT 1 FROM public.tours t
+      JOIN public.profiles p ON p.id = t.artist_id
+      WHERE t.id = tour_id AND p.id = auth.uid()
+    )
   );
 
 CREATE INDEX IF NOT EXISTS idx_crew_members_tour ON public.crew_members(tour_id);
@@ -260,18 +270,12 @@ DECLARE
   v_booking_count INTEGER;
   v_new_score NUMERIC;
 BEGIN
-  -- Get the listing_id from the affected booking or review
-  IF TG_TABLE_NAME = 'reviews' THEN
-    v_listing_id := NEW.artist_id;
-  ELSE
-    v_listing_id := NEW.artist_id;
-  END IF;
+  v_listing_id := NEW.artist_id;
 
   IF v_listing_id IS NULL THEN
     RETURN NEW;
   END IF;
 
-  -- Calculate components
   SELECT
     COALESCE(AVG(rating), 0),
     COUNT(*)
@@ -281,16 +285,14 @@ BEGIN
 
   SELECT COUNT(*) INTO v_booking_count
   FROM public.bookings
-  WHERE artist_id = v_listing_id AND status IN ('confirmed', 'completed');
+  WHERE artist_id = v_listing_id AND booking_status IN ('confirmed', 'completed');
 
-  -- Score formula: (avg_rating * 15) + (min(reviews,20) * 2) + (min(bookings,25) * 2)
   v_new_score := LEAST(100,
     (v_avg_rating * 15) +
     (LEAST(v_review_count, 20) * 2) +
     (LEAST(v_booking_count, 25) * 2)
   );
 
-  -- Update directory_listings bookscore
   UPDATE public.directory_listings
   SET bookscore = v_new_score
   WHERE id = v_listing_id;
