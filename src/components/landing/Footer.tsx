@@ -12,8 +12,7 @@ const QUICK_MENU = [
 const INFO = [
   { label: "Contact", to: "/contact" },
   { label: "Privacy Policy", to: "/privacy" },
-  { label: "Terms", to: "/" },
-  { label: "Blog", to: "/" },
+  { label: "Terms of Service", to: "/terms" },
   { label: "Sign in", to: "/auth" },
 ];
 
@@ -31,10 +30,16 @@ export default function Footer() {
       <div className="container mx-auto max-w-4xl">
         {/* Top section */}
         <div className="flex flex-col sm:flex-row justify-between gap-10 mb-12">
-          {/* Logo + tagline */}
+          {/* Logo + tagline + support email */}
           <div>
             <img src={logoColor} alt="GetBooked.Live" className="h-5 opacity-80 mb-2" loading="lazy" />
-            <p className="text-[13px] text-muted-foreground font-body">the operating system for live music.</p>
+            <p className="text-[13px] text-muted-foreground font-body mb-3">the operating system for live music.</p>
+            <a
+              href="mailto:hello@getbooked.live"
+              className="text-[12px] text-white/40 hover:text-primary transition-colors duration-150 font-body"
+            >
+              hello@getbooked.live
+            </a>
           </div>
 
           {/* Link columns */}
