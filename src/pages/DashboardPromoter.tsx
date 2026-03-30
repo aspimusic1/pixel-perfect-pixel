@@ -14,6 +14,7 @@ import RecommendedArtists from "@/components/RecommendedArtists";
 import AIRecommendationPanel from "@/components/AIRecommendationPanel";
 import AttendanceReportDialog from "@/components/AttendanceReportDialog";
 import InsuranceOfferCard from "@/components/InsuranceOfferCard";
+import DepositPaymentButton from "@/components/DepositPaymentButton";
 import FinancingOption from "@/components/FinancingOption";
 import { openSignedContract } from "@/lib/db-call";
 import FreeOfferBanner from "@/components/FreeOfferBanner";
@@ -128,6 +129,15 @@ export default function PromoterDashboard() {
             )}
             {attendanceReported.has(booking.id) && (
               <span className="inline-flex items-center gap-1 text-[11px] text-[#3EFFBE] font-medium px-2.5 py-1"><CheckCircle className="w-3 h-3" /> reported</span>
+            )}
+            {booking.status !== "deposit_paid" && booking.status !== "completed" && (
+              <DepositPaymentButton bookingId={booking.id} guarantee={booking.guarantee} onSuccess={() => { setBookings((prev) => prev.map((b) => b.id === booking.id ? { ...b, status: "deposit_paid" } : b)); }} />
+            )}
+            {booking.status === "deposit_paid" && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-[#3EFFBE] font-medium px-2.5 py-1"><CheckCircle className="w-3 h-3" /> deposit paid</span>
+            )}
+            {booking.status === "completed" && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-[#3EFFBE] font-medium px-2.5 py-1"><CheckCircle className="w-3 h-3" /> paid in full</span>
             )}
             {user && signatures[booking.id]?.includes(user.id) && (signatures[booking.id]?.length ?? 0) >= 2 && (
               <div className="w-full mt-1 space-y-2">
