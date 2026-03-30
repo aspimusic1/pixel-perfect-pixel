@@ -496,9 +496,9 @@ function LanguageSelector({ currentLang, onChange }: { currentLang: string; onCh
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors active:scale-[0.97]">
-          <Globe className="w-3.5 h-3.5" />
-          <span>{current.flag}</span>
+        <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors active:scale-[0.97]" aria-label={`Select language, currently ${current.label}`}>
+          <Globe className="w-3.5 h-3.5" aria-hidden="true" />
+          <span aria-hidden="true">{current.flag}</span>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[140px]">
