@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { CheckCircle, Music2, Ticket } from "lucide-react";
+import { presaleSignupSchema } from "@/lib/publicInputValidation";
 
 const ACCENT = "#C8FF3E";
 
@@ -76,13 +77,18 @@ export default function PresalePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!bookingId || !form.name || !form.email || !form.city) return;
+    if (!bookingId) return;
+
+    const parsed = presaleSignupSchema.safeParse(form);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Please check your details and try again.");
+      return;
+    }
+
     setSubmitting(true);
     const { error } = await supabase.from("presale_signups").insert({
       booking_id: bookingId,
-      name: form.name,
-      email: form.email,
-      city: form.city.trim(),
+      ...parsed.data,
     } as any);
     if (error) {
       toast.error("Failed to sign up. Please try again.");

@@ -61,18 +61,8 @@ export default function FlashBidPanel({ availabilityId, artistId, deadline, minP
     };
     load();
 
-    // Subscribe to realtime
-    const channel = supabase
-      .channel(`flash-bids-${availabilityId}`)
-      .on("postgres_changes", {
-        event: "*",
-        schema: "public",
-        table: "flash_bids",
-        filter: `availability_id=eq.${availabilityId}`,
-      }, () => { load(); })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
+    const interval = window.setInterval(load, 10000);
+    return () => { window.clearInterval(interval); };
   }, [availabilityId]);
 
   const highBid = bids.length > 0 ? bids[0].amount : 0;
@@ -114,6 +104,13 @@ export default function FlashBidPanel({ availabilityId, artistId, deadline, minP
     } else {
       toast.success(`Bid of $${amount.toLocaleString()} placed!`);
       setBidAmount("");
+      const { data } = await supabase
+        .from("flash_bids" as any)
+        .select("id, amount, bidder_id, status, created_at")
+        .eq("availability_id", availabilityId)
+        .eq("status", "active")
+        .order("amount", { ascending: false });
+      setBids((data as any[]) ?? []);
     }
     setSubmitting(false);
   };

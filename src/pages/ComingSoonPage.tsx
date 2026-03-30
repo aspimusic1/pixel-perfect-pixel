@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Instagram, Linkedin } from "lucide-react";
+import { waitlistSchema } from "@/lib/publicInputValidation";
 
 const WAITLIST_BASE_COUNT = 2847;
 
@@ -87,15 +88,23 @@ export default function ComingSoonPage() {
     e.preventDefault();
     setError("");
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Please enter a valid email address.");
+    const parsed = waitlistSchema.safeParse({
+      email,
+      role: role || "artist",
+    });
+
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? "Please enter a valid email address.");
       return;
     }
 
     setLoading(true);
     const { error: dbError } = await supabase
       .from("waitlist")
-      .insert({ email: email.toLowerCase().trim(), role: role || "artist" });
+      .insert({
+        email: parsed.data.email,
+        role: parsed.data.role,
+      });
 
     setLoading(false);
 

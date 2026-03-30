@@ -125,12 +125,8 @@ export default function Navbar() {
       setUnreadCount(count ?? 0);
     };
     fetchUnread();
-    const channel = supabase
-      .channel("navbar-notifications")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => fetchUnread())
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, () => fetchUnread())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    const interval = window.setInterval(fetchUnread, 15000);
+    return () => { window.clearInterval(interval); };
   }, [user]);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
