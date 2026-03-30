@@ -93,7 +93,7 @@ export default function BrowsePage() {
     // Fetch directory listings (unclaimed profiles from spreadsheet data)
     let dirQuery = (supabase
       .from("directory_listings" as any)
-      .select("id, name, avatar_url, genres, city, state, listing_type, slug, bio, bookscore, tier, fee_min, fee_max, is_claimed") as any)
+      .select("id, name, avatar_url, genres, city, state, listing_type, slug, bio, bookscore, tier, fee_min, fee_max, is_claimed, instagram, spotify, tiktok, website") as any)
       .eq("is_claimed", false)
       .order("bookscore", { ascending: false })
       .limit(200);
@@ -354,15 +354,25 @@ export default function BrowsePage() {
                                 View Profile
                               </Link>
                             ) : (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="flex-1 text-xs h-7 border-primary/30 text-primary hover:bg-primary/10"
-                                onClick={() => handleClaim(p)}
-                                disabled={claimingId === p.id}
-                              >
-                                {claimingId === p.id ? "Claiming…" : "Claim This Profile"}
-                              </Button>
+                              <>
+                                {p.slug && (
+                                  <Link
+                                    to={`/artist/${p.slug}`}
+                                    className="flex-1 text-center text-xs font-medium py-1.5 px-3 rounded-lg bg-white/5 text-foreground hover:bg-white/10 transition-colors"
+                                  >
+                                    View Profile
+                                  </Link>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="flex-1 text-xs h-7 border-primary/30 text-primary hover:bg-primary/10"
+                                  onClick={() => handleClaim(p)}
+                                  disabled={claimingId === p.id}
+                                >
+                                  {claimingId === p.id ? "Claiming…" : "Claim Profile"}
+                                </Button>
+                              </>
                             )}
                           </div>
                         </div>

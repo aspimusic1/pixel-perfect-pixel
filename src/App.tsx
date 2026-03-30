@@ -22,6 +22,7 @@ const PricingPage = lazy(() => import("@/pages/PricingPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 // DirectoryPage removed — /directory and /venues now redirect to /browse
 const PublicProfilePage = lazy(() => import("@/pages/PublicProfilePage"));
+const ArtistDirectoryPage = lazy(() => import("@/pages/ArtistDirectoryPage"));
 const PresalePage = lazy(() => import("@/pages/PresalePage"));
 const DemoDashboardPage = lazy(() => import("@/pages/DemoDashboardPage"));
 const TrendingPage = lazy(() => import("@/pages/TrendingPage"));
@@ -99,6 +100,7 @@ function AnimatedRoutes() {
         <Route path="/venues" element={<Navigate to="/browse" replace />} />
         <Route path="/trending" element={<TrendingPage />} />
         <Route path="/p/:slug" element={<PublicProfilePage />} />
+        <Route path="/artist/:slug" element={<ArtistDirectoryPage />} />
         <Route path="/presale/:bookingId" element={<PresalePage />} />
         <Route path="/demo-dashboard" element={<DemoDashboardPage />} />
 
