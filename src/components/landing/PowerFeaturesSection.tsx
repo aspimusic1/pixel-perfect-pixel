@@ -1,114 +1,72 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  Shield, DollarSign, BarChart3, Zap, Bot, Truck, ArrowRight, FileText, Target, Ticket
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Users, FileText, BarChart3, Calendar, MessageSquare } from "lucide-react";
+import { motion } from "framer-motion";
 
-type TabKey = "booking" | "operations" | "growth";
-
-const TABS: { key: TabKey; label: string }[] = [
-  { key: "booking", label: "Booking" },
-  { key: "operations", label: "Operations" },
-  { key: "growth", label: "Growth" },
+const FEATURES = [
+  {
+    icon: Users,
+    title: "Artist Directory",
+    desc: "Browse verified profiles with genre, draw history, fee range, and BookScore — find the right artist in seconds.",
+    color: "#C8FF3E",
+  },
+  {
+    icon: FileText,
+    title: "Offer Management",
+    desc: "Structured offers with guarantee, splits, hospitality, and backline. Accept, counter, or decline in one click.",
+    color: "#FF5C8A",
+  },
+  {
+    icon: BarChart3,
+    title: "Deal Tracking Dashboard",
+    desc: "Private deal rooms per booking with contracts, milestones, real-time chat, and payment tracking.",
+    color: "#3EC8FF",
+  },
+  {
+    icon: Calendar,
+    title: "Availability Calendar",
+    desc: "Publish open dates, receive booking requests, and enable Flash Bidding for last-minute slots.",
+    color: "#FFB83E",
+  },
+  {
+    icon: MessageSquare,
+    title: "Messaging & Negotiation",
+    desc: "In-context negotiation threads per offer. Counter-offers, rider discussions, and contract reviews — all in one place.",
+    color: "#7B5CF0",
+  },
 ];
 
-const FEATURES: Record<TabKey, { icon: React.ElementType; title: string; desc: string }[]> = {
-  booking: [
-    { icon: FileText, title: "structured offers", desc: "send complete offers with guarantee, splits, hospitality, and backline — no more DM chaos." },
-    { icon: DollarSign, title: "live commission calculator", desc: "see your exact net pay before you accept. commission auto-calculates by tier." },
-    { icon: Bot, title: "AI booking agent", desc: "describe what you need and our AI finds best-fit artists and drafts the offer." },
-  ],
-  operations: [
-    { icon: Shield, title: "deal rooms", desc: "private workspace per booking — contracts, milestones, chat, and logistics in one place." },
-    { icon: Target, title: "tour management hub", desc: "plan multi-city runs with itinerary, crew, budget, and ground transport." },
-    { icon: Truck, title: "market rate intelligence", desc: "see what artists in your genre and market are charging before you set your price." },
-  ],
-  growth: [
-    { icon: BarChart3, title: "BookScore™", desc: "build your reputation with verified attendance, reviews, and show history." },
-    { icon: Zap, title: "flash bidding", desc: "artists mark open dates. promoters bid in real time. highest bid wins." },
-    { icon: Ticket, title: "fan presale", desc: "capture demand before the show. presale signups prove draw and sell tickets early." },
-  ],
-};
-
-const cardVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -10 },
-};
-
-const containerVariants = {
-  animate: { transition: { staggerChildren: 0.07 } },
-};
-
 export default function PowerFeaturesSection() {
-  const [tab, setTab] = useState<TabKey>("booking");
-  const features = FEATURES[tab];
-
   return (
-    <section className="fade-in-section py-16 sm:py-28 px-4 sm:px-6 md:px-8">
+    <section className="fade-in-section py-20 sm:py-32 px-4 sm:px-6">
       <div className="container mx-auto max-w-5xl">
-        <div className="text-center mb-10">
-          <span className="section-label">features</span>
-          <h2 className="section-heading">everything the live music industry needs</h2>
+        <div className="text-center mb-14">
+          <span className="section-label">core features</span>
+          <h2 className="section-heading">everything you need to run live events</h2>
         </div>
 
-        {/* Tabs */}
-        <div className="flex justify-center mb-10">
-          <div className="inline-flex rounded-full border border-white/[0.08] p-1 bg-secondary/40">
-            {TABS.map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
-                className={`text-xs font-display font-bold px-5 py-2 rounded-full transition-all lowercase ${
-                  tab === t.key
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Feature cards */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"
-            variants={containerVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-          >
-            {features.map((f, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {FEATURES.map((f, i) => {
+            const Icon = f.icon;
+            return (
               <motion.div
                 key={f.title}
-                className="group rounded-[14px] p-6 bg-card/80 border border-white/[0.06] hover:border-primary/20 transition-all duration-300 cursor-default"
-                variants={cardVariants}
-                transition={{ delay: i * 0.07, duration: 0.3, ease: "easeOut" }}
+                className="group rounded-2xl p-6 bg-card/80 border border-white/[0.06] hover:border-white/[0.12] transition-all duration-300"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: i * 0.08, duration: 0.4 }}
+                whileHover={{ y: -3 }}
               >
-                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <f.icon className="w-[15px] h-[15px] text-primary" />
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                  style={{ backgroundColor: `${f.color}12` }}
+                >
+                  <Icon className="w-5 h-5" style={{ color: f.color }} />
                 </div>
-                <h3 className="font-display font-bold text-sm text-foreground mb-2 lowercase">{f.title}</h3>
-                <p className="text-xs text-muted-foreground leading-[1.6] font-body">{f.desc}</p>
+                <h3 className="font-display font-bold text-sm text-foreground mb-2">{f.title}</h3>
+                <p className="text-xs text-muted-foreground font-body leading-relaxed">{f.desc}</p>
               </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-
-        <div className="text-center mt-10">
-          <Link to="/auth?tab=signup">
-            <motion.button
-              className="bg-primary text-primary-foreground font-display font-bold text-sm rounded-[10px] px-8 h-12 hover:bg-primary/90 transition-all inline-flex items-center gap-2 lowercase"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              try it free <ArrowRight className="w-4 h-4" />
-            </motion.button>
-          </Link>
+            );
+          })}
         </div>
       </div>
     </section>
