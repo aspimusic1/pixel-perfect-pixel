@@ -92,6 +92,7 @@ export default function ComingSoonPage() {
 
     const parsed = waitlistSchema.safeParse({
       email,
+      name: name || undefined,
       role: role || "artist",
     });
 
