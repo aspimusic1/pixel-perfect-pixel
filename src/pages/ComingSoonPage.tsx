@@ -8,6 +8,7 @@ const WAITLIST_BASE_COUNT = 2847;
 
 export default function ComingSoonPage() {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [role, setRole] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -91,6 +92,7 @@ export default function ComingSoonPage() {
 
     const parsed = waitlistSchema.safeParse({
       email,
+      name: name || undefined,
       role: role || "artist",
     });
 
@@ -104,6 +106,7 @@ export default function ComingSoonPage() {
       .from("waitlist")
       .insert({
         email: parsed.data.email,
+        name: parsed.data.name || null,
         role: parsed.data.role,
       });
 
@@ -117,9 +120,12 @@ export default function ComingSoonPage() {
       }
       return;
     }
+    // Send confirmation email (fire-and-forget)
+    supabase.functions.invoke("waitlist-confirm", {
+      body: { email: parsed.data.email, name: parsed.data.name || "" },
+    }).catch(() => {});
     setSubmitted(true);
   };
-
   const fadeIn = mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4";
   const transition = "transition-all duration-700 ease-out";
 
@@ -186,6 +192,16 @@ export default function ComingSoonPage() {
               <option value="photo_video" className="bg-card">Creative</option>
             </select>
 
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name (optional)"
+              className="w-full h-12 rounded-xl border border-border bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 transition-all"
+              aria-label="Name"
+              maxLength={100}
+            />
+
             <div className="relative">
               <input
                 type="email"
@@ -224,7 +240,7 @@ export default function ComingSoonPage() {
               </svg>
             </div>
             <h2 className="font-syne text-2xl font-bold text-foreground">You're on the list.</h2>
-            <p className="text-muted-foreground text-sm">We'll let you know when it's time.</p>
+            <p className="text-muted-foreground text-sm">We'll be in touch soon — check your inbox for a confirmation.</p>
           </div>
         )}
 
