@@ -23,7 +23,7 @@ const ROLES = [
 export default function AuthPage() {
   const [searchParams] = useSearchParams();
   const presetRole = searchParams.get("role") || "";
-  const returnTo = searchParams.get("returnTo") || "";
+  const returnTo = (() => { try { return decodeURIComponent(searchParams.get("returnTo") || ""); } catch { return ""; } })();
   const [isSignUp, setIsSignUp] = useState(searchParams.get("tab") === "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
