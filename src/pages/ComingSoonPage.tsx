@@ -189,7 +189,7 @@ export default function ComingSoonPage() {
           >
             <div className="w-full">
               <p className="text-xs text-white/40 font-syne uppercase tracking-widest mb-2.5 text-center">I am a…</p>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="flex gap-1.5 justify-center">
                 {ROLE_OPTIONS.map((opt) => {
                   const Icon = opt.icon;
                   const selected = role === opt.value;
@@ -198,16 +198,16 @@ export default function ComingSoonPage() {
                       key={opt.value}
                       type="button"
                       onClick={() => setRole(opt.value)}
-                      className="relative flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3 h-[72px] cursor-pointer transition-all duration-200"
+                      className="relative flex flex-col items-center justify-center gap-1 rounded-xl border px-2 py-2 h-[54px] w-[62px] cursor-pointer transition-all duration-200"
                       style={{
                         borderColor: selected ? `${opt.color}80` : `${opt.color}25`,
                         backgroundColor: selected ? `${opt.color}18` : `${opt.color}06`,
                         boxShadow: selected ? `0 0 20px ${opt.glow}` : "none",
                       }}
                     >
-                      <Icon className="w-4 h-4" style={{ color: opt.color }} />
+                      <Icon className="w-3.5 h-3.5" style={{ color: opt.color }} />
                       <span
-                        className="text-[10px] font-syne font-bold tracking-wider uppercase leading-tight text-center"
+                        className="text-[8px] font-syne font-bold tracking-wide uppercase leading-tight text-center"
                         style={{ color: selected ? opt.color : `${opt.color}99` }}
                       >
                         {opt.label}
