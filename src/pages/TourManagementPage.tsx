@@ -388,33 +388,35 @@ export default function TourManagement() {
               <div className="space-y-3">
                 {stops.map((stop, i) => (
                   <div key={stop.id} className="rounded-xl bg-card border border-border p-4 cursor-pointer hover:border-primary/20 transition-all" onClick={() => setEditingStop(stop)}>
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0 mt-1">{i + 1}</span>
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-3">
+                      <div className="flex items-center gap-3 sm:block">
+                        <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0">{i + 1}</span>
+                      </div>
                       <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                           <Label className="text-xs text-muted-foreground">Venue</Label>
-                          <Input value={stop.venue_name} onChange={(e) => updateStop(stop.id, { venue_name: e.target.value })} className="mt-0.5 h-8 text-sm bg-background border-border" maxLength={200} />
+                          <Input value={stop.venue_name} onChange={(e) => updateStop(stop.id, { venue_name: e.target.value })} className="mt-0.5 h-11 sm:h-8 text-sm bg-background border-border" maxLength={200} />
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">City, State</Label>
                           <div className="flex gap-1 mt-0.5">
-                            <Input value={stop.city ?? ""} onChange={(e) => updateStop(stop.id, { city: e.target.value })} placeholder="City" className="h-8 text-sm bg-background border-border" maxLength={100} />
-                            <Input value={stop.state ?? ""} onChange={(e) => updateStop(stop.id, { state: e.target.value })} placeholder="ST" className="h-8 text-sm bg-background border-border w-16" maxLength={2} />
+                            <Input value={stop.city ?? ""} onChange={(e) => updateStop(stop.id, { city: e.target.value })} placeholder="City" className="h-11 sm:h-8 text-sm bg-background border-border" maxLength={100} />
+                            <Input value={stop.state ?? ""} onChange={(e) => updateStop(stop.id, { state: e.target.value })} placeholder="ST" className="h-11 sm:h-8 text-sm bg-background border-border w-20 sm:w-16" maxLength={2} />
                           </div>
                         </div>
                         <div>
                           <Label className="text-xs text-muted-foreground">Date</Label>
-                          <Input type="date" value={stop.date} onChange={(e) => updateStop(stop.id, { date: e.target.value })} className="mt-0.5 h-8 text-sm bg-background border-border" />
+                          <Input type="date" value={stop.date} onChange={(e) => updateStop(stop.id, { date: e.target.value })} className="mt-0.5 h-11 sm:h-8 text-sm bg-background border-border" />
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm" onClick={() => deleteStop(stop.id)} className="text-muted-foreground hover:text-destructive shrink-0"><Trash2 className="w-3.5 h-3.5" /></Button>
+                      <Button variant="ghost" size="sm" onClick={() => deleteStop(stop.id)} className="text-muted-foreground hover:text-destructive shrink-0 self-start"><Trash2 className="w-3.5 h-3.5" /></Button>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 ml-0 sm:ml-9 mt-2 sm:mt-0">
+                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 ml-0 sm:ml-9 mt-2 sm:mt-0">
                       <div><Label className="text-xs text-muted-foreground">Load-in</Label><Input type="time" value={stop.load_in_time ?? ""} onChange={(e) => updateStop(stop.id, { load_in_time: e.target.value || null })} className="mt-0.5 h-11 sm:h-7 text-xs bg-background border-border" /></div>
                       <div><Label className="text-xs text-muted-foreground">Soundcheck</Label><Input type="time" value={stop.sound_check_time ?? ""} onChange={(e) => updateStop(stop.id, { sound_check_time: e.target.value || null })} className="mt-0.5 h-11 sm:h-7 text-xs bg-background border-border" /></div>
                       <div><Label className="text-xs text-muted-foreground">Doors</Label><Input type="time" value={stop.doors_time ?? ""} onChange={(e) => updateStop(stop.id, { doors_time: e.target.value || null })} className="mt-0.5 h-11 sm:h-7 text-xs bg-background border-border" /></div>
                       <div><Label className="text-xs text-muted-foreground">Show</Label><Input type="time" value={stop.show_time ?? ""} onChange={(e) => updateStop(stop.id, { show_time: e.target.value || null })} className="mt-0.5 h-11 sm:h-7 text-xs bg-background border-border" /></div>
-                      <div className="col-span-2 sm:col-span-1"><Label className="text-xs text-muted-foreground">Guarantee</Label><Input type="number" min="0" value={stop.guarantee ?? ""} onChange={(e) => updateStop(stop.id, { guarantee: parseFloat(e.target.value) || 0 })} className="mt-0.5 h-11 sm:h-7 text-xs bg-background border-border" /></div>
+                      <div><Label className="text-xs text-muted-foreground">Guarantee</Label><Input type="number" min="0" value={stop.guarantee ?? ""} onChange={(e) => updateStop(stop.id, { guarantee: parseFloat(e.target.value) || 0 })} className="mt-0.5 h-11 sm:h-7 text-xs bg-background border-border" /></div>
                     </div>
                   </div>
                 ))}

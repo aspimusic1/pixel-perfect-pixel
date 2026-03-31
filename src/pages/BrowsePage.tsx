@@ -365,11 +365,11 @@ export default function BrowsePage() {
                           )}
 
                           {/* Action buttons */}
-                          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex flex-col sm:flex-row gap-2" onClick={(e) => e.stopPropagation()}>
                             {p.is_claimed ? (
                               <Link
                                 to={p.slug ? `/p/${p.slug}` : `/p/${p.user_id}`}
-                                className="flex-1 text-center text-xs font-medium py-1.5 px-3 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                                className="w-full text-center text-xs font-medium py-2.5 px-3 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors min-h-[44px] flex items-center justify-center"
                               >
                                 View Profile
                               </Link>
@@ -378,7 +378,7 @@ export default function BrowsePage() {
                                 {p.slug && (
                                   <Link
                                     to={`/artist/${p.slug}`}
-                                    className="flex-1 text-center text-xs font-medium py-1.5 px-3 rounded-lg bg-white/5 text-foreground hover:bg-white/10 transition-colors"
+                                    className="w-full text-center text-xs font-medium py-2.5 px-3 rounded-lg bg-white/5 text-foreground hover:bg-white/10 transition-colors min-h-[44px] flex items-center justify-center"
                                   >
                                     View Profile
                                   </Link>
@@ -386,7 +386,7 @@ export default function BrowsePage() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="flex-1 text-xs h-7 border-primary/30 text-primary hover:bg-primary/10"
+                                  className="w-full text-xs h-11 border-primary/30 text-primary hover:bg-primary/10"
                                   onClick={() => handleClaim(p)}
                                   disabled={claimingId === p.id}
                                 >
