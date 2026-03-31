@@ -372,6 +372,16 @@ export default function Venues() {
           }}
         />
       )}
+
+      {requestVenue && (
+        <VenueBookingRequestDialog
+          venueId={requestVenue.id}
+          venueName={requestVenue.name}
+          open={!!requestVenue}
+          onOpenChange={(open) => { if (!open) setRequestVenue(null); }}
+          onSubmitted={() => setRequestVenue(null)}
+        />
+      )}
     </div>
     </>
   );
