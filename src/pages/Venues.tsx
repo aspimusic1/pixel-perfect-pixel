@@ -339,6 +339,17 @@ export default function Venues() {
                           )
                         )}
                       </div>
+
+                      {/* Request to book — for artists */}
+                      {user && profile?.role === "artist" && (
+                        <Button
+                          size="sm"
+                          onClick={() => setRequestVenue(v)}
+                          className="w-full mt-3 h-9 bg-role-venue/10 text-role-venue hover:bg-role-venue/20 border border-role-venue/20 text-[11px] font-body font-semibold active:scale-[0.97] transition-transform"
+                        >
+                          <Send className="w-3 h-3 mr-1.5" /> request to book
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
