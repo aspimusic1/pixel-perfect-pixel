@@ -81,7 +81,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "GetBooked.Live <notifications@getbooked.live>",
+        from: "GetBooked.Live <onboarding@resend.dev>",
         to: [email],
         subject: "You're on the GetBooked.Live waitlist 🎵",
         html,
