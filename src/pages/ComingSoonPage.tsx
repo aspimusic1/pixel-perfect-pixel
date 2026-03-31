@@ -1,8 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Instagram, Linkedin } from "lucide-react";
+import { Instagram, Linkedin, Mic2, Megaphone, Building2, Camera, Wrench } from "lucide-react";
 import { waitlistSchema } from "@/lib/publicInputValidation";
 import SEO from "@/components/SEO";
+
+const ROLE_OPTIONS = [
+  { value: "artist",       label: "Artist",           icon: Mic2,      color: "#C8FF3E", glow: "rgba(200,255,62,0.25)" },
+  { value: "promoter",    label: "Promoter",          icon: Megaphone, color: "#FF5C8A", glow: "rgba(255,92,138,0.25)" },
+  { value: "venue",       label: "Venue",             icon: Building2, color: "#FFB83E", glow: "rgba(255,184,62,0.25)" },
+  { value: "photo_video", label: "Creative",          icon: Camera,    color: "#3EC8FF", glow: "rgba(62,200,255,0.25)" },
+  { value: "production",  label: "Crew / Production", icon: Wrench,    color: "#A78BFA", glow: "rgba(167,139,250,0.25)" },
+];
 
 const WAITLIST_BASE_COUNT = 2847;
 
@@ -179,18 +187,36 @@ export default function ComingSoonPage() {
             className={`w-full max-w-sm space-y-3 ${fadeIn} ${transition}`}
             style={{ transitionDelay: "550ms" }}
           >
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full h-12 rounded-xl border border-border bg-card px-4 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 transition-all appearance-none cursor-pointer"
-            >
-              <option value="" className="bg-card">I am a…</option>
-              <option value="artist" className="bg-card">Artist</option>
-              <option value="promoter" className="bg-card">Promoter</option>
-              <option value="venue" className="bg-card">Venue</option>
-              <option value="production" className="bg-card">Crew / Production</option>
-              <option value="photo_video" className="bg-card">Creative</option>
-            </select>
+            <div className="w-full">
+              <p className="text-xs text-white/40 font-syne uppercase tracking-widest mb-2.5 text-center">I am a…</p>
+              <div className="grid grid-cols-3 gap-2">
+                {ROLE_OPTIONS.map((opt) => {
+                  const Icon = opt.icon;
+                  const selected = role === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setRole(opt.value)}
+                      className="relative flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-3 h-[72px] cursor-pointer transition-all duration-200"
+                      style={{
+                        borderColor: selected ? `${opt.color}80` : `${opt.color}25`,
+                        backgroundColor: selected ? `${opt.color}18` : `${opt.color}06`,
+                        boxShadow: selected ? `0 0 20px ${opt.glow}` : "none",
+                      }}
+                    >
+                      <Icon className="w-4 h-4" style={{ color: opt.color }} />
+                      <span
+                        className="text-[10px] font-syne font-bold tracking-wider uppercase leading-tight text-center"
+                        style={{ color: selected ? opt.color : `${opt.color}99` }}
+                      >
+                        {opt.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
             <input
               type="text"
