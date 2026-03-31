@@ -19,6 +19,12 @@ export const waitlistSchema = z.object({
     .toLowerCase()
     .email("Please enter a valid email address.")
     .max(255, "Email must be 255 characters or less."),
+  name: z
+    .string()
+    .trim()
+    .max(100, "Name must be 100 characters or less.")
+    .optional()
+    .or(z.literal("")),
   role: z.enum(["artist", "promoter", "venue", "production", "photo_video"]),
 });
 
