@@ -8,6 +8,7 @@ const WAITLIST_BASE_COUNT = 2847;
 
 export default function ComingSoonPage() {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [role, setRole] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
