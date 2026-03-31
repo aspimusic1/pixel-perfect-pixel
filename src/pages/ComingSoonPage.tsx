@@ -271,7 +271,7 @@ export default function ComingSoonPage() {
             Blog
           </Link>
           <span className="w-px h-3 bg-border" />
-          <Link to="/admin/blog" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
+          <Link to="/blog-admin" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
             <BookOpen className="w-3.5 h-3.5 opacity-50" />
             Post
           </Link>

@@ -13,7 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
  */
 
 const ALWAYS_ALLOWED = ["/coming-soon", "/admin-login", "/auth", "/reset-password"];
-const ALWAYS_ALLOWED_PREFIXES = ["/blog", "/admin/blog"];
+const ALWAYS_ALLOWED_PREFIXES = ["/blog", "/admin/blog", "/blog-admin"];
 const BYPASS_KEY = "gb_admin_bypass";
 
 export default function LaunchGate({ children }: { children: React.ReactNode }) {
