@@ -386,7 +386,7 @@ function MobileLink({ to, active, onClick, children }: { to: string; active: boo
     <Link
       to={to}
       onClick={onClick}
-      className={`py-3 px-3 rounded-lg text-sm font-body font-medium transition-colors active:scale-[0.97] min-h-[44px] flex items-center ${
+      className={`h-[52px] px-4 rounded-lg text-sm font-body font-medium transition-colors active:scale-[0.97] flex items-center ${
         active
           ? "bg-[rgba(200,255,62,0.08)] text-[#C8FF3E]"
           : "text-foreground hover:bg-secondary"
