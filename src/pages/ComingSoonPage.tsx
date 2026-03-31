@@ -126,6 +126,7 @@ export default function ComingSoonPage() {
     }).catch(() => {});
     setSubmitted(true);
   };
+  const fadeIn = mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4";
   const transition = "transition-all duration-700 ease-out";
 
   return (
