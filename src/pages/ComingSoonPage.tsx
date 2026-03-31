@@ -240,7 +240,7 @@ export default function ComingSoonPage() {
               </svg>
             </div>
             <h2 className="font-syne text-2xl font-bold text-foreground">You're on the list.</h2>
-            <p className="text-muted-foreground text-sm">We'll let you know when it's time.</p>
+            <p className="text-muted-foreground text-sm">We'll be in touch soon — check your inbox for a confirmation.</p>
           </div>
         )}
 
