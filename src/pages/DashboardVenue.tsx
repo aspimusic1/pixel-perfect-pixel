@@ -20,7 +20,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
 import SEO from "@/components/SEO";
 
-type VenueView = "overview" | "details" | "photos" | "availability" | "profile";
+type VenueView = "overview" | "requests" | "details" | "photos" | "availability" | "profile";
 type VenueListing = { id: string; name: string; city: string | null; state: string | null; address: string | null; phone: string | null; email: string | null; website: string | null; description: string | null; capacity: number | null; amenities: string[] | null; claim_status: string };
 type VenuePhoto = { id: string; file_path: string; caption: string | null; sort_order: number };
 type AvailableDate = { id: string; available_date: string; notes: string | null };
@@ -30,6 +30,7 @@ const AMENITY_OPTIONS = ["Sound System", "Lighting Rig", "Stage", "Green Room", 
 
 const navItems: NavItem<VenueView>[] = [
   { title: "overview", value: "overview", icon: Building2 },
+  { title: "requests", value: "requests", icon: Clock },
   { title: "details", value: "details", icon: MapPin },
   { title: "photos", value: "photos", icon: ImageIcon },
   { title: "availability", value: "availability", icon: CalendarIcon },
