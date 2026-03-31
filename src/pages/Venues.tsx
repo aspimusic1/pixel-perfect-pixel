@@ -41,6 +41,7 @@ export default function Venues() {
   const [regionFilter, setRegionFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
+  const [requestVenue, setRequestVenue] = useState<VenueListing | null>(null);
   const [userClaims, setUserClaims] = useState<Set<string>>(new Set());
   const { user, profile } = useAuth();
   const ref = useRef<HTMLDivElement>(null);
