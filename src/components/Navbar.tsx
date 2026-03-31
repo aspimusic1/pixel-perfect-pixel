@@ -271,7 +271,7 @@ export default function Navbar() {
         </div>
       </motion.nav>
 
-      {/* ── Mobile overlay ───────────────────────────── */}
+      {/* ── Mobile overlay (tap outside to close) ──── */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -281,97 +281,100 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-          >
-            <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
-          </motion.div>
+          />
         )}
       </AnimatePresence>
 
-      {/* ── Mobile slide‑out ─────────────────────────── */}
-      <div
-        id="mobile-nav-menu"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
-        className={`fixed top-[60px] right-0 bottom-0 z-50 w-72 bg-card border-l border-white/[0.06] transform transition-transform duration-200 ease-out md:hidden ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex flex-col h-full px-4 py-5 overflow-y-auto">
-          <nav className="flex flex-col gap-0.5">
-            {links.map((link) => (
-              <MobileLink key={link.label} to={link.to} active={isActive(link.to)} onClick={closeMenu}>
-                {link.label}
-              </MobileLink>
-            ))}
-
-            {/* Promoter: + New Offer in mobile */}
-            {user && role === "promoter" && !isAdmin && (
-              <>
-                <div className="border-t border-white/[0.06] my-3" />
-                <Link to="/directory" onClick={closeMenu}>
-                  <button className="w-full flex items-center justify-center gap-1.5 bg-[#FF5C8A] text-white text-[13px] font-display font-bold rounded-full h-11 hover:bg-[#FF5C8A]/90 active:scale-[0.96] transition-all">
-                    <Plus className="w-3.5 h-3.5" />
-                    new offer
-                  </button>
-                </Link>
-              </>
-            )}
-
-            {/* Admin: back to app in mobile */}
-            {user && isAdmin && (
-              <>
-                <div className="border-t border-white/[0.06] my-3" />
-                <MobileLink to="/dashboard" active={false} onClick={closeMenu}>
-                  <ArrowLeft className="w-3.5 h-3.5 inline mr-1.5" />
-                  back to app
+      {/* ── Mobile full-width dropdown ───────────────── */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            id="mobile-nav-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            className="fixed top-[60px] left-0 right-0 z-50 md:hidden border-b border-white/[0.08]"
+            style={{ background: "rgba(8,12,20,0.98)", backdropFilter: "blur(20px)" }}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <nav className="flex flex-col px-4 py-3 max-h-[calc(100svh-60px)] overflow-y-auto">
+              {links.map((link) => (
+                <MobileLink key={link.label} to={link.to} active={isActive(link.to)} onClick={closeMenu}>
+                  {link.label}
                 </MobileLink>
-              </>
-            )}
+              ))}
 
-            <div className="border-t border-white/[0.06] my-3" />
+              {/* Promoter: + New Offer in mobile */}
+              {user && role === "promoter" && !isAdmin && (
+                <>
+                  <div className="border-t border-white/[0.06] my-3" />
+                  <Link to="/directory" onClick={closeMenu}>
+                    <button className="w-full flex items-center justify-center gap-1.5 bg-[#FF5C8A] text-white text-[13px] font-display font-bold rounded-full h-[52px] hover:bg-[#FF5C8A]/90 active:scale-[0.96] transition-all">
+                      <Plus className="w-3.5 h-3.5" />
+                      new offer
+                    </button>
+                  </Link>
+                </>
+              )}
 
-            {user ? (
-              <>
-                <MobileLink to="/settings" active={isActive("/settings")} onClick={closeMenu}>
-                  Settings
-                </MobileLink>
-                <div className="px-3 py-2">
-                  <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
-                </div>
-                <button
-                  className="w-full text-left py-3 px-3 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors active:scale-[0.97] font-body min-h-[44px]"
-                  onClick={() => { signOut(); navigate("/"); closeMenu(); }}
-                >
-                  {t("nav.signOut")}
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="px-3 py-2">
-                  <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
-                </div>
-                <Link to="/auth?admin=true" onClick={closeMenu}>
-                  <span className="flex items-center py-3 px-3 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors min-h-[44px]">
-                    <ShieldCheck className="w-3.5 h-3.5 mr-1.5" />
-                    Admin login
-                  </span>
-                </Link>
-                <Link to="/auth" onClick={closeMenu}>
-                  <Button variant="outline" className="w-full text-sm h-11 font-body mt-1">
-                    {t("nav.signIn")}
-                  </Button>
-                </Link>
-                <Link to="/auth?tab=signup" onClick={closeMenu} className="mt-2">
-                  <button className="w-full bg-primary text-primary-foreground font-display font-bold text-[13px] rounded-full h-11 hover:bg-primary/90 active:scale-[0.96] transition-all">
-                    {t("nav.startFree")}
+              {/* Admin: back to app in mobile */}
+              {user && isAdmin && (
+                <>
+                  <div className="border-t border-white/[0.06] my-3" />
+                  <MobileLink to="/dashboard" active={false} onClick={closeMenu}>
+                    <ArrowLeft className="w-3.5 h-3.5 inline mr-1.5" />
+                    back to app
+                  </MobileLink>
+                </>
+              )}
+
+              <div className="border-t border-white/[0.06] my-3" />
+
+              {user ? (
+                <>
+                  <MobileLink to="/settings" active={isActive("/settings")} onClick={closeMenu}>
+                    Settings
+                  </MobileLink>
+                  <div className="px-3 py-2">
+                    <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                  </div>
+                  <button
+                    className="w-full text-left h-[52px] px-4 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors active:scale-[0.97] font-body"
+                    onClick={() => { signOut(); navigate("/"); closeMenu(); }}
+                  >
+                    {t("nav.signOut")}
                   </button>
-                </Link>
-              </>
-            )}
-          </nav>
-        </div>
-      </div>
+                </>
+              ) : (
+                <>
+                  <div className="px-3 py-2">
+                    <LanguageSelector currentLang={i18n.language} onChange={(l) => i18n.changeLanguage(l)} />
+                  </div>
+                  <Link to="/auth?admin=true" onClick={closeMenu}>
+                    <span className="flex items-center h-[52px] px-4 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+                      <ShieldCheck className="w-3.5 h-3.5 mr-1.5" />
+                      Admin login
+                    </span>
+                  </Link>
+                  <Link to="/auth" onClick={closeMenu}>
+                    <Button variant="outline" className="w-full text-sm h-[52px] font-body mt-1">
+                      {t("nav.signIn")}
+                    </Button>
+                  </Link>
+                  <Link to="/auth?tab=signup" onClick={closeMenu} className="mt-2">
+                    <button className="w-full bg-primary text-primary-foreground font-display font-bold text-[13px] rounded-full h-[52px] hover:bg-primary/90 active:scale-[0.96] transition-all">
+                      {t("nav.startFree")}
+                    </button>
+                  </Link>
+                </>
+              )}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
@@ -383,7 +386,7 @@ function MobileLink({ to, active, onClick, children }: { to: string; active: boo
     <Link
       to={to}
       onClick={onClick}
-      className={`py-3 px-3 rounded-lg text-sm font-body font-medium transition-colors active:scale-[0.97] min-h-[44px] flex items-center ${
+      className={`h-[52px] px-4 rounded-lg text-sm font-body font-medium transition-colors active:scale-[0.97] flex items-center ${
         active
           ? "bg-[rgba(200,255,62,0.08)] text-[#C8FF3E]"
           : "text-foreground hover:bg-secondary"

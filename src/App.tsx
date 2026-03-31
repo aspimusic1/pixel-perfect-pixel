@@ -149,7 +149,7 @@ function AppLayout() {
           <Navbar />
         </>
       )}
-      <main id="main-content" className={isComingSoon ? "" : "overflow-x-hidden"}>
+      <main id="main-content" className={isComingSoon ? "" : "overflow-x-hidden max-w-[100vw]"}>
         <Suspense fallback={<RouteLoadingFallback />}>
           <LaunchGate>
             <AnimatedRoutes />
