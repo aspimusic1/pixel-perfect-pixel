@@ -5,11 +5,15 @@
  * It handles its own auth: shows a login form if the user is not signed in,
  * then renders the full editor once they are authenticated as admin.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Trash2, Eye, EyeOff, Save, ExternalLink, LogOut } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff, Save, ExternalLink, LogOut, Code2 } from "lucide-react";
 import { toast } from "sonner";
+import { marked } from "marked";
 import type { User } from "@supabase/supabase-js";
+
+// Configure marked for safe rendering
+marked.setOptions({ breaks: true, gfm: true });
 
 type BlogPost = {
   id: string;
@@ -131,6 +135,12 @@ function EditorScreen({ user, onLogout }: { user: User; onLogout: () => void }) 
   const [tagInput, setTagInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [previewMode, setPreviewMode] = useState(false);
+
+  const renderedContent = useMemo(() => {
+    if (!selected?.content) return "";
+    return marked(selected.content) as string;
+  }, [selected?.content]);
 
   const fetchPosts = async () => {
     const { data } = await supabase
@@ -304,11 +314,53 @@ function EditorScreen({ user, onLogout }: { user: User; onLogout: () => void }) 
                 <input type="text" value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="artists, booking, tips"
                   className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#C8FF3E]/40" />
               </div>
-              {/* Content */}
+              {/* Content with Markdown preview toggle */}
               <div>
-                <label className="block text-[11px] font-semibold uppercase tracking-wider text-white/40 mb-1.5">Content * <span className="normal-case font-normal">(Markdown supported)</span></label>
-                <textarea value={selected.content ?? ""} onChange={(e) => setSelected((p) => ({ ...p, content: e.target.value }))} placeholder="Write your post in Markdown…" rows={20}
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#C8FF3E]/40 resize-y font-mono" />
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-white/40">Content *</label>
+                  <div className="flex items-center gap-1 bg-white/[0.04] border border-white/[0.08] rounded-lg p-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewMode(false)}
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-semibold transition-colors ${
+                        !previewMode ? "bg-white/[0.1] text-white" : "text-white/40 hover:text-white/60"
+                      }`}
+                    >
+                      <Code2 className="w-3 h-3" /> Markdown
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewMode(true)}
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-semibold transition-colors ${
+                        previewMode ? "bg-[#C8FF3E]/10 text-[#C8FF3E]" : "text-white/40 hover:text-white/60"
+                      }`}
+                    >
+                      <Eye className="w-3 h-3" /> Preview
+                    </button>
+                  </div>
+                </div>
+                {!previewMode ? (
+                  <textarea
+                    value={selected.content ?? ""}
+                    onChange={(e) => setSelected((p) => ({ ...p, content: e.target.value }))}
+                    placeholder={`Write your post in Markdown…\n\n# Heading\n\nParagraph text here.\n\n**bold**, *italic*, [link](https://url.com)\n\n- Bullet point\n- Another point`}
+                    rows={20}
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#C8FF3E]/40 resize-y font-mono leading-relaxed"
+                  />
+                ) : (
+                  <div
+                    className="w-full min-h-[480px] bg-white/[0.02] border border-white/[0.08] rounded-xl px-6 py-5 prose prose-invert prose-sm max-w-none
+                      prose-headings:font-bold prose-headings:text-white
+                      prose-p:text-white/70 prose-p:leading-[1.8]
+                      prose-a:text-[#C8FF3E] prose-a:no-underline hover:prose-a:underline
+                      prose-strong:text-white
+                      prose-li:text-white/70
+                      prose-blockquote:border-[#C8FF3E]/40 prose-blockquote:text-white/50
+                      prose-code:text-[#C8FF3E] prose-code:bg-[#C8FF3E]/10 prose-code:px-1 prose-code:rounded
+                      prose-hr:border-white/[0.06]"
+                    dangerouslySetInnerHTML={{ __html: renderedContent || "<p style='color:rgba(255,255,255,0.2)'>Nothing to preview yet — write some Markdown on the left.</p>" }}
+                  />
+                )}
               </div>
               {/* Actions */}
               <div className="flex items-center gap-3 pb-10">
