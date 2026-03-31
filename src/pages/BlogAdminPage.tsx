@@ -64,13 +64,12 @@ function LoginScreen({ onLogin }: { onLogin: (user: User) => void }) {
       setLoading(false);
       return;
     }
-    // Verify admin role
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .single();
-    if (profile?.role !== "admin") {
+    // Verify admin role via has_role RPC (same check used by the rest of the app)
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: data.user.id,
+      _role: "admin",
+    });
+    if (!isAdmin) {
       await supabase.auth.signOut();
       setError("This account does not have admin access.");
       setLoading(false);
@@ -353,12 +352,11 @@ export default function BlogAdminPage() {
     supabase.auth.getSession().then(async ({ data }) => {
       const sessionUser = data.session?.user ?? null;
       if (sessionUser) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", sessionUser.id)
-          .single();
-        if (profile?.role === "admin") {
+        const { data: isAdmin } = await supabase.rpc("has_role", {
+          _user_id: sessionUser.id,
+          _role: "admin",
+        });
+        if (isAdmin) {
           setUser(sessionUser);
         }
       }
