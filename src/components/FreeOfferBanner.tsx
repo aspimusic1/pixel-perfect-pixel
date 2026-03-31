@@ -19,12 +19,14 @@ export default function FreeOfferBanner({ mode }: { mode: "sent" | "received" })
 
     const col = mode === "sent" ? "sender_id" : "recipient_id";
 
-    supabase
-      .from("offers")
-      .select("id", { count: "exact", head: true })
-      .eq(col, user.id)
-      .gte("created_at", monthStart)
-      .then(({ count: c }) => setCount(c ?? 0));
+    Promise.all([
+      supabase.from("offers").select("id", { count: "exact", head: true }).eq(col, user.id).gte("created_at", monthStart),
+      mode === "sent"
+        ? supabase.from("venue_booking_requests" as any).select("id", { count: "exact", head: true }).eq("artist_id", user.id).gte("created_at", monthStart)
+        : Promise.resolve({ count: 0 }),
+    ]).then(([offersRes, reqRes]) => {
+      setCount((offersRes.count ?? 0) + ((reqRes as any).count ?? 0));
+    });
   }, [user, profile, mode]);
 
   if (!profile || profile.subscription_plan !== "free") return null;

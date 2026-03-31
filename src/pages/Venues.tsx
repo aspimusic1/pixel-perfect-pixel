@@ -4,9 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Phone, Mail, Globe, Lock, ArrowRight, Shield, CheckCircle, Clock, CalendarDays } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Lock, ArrowRight, Shield, CheckCircle, Clock, CalendarDays, Send } from "lucide-react";
 import { format, parseISO, isAfter, startOfToday } from "date-fns";
 import VenueClaimDialog from "@/components/VenueClaimDialog";
+import VenueBookingRequestDialog from "@/components/VenueBookingRequestDialog";
 import SEO from "@/components/SEO";
 
 type VenueListing = {
@@ -40,6 +41,7 @@ export default function Venues() {
   const [regionFilter, setRegionFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [claimVenue, setClaimVenue] = useState<VenueListing | null>(null);
+  const [requestVenue, setRequestVenue] = useState<VenueListing | null>(null);
   const [userClaims, setUserClaims] = useState<Set<string>>(new Set());
   const { user, profile } = useAuth();
   const ref = useRef<HTMLDivElement>(null);
@@ -337,6 +339,17 @@ export default function Venues() {
                           )
                         )}
                       </div>
+
+                      {/* Request to book — for artists */}
+                      {user && profile?.role === "artist" && (
+                        <Button
+                          size="sm"
+                          onClick={() => setRequestVenue(v)}
+                          className="w-full mt-3 h-9 bg-role-venue/10 text-role-venue hover:bg-role-venue/20 border border-role-venue/20 text-[11px] font-body font-semibold active:scale-[0.97] transition-transform"
+                        >
+                          <Send className="w-3 h-3 mr-1.5" /> request to book
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -357,6 +370,16 @@ export default function Venues() {
             setUserClaims((prev) => new Set([...prev, claimVenue.id]));
             setClaimVenue(null);
           }}
+        />
+      )}
+
+      {requestVenue && (
+        <VenueBookingRequestDialog
+          venueId={requestVenue.id}
+          venueName={requestVenue.name}
+          open={!!requestVenue}
+          onOpenChange={(open) => { if (!open) setRequestVenue(null); }}
+          onSubmitted={() => setRequestVenue(null)}
         />
       )}
     </div>
