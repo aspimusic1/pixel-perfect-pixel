@@ -6,13 +6,14 @@ import { useAuth } from "@/contexts/AuthContext";
  *
  * Rules:
  * - All non-admin visitors are redirected to /coming-soon.
- * - Allowed public routes: /coming-soon, /auth, /admin-login, /reset-password
+ * - Allowed public routes: /coming-soon, /auth, /admin-login, /reset-password, /blog, /blog/*
  * - Admins (isAdmin === true) can access every route.
  * - Hidden bypass: visiting any route with ?admin=true stores a flag in
  *   sessionStorage so the user can reach /auth to log in as admin.
  */
 
 const ALWAYS_ALLOWED = ["/coming-soon", "/admin-login", "/auth", "/reset-password"];
+const ALWAYS_ALLOWED_PREFIXES = ["/blog"];
 const BYPASS_KEY = "gb_admin_bypass";
 
 export default function LaunchGate({ children }: { children: React.ReactNode }) {
@@ -34,6 +35,11 @@ export default function LaunchGate({ children }: { children: React.ReactNode }) 
 
   // Admins bypass the gate entirely
   if (isAdmin) return <>{children}</>;
+
+  // Public prefix routes (e.g. /blog, /blog/my-post-slug)
+  if (ALWAYS_ALLOWED_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(prefix + "/"))) {
+    return <>{children}</>;
+  }
 
   // If user activated the hidden bypass, allow /auth so they can log in
   if (hasBypass && ALWAYS_ALLOWED.includes(pathname)) return <>{children}</>;
