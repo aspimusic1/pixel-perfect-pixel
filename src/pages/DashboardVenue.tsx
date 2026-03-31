@@ -231,7 +231,14 @@ export default function VenueManage() {
                 </>
               )}
 
-              {/* Photos */}
+              {/* Booking Requests */}
+              {activeView === "requests" && selectedVenue && (
+                <>
+                  <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">booking requests</h2>
+                  <VenueBookingRequestsInbox venueId={selectedVenue.id} />
+                </>
+              )}
+
               {activeView === "photos" && selectedVenue && (
                 <>
                   <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">photos</h2>
