@@ -202,6 +202,7 @@ export default function ComingSoonPage() {
               maxLength={100}
             />
 
+            <div className="relative">
               <input
                 type="email"
                 value={email}
