@@ -106,6 +106,7 @@ export default function ComingSoonPage() {
       .from("waitlist")
       .insert({
         email: parsed.data.email,
+        name: parsed.data.name || null,
         role: parsed.data.role,
       });
 
