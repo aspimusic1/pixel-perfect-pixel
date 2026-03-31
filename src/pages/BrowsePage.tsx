@@ -208,7 +208,7 @@ export default function BrowsePage() {
                 <button
                   key={f.value}
                   onClick={() => setRoleFilter(f.value)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  className={`flex-1 min-w-[80px] px-3 py-2 rounded-full text-xs font-medium transition-colors min-h-[44px] sm:flex-none sm:min-w-0 ${
                     roleFilter === f.value
                       ? "bg-primary text-primary-foreground"
                       : "bg-card text-muted-foreground border border-white/[0.06] hover:text-foreground"
