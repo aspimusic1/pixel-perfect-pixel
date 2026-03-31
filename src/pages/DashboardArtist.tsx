@@ -342,7 +342,7 @@ export default function ArtistDashboard() {
                 <>
                   {loading ? (
                     <div className="space-y-4">
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {[1, 2, 3, 4].map((i) => <SkeletonCard key={i} height="h-20" />)}
                       </div>
                       {[1, 2, 3].map((i) => <SkeletonCard key={i} height="h-40" />)}
