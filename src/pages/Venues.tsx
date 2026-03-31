@@ -4,9 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Phone, Mail, Globe, Lock, ArrowRight, Shield, CheckCircle, Clock, CalendarDays } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Lock, ArrowRight, Shield, CheckCircle, Clock, CalendarDays, Send } from "lucide-react";
 import { format, parseISO, isAfter, startOfToday } from "date-fns";
 import VenueClaimDialog from "@/components/VenueClaimDialog";
+import VenueBookingRequestDialog from "@/components/VenueBookingRequestDialog";
 import SEO from "@/components/SEO";
 
 type VenueListing = {
