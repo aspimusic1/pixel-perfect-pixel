@@ -42,7 +42,7 @@ function slugify(s: string) {
 }
 
 export default function AdminBlogEditor() {
-  const { profile } = useAuth();
+  const { profile, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selected, setSelected] = useState<Partial<BlogPost> | null>(null);
@@ -50,12 +50,17 @@ export default function AdminBlogEditor() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Guard — admin only
+  // Guard — redirect to /auth if not logged in, block non-admins
   useEffect(() => {
-    if (profile && profile.role !== "admin") {
-      navigate("/", { replace: true });
+    if (authLoading) return;
+    if (!user) {
+      navigate("/auth?returnTo=/admin/blog", { replace: true });
+      return;
     }
-  }, [profile, navigate]);
+    if (profile && profile.role !== "admin") {
+      navigate("/coming-soon", { replace: true });
+    }
+  }, [profile, user, authLoading, navigate]);
 
   const fetchPosts = async () => {
     const { data } = await supabase

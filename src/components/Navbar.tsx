@@ -35,7 +35,6 @@ const LOGGED_OUT_LINKS: NavItem[] = [
   { label: "Pricing", to: "/pricing" },
   { label: "For Artists", to: "/artists" },
   { label: "For Promoters", to: "/promoters" },
-  { label: "Blog", to: "/blog" },
 ];
 
 const ARTIST_LINKS: NavItem[] = [

@@ -23,6 +23,7 @@ const ROLES = [
 export default function AuthPage() {
   const [searchParams] = useSearchParams();
   const presetRole = searchParams.get("role") || "";
+  const returnTo = searchParams.get("returnTo") || "";
   const [isSignUp, setIsSignUp] = useState(searchParams.get("tab") === "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,9 +47,9 @@ export default function AuthPage() {
   useEffect(() => {
     if (!user) return;
     if (!profile) return;
-    // Admin users bypass onboarding entirely — go straight to the admin panel
+    // Admin users bypass onboarding entirely — go straight to the admin panel (or returnTo)
     if (isAdmin) {
-      navigate("/admin", { replace: true });
+      navigate(returnTo || "/admin", { replace: true });
       return;
     }
     // If the profile has no role yet (social login gap), show the role picker
@@ -56,7 +57,7 @@ export default function AuthPage() {
       setShowRolePicker(true);
       return;
     }
-    navigate("/welcome");
+    navigate(returnTo || "/welcome");
   }, [user, profile, isAdmin, navigate]);
 
   useEffect(() => { if (presetRole) { setSelectedRole(presetRole); setIsSignUp(true); } }, [presetRole]);

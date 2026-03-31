@@ -270,6 +270,11 @@ export default function ComingSoonPage() {
             <BookOpen className="w-3.5 h-3.5" />
             Blog
           </Link>
+          <span className="w-px h-3 bg-border" />
+          <Link to="/admin/blog" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
+            <BookOpen className="w-3.5 h-3.5 opacity-50" />
+            Post
+          </Link>
         </div>
         {/* Discreet admin login — nearly invisible to visitors, clickable by admin */}
         <div className="flex justify-center mt-4">
