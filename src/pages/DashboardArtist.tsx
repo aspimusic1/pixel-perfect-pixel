@@ -342,7 +342,7 @@ export default function ArtistDashboard() {
                 <>
                   {loading ? (
                     <div className="space-y-4">
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {[1, 2, 3, 4].map((i) => <SkeletonCard key={i} height="h-20" />)}
                       </div>
                       {[1, 2, 3].map((i) => <SkeletonCard key={i} height="h-40" />)}
@@ -356,7 +356,7 @@ export default function ArtistDashboard() {
                    <GettingStartedChecklist variant="artist" />
 
                   {/* Compact stats strip */}
-                  <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] grid grid-cols-2 lg:grid-cols-4 divide-y divide-white/[0.06] lg:divide-y-0 lg:divide-x lg:divide-white/[0.06]">
+                  <div className="rounded-lg border border-white/[0.06] bg-[#0e1420] grid grid-cols-2 md:grid-cols-4 divide-y divide-white/[0.06] md:divide-y-0 md:divide-x md:divide-white/[0.06]">
                     {[
                       { label: "pending", value: loading ? "—" : pendingCount, color: "#FBBF24" },
                       { label: "confirmed", value: loading ? "—" : acceptedCount, color: "#4ADE80" },
