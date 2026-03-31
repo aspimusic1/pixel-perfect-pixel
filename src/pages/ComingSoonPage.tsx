@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Instagram, Linkedin } from "lucide-react";
+import { Instagram, Linkedin, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 import { waitlistSchema } from "@/lib/publicInputValidation";
 import SEO from "@/components/SEO";
 
@@ -264,6 +265,11 @@ export default function ComingSoonPage() {
             <Linkedin className="w-3.5 h-3.5" />
             LinkedIn
           </a>
+          <span className="w-px h-3 bg-border" />
+          <Link to="/blog" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
+            <BookOpen className="w-3.5 h-3.5" />
+            Blog
+          </Link>
         </div>
         {/* Discreet admin login — nearly invisible to visitors, clickable by admin */}
         <div className="flex justify-center mt-4">
