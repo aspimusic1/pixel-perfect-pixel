@@ -33,10 +33,6 @@ const ForPromotersPage = lazy(() => import("@/pages/ForPromotersPage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const TermsPage = lazy(() => import("@/pages/TermsPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
-const BlogIndexPage = lazy(() => import("@/pages/BlogIndexPage"));
-const BlogPostPage = lazy(() => import("@/pages/BlogPostPage"));
-const AdminBlogEditor = lazy(() => import("@/pages/AdminBlogEditor"));
-const BlogAdminPage = lazy(() => import("@/pages/BlogAdminPage"));
 
 // ── PROTECTED PAGES ──
 const WelcomePage = lazy(() => import("@/pages/WelcomePage"));
@@ -100,10 +96,6 @@ function AnimatedRoutes() {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/blog" element={<BlogIndexPage />} />
-        <Route path="/blog/:slug" element={<BlogPostPage />} />
-        {/* Standalone blog editor — handles its own auth, no LaunchGate or ProtectedRoute needed */}
-        <Route path="/blog-admin" element={<BlogAdminPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/directory" element={<Navigate to="/browse" replace />} />
         <Route path="/venues" element={<Navigate to="/browse" replace />} />
@@ -136,7 +128,6 @@ function AnimatedRoutes() {
         <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
         <Route path="/admin/claims" element={<ProtectedRoute><AdminClaimsPage /></ProtectedRoute>} />
-        <Route path="/admin/blog" element={<ProtectedRoute><AdminBlogEditor /></ProtectedRoute>} />
 
         {/* ── CATCH-ALL ── */}
         <Route path="*" element={<NotFoundPage />} />

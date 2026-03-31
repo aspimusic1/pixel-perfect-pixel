@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, LayoutDashboard, Users, Send, CalendarCheck, Map, DollarSign, Shield, Settings, CreditCard, TrendingUp, Sparkles, BookOpen } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Loader2, LayoutDashboard, Users, Send, CalendarCheck, Map, DollarSign, Shield, Settings, CreditCard, TrendingUp, Sparkles } from "lucide-react";
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminOffers from "@/components/admin/AdminOffers";
@@ -29,10 +28,6 @@ const NAV_ITEMS = [
   { key: "growth", label: "growth", icon: TrendingUp },
   { key: "moderation", label: "moderation", icon: Shield },
   { key: "settings", label: "settings", icon: Settings },
-];
-
-const EXTERNAL_NAV = [
-  { label: "blog editor", to: "/admin/blog", icon: BookOpen },
 ];
 
 export default function AdminDashboard() {
@@ -89,19 +84,6 @@ export default function AdminDashboard() {
             );
           })}
         </nav>
-        {/* External nav links */}
-        <div className="mt-4 pt-4 border-t border-white/[0.06] flex flex-col gap-0.5">
-          {EXTERNAL_NAV.map(item => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-display lowercase text-[#8892A4] hover:text-[#C8FF3E] hover:bg-white/[0.04] transition-all"
-            >
-              <item.icon className="w-3.5 h-3.5" />
-              {item.label}
-            </Link>
-          ))}
-        </div>
       </aside>
 
       {/* Main content */}
