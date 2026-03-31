@@ -1704,6 +1704,60 @@ export type Database = {
           },
         ]
       }
+      venue_booking_requests: {
+        Row: {
+          artist_id: string
+          created_at: string
+          event_type: string
+          expected_attendance: number | null
+          id: string
+          message: string | null
+          proposed_date: string
+          responded_at: string | null
+          status: string
+          venue_id: string
+        }
+        Insert: {
+          artist_id: string
+          created_at?: string
+          event_type?: string
+          expected_attendance?: number | null
+          id?: string
+          message?: string | null
+          proposed_date: string
+          responded_at?: string | null
+          status?: string
+          venue_id: string
+        }
+        Update: {
+          artist_id?: string
+          created_at?: string
+          event_type?: string
+          expected_attendance?: number | null
+          id?: string
+          message?: string | null
+          proposed_date?: string
+          responded_at?: string | null
+          status?: string
+          venue_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venue_booking_requests_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venue_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "venue_booking_requests_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venue_listings_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       venue_claims: {
         Row: {
           business_name: string | null
