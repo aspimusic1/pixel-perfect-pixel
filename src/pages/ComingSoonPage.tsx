@@ -192,7 +192,16 @@ export default function ComingSoonPage() {
               <option value="photo_video" className="bg-card">Creative</option>
             </select>
 
-            <div className="relative">
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name (optional)"
+              className="w-full h-12 rounded-xl border border-border bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 transition-all"
+              aria-label="Name"
+              maxLength={100}
+            />
+
               <input
                 type="email"
                 value={email}
