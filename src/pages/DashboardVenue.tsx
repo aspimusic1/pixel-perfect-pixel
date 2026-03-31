@@ -14,6 +14,7 @@ import { MapPin, Save, Upload, Trash2, CalendarIcon, Plus, Image as ImageIcon, B
 import EditProfilePanel from "@/components/EditProfilePanel";
 import GettingStartedChecklist from "@/components/GettingStartedChecklist";
 import TrialBanner from "@/components/TrialBanner";
+import VenueBookingRequestsInbox from "@/components/VenueBookingRequestsInbox";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
