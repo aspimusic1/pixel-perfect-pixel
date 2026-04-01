@@ -356,7 +356,7 @@ export default function Directory({ initialRole = "artist" }: { initialRole?: st
       <SEO
         title="Browse Artists, Venues & Production Crews — GetBooked.Live"
         description="Search 2,400+ verified artists, 840+ venues, and 380+ production crews. Filter by genre, city, and fee range."
-        canonical="https://getbookedlive.lovable.app/directory"
+        canonical="https://getbookedlive.com/directory"
       />
       <div className="container mx-auto max-w-5xl">
         {/* CTA Banner */}
