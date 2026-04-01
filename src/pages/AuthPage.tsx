@@ -276,7 +276,7 @@ export default function AuthPage() {
       <SEO
         title="Sign Up or Sign In — GetBooked.Live"
         description="Join the fastest-growing music booking marketplace. Free to join. First booking in minutes."
-        canonical="https://getbookedlive.lovable.app/auth"
+        canonical="https://getbooked.live/auth"
       />
       <div className="w-full max-w-md">
         <div className="text-center mb-8">

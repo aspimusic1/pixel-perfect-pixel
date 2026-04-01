@@ -79,7 +79,7 @@ type AvailDate = { date: string; is_available: boolean };
 type PastShow = { id: string; venue_name: string; event_date: string; city?: string };
 type SimilarArtist = { user_id: string; display_name: string | null; avatar_url: string | null; genre: string | null; city: string | null; slug: string | null };
 
-const SITE_URL = "https://getbookedlive.lovable.app";
+const SITE_URL = "https://getbooked.live";
 const SITE_NAME = "GetBooked.Live";
 
 const roleColorMap: Record<string, string> = {

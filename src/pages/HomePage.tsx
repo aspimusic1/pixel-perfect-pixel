@@ -48,14 +48,14 @@ export default function Landing() {
       <SEO
         title="GetBooked.Live — Music Booking Marketplace | Artists, Promoters & Venues"
         description="The all-in-one platform for live music. Connect artists, promoters, venues, and production crews. Structured offers, auto-contracts, tour management."
-        canonical="https://getbookedlive.lovable.app/"
+        canonical="https://getbooked.live/"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "GetBooked.Live",
-          url: "https://getbookedlive.lovable.app",
+          url: "https://getbooked.live",
           description: "The all-in-one platform for live music booking. Connect artists, promoters, venues, and production crews.",
-          logo: "https://getbookedlive.lovable.app/og-image.png",
+          logo: "https://getbooked.live/og-image.png",
         }}
       />
       <div ref={revealRef} className="min-h-screen">

@@ -32,7 +32,7 @@ type DirectoryArtist = {
   listing_type: string | null;
 };
 
-const SITE_URL = "https://getbookedlive.lovable.app";
+const SITE_URL = "https://getbooked.live";
 const SITE_NAME = "GetBooked.Live";
 
 const TIER_COLORS: Record<string, string> = {
