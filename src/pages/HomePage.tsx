@@ -14,6 +14,8 @@ import PricingTeaser from "@/components/landing/PricingTeaser";
 import FAQSection from "@/components/landing/FAQSection";
 import FinalCTA from "@/components/landing/FinalCTA";
 import CoreLoopSection from "@/components/landing/CoreLoopSection";
+import WorkflowDiagram from "@/components/landing/WorkflowDiagram";
+import EcosystemMap from "@/components/landing/EcosystemMap";
 import Footer from "@/components/landing/Footer";
 import RolePickerPopup from "@/components/RolePickerPopup";
 
@@ -65,6 +67,8 @@ export default function Landing() {
         <PersonaSection />
         <BuildShowSection />
         <HowItWorksSection />
+        <WorkflowDiagram />
+        <EcosystemMap />
         <WhatMakesDifferentSection />
         <PowerFeaturesSection />
         <TestimonialsSection />
