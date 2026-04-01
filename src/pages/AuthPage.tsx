@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import SEO from "@/components/SEO";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -373,7 +372,7 @@ export default function AuthPage() {
               variant="outline"
               className="flex-1 h-11 font-display font-medium lowercase border-white/[0.08] text-muted-foreground hover:text-foreground hover:bg-white/[0.06]"
               onClick={async () => {
-                const { error } = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+                const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
                 if (error) toast.error(error.message ?? "Google sign-in failed");
               }}
             >
@@ -385,7 +384,7 @@ export default function AuthPage() {
               variant="outline"
               className="flex-1 h-11 font-display font-medium lowercase border-white/[0.08] text-muted-foreground hover:text-foreground hover:bg-white/[0.06]"
               onClick={async () => {
-                const { error } = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin });
+                const { error } = await supabase.auth.signInWithOAuth({ provider: "apple", options: { redirectTo: window.location.origin } });
                 if (error) toast.error(error.message ?? "Apple sign-in failed");
               }}
             >
