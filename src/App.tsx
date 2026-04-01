@@ -151,9 +151,7 @@ function AppLayout() {
       )}
       <main id="main-content" className={isComingSoon ? "" : "overflow-x-hidden max-w-[100vw]"}>
         <Suspense fallback={<RouteLoadingFallback />}>
-          <LaunchGate>
             <AnimatedRoutes />
-          </LaunchGate>
         </Suspense>
       </main>
       {!isComingSoon && !isAdminLogin && <InstallBanner />}
