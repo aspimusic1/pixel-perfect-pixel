@@ -91,8 +91,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<ComingSoonPage />} />
         <Route path="/coming-soon" element={<ComingSoonPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/thank-you" element={<ThankYouPage />} />
-        <Route path="/thankyou" element={<ThankYouPage />} />
+        <Route path="/thank-you" element={<ProtectedRoute><ThankYouPage /></ProtectedRoute>} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/browse" element={<BrowsePage />} />
         <Route path="/artists" element={<ForArtistsPage />} />
