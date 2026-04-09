@@ -99,7 +99,6 @@ export default function AuthPage() {
         }
 
         toast.success("Account created!");
-        navigate("/thank-you");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
