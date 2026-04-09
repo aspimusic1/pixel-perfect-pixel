@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import "./i18n";
 import "./index.css";
 
-async function clearPreviewServiceWorkers() {
+async function clearGetBookedServiceWorkers() {
   if (!("serviceWorker" in navigator)) return;
 
   const registrations = await navigator.serviceWorker.getRegistrations();
@@ -20,19 +20,7 @@ async function clearPreviewServiceWorkers() {
   }
 }
 
-function registerProductionServiceWorker() {
-  if (!("serviceWorker" in navigator)) return;
-
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
-  });
-}
-
-if (import.meta.env.PROD) {
-  registerProductionServiceWorker();
-} else {
-  clearPreviewServiceWorkers().catch(() => {});
-}
+clearGetBookedServiceWorkers().catch(() => {});
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
