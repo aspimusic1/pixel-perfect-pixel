@@ -85,12 +85,16 @@ export default function ComingSoonPage() {
         A new platform connecting artists, promoters, and venues — launching soon.
       </p>
 
-      {/* Launch badge */}
-      <div className="mb-12">
+      {/* Launch badge + waitlist CTA */}
+      <div className="mb-12 flex flex-col items-center gap-4">
         <span className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full border border-[#C8FF3E]/30 bg-[#C8FF3E]/5 text-[#C8FF3E] font-syne text-xs font-bold tracking-widest uppercase">
           <span className="w-2 h-2 rounded-full bg-[#C8FF3E] animate-pulse" />
           Launching Q4 2026
         </span>
+        <p className="text-white/40 text-sm font-syne tracking-wide text-center">
+          Sign up for the waitlist&nbsp;&mdash;&nbsp;
+          <span className="text-[#C8FF3E] font-semibold">get early access &amp; exclusive perks ✨</span>
+        </p>
       </div>
 
       {/* Form / Success */}
