@@ -1,24 +1,76 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Instagram, Linkedin, Mic2, Megaphone, Building2, Camera, Wrench } from "lucide-react";
+import { Instagram, Linkedin, ChevronDown } from "lucide-react";
 import { waitlistSchema } from "@/lib/publicInputValidation";
 import SEO from "@/components/SEO";
 
 const ROLE_OPTIONS = [
-  { value: "artist",       label: "ARTIST",           icon: Mic2,      color: "#C8FF3E" },
-  { value: "promoter",    label: "PROMOTER",          icon: Megaphone, color: "#FF5C8A" },
-  { value: "venue",       label: "VENUE",             icon: Building2, color: "#FFB83E" },
-  { value: "photo_video", label: "CREATIVE",          icon: Camera,    color: "#3EC8FF" },
-  { value: "production",  label: "CREW / PRODUCTION", icon: Wrench,    color: "#A78BFA" },
+  {
+    value: "artist",
+    label: "Artist",
+    emoji: "🎤",
+    color: "#C8FF3E",
+    bg: "rgba(200,255,62,0.10)",
+    border: "rgba(200,255,62,0.30)",
+    glow: "rgba(200,255,62,0.20)",
+    tagline: "Performers & Musicians",
+    description: "Get discovered by promoters and venues looking for your sound. Manage bookings, set your rates, and grow your live career — all in one place.",
+  },
+  {
+    value: "promoter",
+    label: "Promoter",
+    emoji: "📣",
+    color: "#FF5C8A",
+    bg: "rgba(255,92,138,0.10)",
+    border: "rgba(255,92,138,0.30)",
+    glow: "rgba(255,92,138,0.20)",
+    tagline: "Event Organisers & Bookers",
+    description: "Find and book the right talent for any event. Browse verified artists, compare rates, and handle contracts without the back-and-forth.",
+  },
+  {
+    value: "venue",
+    label: "Venue",
+    emoji: "🏟️",
+    color: "#FFB83E",
+    bg: "rgba(255,184,62,0.10)",
+    border: "rgba(255,184,62,0.30)",
+    glow: "rgba(255,184,62,0.20)",
+    tagline: "Clubs, Bars & Festivals",
+    description: "Fill your calendar with the right acts. Connect directly with artists and promoters, manage your availability, and build your venue's reputation.",
+  },
+  {
+    value: "photo_video",
+    label: "Creative",
+    emoji: "📸",
+    color: "#3EC8FF",
+    bg: "rgba(62,200,255,0.10)",
+    border: "rgba(62,200,255,0.30)",
+    glow: "rgba(62,200,255,0.20)",
+    tagline: "Photographers & Videographers",
+    description: "Get hired for live events. Showcase your portfolio, connect with artists and venues, and turn your passion into paid gigs.",
+  },
+  {
+    value: "production",
+    label: "Production",
+    emoji: "🎛️",
+    color: "#A78BFA",
+    bg: "rgba(167,139,250,0.10)",
+    border: "rgba(167,139,250,0.30)",
+    glow: "rgba(167,139,250,0.20)",
+    tagline: "Sound, Lighting & Stage Crew",
+    description: "Be the backbone of every great show. Get discovered by artists and venues who need reliable, professional crew for their events.",
+  },
 ];
 
 export default function ComingSoonPage() {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [role, setRole] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [email, setEmail]               = useState("");
+  const [name, setName]                 = useState("");
+  const [role, setRole]                 = useState("");
+  const [expandedRole, setExpandedRole] = useState<string | null>(null);
+  const [loading, setLoading]           = useState(false);
+  const [error, setError]               = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +92,6 @@ export default function ComingSoonPage() {
       .from("waitlist")
       .insert({
         email: parsed.data.email,
-        name: parsed.data.name || null,
         role: parsed.data.role,
       });
 
@@ -48,100 +99,167 @@ export default function ComingSoonPage() {
 
     if (dbError) {
       if (dbError.code === "23505") {
-        setSubmitted(true);
+        navigate("/thankyou");
       } else {
         setError("Something went wrong. Please try again.");
       }
       return;
     }
-    // Send confirmation email (fire-and-forget)
     supabase.functions.invoke("waitlist-confirm", {
       body: { email: parsed.data.email, name: parsed.data.name || "" },
     }).catch(() => {});
-    setSubmitted(true);
+    navigate("/thankyou");
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-[#0A0F1C] overflow-hidden px-6">
+    <div className="relative min-h-screen flex flex-col bg-[#0A0F1C] overflow-hidden px-6">
       <SEO title="Coming Soon | GetBooked.Live" description="GetBooked.Live is launching soon. Join the waitlist for early access." />
 
-      {/* Logo */}
-      <div className="mb-16">
-        <img
-          src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663474163600/CNVjdejEzeGWRZMX.webp"
-          alt="GetBooked"
-          className="h-10 w-auto"
-        />
+      {/* Background blobs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-[#C8FF3E]/5 blur-[140px]" />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-[#C8FF3E]/3 blur-[100px]" />
       </div>
 
-      {/* Headline */}
-      <h1 className="font-syne text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.1] tracking-tight text-white text-center mb-6 max-w-4xl">
-        The Future<br />of Booking<br />
-        <span className="text-[#C8FF3E]">Starts Here</span>
-      </h1>
+      {/* Main content */}
+      <div className="flex-1 flex flex-col items-center justify-center py-16 relative z-10">
 
-      {/* Subheadline */}
-      <p className="text-white/50 text-base sm:text-lg max-w-xl text-center mb-10 leading-relaxed">
-        A new platform connecting artists, promoters, and venues — launching soon.
-      </p>
+        {/* Logo */}
+        <div className="mb-16">
+          <img
+            src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663474163600/CNVjdejEzeGWRZMX.webp"
+            alt="GetBooked"
+            className="h-10 w-auto"
+          />
+        </div>
 
-      {/* Launch badge + waitlist CTA */}
-      <div className="mb-12 flex flex-col items-center gap-4">
-        <span className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full border border-[#C8FF3E]/30 bg-[#C8FF3E]/5 text-[#C8FF3E] font-syne text-xs font-bold tracking-widest uppercase">
-          <span className="w-2 h-2 rounded-full bg-[#C8FF3E] animate-pulse" />
-          Launching Q4 2026
-        </span>
-        <p className="text-white/40 text-sm font-syne tracking-wide text-center">
-          Sign up for the waitlist&nbsp;&mdash;&nbsp;
-          <span className="text-[#C8FF3E] font-semibold">get early access &amp; exclusive perks ✨</span>
+        {/* Headline */}
+        <h1 className="font-syne text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.1] tracking-tight text-white text-center mb-6 max-w-4xl">
+          The Future<br />of Booking<br />
+          <span className="text-[#C8FF3E]">Starts Here</span>
+        </h1>
+
+        {/* Subheadline */}
+        <p className="text-white/50 text-base sm:text-lg max-w-xl text-center mb-10 leading-relaxed">
+          A new platform connecting artists, promoters, and venues — launching soon.
         </p>
-      </div>
 
-      {/* Form / Success */}
-      {!submitted ? (
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-lg space-y-5"
-        >
-          {/* Role selector */}
-          <div className="w-full">
-            <p className="text-xs text-white/30 font-syne uppercase tracking-[0.15em] mb-3 text-center">I am a…</p>
-            <div className="grid grid-cols-5 gap-2.5">
-              {ROLE_OPTIONS.map((opt) => {
-                const Icon = opt.icon;
-                const selected = role === opt.value;
-                return (
+        {/* Launch badge + waitlist CTA */}
+        <div className="mb-12 flex flex-col items-center gap-4">
+          <span className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full border border-[#C8FF3E]/30 bg-[#C8FF3E]/5 text-[#C8FF3E] font-syne text-xs font-bold tracking-widest uppercase">
+            <span className="w-2 h-2 rounded-full bg-[#C8FF3E] animate-pulse" />
+            Launching Q4 2026
+          </span>
+          <p className="text-white/40 text-sm font-syne tracking-wide text-center">
+            Sign up for the waitlist &mdash;{" "}
+            <span className="text-[#C8FF3E] font-semibold">get early access &amp; exclusive perks ✨</span>
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="w-full max-w-lg space-y-3">
+
+          {/* Role label */}
+          <p className="text-white/30 text-xs uppercase tracking-widest font-syne text-center mb-1">
+            I am a…
+          </p>
+
+          {/* Full-width colorful role cards — stacked, on top */}
+          <div className="space-y-2">
+            {ROLE_OPTIONS.map((opt) => {
+              const isSelected  = role === opt.value;
+              const isExpanded  = expandedRole === opt.value;
+
+              return (
+                <div key={opt.value}>
                   <button
-                    key={opt.value}
                     type="button"
-                    onClick={() => setRole(opt.value)}
-                    className="relative flex flex-col items-center justify-center gap-2 rounded-xl border p-3 h-20 cursor-pointer transition-all duration-200"
+                    onClick={() => {
+                      setRole(isSelected ? "" : opt.value);
+                      setExpandedRole(isExpanded ? null : opt.value);
+                    }}
+                    className="w-full flex items-center justify-between px-5 py-4 rounded-2xl border transition-all duration-200 text-left"
                     style={{
-                      borderColor: selected ? opt.color : `${opt.color}40`,
-                      backgroundColor: selected ? `${opt.color}15` : `${opt.color}08`,
+                      backgroundColor: isSelected || isExpanded ? opt.bg : "rgba(255,255,255,0.04)",
+                      borderColor: isSelected || isExpanded ? opt.border : "rgba(255,255,255,0.08)",
+                      boxShadow: isSelected ? `0 0 24px ${opt.glow}` : "none",
                     }}
                   >
-                    <Icon className="w-5 h-5" style={{ color: opt.color }} />
-                    <span
-                      className="text-[9px] font-syne font-bold tracking-wider uppercase leading-tight text-center"
-                      style={{ color: selected ? opt.color : `${opt.color}99` }}
-                    >
-                      {opt.label}
-                    </span>
+                    {/* Left: emoji + label + tagline */}
+                    <div className="flex items-center gap-4">
+                      <span
+                        className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+                        style={{
+                          backgroundColor: isSelected || isExpanded ? `${opt.color}20` : "rgba(255,255,255,0.06)",
+                          border: `1px solid ${isSelected || isExpanded ? opt.border : "rgba(255,255,255,0.08)"}`,
+                        }}
+                      >
+                        {opt.emoji}
+                      </span>
+                      <div>
+                        <p
+                          className="font-syne font-bold text-sm uppercase tracking-wide"
+                          style={{ color: isSelected || isExpanded ? opt.color : "rgba(255,255,255,0.75)" }}
+                        >
+                          {opt.label}
+                        </p>
+                        <p className="text-[11px] text-white/35 mt-0.5">{opt.tagline}</p>
+                      </div>
+                    </div>
+
+                    {/* Right: selected dot or chevron */}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {isSelected && (
+                        <span
+                          className="w-2.5 h-2.5 rounded-full"
+                          style={{ backgroundColor: opt.color }}
+                        />
+                      )}
+                      <ChevronDown
+                        className="w-4 h-4 transition-transform duration-300"
+                        style={{
+                          color: isSelected || isExpanded ? opt.color : "rgba(255,255,255,0.20)",
+                          transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                        }}
+                      />
+                    </div>
                   </button>
-                );
-              })}
-            </div>
+
+                  {/* Expanded explanation */}
+                  {isExpanded && (
+                    <div
+                      className="mx-1 px-5 py-4 rounded-b-2xl -mt-1"
+                      style={{
+                        backgroundColor: `${opt.color}08`,
+                        borderLeft: `1px solid ${opt.border}`,
+                        borderRight: `1px solid ${opt.border}`,
+                        borderBottom: `1px solid ${opt.border}`,
+                      }}
+                    >
+                      <p className="text-[13px] text-white/60 leading-relaxed">
+                        {opt.description}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          {/* Name input */}
+          {/* Divider */}
+          <div className="flex items-center gap-3 py-1">
+            <div className="flex-1 h-px bg-white/8" />
+            <span className="text-white/20 text-xs font-syne uppercase tracking-widest">your details</span>
+            <div className="flex-1 h-px bg-white/8" />
+          </div>
+
+          {/* Name */}
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name (optional)"
             className="w-full h-14 rounded-xl border border-white/10 bg-white/5 px-5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#C8FF3E]/30 focus:border-[#C8FF3E]/30 transition-all"
-            aria-label="Name"
             maxLength={100}
           />
 
@@ -153,7 +271,6 @@ export default function ComingSoonPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="flex-1 h-14 rounded-xl border border-white/10 bg-white/5 px-5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#C8FF3E]/30 focus:border-[#C8FF3E]/30 transition-all"
-              aria-label="Email address"
               required
             />
             <button
@@ -166,29 +283,18 @@ export default function ComingSoonPage() {
           </div>
 
           {error && (
-            <p className="text-red-400 text-xs mt-1 text-center" role="alert">{error}</p>
+            <p className="text-red-400 text-xs text-center" role="alert">{error}</p>
           )}
         </form>
-      ) : (
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 mx-auto rounded-full bg-[#C8FF3E]/10 flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-[#C8FF3E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="font-syne text-2xl font-bold text-white">You're on the list.</h2>
-          <p className="text-white/50 text-sm">We'll be in touch soon — check your inbox for a confirmation.</p>
-        </div>
-      )}
 
-      {/* Tagline */}
-      <p className="mt-20 text-white/20 text-xs uppercase tracking-[0.2em] font-syne text-center">
-        Join the next generation of live booking
-      </p>
+      </div>
 
       {/* Footer */}
-      <footer className="absolute bottom-8 left-0 right-0">
-        <div className="flex flex-wrap items-center justify-center gap-6 text-white/30 text-xs">
+      <footer className="relative z-10 w-full py-8 flex flex-col items-center gap-4">
+        <p className="text-white/20 text-xs uppercase tracking-[0.2em] font-syne text-center">
+          Join the next generation of live booking
+        </p>
+        <div className="flex items-center justify-center gap-6 text-white/30 text-xs">
           <a href="https://www.instagram.com/getbooked.live" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors flex items-center gap-1.5">
             <Instagram className="w-3.5 h-3.5" />
             Instagram
@@ -198,14 +304,13 @@ export default function ComingSoonPage() {
             <Linkedin className="w-3.5 h-3.5" />
             LinkedIn
           </a>
-          <span className="w-px h-3 bg-white/10" />
-          <a
-            href="/admin-login"
-            className="text-[10px] text-white/10 hover:text-white/30 transition-colors tracking-widest uppercase"
-          >
-            Admin
-          </a>
         </div>
+        <a
+          href="/admin-login"
+          className="text-[10px] text-white/10 hover:text-white/30 transition-colors tracking-widest uppercase mt-1"
+        >
+          Admin
+        </a>
       </footer>
     </div>
   );
