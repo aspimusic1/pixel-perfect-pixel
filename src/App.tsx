@@ -143,7 +143,7 @@ function AppLayout() {
   const location = useLocation();
   const isComingSoon = location.pathname === "/coming-soon" || location.pathname === "/";
   const isAdminLogin = location.pathname === "/admin-login";
-  const isThankYou = location.pathname === "/thankyou" || location.pathname === "/thank-you";
+  const isThankYou = /^\/thank-?you\/?$/.test(location.pathname);
 
   return (
     <>
