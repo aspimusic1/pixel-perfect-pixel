@@ -33,6 +33,7 @@ const ForPromotersPage = lazy(() => import("@/pages/ForPromotersPage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const TermsPage = lazy(() => import("@/pages/TermsPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
+const ThankYouPage = lazy(() => import("@/pages/ThankYouPage"));
 
 // ── PROTECTED PAGES ──
 const WelcomePage = lazy(() => import("@/pages/WelcomePage"));
@@ -96,6 +97,8 @@ function AnimatedRoutes() {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/thankyou" element={<ThankYouPage />} />
+        <Route path="/thank-you" element={<Navigate to="/thankyou" replace />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/directory" element={<Navigate to="/browse" replace />} />
         <Route path="/venues" element={<Navigate to="/browse" replace />} />
