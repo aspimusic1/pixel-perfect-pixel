@@ -143,21 +143,22 @@ function AppLayout() {
   const location = useLocation();
   const isComingSoon = location.pathname === "/coming-soon" || location.pathname === "/";
   const isAdminLogin = location.pathname === "/admin-login";
+  const isThankYou = location.pathname === "/thankyou" || location.pathname === "/thank-you";
 
   return (
     <>
-      {!isComingSoon && !isAdminLogin && (
+      {!isComingSoon && !isAdminLogin && !isThankYou && (
         <>
           <a href="#main-content" className="skip-to-main">Skip to main content</a>
           <Navbar />
         </>
       )}
-      <main id="main-content" className={isComingSoon ? "" : "overflow-x-hidden max-w-[100vw]"}>
+      <main id="main-content" className={isComingSoon || isThankYou ? "" : "overflow-x-hidden max-w-[100vw]"}>
         <Suspense fallback={<RouteLoadingFallback />}>
             <AnimatedRoutes />
         </Suspense>
       </main>
-      {!isComingSoon && !isAdminLogin && <InstallBanner />}
+      {!isComingSoon && !isAdminLogin && !isThankYou && <InstallBanner />}
       {/* Screen reader live region for toast announcements */}
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="toast-announcer" />
       <Toaster />

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import logoBlack from "@/assets/logo-black.png";
+import logoColor from "@/assets/logo-color.png";
 
 export default function ThankYouPage() {
   return (
@@ -14,9 +14,11 @@ export default function ThankYouPage() {
 
       <div className="w-full max-w-2xl rounded-[32px] border border-white/[0.08] bg-white/[0.03] shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-sm p-8 md:p-12 text-center">
         <img
-          src={logoBlack}
+            src={logoColor}
+
           alt="GetBooked.Live"
-          className="h-7 mx-auto mb-8 opacity-95"
+            className="h-7 mx-auto mb-8 opacity-100"
+
           loading="eager"
         />
 
