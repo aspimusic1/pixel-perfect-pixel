@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import SEO from "@/components/SEO";
 import logoBlack from "@/assets/logo-black.png";
@@ -36,20 +36,27 @@ const ROLE_MESSAGE: Record<string, { headline: string; sub: string }> = {
   },
 };
 
+const DEFAULT_MESSAGE = {
+  headline: "You're on the list! 🎉",
+  sub: "We'll let you know the moment GetBooked.Live opens its doors. Stay tuned for early-access updates.",
+};
+
 const WHAT_NEXT = [
-  { emoji: "📬", title: "Check your inbox", desc: "We've sent a confirmation email. Look out for updates and early-access news from us." },
-  { emoji: "📲", title: "Download the app", desc: "The GetBooked mobile app is coming Q4 2026 — follow us to be first to know when it drops." },
+  { emoji: "📬", title: "Check your inbox", desc: "Look out for a confirmation email and early-access updates from us." },
+  { emoji: "📲", title: "Coming Q4 2026", desc: "The GetBooked mobile app drops Q4 2026 — follow us to be first to know when it's live." },
   { emoji: "🎯", title: "Spread the word", desc: "Share GetBooked.Live with your network — the more people join, the better the platform gets for everyone." },
 ];
 
 export default function ThankYouPage() {
   const { profile } = useAuth();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const role = profile?.role || "artist";
+  // Role: prefer authenticated profile, then URL param (e.g. ?role=artist), then default
+  const role = profile?.role || searchParams.get("role") || "";
   const emoji = ROLE_EMOJI[role] || "🎉";
-  const msg = ROLE_MESSAGE[role] || ROLE_MESSAGE.artist;
+  const msg = role ? (ROLE_MESSAGE[role] || DEFAULT_MESSAGE) : DEFAULT_MESSAGE;
   const firstName = profile?.display_name?.split(" ")[0] || "";
 
   // Confetti burst on mount
@@ -66,14 +73,14 @@ export default function ThankYouPage() {
     const colors = [BRAND, "#ffffff", "#A78BFA", "#FF5C8A", "#3EC8FF"];
     const particles: { x: number; y: number; vx: number; vy: number; color: string; size: number; alpha: number }[] = [];
 
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 140; i++) {
       particles.push({
         x: window.innerWidth / 2,
-        y: window.innerHeight * 0.3,
-        vx: (Math.random() - 0.5) * 14,
-        vy: (Math.random() - 1.5) * 10,
+        y: window.innerHeight * 0.25,
+        vx: (Math.random() - 0.5) * 16,
+        vy: (Math.random() - 1.8) * 10,
         color: colors[Math.floor(Math.random() * colors.length)],
-        size: Math.random() * 6 + 3,
+        size: Math.random() * 7 + 3,
         alpha: 1,
       });
     }
@@ -85,8 +92,8 @@ export default function ThankYouPage() {
       for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.35;
-        p.alpha -= 0.012;
+        p.vy += 0.38;
+        p.alpha -= 0.011;
         if (p.alpha > 0) {
           alive = true;
           ctx.globalAlpha = p.alpha;
@@ -105,7 +112,7 @@ export default function ThankYouPage() {
     <div className="min-h-screen bg-[#C8FF3E] flex flex-col">
       <SEO
         title="You're on the list — GetBooked.Live"
-        description="Thanks for joining the GetBooked.Live waitlist. We'll be in touch when we launch."
+        description="Thanks for joining the GetBooked.Live waitlist. We'll be in touch when we launch Q4 2026."
         canonical="https://getbooked.live/thank-you"
       />
 
@@ -131,13 +138,16 @@ export default function ThankYouPage() {
 
             {/* Headline */}
             <h1 className="text-2xl font-extrabold text-[#0A0A0A] mb-3 leading-tight">
-              {firstName ? `${msg.headline.replace("You're", `You're`)}` : msg.headline}
+              {msg.headline}
             </h1>
+
+            {/* Name badge — only for authenticated users */}
             {firstName && (
               <p className="text-base font-semibold text-[#C8FF3E] bg-[#0A0A0A] inline-block px-3 py-1 rounded-full mb-4 -mt-1">
                 {firstName} ✓
               </p>
             )}
+
             <p className="text-gray-500 text-sm leading-relaxed mb-8">{msg.sub}</p>
 
             {/* What's next */}
