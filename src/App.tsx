@@ -54,6 +54,8 @@ const ReviewPage = lazy(() => import("@/pages/ReviewPage"));
 // ── ADMIN PAGES ──
 const AdminClaimsPage = lazy(() => import("@/pages/AdminClaimsPage"));
 
+const ThankYouPage = lazy(() => import("@/pages/ThankYouPage"));
+
 // ── CATCH-ALL ──
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 
@@ -89,6 +91,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<ComingSoonPage />} />
         <Route path="/coming-soon" element={<ComingSoonPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/thank-you" element={<ProtectedRoute><ThankYouPage /></ProtectedRoute>} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/browse" element={<BrowsePage />} />
         <Route path="/artists" element={<ForArtistsPage />} />
