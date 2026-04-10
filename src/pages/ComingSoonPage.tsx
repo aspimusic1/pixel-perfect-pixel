@@ -99,6 +99,10 @@ export default function ComingSoonPage() {
 
     if (dbError) {
       if (dbError.code === "23505") {
+        if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+          (window as any).gtag("event", "qualify_lead", { event_category: "waitlist", event_label: "duplicate" });
+          (window as any).gtag("event", "conversion", { send_to: "AW-18068779506", event_category: "waitlist", event_label: "duplicate" });
+        }
         navigate("/thankyou");
       } else {
         setError("Something went wrong. Please try again.");
@@ -108,6 +112,18 @@ export default function ComingSoonPage() {
     supabase.functions.invoke("waitlist-confirm", {
       body: { email: parsed.data.email, name: parsed.data.name || "" },
     }).catch(() => {});
+    // Fire GA4 / Google Ads conversion events
+    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      (window as any).gtag("event", "qualify_lead", {
+        event_category: "waitlist",
+        event_label: parsed.data.role,
+      });
+      (window as any).gtag("event", "conversion", {
+        send_to: "AW-18068779506",
+        event_category: "waitlist",
+        event_label: parsed.data.role,
+      });
+    }
     navigate("/thankyou");
   };
 
