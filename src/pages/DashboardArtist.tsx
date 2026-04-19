@@ -4,7 +4,7 @@ import { SkeletonCard } from "@/components/SkeletonCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote, TrendingUp, Music2, Bot, UserCog, CalendarDays, Disc3, ArrowRight, Camera } from "lucide-react";
+import { Calendar, DollarSign, Inbox, CheckCircle, XCircle, FileText, Loader2, Download, PenLine, ArrowRightLeft, ChevronLeft, ChevronRight, Shield, Users, BarChart3, Banknote, TrendingUp, Music2, Bot, UserCog, CalendarDays, Disc3, ArrowRight, Camera, Handshake } from "lucide-react";
 import toast from "react-hot-toast";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
@@ -239,6 +239,11 @@ export default function ArtistDashboard() {
 
         {offer.status === "accepted" && booking && (
           <div className="flex flex-wrap gap-1.5 px-4 pb-3 border-t border-white/[0.04] mt-2 pt-2">
+            <Link to={`/deals/${booking.id}`}>
+              <Button size="sm" variant="outline" className="h-7 text-[11px] px-2.5 border-white/[0.08] hover:border-[#C8FF3E]/30 hover:text-[#C8FF3E] active:scale-[0.97]">
+                <Handshake className="w-3 h-3 mr-1" /> deal room
+              </Button>
+            </Link>
             {isGenerating ? (
               <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground py-1"><Loader2 className="w-3 h-3 animate-spin" /> generating contract...</div>
             ) : booking.contract_url ? (

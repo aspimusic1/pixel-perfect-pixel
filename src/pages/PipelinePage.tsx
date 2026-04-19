@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { format, parseISO } from "date-fns";
-import { Calendar, DollarSign, GripVertical, Filter, Loader2, X, ArrowRightLeft, CheckCircle, XCircle, TrendingUp, Clock, Handshake } from "lucide-react";
+import { Calendar, DollarSign, GripVertical, Filter, Loader2, X, ArrowRightLeft, CheckCircle, XCircle, TrendingUp, Clock, Handshake, DoorOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -149,6 +149,21 @@ export default function Pipeline() {
       toast.success("Offer accepted!");
     }
     setActionLoading(null);
+  };
+
+  const handleOpenDealRoom = async (offerId: string) => {
+    setActionLoading(offerId);
+    const { data, error } = await supabase
+      .from("bookings")
+      .select("id")
+      .eq("offer_id", offerId)
+      .maybeSingle();
+    setActionLoading(null);
+    if (error || !data) {
+      toast.error("No booking yet — finalize the offer first.");
+      return;
+    }
+    navigate(`/deals/${data.id}`);
   };
 
   const handleDecline = async (offerId: string) => {
@@ -388,6 +403,26 @@ export default function Pipeline() {
                   disabled={actionLoading === selectedOffer.id}
                 >
                   <XCircle className="w-3.5 h-3.5 mr-1.5" /> Decline
+                </Button>
+              </div>
+            )}
+
+            {/* Deal Room link for accepted offers */}
+            {selectedOffer.status === "accepted" && (
+              <div className="mb-4">
+                <Button
+                  size="sm"
+                  onClick={() => handleOpenDealRoom(selectedOffer.id)}
+                  disabled={actionLoading === selectedOffer.id}
+                  className="w-full h-10 bg-[#C8FF3E] text-[#080C14] hover:bg-[#C8FF3E]/90 font-semibold"
+                >
+                  {actionLoading === selectedOffer.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <DoorOpen className="w-4 h-4 mr-1.5" /> Open Deal Room
+                    </>
+                  )}
                 </Button>
               </div>
             )}

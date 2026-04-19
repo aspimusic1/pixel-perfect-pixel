@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, ChevronRight, DollarSign, TrendingUp, Megaphone, Loader2, UserCog, ArrowRight } from "lucide-react";
+import { Send, Users, Plus, PenLine, CheckCircle, FileText, ChevronLeft, ChevronRight, DollarSign, TrendingUp, Megaphone, Loader2, UserCog, ArrowRight, Handshake } from "lucide-react";
 import EmptyState from "@/components/EmptyState";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar, { type NavItem } from "@/components/DashboardSidebar";
@@ -111,6 +111,11 @@ export default function PromoterDashboard() {
 
         {offer.status === "accepted" && booking && (
           <div className="flex flex-wrap gap-1.5 px-4 pb-3 border-t border-white/[0.04] mt-2 pt-2">
+            <Link to={`/deals/${booking.id}`}>
+              <Button size="sm" variant="outline" className="h-7 text-[11px] px-2.5 border-white/[0.08] hover:border-[#C8FF3E]/30 hover:text-[#C8FF3E] active:scale-[0.97]">
+                <Handshake className="w-3 h-3 mr-1" /> deal room
+              </Button>
+            </Link>
             {booking.contract_url && (
               <Button size="sm" variant="ghost" onClick={() => openSignedContract(booking.contract_url!)} className="h-7 text-[11px] hover:bg-white/5 active:scale-[0.97] px-2.5" style={{ color: ACCENT }}>
                 <FileText className="w-3 h-3 mr-1" /> contract

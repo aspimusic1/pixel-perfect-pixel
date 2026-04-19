@@ -51,6 +51,7 @@ const TaxDashboardPage = lazy(() => import("@/pages/TaxDashboardPage"));
 const InsightsPage = lazy(() => import("@/pages/InsightsPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const ReviewPage = lazy(() => import("@/pages/ReviewPage"));
+const DealRoomPage = lazy(() => import("@/pages/DealRoomPage"));
 
 // ── ADMIN PAGES ──
 const AdminClaimsPage = lazy(() => import("@/pages/AdminClaimsPage"));
@@ -107,6 +108,8 @@ function AnimatedRoutes() {
         <Route path="/artist/:slug" element={<ArtistDirectoryPage />} />
         <Route path="/presale/:bookingId" element={<PresalePage />} />
         <Route path="/demo-dashboard" element={<DemoDashboardPage />} />
+        {/* Deal Room demo (public — lets prospects exercise the feature before signup) */}
+        <Route path="/deals/demo" element={<DealRoomPage />} />
 
         {/* ── PROTECTED ROUTES ── */}
         <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
@@ -125,6 +128,7 @@ function AnimatedRoutes() {
         <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/review/:bookingId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
+        <Route path="/deals/:bookingId" element={<ProtectedRoute><DealRoomPage /></ProtectedRoute>} />
 
         {/* ── ADMIN ROUTES ── */}
         {/* Isolated admin login — no navbar, no signup, no links to main app */}
