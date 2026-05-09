@@ -18,7 +18,7 @@
 - [x] Complete Resend sender-domain verification or identify the exact user handoff step required for DNS or account access
 - [x] Provision the missing Supabase tables and policies required by the live GetBooked data layer
 - [x] Fix the landing page nested anchor error on /?from_webdev=1 by removing invalid nested link markup
-- [ ] Add a dedicated frontend regression test that renders the public header and hero actions
-- [ ] Clean up the Supabase role-persistence warning surfaced in server logs
-- [ ] Run explicit mobile QA for landing-page navigation and waitlist form interactions
+- [x] Add a dedicated frontend regression test that renders the public header and hero actions
+- [x] Clean up the Supabase role-persistence warning surfaced in server logs
+- [x] Run explicit mobile QA for landing-page navigation and waitlist form interactions
 - [x] Add the missing Promoter tab to the public navigation and browse tabs

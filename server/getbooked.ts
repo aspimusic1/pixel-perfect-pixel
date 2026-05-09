@@ -33,6 +33,7 @@ const browseInputSchema = z.object({
 const inMemoryProfiles = new Map<string, { role: Role | null; onboardingComplete: boolean; profileCompletion: number }>();
 const inMemoryOffers = new Map<string, OfferRecord>(OFFER_SEEDS.map(item => [item.id, item]));
 const inMemoryNotifications = new Map<string, Array<{ id: string; title: string; body: string; actionUrl: string; createdAt: string }>>();
+let cachedSupabase: ReturnType<typeof createClient<any>> | null | undefined;
 
 type ResolvedContact = {
   openId: string | null;
@@ -115,14 +116,38 @@ function createOfferEmailHtml(params: { heading: string; intro: string; eventNam
   `;
 }
 
-function getSupabase() {
+function getSupabase(): ReturnType<typeof createClient<any>> | null {
+  if (cachedSupabase !== undefined) {
+    return cachedSupabase;
+  }
+
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_KEY;
-  if (!url || !key) return null;
-  return createClient(url, key, {
+
+  if (!url || !key) {
+    cachedSupabase = null;
+    return cachedSupabase;
+  }
+
+  let hostname = "";
+  try {
+    hostname = new URL(url).hostname;
+  } catch {
+    hostname = "";
+  }
+
+  const looksLikeProjectRestHost = hostname.endsWith(".supabase.co") || hostname.endsWith(".supabase.in");
+  if (!looksLikeProjectRestHost) {
+    cachedSupabase = null;
+    return cachedSupabase;
+  }
+
+  cachedSupabase = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: { headers: { "X-Client-Info": "getbooked-live" } },
   });
+
+  return cachedSupabase;
 }
 
 function normalizeRole(input: unknown): Role | null {
