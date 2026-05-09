@@ -10,4 +10,9 @@ describe("GetBookedPlatform link composition", () => {
   it("does not wrap wouter Link components around nested anchor tags", () => {
     expect(source).not.toMatch(/<Link[^>]*>\s*<a\b/);
   });
+
+  it("includes the Promoter browse path in public navigation and directory tabs", () => {
+    expect(source).toContain('/browse/promoters');
+    expect(source).toContain('Promoters');
+  });
 });

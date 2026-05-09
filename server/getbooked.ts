@@ -277,6 +277,7 @@ async function browseFromSupabase(input: z.infer<typeof browseInputSchema>) {
 
   const sources: Array<{ role: Role; table: string }> = [
     { role: "artist", table: "artist_profiles" },
+    { role: "promoter", table: "user_profiles" },
     { role: "venue", table: "venue_profiles" },
     { role: "crew", table: "crew_profiles" },
     { role: "creative", table: "creative_profiles" },
@@ -288,7 +289,8 @@ async function browseFromSupabase(input: z.infer<typeof browseInputSchema>) {
   for (const source of activeSources) {
     let query = supabase.from(source.table).select("*").limit(12);
 
-    if (input.city) query = query.eq("city", input.city);
+    if (input.city && source.role !== "promoter") query = query.eq("city", input.city);
+    if (source.role === "promoter") query = query.eq("role", "promoter");
     if (source.role === "artist" && input.genre) query = query.eq("genre", input.genre);
     if (source.role === "venue" && input.venueType) query = query.eq("venue_type", input.venueType);
     if (source.role === "crew" && input.skill) query = query.eq("primary_skill", input.skill);
@@ -310,20 +312,26 @@ async function browseFromSupabase(input: z.infer<typeof browseInputSchema>) {
         primaryMeta:
           source.role === "artist"
             ? row.genre ?? "Artist"
-            : source.role === "venue"
-              ? `${row.venue_type ?? "Venue"} · Capacity ${row.capacity ?? "—"}`
-              : source.role === "crew"
-                ? row.primary_skill ?? "Crew"
-                : row.creative_type ?? "Creative",
+            : source.role === "promoter"
+              ? row.company_name ?? row.team_name ?? "Promoter"
+              : source.role === "venue"
+                ? `${row.venue_type ?? "Venue"} · Capacity ${row.capacity ?? "—"}`
+                : source.role === "crew"
+                  ? row.primary_skill ?? "Crew"
+                  : row.creative_type ?? "Creative",
         secondaryMeta:
           source.role === "artist"
             ? `BookScore ${row.bookscore ?? 0}`
-            : row.secondary_meta ?? ROLE_CONFIG[source.role].label,
+            : source.role === "promoter"
+              ? row.city ?? row.secondary_meta ?? ROLE_CONFIG[source.role].label
+              : row.secondary_meta ?? ROLE_CONFIG[source.role].label,
         priceLabel:
-          row.price_label ??
-          row.rate_label ??
-          row.fee_label ??
-          `${row.fee_min ?? row.rate_min ?? "—"}–${row.fee_max ?? row.rate_max ?? "—"}`,
+          source.role === "promoter"
+            ? row.price_label ?? row.market_label ?? "Open to new bookings"
+            : row.price_label ??
+              row.rate_label ??
+              row.fee_label ??
+              `${row.fee_min ?? row.rate_min ?? "—"}–${row.fee_max ?? row.rate_max ?? "—"}`,
         accent: ROLE_CONFIG[source.role].accent,
         score: typeof row.bookscore === "number" ? row.bookscore : undefined,
         imageUrl: row.hero_image_url ?? row.portfolio_cover_url ?? "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=900&q=80",

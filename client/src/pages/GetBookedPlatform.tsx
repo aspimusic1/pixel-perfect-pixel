@@ -49,6 +49,7 @@ import { Link, useLocation } from "wouter";
 const PUBLIC_NAV = [
   { label: "Browse", href: "/browse" },
   { label: "Artists", href: "/browse/artists" },
+  { label: "Promoters", href: "/browse/promoters" },
   { label: "Venues", href: "/browse/venues" },
   { label: "Crews", href: "/browse/crews" },
   { label: "Creatives", href: "/browse/creatives" },
@@ -827,6 +828,7 @@ export function BrowseDirectoryPage({ role }: { role: BrowseRole }) {
   const roleTabs: Array<{ label: string; value: BrowseRole; href: string }> = [
     { label: "All", value: "all", href: "/browse" },
     { label: "Artists", value: "artist", href: "/browse/artists" },
+    { label: "Promoters", value: "promoter", href: "/browse/promoters" },
     { label: "Venues", value: "venue", href: "/browse/venues" },
     { label: "Crews", value: "crew", href: "/browse/crews" },
     { label: "Creatives", value: "creative", href: "/browse/creatives" },

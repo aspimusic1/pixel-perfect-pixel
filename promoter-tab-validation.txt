@@ -1,0 +1,10 @@
+Validated in the dev preview on 2026-05-09.
+
+Landing page:
+- Public header now includes a Promoters navigation tab alongside Browse, Artists, Venues, Crews, and Creatives.
+
+Promoter directory route:
+- /browse/promoters loads successfully.
+- The browse tab bar includes Promoters as an active tab.
+- The page title renders as "Promoter directory".
+- Promoter cards render successfully, including Northstar Presents and Afterglow Live.

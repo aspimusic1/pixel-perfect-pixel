@@ -40,6 +40,7 @@ function Router() {
       <Route path={"/app/creative"}>{() => <RoleDashboardPage role="creative" />}</Route>
       <Route path={"/browse"}>{() => <BrowseDirectoryPage role="all" />}</Route>
       <Route path={"/browse/artists"}>{() => <BrowseDirectoryPage role="artist" />}</Route>
+      <Route path={"/browse/promoters"}>{() => <BrowseDirectoryPage role="promoter" />}</Route>
       <Route path={"/browse/venues"}>{() => <BrowseDirectoryPage role="venue" />}</Route>
       <Route path={"/browse/crews"}>{() => <BrowseDirectoryPage role="crew" />}</Route>
       <Route path={"/browse/creatives"}>{() => <BrowseDirectoryPage role="creative" />}</Route>
