@@ -117,16 +117,14 @@ function PublicHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/8 bg-[#080C14]/88 backdrop-blur-xl">
       <div className="container flex items-center justify-between py-4">
-        <Link href="/">
-          <a className="inline-flex items-center"><BrandMark /></a>
+        <Link href="/" className="inline-flex items-center">
+          <BrandMark />
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex">
           {PUBLIC_NAV.map(item => (
-            <Link key={item.href} href={item.href}>
-              <a className={`text-sm transition-colors ${location === item.href ? "text-white" : "text-white/62 hover:text-white"}`}>
-                {item.label}
-              </a>
+            <Link key={item.href} href={item.href} className={`text-sm transition-colors ${location === item.href ? "text-white" : "text-white/62 hover:text-white"}`}>
+              {item.label}
             </Link>
           ))}
         </nav>
@@ -164,11 +162,14 @@ function PublicHeader() {
             </SheetHeader>
             <div className="mt-8 space-y-3">
               {PUBLIC_NAV.map(item => (
-                <Link key={item.href} href={item.href}>
-                  <a className="flex items-center justify-between rounded-2xl border border-white/10 px-4 py-3 text-sm text-white/84" onClick={() => setOpen(false)}>
-                    {item.label}
-                    <ChevronRight className="h-4 w-4" />
-                  </a>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center justify-between rounded-2xl border border-white/10 px-4 py-3 text-sm text-white/84"
+                  onClick={() => setOpen(false)}
+                >
+                  {item.label}
+                  <ChevronRight className="h-4 w-4" />
                 </Link>
               ))}
             </div>
@@ -301,10 +302,8 @@ export function LandingPage() {
                   Enter the platform
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Link href="/browse">
-                  <a className="inline-flex h-12 items-center justify-center rounded-xl border border-white/12 px-6 text-sm text-white/78 transition hover:bg-white/8 hover:text-white">
-                    Explore the directory
-                  </a>
+                <Link href="/browse" className="inline-flex h-12 items-center justify-center rounded-xl border border-white/12 px-6 text-sm text-white/78 transition hover:bg-white/8 hover:text-white">
+                  Explore the directory
                 </Link>
               </div>
               <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -647,11 +646,13 @@ export function RoleDashboardPage({ role }: { role: Role }) {
             <p className="text-lg font-medium text-white">Quick actions</p>
             <div className="mt-5 space-y-3">
               {dashboard.quickLinks.map(link => (
-                <Link key={link.href} href={link.href}>
-                  <a className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78 transition hover:bg-white/[0.06]">
-                    {link.label}
-                    <ChevronRight className="h-4 w-4" />
-                  </a>
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78 transition hover:bg-white/[0.06]"
+                >
+                  <span>{link.label}</span>
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               ))}
             </div>
@@ -955,8 +956,8 @@ export function OffersIndexPage() {
               <h2 className="mt-3 text-3xl font-semibold text-white">Offers index</h2>
               <p className="mt-2 text-sm leading-6 text-white/54">Review sent, received, accepted, and countered offers in one place.</p>
             </div>
-            <Link href="/offers/new">
-              <a className="inline-flex h-12 items-center justify-center rounded-xl bg-[#C8FF3E] px-5 text-sm font-medium text-[#080C14]">Create new offer</a>
+            <Link href="/offers/new" className="inline-flex h-12 items-center justify-center rounded-xl bg-[#C8FF3E] px-5 text-sm font-medium text-[#080C14]">
+              Create new offer
             </Link>
           </div>
         </GradientSurface>
@@ -984,10 +985,8 @@ export function OffersIndexPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <StatusBadge status={offer.status} />
-                  <Link href={`/offers/${offer.id}`}>
-                    <a className="inline-flex h-11 items-center justify-center rounded-xl border border-white/12 px-4 text-sm text-white/78 transition hover:bg-white/8 hover:text-white">
-                      View details
-                    </a>
+                  <Link href={`/offers/${offer.id}`} className="inline-flex h-11 items-center justify-center rounded-xl border border-white/12 px-4 text-sm text-white/78 transition hover:bg-white/8 hover:text-white">
+                    View details
                   </Link>
                 </div>
               </div>

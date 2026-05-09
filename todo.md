@@ -17,3 +17,4 @@
 - [x] Integrate Resend for transactional artist and promoter email notifications from @getbooked.live
 - [x] Complete Resend sender-domain verification or identify the exact user handoff step required for DNS or account access
 - [x] Provision the missing Supabase tables and policies required by the live GetBooked data layer
+- [x] Fix the landing page nested anchor error on /?from_webdev=1 by removing invalid nested link markup
