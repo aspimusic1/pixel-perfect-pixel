@@ -1,0 +1,8 @@
+Supabase access findings on 2026-05-09:
+- Logged into org: aspimusic1's Org
+- Active project: GETBOOKED.LIVE (ycqtqbecadarulohxvan)
+- PostgREST checks showed the GetBooked tables expected by the rebuilt web app were missing: user_profiles, waitlist_entries, artist_profiles, venue_profiles, crew_profiles, creative_profiles, bookscore_snapshots
+- The SQL editor contains an older saved query named "GetBooked Full Schema Setup", but its visible role enums do not match the rebuilt platform roles (artist, promoter, venue, crew, creative), so a custom migration is required instead of running it unchanged
+- Inspected live information_schema results and confirmed the legacy venue_profiles table requires a venue_name column
+- Replaced the draft migration with a defensive compatibility script that adds the normalized app fields, preserves venue_name support, and seeds browse data
+- Executed the corrected migration successfully in the Supabase SQL editor; the result returned "Success. No rows returned"
