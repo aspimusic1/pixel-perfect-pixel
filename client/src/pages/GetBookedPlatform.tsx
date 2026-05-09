@@ -293,7 +293,7 @@ export function LandingPage() {
                 Premium booking infrastructure for live music teams
               </Badge>
               <h1 className="mt-8 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-white sm:text-6xl xl:text-7xl">
-                One elegant platform for artists, promoters, venues, crews, and creatives.
+                One platform for artists, promoters, venues, crews, and creatives.
               </h1>
               <p className="mt-6 max-w-3xl text-lg leading-8 text-white/60 sm:text-xl">
                 GetBooked.Live turns scattered booking conversations into a polished operating system with structured offers, role-based dashboards, deal rooms, and reputation signals that help great teams move faster.
