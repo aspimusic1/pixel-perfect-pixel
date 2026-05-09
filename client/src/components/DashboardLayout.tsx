@@ -21,15 +21,17 @@ import {
 } from "@/components/ui/sidebar";
 import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
+import { Compass, LayoutDashboard, LogOut, Mail, PanelLeft, ScrollText } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Page 1", path: "/" },
-  { icon: Users, label: "Page 2", path: "/some-path" },
+  { icon: LayoutDashboard, label: "Workspace", path: "/app" },
+  { icon: Compass, label: "Browse", path: "/browse" },
+  { icon: Mail, label: "Offers", path: "/offers" },
+  { icon: ScrollText, label: "Deal room", path: "/deals/demo-deal" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -169,11 +171,11 @@ function DashboardLayoutContent({
                 <PanelLeft className="h-4 w-4 text-muted-foreground" />
               </button>
               {!isCollapsed ? (
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold tracking-tight truncate">
-                    Navigation
-                  </span>
-                </div>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-semibold tracking-tight truncate text-white">
+                        GetBooked.Live
+                      </span>
+                    </div>
               ) : null}
             </div>
           </SidebarHeader>
@@ -181,7 +183,7 @@ function DashboardLayoutContent({
           <SidebarContent className="gap-0">
             <SidebarMenu className="px-2 py-1">
               {menuItems.map(item => {
-                const isActive = location === item.path;
+                const isActive = item.path === "/app" ? location.startsWith("/app") : location.startsWith(item.path);
                 return (
                   <SidebarMenuItem key={item.path}>
                     <SidebarMenuButton
@@ -250,7 +252,7 @@ function DashboardLayoutContent({
               <div className="flex items-center gap-3">
                 <div className="flex flex-col gap-1">
                   <span className="tracking-tight text-foreground">
-                    {activeMenuItem?.label ?? "Menu"}
+                    {activeMenuItem?.label ?? "GetBooked.Live"}
                   </span>
                 </div>
               </div>

@@ -1,0 +1,19 @@
+# Project TODO
+
+- [x] Redesign the landing page with a polished waitlist flow, premium hero copy, and feature highlights for artists, promoters, venues, crews, and creatives
+- [x] Build dedicated authentication entry points and role-selection onboarding at /signup/role
+- [x] Implement role-based protected routing at /app with exact redirects to /app/artist, /app/promoter, /app/venue, /app/crew, and /app/creative
+- [x] Build five polished role dashboards with metrics, inbox modules, quick actions, profile completion ring, and first-visit welcome modal
+- [x] Expand /browse into role-filtered directory routes with tab navigation and responsive filter UI
+- [x] Connect browse filters to real Supabase-backed queries and mobile bottom-sheet filtering
+- [x] Restructure the offers flow into /offers, /offers/new, and /offers/:id with role-aware actions
+- [x] Build /deals/:id as the central accepted-booking hub with contract, payment, and messaging sections
+- [x] Add legacy 301 route redirects for /dashboard -> /app and /offer -> /offers and update navbar navigation
+- [x] Implement in-app and email notifications for new offers and offer response events
+- [x] Design and implement the Supabase data model for user roles, browse records, offers, deals, notifications, reviews, and BookScore inputs
+- [x] Implement server-side scheduled BookScore calculation and storage based on booking history, response rate, and review data
+- [x] Add tests for routing, backend procedures, scheduled BookScore logic, and key user flows
+- [x] Validate the rebuilt application end to end on desktop and mobile, then save a delivery checkpoint
+- [x] Integrate Resend for transactional artist and promoter email notifications from @getbooked.live
+- [x] Complete Resend sender-domain verification or identify the exact user handoff step required for DNS or account access
+- [x] Provision the missing Supabase tables and policies required by the live GetBooked data layer

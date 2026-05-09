@@ -1,0 +1,8 @@
+Resend domain verification status for getbooked.live checked on 2026-05-09.
+
+Findings:
+- Sending records were already verified.
+- Inbound receiving was causing the domain to show a partial failure.
+- After disabling receiving in Resend, the domain status changed to Verified.
+- The page now states: "Domain verified: Your domain is ready to send emails."
+- Default sender under validation is noreply@getbooked.live.
